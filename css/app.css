@@ -1,0 +1,276 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/*
+    Created on : 09 20, 14, 11:44:35 AM
+    Author     : Jerico
+*/
+
+body {
+    /*background-color: #95a5a6;*/
+    background: #FF6A6A;
+    /* background-color: #ecf0f1;*/
+    /*background: url(../img/bg-10-full.jpg) no-repeat center center fixed;*/
+    /* background: url(../img/fancy_deboss.png);*/
+    /* -webkit-background-size: cover;
+     -moz-background-size: cover;
+     -o-background-size: cover;
+     background-size: cover;*/
+}
+
+.brand {
+    padding: 0px 0px 0px 0px;
+    border-radius: 100px;
+}
+
+.emblem {
+    padding: 0px 0px 0px 0px;
+    border-radius: 100px;
+    margin-top: -12px;
+    margin-left: -12px;
+}
+
+.menu_selection {
+    overflow: auto;
+    min-height: 300px;
+    /*max-height: 300px;*/
+    /*background : #245269;*/
+}
+
+.tile_margin {
+    margin: 2px;
+}
+
+.menu-item-list {
+    height: 20px;
+}
+
+.field-margin {
+    margin: 0px 2px 0px 0px;
+}
+
+.prompt-dialog {
+    height: 200px;
+    width: 200px;
+}
+
+/*.menu-title {
+    font-size: 20px;
+    margin-left: -25px;
+}*/
+
+.menu-module {
+    margin-left: 20px;
+}
+
+.marginLeft5px {
+    margin-left: 5px;
+}
+
+.fontSize14px {
+    font-size: 14px;
+}
+
+.paddingBottom10px {
+    padding-bottom: 10px;
+}
+
+.avatar {
+    height: 133px;
+    width: 135px;
+    margin: 0 auto;
+    border-radius: 70px;
+}
+
+.frame-content {
+    /* z-index: 9999;*/
+    margin: 0 auto;
+    padding-top: 15px;
+    /* min-height: 700px;*/
+    clear: both;
+    background: #FF8C69;
+}
+
+.frame-content input {
+    /* z-index: 9999;*/
+    padding-bottom: 10px;
+}
+
+.frame-search {
+    height: 15px;
+}
+
+.search-tasks {
+    height: 35px;
+}
+
+.search-tasks input {
+    font: inherit;
+    font-size: 14px;
+    height: 35px;
+    width: 200px;
+}
+
+.search-tasks a {
+    font-size: 14px;
+    height: 35px;
+    width: 30px;
+    transform: scale(1.0, 1.1);
+    text-align: center;
+    color: #ffffff;
+}
+
+.fluidTaskBar {
+    float: left;
+    padding: 15px 20px;
+    background-color: transparent;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+    height: 50px;
+    border-radius: 0;
+    color: #ffffff;
+    border-radius: 7px;
+    text-align: center;
+    display: block;
+    background-color: rgba(2, 152, 210, 0.9);
+}
+
+.fluidTaskBar-icon-shown {
+    background-color: rgba(2, 102, 200, 0.3);
+}
+
+.fluidTaskBar-icon-hidden {
+    background-color: rgba(2, 152, 210, 0.9);
+}
+
+.fluid-bar-icon-active > .fluidTaskBar {
+    background: rgba(2, 102, 200, 0.3);
+}
+
+.fluid-bar-icon {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: inherit;
+    margin-top: -6px;
+    margin-left: -7px;
+    font-size: 24px;
+    /* transform: scale(1.9, 2.1);*/
+}
+
+.fluid-bar-icon-sub-task {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: inherit;
+    margin-top: -6px;
+    margin-left: -7px;
+    font-size: 24px;
+    /*transform: scale(1.1, 1.4);
+*/
+}
+
+.fluid-bar-icon-sub-tasks {
+    vertical-align: middle;
+    line-height: inherit;
+    transform: scale(1.9, 2.1);
+}
+
+.fluidTaskBarMore {
+    float: left;
+    padding: 15px 20px;
+    background-color: transparent;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+    height: 50px;
+    border-radius: 0;
+    color: #ffffff;
+    border-radius: 7px;
+}
+
+.fluid-task-item {
+    margin-left: -38px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+    height: 30px;
+    text-align: left;
+}
+
+.fluid-task-item-active {
+    background: rgba(2, 102, 200, 0.3);
+}
+
+.fluid-task-item-hidden {
+    background: rgba(2, 152, 210, 0.9);
+}
+
+li.fluid-task-item a {
+    color: white;
+}
+
+.fluid-task-item-xs {
+    line-height: inherit;
+    height: 30px;
+}
+
+li.fluid-task-item-xs a {
+    vertical-align: middle;
+    color: white;
+}
+
+.fluid-loader {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+    transform: scale(1.9, 2.1);
+}
+
+.fluid-notify-icon {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+    height: 20px;
+    width: 20px;
+}
+
+.borderless {
+    border: none;
+}
+
+/* Margin */
+
+.margin-leftl5px {
+    margin-left: -5px;
+}
+
+.margin-left5px {
+    margin-left: 50px;
+}
+
+/* Width */
+.width-50pc {
+    width: 50%;
+}
+
+.width-100pc {
+    width: 100%;
+}
+
+/* Font */
+.app-font {
+    font-size: 12px;
+    font-style: normal;
+    font-stretch: condensed;
+}
+
+.color-white {
+    color: #f5f5f5;
+}
+
+/*Flow*/
+
+.floatLeft {
+    float: left;;
+}
+
+

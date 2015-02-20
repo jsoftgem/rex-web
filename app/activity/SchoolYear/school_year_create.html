@@ -1,0 +1,207 @@
+ho
+<div class="container-fluid" ng-controller="schoolYearCreateCtrl">
+    <form id="{{flow.getElementFlowId('school_year_create_form')}}" class="form-horizontal" role="form"
+          ng-submit="save()"
+          novalidate>
+
+        <input id="{{flow.getElementFlowId('school_year_submit')}}" type="submit"
+               style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+
+
+        <flow-field label="Description" required="true" model="task.modelCreate.description"></flow-field>
+
+        <fieldset>
+            <legend>From</legend>
+            <div class="col-lg-6">
+                <flow-select
+                        task="task"
+                        id="{{flow.getElementFlowId('monthSelect')}}"
+                        model="task.modelCreate.periodMonth"
+                        label="Month"
+                        source-url="factories/war/table_factories/months">
+                </flow-select>
+            </div>
+            <div class="col-lg-6">
+                <flow-select
+                        required="true"
+                        task="task"
+                        id="{{flow.getElementFlowId('yearSelect')}}"
+                        model="task.modelCreate.periodYear"
+                        label="Year"
+                        source-url="factories/war/table_factories/years">
+                </flow-select>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>To</legend>
+            <div class="col-lg-6">
+                <flow-select
+                        task="task"
+                        id="{{flow.getElementFlowId('monthSelect2')}}"
+                        model="task.modelCreate.periodMonthTo"
+                        label="Month"
+                        source-url="factories/war/table_factories/months">
+                </flow-select>
+            </div>
+            <div class="col-lg-6">
+                <flow-select
+                        required="true"
+                        task="task"
+                        id="{{flow.getElementFlowId('yearSelect2')}}"
+                        model="task.modelCreate.periodYearTo"
+                        label="Year"
+                        source-url="factories/war/table_factories/years">
+                </flow-select>
+            </div>
+        </fieldset>
+
+
+        <div class="col-lg-12">
+
+            <flow-sub-table flow="flow" task="task" key-var="customer" title="Customers"
+                            target-list="task.modelCreate.warCustomerMarkets"
+                            id="{{flow.getElementFlowId('customersSubTable')}}" id-field="id"
+                            create-event="createCustomerEvent" edit-event="editCustomerEvent" look-up="false">
+                <flow-sub-column title="Customer Code" model="customer.customerCode"></flow-sub-column>
+                <flow-sub-column title="School" model="customer.customerName"></flow-sub-column>
+                <flow-sub-column title="Market Potential Segment"
+                                 model="customer.marketPotentialSegment"></flow-sub-column>
+                <flow-sub-column title="Market Potential" model="customer.marketPotential"></flow-sub-column>
+            </flow-sub-table>
+
+        </div>
+
+
+        <!-- <flow-modal id="{{flow.getElementFlowId('marketSegmentModal')}}">
+
+             <div class="panel panel-primary">
+
+                 <div class="panel-heading">
+                     <span class="heading-title">Add Market Segment</span>
+                 </div>
+
+
+                 <div class="panel-body">
+
+                     <div class="form-horizontal container-fluid">
+
+                         <flow-select task="task" label="Market Segment"
+                                      source-url="factories/war/table_factories/market_segments"
+                                      required="true"
+                                      model="task.modelCreate.warMarketSegments[task.create.marketIndex].marketSegment"></flow-select>
+
+                         <div class="form-group"
+                              ng-repeat="marketControl in task.modelCreate.warMarketSegments[task.create.marketIndex].marketSegmentControlSet">
+                             <div>
+                                 <div ng-if="$index > 0" class="col-lg-3 col-lg-offset-2">
+                                     <flow-select task="task" label="Control" model="marketControl.control"
+                                                  source-url="factories/war/table_factories/market_controls"></flow-select>
+                                 </div>
+                                 <div class="col-lg-2 text-right" ng-hide="$index > 0"><span
+                                         class="font-size:14px;font:inherit">Market Potential</span>
+                                     <span class="required">*&nbsp;</span>
+                                 </div>
+                                 <div class="col-lg-3">
+                                     <flow-select task="task" label="Operator" model="marketControl.operator"
+                                                  source-url="factories/war/table_factories/market_operators"></flow-select>
+                                 </div>
+                                 <div class="col-lg-3">
+                                     <flow-field type="number" required="true"
+                                                 label="{{marketControl.operator == 'BETWEEN' ? 'Value1':'Value'}}"
+                                                 model="marketControl.value"></flow-field>
+                                 </div>
+
+                                 <div class="col-lg-3" ng-if="marketControl.operator == 'BETWEEN'">
+                                     <flow-field type="number" required="marketControl.operator == 'BETWEEN'"
+                                                 label="Value2"
+                                                 model="marketControl.value2"></flow-field>
+                                 </div>
+
+                                 <div class="btn-group btn-group-xs" sty;e="margin-left:5px;">
+
+                                     <button title="Remove" class="btn btn-danger" ng-if="$index > 0"
+                                             ng-click="task.modelCreate.warMarketSegments[task.create.marketIndex].marketSegmentControlSet.splice($index,1)">
+                                         <i class="fa fa-minus"></i></button>
+
+                                     <button title="Add" class="btn btn-success"
+                                             ng-if="$index == (task.modelCreate.warMarketSegments[task.create.marketIndex].marketSegmentControlSet.length - 1)"
+                                             ng-click="task.modelCreate.warMarketSegments[task.create.marketIndex].marketSegmentControlSet.push({})">
+                                         <i class="fa fa-plus"></i></button>
+                                 </div>
+                             </div>
+                         </div>
+
+                     </div>
+
+                 </div>
+
+                 <div class="panel-footer">
+                     <button class="btn btn-success" type="button">Add</button>
+                     <button class="btn btn-info" type="button">Save & close</button>
+                     <button class="btn btn-danger" type="button">Cancel</button>
+                 </div>
+
+             </div>
+
+
+         </flow-modal>-->
+
+
+        <flow-modal id="{{flow.getElementFlowId('customerModal')}}">
+
+            <div class="panel panel-primary">
+
+                <div class="panel-heading"><span class="heading-title">Add customer</span></div>
+
+                <div class="panel-body">
+
+                    <div class="form-horizontal">
+                    
+                        <flow-look-up ng-hide="task.create.customerManaged"
+                                task="task"
+                                id="{{flow.getElementFlowId('customerLookUp')}}"
+                                parent-id="{{flow.getElementFlowId('school_year_create_form')}}"
+                                model="task.create.customerLookUp"
+                                label="Customer"
+                                source-url="services/war/customer_light_query/list"
+                                title="Customer" field-label="customerCode"
+                                key-var="customer">
+                            <flow-sub-column title="Customer Code" model="customer.customerCode"></flow-sub-column>
+                            <flow-sub-column title="Customer Name" model="customer.school.name"></flow-sub-column>
+                        </flow-look-up>
+
+
+                        <flow-field label="Customer name" disabled="true"
+                                    model="task.modelCreate.warCustomerMarkets[task.create.customerIndex].customerName"></flow-field>
+
+                        <flow-field label="Market Potential Segment" disabled="true"
+                                    model="task.modelCreate.warCustomerMarkets[task.create.customerIndex].marketPotentialSegment"></flow-field>
+
+                        <flow-field label="Market Potential" type="number"
+                                    model="task.modelCreate.warCustomerMarkets[task.create.customerIndex].marketPotential"></flow-field>
+
+                    </div>
+                </div>
+
+
+                <div class="panel-footer">
+                    <div class="btn-group btn-group-md">
+                        <button class="btn btn-success" ng-show="!task.create.customerManaged" ng-click="add()"
+                                type="button">Add
+                        </button>
+                        <button class="btn btn-info" ng-click="saveAndClose()" type="button">
+                            {{task.create.customerManaged ? 'Update' : 'Save & close'}}
+                        </button>
+                        <button class="btn btn-danger" ng-click="cancel()" type="button">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+        </flow-modal>
+
+
+    </form>
+
+
+</div>

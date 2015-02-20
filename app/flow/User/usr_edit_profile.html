@@ -1,0 +1,16 @@
+<div class="container-fluid" ng-controller="editProfileCtrl">
+    <form class="form-horizontal" novalidate role="form" ng-submit="update()" method="post">
+
+        <flow-image file-changed="fileChanged()" task="task" label="Avatar" model="task.flowUserDetail.avatar"
+                    source-url="services/download_service/getContent/"
+                    url="services/upload_service/upload_file?folder=group.user&type=avatar" method="post"></flow-image>
+
+        <flow-field label="Full name" model="task.flowUserDetail.fullName"></flow-field>
+
+        <flow-field label="Question" model="task.flowUserDetail.secretQuestion"></flow-field>
+
+        <flow-field label="Answer" model="task.flowUserDetail.secretAnswer" type="password"></flow-field>
+
+        <button type="submit" class="btn btn-info"><span class="fa fa-save"></span>&nbsp;&nbsp;Update</button>
+    </form>
+</div>

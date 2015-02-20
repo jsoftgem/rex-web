@@ -1,0 +1,54 @@
+<div class="container-fluid" ng-controller="agentCtrl">
+    <form name="{{flow.getElementFlowId('agent_edit_form')}}" id="{{flow.getElementFlowId('agent_edit_form')}}"
+    class="form-horizontal" role="form" ng-submit="save()" novalidate>
+
+    <input id="{{flow.getElementFlowId('agent_submit')}}" type="submit"
+    style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+
+    <flow-field model="task.agentEdit.user.flowUserDetail.fullName" label="Full name" type="text"
+    required="true"></flow-field>
+    <flow-field model="task.agentEdit.initials" label="Initials" type="text"
+    required="true"></flow-field>
+    <flow-field model="task.agentEdit.user.username" label="Username" type="text" required="true"></flow-field>
+    <flow-field model="task.agentEdit.user.email" label="Email" type="email" required="true"></flow-field>
+    <div class="form-group">
+        <div class="col-lg-offset-2 col-me-offset-2 col-sm-offset-2 col-xs-offset-2">
+            <flow-check model="task.agentEdit.active" label="Active" required="true"></flow-check></div>
+        </div>
+        <div ng-show="page.name == 'agent_create' || editPassword">
+            <flow-field model="task.agentEdit.user.password" label="Password" type="password"
+            required="true"></flow-field>
+            <flow-field model="reTypePassword" label="Confirm password" type="password" required="true"></flow-field>
+        </div>
+
+        <div class="form-group">
+            <button type="button" ng-show="page.name=='agent_edit'" class="btn btn-info"
+            ng-click="editPassword=!editPassword">{{editPassword? 'Cancel': 'Edit password'}}
+        </button>
+    </div>
+    <h4>Password recovery setup</h4>
+
+    <flow-field model="task.agentEdit.user.flowUserDetail.secretQuestion" label="Security question" type="text"
+    required="true"></flow-field>
+    <flow-field model="task.agentEdit.user.flowUserDetail.secretAnswer" label="Secret answer" type="password"
+    required="true"></flow-field>
+
+
+    <flow-modal id="{{flow.getElementFlowId('agentDeleteModal')}}">
+    <div class="panel panel-warning">
+        <div class="panel-heading">Warning</div>
+        <div class="panel-body">Do you want to delete {{task.agentEdit.user.username}}?</div>
+        <div class="panel-footer">
+            <div class="btn-group btn-group-xs">
+                <button type="button" class="btn btn-warning field-margin" ng-click="deleteConfirm()">Yes
+                </button>
+                <button type="button" class="btn btn-info field-margin" ng-click="deleteCancel()">No</button>
+            </div>
+        </div>
+    </div>
+
+</flow-modal>
+
+
+</form>
+</div>

@@ -1,0 +1,399 @@
+<div ng-controller="reportsCtrl" class="container-fluid">
+
+    <form id="{{flow.getElementFlowId('reportFrame')}}" class="form-horizontal">
+        <div class="col-lg-4">
+            <fieldset>
+                <legend>Options</legend>
+                <div>
+                    <div class="col-lg-10">
+                        <flow-select disabled="!task.isYear" model="task.year" task="task" label="Year"
+                                     source-url="factories/war/table_factories/years"></flow-select>
+                    </div>
+                    <div class="col-lg-1">
+                        <flow-check model="task.isYear"></flow-check>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="col-lg-10">
+                        <flow-select disabled="!task.isMonth"
+                                     model="task.month" task="task" label="Month"
+                                     source-url="factories/war/table_factories/months">
+
+                        </flow-select>
+                    </div>
+                    <div class="col-lg-2">
+                        <flow-check model="task.isMonth"></flow-check>
+                    </div>
+                </div>
+
+                <div>
+
+                    <div class="col-lg-10">
+                        <flow-look-up disabled="!task.isAgent" model="task.agent" task="task" flow="flow"
+                                      id="{{flow.getElementFlowId('agentLookUp')}}"
+                                      label="Materials Advisor" parent-id="{{flow.getElementFlowId('reportFrame')}}"
+                                      key-var="agent" field-label="user.flowUserDetail.fullName"
+                                      source-url="services/war/agent_query/list">
+
+                            <flow-sub-column title="Name" model="agent.user.flowUserDetail.fullName"></flow-sub-column>
+                            <flow-sub-column title="Initials" model="agent.initials"></flow-sub-column>
+                        </flow-look-up>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <flow-check model="task.isAgent"></flow-check>
+                    </div>
+
+                </div>
+
+            </fieldset>
+        </div>
+
+        <div class="col-lg-8">
+            <fieldset>
+                <legend>Toggle Rows</legend>
+                <div class="col-lg-12">
+                    <div class="col-lg-2" ng-init="task.table.isMaterialsAdvisor = true">
+                        <flow-check label="Materials Advisor" model="task.table.isMaterialsAdvisor"></flow-check>
+                    </div>
+                    <div class="col-lg-2" ng-init="task.table.isUnplannedTarget = true">
+                        <flow-check label="Unplanned Target" model="task.table.isUnplannedTarget"></flow-check>
+                    </div>
+
+                    <div class="col-lg-3" ng-init="task.table.isEcd = true">
+                        <flow-check label="Exam Copies Distribution" model="task.table.isEcd"></flow-check>
+                    </div>
+
+                    <div class="col-lg-3" ng-init="task.table.isDaotrc = true">
+                        <flow-check label="Delivery of Add'l Order / TRM / Compli"
+                                    model="task.table.isDaotrc"></flow-check>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="col-lg-2" ng-init="task.table.isWeek = true">
+                        <flow-check label="Week" model="task.table.isWeek"></flow-check>
+                    </div>
+                    <div class="col-lg-2" ng-init="task.table.isUnplannedActual = true">
+                        <flow-check label="Unplanned Actual" model="task.table.isUnplannedActual"></flow-check>
+                    </div>
+                    <div class="col-lg-3" ng-init="task.table.isIte = true">
+                        <flow-check label="Invitation to Events" model="task.table.isIte"></flow-check>
+                    </div>
+                    <div class="col-lg-3" ng-init="task.table.isBooklist = true">
+                        <flow-check label="Booklist" model="task.table.isBooklist"></flow-check>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="col-lg-2" ng-init="task.table.isYear = true">
+                        <flow-check label="Year" model="task.table.isYear"></flow-check>
+                    </div>
+                    <div class="col-lg-2" ng-init="task.table.isUnplannedCallProd = true">
+                        <flow-check label="Unplanned Call Productivity"
+                                    model="task.table.isUnplannedCallProd"></flow-check>
+                    </div>
+
+                    <div class="col-lg-3" ng-init="task.table.isCoe = true">
+                        <flow-check label="Confirmation of Events" model="task.table.isCoe"></flow-check>
+                    </div>
+                    <div class="col-lg-3" ng-init="task.table.isUcis = true">
+                        <flow-check label="Updated Customer Info Sheet" model="task.table.isUcis"></flow-check>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="col-lg-2" ng-init="task.table.isPlannedTarget = true">
+                        <flow-check label="Planned Target" model="task.table.isPlannedTarget"></flow-check>
+                    </div>
+                    <div class="col-lg-2" ng-init="task.table.isTotalTarget = true">
+                        <flow-check label="Total Target" model="task.table.isTotalTarget"></flow-check>
+                    </div>
+                    <div class="col-lg-3" ng-init="task.table.isGd = true">
+                        <flow-check label="Giveaways Distribution" model="task.table.isGd"></flow-check>
+                    </div>
+                    <div class="col-lg-3" ng-init="task.table.isIes = true">
+                        <flow-check label="Implemented Ex-Sem" model="task.table.isIes"></flow-check>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="col-lg-2" ng-init="task.table.isPlannedActual = true">
+                        <flow-check label="Planned Actual" model="task.table.isPlannedActual"></flow-check>
+                    </div>
+                    <div class="col-lg-2" ng-init="task.table.isTotalActual = true">
+                        <flow-check label="Total Actual" model="task.table.isTotalActual"></flow-check>
+                    </div>
+                    <div class="col-lg-3" ng-init="task.table.isDoi = true">
+                        <flow-check label="Delivery of Incentive/Donation" model="task.table.isDoi"></flow-check>
+                    </div>
+
+                </div>
+                <div class="col-lg-12">
+                    <div class="col-lg-2" ng-init="task.table.isPlannedCallProd = true">
+                        <flow-check label="Planned Call Productivity" model="task.table.isPlannedCallProd"></flow-check>
+                    </div>
+                    <div class="col-lg-2" ng-init="task.table.isTotalCallProd = true">
+                        <flow-check label="Total Call Productivity" model="task.table.isTotalCallProd"></flow-check>
+                    </div>
+                    <div class="col-lg-3" ng-init="task.table.isPo = true">
+                        <flow-check label="Purchase Order" model="task.table.isPo"></flow-check>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+
+        <div class="form-group">
+            <table id="{{flow.getElementFlowId('reportTable')}}" class="table table-condensed table-striped"
+                   ng-init="rep = []">
+                <thead>
+                <tr>
+                    <th class="bg-primary">{{!task.isAgent && task.table.isMaterialsAdvisor ? 'Materials Advisor'
+                        :'Action'}}
+                    </th>
+                    <th class="bg-info" ng-if="task.table.isWeek">Week</th>
+                    <th ng-if="!task.isYear && task.table.isYear" class="bg-info">Year</th>
+                    <th ng-if="task.table.isPlannedTarget" class="bg-info header">Planned Target</th>
+                    <th ng-if="task.table.isPlannedActual" class="bg-info header">Planned Actual</th>
+                    <th ng-if="task.table.isPlannedCallProd" class="bg-success">Planned Call Productivity</th>
+                    <th ng-if="task.table.isUnplannedTarget" class="bg-info">Unplanned Target</th>
+                    <th ng-if="task.table.isUnplannedActual" class="bg-info">Unplanned Actual</th>
+                    <th ng-if="task.table.isUnplannedCallProd" class="bg-success">Unplanned Call Productivity</th>
+                    <th ng-if="task.table.isTotalTarget" class="bg-info">Total Target</th>
+                    <th ng-if="task.table.isTotalActual" class="bg-info">Total Actual</th>
+                    <th ng-if="task.table.isTotalCallProd" class="bg-success">Total Call Productivity</th>
+                    <th ng-if="task.table.isEcd" class="bg-warning">Exam Copies Distribution</th>
+                    <th ng-if="task.table.isIte" class="bg-warning">Invitation to Events</th>
+                    <th ng-if="task.table.isCoe" class="bg-warning">Confirmation of Events</th>
+                    <th ng-if="task.table.isGd" class="bg-warning">Giveaways Distribution</th>
+                    <th ng-if="task.table.isDoi" class="bg-warning">Delivery of Incentive/Donation</th>
+                    <th ng-if="task.table.isPo" class="bg-warning">Purchase Order</th>
+                    <th ng-if="task.table.isDaotrc" class="bg-warning">Delivery of Add'l Order / TRM / Compli</th>
+                    <th ng-if="task.table.isBooklist" class="bg-warning">Booklist</th>
+                    <th ng-if="task.table.isUcis" class="bg-warning">Updated Customer Info Sheet</th>
+                    <th ng-if="task.table.isIes" class="bg-warning">Implemented Ex-Sem</th>
+                </tr>
+                </thead>
+
+                <tbody ng-repeat="(month , report) in task.result | groupBy: 'reportMonth'"
+                       ng-init="monthModel = {selectedWeek:0}">
+                <tr>
+                    <td class="bg-warning" colspan="3">{{month}}</td>
+                    <td class="borderless" colspan="2" border="0"><select ng-model="monthModel.selectedWeek">
+                        <option value="1" label="Week 1"></option>
+                        <option value="2" label="Week 2"></option>
+                        <option value="3" label="Week 3"></option>
+                        <option value="4" label="Week 4"></option>
+                        <option value="5" label="Week 5"></option>
+                        <option value="0" label="All week"></option>
+                    </select></td>
+                </tr>
+                <tr ng-repeat="day in report | filter : {week: monthModel.selectedWeek > 0 ? monthModel.selectedWeek : ''}">
+                    <td colspan="22">
+                        <div class="margin-leftl5px">
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="{{!task.isAgent && task.table.isMaterialsAdvisor ? 'Materials Advisor' :'Action'}}"
+                                 class="report-td"><a href="#"
+                                                      ng-click="task.getCustomers(day)"
+                                                      flow-tooltip
+                                                      tooltip-my="bottom left"
+                                                      tooltip-at="top right"
+                                                      tooltip-title="View {{day.materialsAdvisor}} daily activity for week {{day.week}}."><span><i
+                                    ng-class="(day.view ? 'fa fa-search-minus' : 'fa fa-search-plus')"></i>
+                {{ !task.isAgent && task.table.isMaterialsAdvisor ? day.materialsAdvisor : ''}}</span></a>
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Week"
+                                 ng-if="task.table.isWeek" class="report-td">{{day.week}}
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Year"
+                                 ng-if="!task.isYear && task.table.isYear" class="report-td">{{day.year}}
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Planned Target"
+                                 ng-if="task.table.isPlannedTarget" class="report-td">{{day.plannedTarget}}
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Planned Actual"
+                                 ng-if="task.table.isPlannedActual" class="report-td">{{day.plannedActual}}
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Planned Call Productivity" ng-if="task.table.isPlannedCallProd"
+                                 class="report-td">
+                                {{day.plannedCallProductivity |
+                                setDecimal: 2}}%
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Unplanned Target" ng-if="task.table.isUnplannedTarget"
+                                 class="report-td">{{day.unplannedTarget}}
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Unplanned Actual" ng-if="task.table.isUnplannedActual" class="report-td">
+                                {{day.unplannedActual}}
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Unplanned Call Productivity" ng-if="task.table.isUnplannedCallProd"
+                                 class="report-td">
+                                {{day.unplannedCallProductivity |
+                                setDecimal: 2}}%
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Total Target" ng-if="task.table.isTotalTarget"
+                                 class="report-td">{{day.totalActivity}}
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Total Actual" ng-if="task.table.isTotalActual" class="report-td">
+                                {{day.totalActual}}
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Total Call Productivity" ng-if="task.table.isTotalCallProd"
+                                 class="report-td">
+                                {{day.totalCallProductivity |
+                                setDecimal:
+                                2}}%
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Exam Copies Distribution" ng-if="task.table.isEcd" class="report-td">
+                                {{day.ecd}}
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Invitation to Events" ng-if="task.table.isIte" class="report-td">
+                                {{day.ite}}
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Confirmation of Events" ng-if="task.table.isCoe" class="report-td">
+                                {{day.coe}}
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Giveaways Distribution" ng-if="task.table.isGd" class="report-td">
+                                {{day.gd}}
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Delivery of Incentive/Donation" ng-if="task.table.isDoi"
+                                 class="report-td">
+                                {{day.doi}}
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Purchase Order" ng-if="task.table.isPo" class="report-td">
+                                {{day.po}}
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Delivery of Add" ng-if="task.table.isDaotrc"
+                                 class="report-td">{{day.daotrc}}
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Booklist" ng-if="task.table.isBooklist"
+                                 class="report-td">{{day.bookList}}
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Updated Customer Info Sheet" ng-if="task.table.isUcis" class="report-td">
+                                {{day.ucis}}
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Implemented Ex-Sem" ng-if="task.table.isIes" class="report-td">
+                                {{day.ies}}
+                            </div>
+                        </div>
+                        <div ng-if="day.view">
+                            <div ng-if="!day.loaded" class="report-td"><span><i class="fa fa-spinner fa-spin"></i> Fetching customer data...</span>
+                            </div>
+                            <div ng-if="day.loaded" class="daily-view">
+                                <table class="table table-condensed table-striped table-bordered">
+                                    <thead>
+                                    <th class="bg-info">Customer</th>
+                                    <th class="bg-info">Market Potential Segment
+                                    </th>
+                                    <th class="bg-info">Actual
+                                    </th>
+                                    <th class="bg-info">Exam Copies Distribution
+                                    </th>
+                                    <th class="bg-info">Invitation to Events
+                                    <th class="bg-info">
+                                        Confirmation of Events
+                                    </th>
+                                    <th class="bg-info">
+                                        Giveaways Distribution
+                                    </th>
+                                    <th class="bg-info">
+                                        Delivery of Incentive Donation
+                                    </th>
+                                    <th class="bg-info">
+                                        Purchase Order
+                                    </th>
+                                    <th class="bg-info">
+                                        Delivery of Additional Order/TRM/Compli
+                                    </th>
+                                    <th class="bg-info">
+                                        Booklist
+                                    </th>
+                                    <th class="bg-info">
+                                        Updated Customer Info Sheet
+                                    </th>
+                                    <th class="bg-info">
+                                        Implemented Ex Sem
+                                    </th>
+                                    </thead>
+                                    <tbody ng-repeat="(weekday,customers) in day.customers | groupBy:'day' | orderBy:'day'">
+                                    <tr>
+                                        <td colspan="13" class="bg-danger">{{task.getDayName(weekday)}}</td>
+                                    </tr>
+                                    <tr ng-repeat="customer in customers"
+                                        class="{{customer.planned == true ? 'planned_activity':'unplanned_activity'}}">
+                                        <td><a href="#">{{customer.customer}}</a>
+                                        </td>
+                                        <td>
+                                            {{customer.marketSegment}}
+                                        </td>
+                                        <td>
+                                            <i ng-class="customer.actual == 1 ? 'fa fa-check text-success':'fa fa-close text-danger'"></i>
+                                        </td>
+                                        <td>
+                                            <i ng-class="customer.ecd == 1 ? 'fa fa-check text-success':'fa fa-close text-danger'"></i>
+                                        </td>
+                                        <td>
+                                            <i ng-class="customer.ite == 1 ? 'fa fa-check text-success':'fa fa-close text-danger'"></i>
+                                        </td>
+                                        <td>
+                                            <i ng-class="customer.coe == 1 ? 'fa fa-check text-success':'fa fa-close text-danger'"></i>
+                                        </td>
+                                        <td>
+                                            <i ng-class="customer.gd == 1 ? 'fa fa-check text-success':'fa fa-close text-danger'"></i>
+                                        </td>
+                                        <td>
+                                            <i ng-class="customer.doi == 1 ? 'fa fa-check text-success':'fa fa-close text-danger'"></i>
+                                        </td>
+                                        <td>
+                                            <i ng-class="customer.po == 1 ? 'fa fa-check text-success':'fa fa-close text-danger'"></i>
+                                        </td>
+                                        <td>
+                                            <i ng-class="customer.daotrc == 1 ? 'fa fa-check text-success':'fa fa-close text-danger'"></i>
+                                        </td>
+                                        <td>
+                                            <i ng-class="customer.bookList == 1 ? 'fa fa-check text-success':'fa fa-close text-danger'"></i>
+                                        </td>
+                                        <td>
+                                            <i ng-class="customer.ucis == 1 ? 'fa fa-check text-success':'fa fa-close text-danger'"></i>
+                                        </td>
+                                        <td>
+                                            <i ng-class="customer.ies == 1 ? 'fa fa-check text-success':'fa fa-close text-danger'"></i>
+                                        </td>
+
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+
+
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+
+    </form>
+
+
+</div>

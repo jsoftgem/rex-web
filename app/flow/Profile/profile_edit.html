@@ -1,0 +1,65 @@
+<div class="container-fluid" ng-controller="profileCtrl">
+    <form id="{{flow.getElementFlowId('profile_edit_form')}}" class="form-horizontal" role="form" ng-submit="save()"
+          novalidate>
+
+        <input id="{{flow.getElementFlowId('profile_submit')}}" type="submit"
+               style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+
+        <div class="form-group col-lg-12 col-md-12  col-sm-12 col-xs-12 col-xs-offset-1">
+            <flow-field model="task.profileEdit.profileName" label="Name" type="text" required="true"></flow-field>
+        </div>
+
+        <flow-modal id="{{flow.getElementFlowId('profileDeleteModal')}}">
+
+            <div class="panel panel-warning">
+
+                <div class="panel-heading">Warning</div>
+                <div class="panel-body">Do you want to delete {{task.profileEdit.profileName}}?</div>
+                <div class="panel-footer">
+                    <div class="btn-group btn-group-xs">
+                        <button type="button" class="btn btn-warning field-margin" ng-click="deleteConfirm()">Yes
+                        </button>
+                        <button type="button" class="btn btn-info field-margin" ng-click="deleteCancel()">No</button>
+                    </div>
+                </div>
+            </div>
+
+        </flow-modal>
+        <add-pages task="task" target-list="task.profileEdit.flowProfilePermissions"
+                   page-url="services/flow_page_query/list"></add-pages>
+
+        <!--  <add-all-pages task="task" target-list="task.pageCreate.flowProfilePermissions"
+                         page-url="services/flow_page_query/list"></add-all-pages>-->
+        <button type="button" class="btn btn-info" ng-click="task.profileEdit.flowProfilePermissions=[]">Clear pages
+        </button>
+        <h4>Page Permission</h4>
+
+        <div class="form-group" style="overflow: hidden;">
+
+            <div ng-repeat="pp in task.profileEdit.flowProfilePermissions" class="row animated slideInDown anim-dur"
+                 style="border-top: 1px solid;padding-top: 2px">
+
+                <div class="col-lg-4">
+                    <div class="btn-group btn-group-xs">
+                        <a href="#"><span class="fa fa-remove"
+                                          ng-click="task.profileEdit.flowProfilePermissions.splice($index,1)"></span></a>
+                    </div>
+                    <span>{{pp.flowPageName}}</span>
+                </div>
+                <div class="col-lg-2">
+                    <flow-check label="Delete" model="pp.del"></flow-check>
+                </div>
+                <div class="col-lg-2">
+                    <flow-check label="Get" model="pp.get"></flow-check>
+                </div>
+                <div class="col-lg-2">
+                    <flow-check label="Post" model="pp.post"></flow-check>
+                </div>
+                <div class="col-lg-2">
+                    <flow-check label="Put" model="pp.put"></flow-check>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>

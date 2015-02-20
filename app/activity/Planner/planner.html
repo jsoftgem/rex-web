@@ -1,0 +1,255 @@
+<div class="container-fluid form-horizontal" ng-controller="plannerCtrl">
+
+    <form id="{{flow.getElementFlowId('planner')}}" class="form-horizontal" role="form"
+          novalidate>
+        <div class="btn-toolbar">
+            <p class="pull-right lead">Agent's Planner</p>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-3">
+                <flow-select id="{{flow.getElementFlowId('schoolYearSelect')}}" task="task" label="School Year"
+                             source-url="services/war/school_year_query/list" model="task.schoolYear"
+                             field-label="description">
+                </flow-select>
+
+                <flow-look-up ng-if="task.schoolYear != undefined" task="task"
+                              id="{{flow.getElementFlowId('agentLookUp')}}"
+                              field-label="user.flowUserDetail.fullName"
+                              parent-id="{{flow.getElementFlowId('planner')}}"
+                              label="Agent" model="task.agent" source-url="services/war/agent_query/list"
+                              key-var="agent">
+
+                    <flow-sub-column title="Agent" model="agent.user.flowUserDetail.fullName"></flow-sub-column>
+                </flow-look-up>
+                <flow-field label="Monthly Planned Target" ng-if="task.agent != undefined && task.view == 'month'"
+                            type="number"
+                            disabled="true" model="calendar.plannedCount"></flow-field>
+
+                <flow-field label="Weekly Planned Target" ng-if="task.agent != undefined && task.view == 'basicWeek'"
+                            type="number" disabled="true" model="calendar.plannedCount"></flow-field>
+                <table class="table table-hover table-condensed">
+                    <thead class="bg-primary">
+                    <th>
+                        <div class="input-icon right"><i class="fa fa-search"></i>
+                            <input type="text" placeholder="Customer" class="form-control" ng-model="task.search"/>
+                        </div>
+                    </th>
+                    <th>Market Segment</th>
+                    <th>Frequency</th>
+                    </thead>
+                    <tbody id="{{flow.getElementFlowId('event_body')}}">
+                    <tr>
+                        <td colspan="3">
+                            <div class="btn-group btn-group-md" role="group" aria-label="...">
+                                <button ng-class="task.tag == 'All'?'active':'' " class="btn btn-info" type="button"
+                                        ng-click="task.tag = 'All'">All
+                                </button>
+                                <select ng-if="task.tag === 'All'" ng-model="task.customer.size" class="btn btn-info">
+                                    <option label="25" value="25"></option>
+                                    <option label="50" value="50"></option>
+                                    <option label="75" value="75"></option>
+                                    <option label="100" value="100"></option>
+                                </select>
+                                <button ng-class="task.tag == 20 ? 'active':'' " class="btn btn-info" type="button"
+                                        ng-click="task.tag = 20">Top 20
+                                </button>
+                                <button ng-class="task.tag == 50 ? 'active':'' " class="btn btn-info" type="button"
+                                        ng-click="task.tag = 50">Top 50
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="event-customer enabled-day"
+                        ng-repeat="customer in task.customers | filter : {ownerAgentId : task.agent.id} | filter : task.search">
+                        <td><a customer="{{customer}}" href="#">{{customer.customerName}}</a></td>
+                        <td>{{customer.marketPotentialSegment}}</td>
+                        <td>0</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="col-lg-9">
+                <div class="panel panel-warning">
+                    <div class="panel-heading">
+                        <div class="heading-title">
+                            <span>Calendar</span>
+
+                            <div class="pull-right">
+                                <button class="btn btn-info" ng-if="task.agent != undefined"
+                                        ng-disabled="task.planner.enabled == false"
+                                        type="button" ng-click="calendar.submit()">Submit
+                                </button>
+                                <button class="btn btn-info" ng-if="task.agent != undefined"
+                                        ng-disabled="task.planner.enabled == false"
+                                        type="button" ng-click="calendar.clearEvents()">Clear
+                                </button>
+                                <button class="btn btn-info"
+                                        ng-if="task.agent != undefined && task.view == task.basicWeek"
+                                        ng-disabled="task.planner.enabled" ng-click="update()"
+                                        type="button">Update
+                                </button>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="body container-fluid">
+                        <div class="form-group">
+                            <table id="{{flow.getElementFlowId('other_activities')}}" class="table other-activities">
+                                <thead>
+                                <th colspan="3">Other Activities</th>
+                                </thead>
+                                <tr>
+                                    <td>
+                                        <div class="event-draggable" activity-type="OFFICE">Office</div>
+                                    </td>
+                                    <td>
+                                        <div class="event-draggable" activity-type="SEMINAR">Seminar</div>
+                                    </td>
+                                    <td>
+                                        <div class="event-draggable" activity-type="LEAVE">Leave</div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div id="{{flow.getElementFlowId('plannerCal')}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+
+    <flow-modal id="{{flow.getElementFlowId('activity_modal')}}">
+
+        <div class="panel panel-primary" style="width:40pc;margin: auto;">
+
+            <div class="panel-heading">
+                <span class="heading-title">{{hangingActivity.activity.startDt | date: 'MMMM dd, yyyy'}}</span>
+            </div>
+            <div class="panel-body form-horizontal">
+                <flow-message id="{{flow.getElementFlowId('activity_messages')}}"></flow-message>
+                <div ng-show="hangingActivity.activity.type == 'SCHOOL'">
+                    <flow-field model="hangingActivity.activity.description" disabled="true"
+                                label="Description"></flow-field>
+                    <div class="form-group" style="margin:auto">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="col-lg-offset-2">
+                                    <flow-check label="Actual"
+                                                model="hangingActivity.activity.actual"></flow-check>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-offset-2">
+                                    <flow-check label="Exam Copies Distribution"
+                                                model="hangingActivity.activity.ecd"></flow-check>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-offset-2">
+                                    <flow-check label="Invitation to Events"
+                                                model="hangingActivity.activity.ite"></flow-check>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-offset-2">
+                                    <flow-check label="Confirmation of Events"
+                                                model="hangingActivity.activity.coe"></flow-check>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-offset-2">
+                                    <flow-check label="Giveaways Distribution"
+                                                model="hangingActivity.activity.gd"></flow-check>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-offset-2">
+                                    <flow-check label="Delivery of Incentive/Donation"
+                                                model="hangingActivity.activity.doi"></flow-check>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <flow-check label="Purchase Order" model="hangingActivity.activity.po"></flow-check>
+                            </div>
+                            <div class="form-group">
+                                <flow-check label="Delivery of Add'l Order / TRM / Compli..."
+                                            model="hangingActivity.activity.daotrc"></flow-check>
+                            </div>
+                            <div class="form-group">
+                                <flow-check label="Booklist" model="hangingActivity.activity.bookList"></flow-check>
+                            </div>
+                            <div class="form-group">
+                                <flow-check label="Updated Customer Info Sheet"
+                                            model="hangingActivity.activity.ucis"></flow-check>
+                            </div>
+                            <div class="form-group">
+                                <flow-check label="Implemented Ex-Sem"
+                                            model="hangingActivity.activity.ies"></flow-check>
+                            </div>
+                        </div>
+                    </div>
+                    <flow-text-area label="CUSTOMER SPECIFIC ACTIVITY"
+                                    model="hangingActivity.activity.customerSpecificActivity"></flow-text-area>
+                    <flow-text-area label="REASON FOR NON-COVERAGE / ACTUAL DATE COVERED"
+                                    model="hangingActivity.activity.reasonForNonCoverage"></flow-text-area>
+                </div>
+                <div ng-show="hangingActivity.activity.type == 'LEAVE'">
+                    <flow-text-area label="Reason for leave"
+                                    model="hangingActivity.activity.description"></flow-text-area>
+                </div>
+                <div ng-show="hangingActivity.activity.type == 'SEMINAR' || hangingActivity.activity.type == 'OFFICE'"></div>
+
+            </div>
+
+            <div class="panel-footer">
+                <button class="btn btn-sm btn-info" type="button" ng-click="hangingActivity.update()">Update</button>
+                <button class="btn btn-sm btn-danger" type="button" ng-click="hangingActivity.cancel()">Cancel</button>
+            </div>
+
+        </div>
+
+    </flow-modal>
+    <flow-modal id="{{flow.getElementFlowId('other_activity')}}">
+
+        <div class="panel panel-primary" style="width:40pc;margin: auto;">
+            <div class="panel-heading">
+                <div class="panel-heading">
+                    <span class="heading-title">{{otherActivity.hangingEventObject.start.toDate() | date: 'MMMM dd, yyyy'}}</span>
+                </div>
+            </div>
+
+            <div class="panel-body" ng-switch="otherActivity.hangingEventObject.activity.type">
+                <flow-message id="{{flow.getElementFlowId('other_activity_messages')}}"></flow-message>
+
+                <div ng-switch-when="LEAVE">
+                    <flow-text-area label="Reason for leave" required="true"
+                                    model="otherActivity.hangingEventObject.activity.description"></flow-text-area>
+                </div>
+                <div ng-switch-when="SEMINAR">
+                    <flow-text-area label="Seminar Details" required="true"
+                                    model="otherActivity.hangingEventObject.activity.description"></flow-text-area>
+                </div>
+                <div ng-switch-when="OFFICE">
+                    <flow-text-area label="Description" required="true"
+                                    model="otherActivity.hangingEventObject.activity.description"></flow-text-area>
+                </div>
+            </div>
+
+            <div class="panel-footer">
+                <button class="btn btn-sm btn-info" type="button" ng-click="otherActivity.submit()">Add</button>
+                <button class="btn btn-sm btn-danger" type="button" ng-click="otherActivity.cancel()">Cancel</button>
+            </div>
+
+        </div>
+
+    </flow-modal>
+
+
+</div>

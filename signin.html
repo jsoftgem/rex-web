@@ -1,0 +1,201 @@
+<html ng-app="home">
+ <head>
+    <title>Welcome to FLUID</title>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content=""/>
+    <!-- Loading core css-->
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,300,700"/>
+
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:400,700,300"/>
+
+    <link rel="stylesheet" href="vendors/jquery-ui-1.10.4.custom/css/ui-lightness/jquery-ui-1.10.4.custom.min.css"/>
+
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+
+    <!-- Loading style vendors-->
+    <link type="text/css" rel="stylesheet" href="vendors/animate.css/animate.css"/>
+
+    <link type="text/css" rel="stylesheet" href="vendors/jquery-pace/pace.css"/>
+
+    <link type="text/css" rel="stylesheet" href="vendors/iCheck/skins/all.css"/>
+
+    <link type="text/css" rel="stylesheet" href="vendors/jquery-notific8/jquery.notific8.min.css"/>
+
+    <link type="text/css" rel="stylesheet" href="vendors/bootstrap-daterangepicker/daterangepicker-bs3.css"/>
+    <link type="text/css" rel="stylesheet" href="vendors/calendar/zabuto_calendar.min.css"/>
+
+    <!-- Loading template style-->
+    <link rel="stylesheet" data-ng-href="css/themes/style1/pink-blue.css"/>
+
+    <link rel="stylesheet" data-ng-href="css/themes/{{style}}/{{theme}}.css"/>
+
+    <link rel="stylesheet" href="css/style-responsive.css"/>
+
+    <!-- Loading fluid style -->
+
+
+    <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="bower_components/components-font-awesome/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="bower_components/octicons/octicons/octicons.css" rel="stylesheet">
+
+    <link href="css/vendor/plugin/datatables/jquery.dataTables.min.css" rel="stylesheet">
+
+    <link href="css/vendor/plugin/datatables/jquery.dataTables_themeroller.css" rel="stylesheet">
+
+    <link href="bower_components/angular-datatables/dist/datatables.bootstrap.min.css" rel="stylesheet">
+
+    <link href="css/vendor/datatables/dataTables.responsive.css" rel="stylesheet">
+
+    <link href="css/vendor/datatables/dataTables.scroller.min.css" rel="stylesheet">
+
+    <link href="css/vendor/datatables/dataTables.fixedHeader.min.css" rel="stylesheet">
+
+    <link href="css/vendor/plugin/overlay-plugin.css" rel="stylesheet">
+
+    <link href="css/fluid.css" rel="stylesheet">
+
+    <link href="css/app.css" rel="stylesheet">
+
+    <!-- Loading library javascript-->
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+
+    <script src="bower_components/angular/angular.min.js"></script>
+
+    <script src="js/libs/angular-route.js"></script>
+
+    <script src="js/libs/angular-ui-router.js"></script>
+
+    <script src="js/libs/ocLazyLoad.js"></script>
+
+    <script src="js/libs/ui-bootstrap.js"></script>
+
+    <script src="vendors/jquery-migrate-1.2.1.min.js"></script>
+
+    <script src="vendors/jquery-ui.js"></script>
+
+    <!-- Loading global plugin-->
+    <script src="vendors/bootstrap/js/bootstrap.min.js"></script>
+
+    <script src="vendors/bootstrap-hover-dropdown/bootstrap-hover-dropdown.js"></script>
+
+    <script src="vendors/metisMenu/jquery.metisMenu.js"></script>
+
+    <script src="vendors/slimScroll/jquery.slimscroll.js"></script>
+
+    <script src="vendors/jquery-cookie/jquery.cookie.js"></script>
+
+    <script src="vendors/iCheck/icheck.min.js"></script>
+
+    <script src="vendors/iCheck/custom.min.js"></script>
+
+    <script src="vendors/jquery-notific8/jquery.notific8.min.js"></script>
+
+    <script src="vendors/holder/holder.js"></script>
+
+    <script src="vendors/responsive-tabs/responsive-tabs.js"></script>
+
+    <script src="vendors/jquery-news-ticker/jquery.newsTicker.min.js"></script>
+
+    <script src="vendors/moment/moment.js"></script>
+
+    <script src="vendors/flot-chart/jquery.flot.js"></script>
+
+    <script src="js/vendor/plugin/jquery/jquery.scrollTo.min.js"></script>
+    <!--
+        <script src="http://maps.google.com/maps/api/js?sensor=true"></script>-->
+
+    <script src="bower_components/angular-cookies/angular-cookies.min.js"></script>
+
+    <script src="bower_components/ng-file-upload/angular-file-upload.min.js"></script>
+
+    <script src="bower_components/ng-file-upload/angular-file-upload-shim.min.js"></script>
+
+    <script src="bower_components/angular-resource/angular-resource.min.js"></script>
+
+    <script src="bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+
+    <script src="js/vendor/datatables/dataTables.responsive.js"></script>
+
+    <script src="bower_components/angular-datatables/dist/angular-datatables.min.js"></script>
+
+    <script src="js/vendor/plugin/loading-overlay.min.js"></script>
+
+    <script src="js/vendor/plugin/litetooltip/litetooltip.min.js"></script>
+
+    <script src="js/helper.js"></script>
+
+    <script src="js/fluid.js"></script>
+    <!-- util -->
+    <script src="js/directives.js"></script>
+
+    <script src="js/factories.js"></script>
+
+    <script src="js/services.js"></script>
+    <!-- controllers -->
+    <script src="js/controller/home-controller.js"></script>
+
+
+    <!--Load script for each page using LazyLoad-->
+</head>
+
+<body ng-controller="signinCtrl"
+      ng-class="[header.menu_style, header.menu_collapse, header.effect]" class="animated header-fixed">
+
+<div id="signin-page">
+  <div class="page-form-wrapper"></div>
+  <div class="page-form">
+
+    <form class="form" method="post" ng-submit="login(user)">
+      <div class="header-content">
+        <h1>Log In</h1>
+      </div>
+      <div class="body-content">
+        <p>Log in with a FLUID account:</p>
+         <flow-message id="signinMessage"></flow-message>
+        <div class="form-group">
+          <div class="input-icon right"><i class="fa fa-user"></i>
+            <input type="text" placeholder="Username" name="username" class="form-control" required autofocus ng-model="user.username"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="input-icon right"><i class="fa fa-key"></i>
+            <input type="password" placeholder="Password" name="password" class="form-control" required autofocus ng-model="user.password"/>
+          </div>
+        </div>
+        <div class="form-group pull-left">
+          <div class="checkbox-list">
+            <label>
+              <input type="checkbox" ng-model="user.remember"/>&nbsp;
+              Keep me signed in
+            </label>
+          </div>
+        </div>
+        <div class="form-group pull-right"> 
+        <flow-loader loader-class="fa fa-spin fa-spinner"> 
+          <button type="submit" class="btn btn-success">
+            Log In
+            &nbsp;
+                <i class="fa fa-chevron-circle-right"></i>  
+          </button>  
+           </flow-loader>
+        </div>
+        <div class="clearfix"></div>
+        <div class="forget-password">
+          <h4>Forgotten your Password?</h4>
+          <p>no worries, click <a href='javascript:void(0);' class='btn-forgot-pwd'>here</a> to reset your password.</p>
+        </div>
+        <!--  <hr/>
+       <p>Don't have an account? <a id="btn-register" href="/#/extra-signup">Register Now</a>
+        </p> -->
+      </div>
+    </form>
+  </div>
+</div>
+</body>
+
+</html>
+

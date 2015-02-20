@@ -1,0 +1,46 @@
+<div class="container-fluid" ng-controller="pageCtrl">
+    <form id="{{flow.getElementFlowId('page_edit_form')}}" class="form-horizontal" ng-submit="save()" novalidate>
+
+        <input id="{{flow.getElementFlowId('page_submit')}}" type="submit"
+               style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+
+        <div class="form-group col-lg-5 col-md-5  col-sm-12 col-xs-12 col-xs-offset-1">
+            <flow-field model="task.pageEdit.name" label="Name" type="text" required="true"></flow-field>
+            <flow-field model="task.pageEdit.title" label="Title" type="text" required="true"></flow-field>
+            <flow-field model="task.pageEdit.home" label="Url" type="text" required="true"></flow-field>
+            <flow-field model="task.pageEdit.get" label="GET URI" type="text"></flow-field>
+            <flow-field model="task.pageEdit.post" label="POST URI" type="text"></flow-field>
+        </div>
+
+        <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12"></div>
+        <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12 col-xs-offset-1">
+            <flow-field model="task.pageEdit.put" label="PUT URI" type="text"></flow-field>
+            <flow-field model="task.pageEdit.delURL" label="DELETE URI" type="text"></flow-field>
+            <flow-check class="col-lg-offset-2 col-md-offset-2" model="task.pageEdit.autoGet"
+                        label="Auto GET"></flow-check>
+            <flow-check class="col-lg-offset-2 col-md-offset-2" model="task.pageEdit.isHome"
+                        label="Home"></flow-check>
+            <flow-check class="col-lg-offset-2 col-md-offset-2" model="task.pageEdit.pageLinkEnabled"
+                        label="Page link"></flow-check>
+        </div>
+
+
+        <flow-modal id="{{flow.getElementFlowId('pageDeleteModal')}}">
+
+            <div class="panel panel-warning">
+
+                <div class="panel-heading">Warning</div>
+                <div class="panel-body">Do you want to delete {{task.pageEdit.name}}?</div>
+                <div class="panel-footer">
+                    <div class="btn-group btn-group-xs">
+                        <button type="button" class="btn btn-warning field-margin" ng-click="deleteConfirm()">Yes
+                        </button>
+                        <button type="button" class="btn btn-info field-margin" ng-click="deleteCancel()">No</button>
+                    </div>
+                </div>
+            </div>
+
+        </flow-modal>
+
+    </form>
+</div>

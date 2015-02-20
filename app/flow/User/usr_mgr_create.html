@@ -1,0 +1,46 @@
+<div class="container-fluid" ng-controller="usrMgrCtrl">
+    <form name="{{flow.getElementFlowId('usrMgr_edit_form')}}" id="{{flow.getElementFlowId('usrMgr_edit_form')}}"
+          class="form-horizontal" role="form" ng-submit="save()" novalidate>
+
+        <input id="{{flow.getElementFlowId('usrMgr_submit')}}" type="submit"
+               style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+
+        <flow-field model="task.usrMgrCreate.flowInstance.flowUserDetail.fullName" label="Full name" type="text"
+                    required="true"></flow-field>
+        <flow-field model="task.usrMgrCreate.flowInstance.username" label="Username" type="text"
+                    required="true"></flow-field>
+        <flow-field model="task.usrMgrCreate.flowInstance.email" label="Email" type="email" required="true"></flow-field>
+
+        <flow-look-up
+                task="task"
+                model="task.usrMgrCreate.flowUserGroup"
+                label="Group" required="true"
+                source-url="services/flow_user_group_query/list" title="Group" field-label="groupTitle"
+                key-var="group">
+            <flow-sub-column title="Name" model="group.groupName"></flow-sub-column>
+            <flow-sub-column title="Title" model="group.groupTitle"></flow-sub-column>
+        </flow-look-up>
+
+        <div>
+            <flow-field model="task.usrMgrCreate.flowInstance.password" label="Password" type="password"
+                        required="true"></flow-field>
+            <flow-field model="reTypePassword" label="Confirm password" type="password" required="true"></flow-field>
+        </div>
+
+        <h4>Password recovery setup</h4>
+
+        <flow-field model="task.usrMgrCreate.flowInstance.flowUserDetail.secretQuestion" label="Security question"
+                    type="text"
+                    required="true"></flow-field>
+        <flow-field model="task.usrMgrCreate.flowInstance.flowUserDetail.secretAnswer" label="Secret answer" type="password"
+                    required="true"></flow-field>
+
+        <flow-sub-table flow="flow" task="task" title="Profiles"
+                        target-list="task.usrMgrCreate.flowInstance.flowUserProfileSet"
+                        source-url="services/flow_user_profile_query/list" key-var="profile">
+            <flow-sub-column title="Profile" model="profile.profileName"></flow-sub-column>
+        </flow-sub-table>
+
+
+    </form>
+</div>
