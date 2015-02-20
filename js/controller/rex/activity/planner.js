@@ -25,7 +25,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
                 s.task.unplannedActivities = [];
                 s.task.tempActivity = {};
                 s.task.view = "month";
-                s.task.tag = 20;
+                s.task.tag = "20";
                 s.task.customer = {};
                 s.task.customer.size = 25;
                 s.task.plannerCalendar = $("#" + s.flow.getElementFlowId("plannerCal"));
