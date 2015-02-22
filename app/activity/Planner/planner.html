@@ -42,29 +42,32 @@
                     <tr>
                         <td colspan="3">
                             <div class="btn-group btn-group-md" role="group" aria-label="...">
-                                <button ng-class="task.tag == 'All'?'active':'' " class="btn btn-info" type="button"
-                                        ng-click="task.tag = 'All'">All
+                                <button ng-class="customer.tag == 'All'?'active':'' " class="btn btn-info" type="button"
+                                        ng-click="changeTag('All')">All
                                 </button>
-                                <select ng-if="task.tag === 'All'" ng-model="task.customer.size" class="btn btn-info">
+                                <select ng-if="customer.tag === 'All'" ng-model="customer.size"
+                                        class="btn btn-info">
                                     <option label="25" value="25"></option>
                                     <option label="50" value="50"></option>
                                     <option label="75" value="75"></option>
                                     <option label="100" value="100"></option>
                                 </select>
-                                <button ng-class="task.tag == '20' ? 'active':'' " class="btn btn-info" type="button"
-                                        ng-click="task.tag = '20'">Top 20
+                                <button ng-class="customer.tag == '20' ? 'active':'' " class="btn btn-info"
+                                        type="button"
+                                        ng-click="changeTag('20')">Top 20
                                 </button>
-                                <button ng-class="task.tag == '50' ? 'active':'' " class="btn btn-info" type="button"
-                                        ng-click="task.tag = '50'">Top 50
+                                <button ng-class="customer.tag == '50' ? 'active':'' " class="btn btn-info"
+                                        type="button"
+                                        ng-click="changeTag('50')">Top 50
                                 </button>
                             </div>
                         </td>
                     </tr>
                     <tr class="event-customer enabled-day"
-                        ng-repeat="customer in task.customers | filter : {ownerAgentId : task.agent.id} | filter : task.search">
-                        <td><a customer="{{customer}}" href="#">{{customer.customerName}}</a></td>
-                        <td>{{customer.marketPotentialSegment}}</td>
-                        <td>0</td>
+                        ng-repeat="cus in customer.customers | filter : task.search">
+                        <td><a customer="{{cus}}" href="#">{{cus.name}}</a></td>
+                        <td>{{cus.marketSegment}}</td>
+                        <td>{{cus.frequency}}</td>
                     </tr>
                     </tbody>
                 </table>

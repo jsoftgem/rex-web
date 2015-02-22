@@ -1,340 +1,355 @@
 <div class="container-fluid" ng-controller="customerCtrl">
-	<form name="{{flow.getElementFlowId('customer_edit_form')}}" id="{{flow.getElementFlowId('customer_edit_form')}}"
+    <form name="{{flow.getElementFlowId('customer_edit_form')}}" id="{{flow.getElementFlowId('customer_edit_form')}}"
           class="form-horizontal" role="form" ng-submit="save()" novalidate>
-	 
-		<input id="{{flow.getElementFlowId('customer_submit')}}" type="submit"
+
+        <input id="{{flow.getElementFlowId('customer_submit')}}" type="submit"
                style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
-		<div>
-		<div class="col-lg-6">
-	    <flow-field model="task.customerCreate.customerCode" label="Customer code" required="true" type="text"></flow-field>		
-       <flow-select 
-            task="task" 
-            id="{{flow.getElementFlowId('ownershipAgentSelect')}}" 
-            label="Materials Advisor"
-            field-value="id"
-            field-label="user.flowUserDetail.fullName"
-            model="task.customerCreate.ownerAgentId"
-            source-url="services/war/agent_query/list"
-            >
-      </flow-select>
-		    <flow-look-up
-                task="task"
-                id="{{flow.getElementFlowId('schoolLookUp')}}"
-                parent-id="{{flow.getElementFlowId('customer_edit_form')}}"
-                model="task.customerCreate.school"
-                label="School"
-                source-url="services/war/school_query/list" title="School" field-label="name"
-                key-var="school">
-            <flow-sub-column title="Name" model="school.name"></flow-sub-column>
-            <flow-sub-column title="Address" model="school.addressLine1"></flow-sub-column>
-            </flow-look-up>
 
-        <flow-field model="task.customerCreate.school.addressLine1" label="Address line 1" required="true"></flow-field>
-
-        <flow-field model="task.customerCreate.school.addressLine2" label="Address line 2"></flow-field>
-		</div>
-			
-	    <div class="col-lg-6">
-	    	<flow-look-up
-                task="task"
-                id="{{flow.getElementFlowId('regionLookUp')}}"
-                parent-id="{{flow.getElementFlowId('customer_edit_form')}}"
-                model="task.customerCreate.school.region"
-                label="Region" required="true"
-                source-url="services/war/region_query/list" title="Region" field-label="regionCode"
-                key-var="region">
-
-            <flow-sub-column title="Region" model="region.regionCode"></flow-sub-column>
-
-            <flow-sub-column title="Name" model="region.regionName"></flow-sub-column>
-            
-            </flow-look-up>
-
-
-			<flow-field model="task.customerCreate.school.email" type="email" label="Email" required="true"></flow-field>
-
-            <flow-field model="task.customerCreate.school.landline" label="Landline" required="true"></flow-field>
-        
-	    </div>
-
-	   </div>
-
-		<div class="col-lg-12">
-
-               <flow-sub-table flow="flow" task="task" key-var="contact" title="Contact Information"
-                        target-list="task.customerCreate.contactDetails"
-                        id="{{flow.getElementFlowId('contactDetailsSubTable')}}" id-field="id"
-                        create-event="createContactEvent" edit-event="editContactEvent" look-up="false">
-               <flow-sub-column title="Education level" model="contact.level"></flow-sub-column>
-               <flow-sub-column title="Contact person" model="contact.description"></flow-sub-column>
-               <flow-sub-column title="Details" model="contact.detail"></flow-sub-column>
-               <flow-sub-column title="Contact type" model="contact.type"></flow-sub-column>
-               <flow-sub-column title="Position" model="contact.positionDesc"></flow-sub-column>
-               <flow-sub-column title="Birth date" model="contact.birthdate | date : 'MM/dd/yyyy'"></flow-sub-column>
-               <flow-sub-column title="Decision maker or influencer" model="contact.decisionMaker | decision"></flow-sub-column>
-               <flow-sub-column title="Relationship type" model="contact.relationshipType"></flow-sub-column>
-               </flow-sub-table>
-
-
-              <flow-sub-table flow="flow" task="task" key-var="level" title="Education Levels offered, population and tuition fee details."
-                        target-list="task.customerCreate.customerLevels"
-                        id="{{flow.getElementFlowId('customerLevelsSubTable')}}" id-field="id"
-                        create-event="createLevelEvent" edit-event="editLevelEvent" look-up="false">
-              <flow-sub-column title="Education Level" model="level.educationLevel"></flow-sub-column>
-              <flow-sub-column title="Level course" model="level.levelCourse"></flow-sub-column>
-              <flow-sub-column title="Population per YEAR LEVEL" model="level.population"></flow-sub-column>
-              <flow-sub-column title="Tuition fee range from" model="level.tuitionFeeFrom"></flow-sub-column>
-              <flow-sub-column title="Tuition fee range to" model="level.tuitionFeeTo"></flow-sub-column>
-              </flow-sub-table>
-		</div>
-    
-
-    <div>
-          <flow-text-area label="Other enrollment information" model="task.customerCreate.informationOnEnrollment">
-          </flow-text-area>
-
-
-          <div class="col-lg-6">
-
-             <fieldset>
-
-              <legend>Other Pertinent Information</legend>
-              
-              <flow-field model="task.customerCreate.diocese" label="Diocese"></flow-field>
-            
-              <flow-field model="task.customerCreate.congregation" label="Congregation"></flow-field>
-
-              <flow-field model="task.customerCreate.association" label="Association"></flow-field>  
-            
-             </fieldset>
-
-          </div>
-         
-        <div class="col-lg-6">
-
-          <fieldset>
-        
-            <legend>Buying Cycle</legend>
-             <div class="form-group">
-              <div  class="col-lg-12">
-              <div class="col-lg-1">
-                <span style="font-size:14px;font-style:inherit;font-variant:inherit">Evaluation</span>
-              </div>
-              <div class="col-lg-5">
+        <div>
+            <div class="col-lg-6">
+                <flow-field model="task.customerCreate.customerCode" label="Customer code" required="true"
+                            type="text"></flow-field>
                 <flow-select
-                  task="task"
-                  id="{{flow.getElementFlowId('evalSelect')}}"
-                  model="task.customerCreate.evaluation"
-                  label=""
-                  source-url="factories/war/table_factories/months">
+                        task="task"
+                        id="{{flow.getElementFlowId('ownershipAgentSelect')}}"
+                        label="Materials Advisor"
+                        field-value="id"
+                        field-label="user.flowUserDetail.fullName"
+                        model="task.customerCreate.ownerAgentId"
+                        source-url="services/war/agent_query/list">
                 </flow-select>
-              
-              </div>
-                <div class="col-lg-1">
-                    <flow-check model="task.isCreateEvaluationTo" label=" to"></flow-check>
-                </div>
-               <div class="col-lg-5">
-                <flow-select  ng-if="task.isCreateEvaluationTo"
-                  change="changeEval()"
-                  task="task"
-                  id="{{flow.getElementFlowId('evalSelect2')}}"
-                  model="task.customerCreate.evaluationTo"
-                  label=""
-                  source-url="factories/war/table_factories/months"
-                  >
-                </flow-select>
-              </div>
+                <flow-look-up
+                        task="task"
+                        id="{{flow.getElementFlowId('schoolLookUp')}}"
+                        parent-id="{{flow.getElementFlowId('customer_edit_form')}}"
+                        model="task.customerCreate.school"
+                        label="School"
+                        source-url="services/war/school_query/list" title="School" field-label="name"
+                        key-var="school">
+                    <flow-sub-column title="Name" model="school.name"></flow-sub-column>
+                    <flow-sub-column title="Address" model="school.addressLine1"></flow-sub-column>
+                </flow-look-up>
 
-              </div>
+                <flow-field model="task.customerCreate.school.addressLine1" label="Address line 1"
+                            required="true"></flow-field>
 
+                <flow-field model="task.customerCreate.school.addressLine2" label="Address line 2"></flow-field>
+            </div>
 
-              <div class="col-lg-12">
-              <div class="col-lg-1">
-                <span style="font-size:14px;font-style:inherit;font-variant:inherit">Ordering</span>
-              </div>
-              <div class="col-lg-5">
-                <flow-select
-                  task="task"
-                  id="{{flow.getElementFlowId('orderSelect')}}"
-                  model="task.customerCreate.ordering"
-                  label=""
-                  source-url="factories/war/table_factories/months">
-                </flow-select>
-              
-              </div>
-                <div class="col-lg-1">
-                    <flow-check model="task.isCreateOrderingTo" label=" to"></flow-check>
-                </div>
-               <div class="col-lg-5">
-                <flow-select  ng-if="task.isCreateOrderingTo"
-                  task="task"
-                  id="{{flow.getElementFlowId('orderSelect2')}}"
-                  model="task.customerCreate.orderingTo"
-                  label=""
-                  source-url="factories/war/table_factories/months"
-                  >
-                </flow-select>
-              </div>
+            <div class="col-lg-6">
+                <flow-look-up
+                        task="task"
+                        id="{{flow.getElementFlowId('regionLookUp')}}"
+                        parent-id="{{flow.getElementFlowId('customer_edit_form')}}"
+                        model="task.customerCreate.school.region"
+                        label="Region" required="true"
+                        source-url="services/war/region_query/list" title="Region" field-label="regionCode"
+                        key-var="region">
 
-              </div>
+                    <flow-sub-column title="Region" model="region.regionCode"></flow-sub-column>
 
-              <div class="col-lg-12">
-              <div class="col-lg-1">
-                <span style="font-size:14px;font-style:inherit;font-variant:inherit">Delivery</span>
-              </div>
-              <div class="col-lg-5">
-                <flow-select
-                  task="task"
-                  id="{{flow.getElementFlowId('deliverySelect')}}"
-                  model="task.customerCreate.delivery"
-                  label=""
-                  source-url="factories/war/table_factories/months">
-                </flow-select>
-              
-              </div>
-                <div class="col-lg-1">
-                    <flow-check model="task.isCreateDeliveryTo" label=" to"></flow-check>
-                </div>
-               <div class="col-lg-5">
-                <flow-select  ng-if="task.isCreateDeliveryTo"
-                  task="task"
-                  id="{{flow.getElementFlowId('deliverySelect2')}}"
-                  model="task.customerCreate.deliveryTo"
-                  label=""
-                  source-url="factories/war/table_factories/months"
-                  >
-                </flow-select>
-              </div>
+                    <flow-sub-column title="Name" model="region.regionName"></flow-sub-column>
 
-              </div>
+                </flow-look-up>
 
 
-              <div class="col-lg-12">
-              <div class="col-lg-1">
-                <span style="font-size:14px;font-style:inherit;font-variant:inherit">Collection</span>
-              </div>
-              <div class="col-lg-5">
-                <flow-select
-                  task="task"
-                  id="{{flow.getElementFlowId('collectionSelect')}}"
-                  model="task.customerCreate.collection"
-                  label=""
-                  source-url="factories/war/table_factories/months">
-                </flow-select>
-              
-              </div>
-                <div class="col-lg-1">
-                    <flow-check model="task.isCreateCollectionTo" label=" to"></fslow-check>
-                </div>
-               <div class="col-lg-5">
-                <flow-select  ng-if="task.isCreateCollectionTo"
-                  task="task"
-                  id="{{flow.getElementFlowId('collectionSelect2')}}"
-                  model="task.customerCreate.collectionTo"
-                  label=""
-                  source-url="factories/war/table_factories/months"
-                  >
-                </flow-select>
-              </div>
+                <flow-field model="task.customerCreate.school.email" type="email" label="Email"
+                            required="true"></flow-field>
 
-              </div>
+                <flow-field model="task.customerCreate.school.landline" label="Landline" required="true"></flow-field>
 
             </div>
 
-          </fieldset>
-        </div>
-    </div>
-
-    <div>
-
-        <div class="col-lg-6">
-          <flow-radio group="{{flow.getElementFlowId('process_group')}}" label="Buying process" required="true" model="task.customerCreate.buyingProcess" options="processOptions"></flow-radio>
-
-          <flow-radio group="{{flow.getElementFlowId('nature_of_purchase_group')}}" label="Nature of purchase" model="task.customerCreate.natureOfPurchase" options="natureOfPurchaseOptions"></flow-radio>
-      
-
-          <flow-radio group="{{flow.getElementFlowId('ownership_group')}}" label="Ownership" model="task.customerCreate.ownership" options="ownershipOptions"></flow-radio>
-        </div>
-       
-        <div class="col-lg-6">
-          <div class="form-group flow-form">
-             <flow-check model="task.customerCreate.usingJournals" label="Using journals"></flow-check>
-          </div>
-
-          <flow-field required="true" ng-if="task.customerCreate.usingJournals" model="task.customerCreate.journalPublisher" label="Publisher of journals used"></flow-field>
-
-           <div class="form-group flow-form">
-            <flow-check model="task.customerCreate.usingSRA" label="Using SRA"></flow-check>  
-          </div>
         </div>
 
-      </div>
+        <div class="col-lg-12">
 
-      <div class="col-lg-12">
-      
-          <fieldset>
-            <legend>Additional Information Gathered</legend>
+            <flow-sub-table flow="flow" task="task" key-var="contact" title="Contact Information"
+                            target-list="task.customerCreate.contactDetails"
+                            id="{{flow.getElementFlowId('contactDetailsSubTable')}}" id-field="id"
+                            create-event="createContactEvent" edit-event="editContactEvent" look-up="false">
+                <flow-sub-column title="Education level" model="contact.level"></flow-sub-column>
+                <flow-sub-column title="Contact person" model="contact.description"></flow-sub-column>
+                <flow-sub-column title="Details" model="contact.detail"></flow-sub-column>
+                <flow-sub-column title="Contact type" model="contact.type"></flow-sub-column>
+                <flow-sub-column title="Position" model="contact.positionDesc"></flow-sub-column>
+                <flow-sub-column title="Birth date" model="contact.birthdate | date : 'MM/dd/yyyy'"></flow-sub-column>
+                <flow-sub-column title="Decision maker or influencer"
+                                 model="contact.decisionMaker | decision"></flow-sub-column>
+                <flow-sub-column title="Relationship type" model="contact.relationshipType"></flow-sub-column>
+            </flow-sub-table>
 
-               <flow-sub-table flow="flow" task="task" key-var="publisher" title="Other publishers present"
-                        target-list="task.customerCreate.publisher"
-                        id="{{flow.getElementFlowId('customerPublisherSubTable')}}" id-field="id"
-                        create-event="createPublisherEvent" edit-event="editPublisherEvent" look-up="false">
-                <flow-sub-column title="Publisher" model="publisher.description"></flow-sub-column>
-              </flow-sub-table>
 
-          </fieldset>
+            <flow-sub-table flow="flow" task="task" key-var="level"
+                            title="Education Levels offered, population and tuition fee details."
+                            target-list="task.customerCreate.customerLevels"
+                            id="{{flow.getElementFlowId('customerLevelsSubTable')}}" id-field="id"
+                            create-event="createLevelEvent" edit-event="editLevelEvent" look-up="false">
+                <flow-sub-column title="Education Level" model="level.educationLevel"></flow-sub-column>
+                <flow-sub-column title="Level course" model="level.levelCourse"></flow-sub-column>
+                <flow-sub-column title="Population per YEAR LEVEL" model="level.population"></flow-sub-column>
+                <flow-sub-column title="Tuition fee range from" model="level.tuitionFeeFrom"></flow-sub-column>
+                <flow-sub-column title="Tuition fee range to" model="level.tuitionFeeTo"></flow-sub-column>
+            </flow-sub-table>
+        </div>
 
-      </div>
 
-      <div class="col-lg-12">
-            
-          <fieldset>
+        <div>
+            <flow-text-area label="Other enrollment information" model="task.customerCreate.informationOnEnrollment">
+            </flow-text-area>
 
-            <legend>Business Terms</legend>
 
-                 <flow-field model="task.customerCreate.standardOutrightDiscount" type="number" label="Standard/Outright Discount"></flow-field>
-             
-                 <flow-field model="task.customerCreate.additionalDiscount" type="number" label="Additional Discount"></flow-field>
+            <div class="col-lg-6">
 
-                 <flow-field model="task.customerCreate.incentives" type="number" label="Incentives"></flow-field>
-           
-           
-          </fieldset>
+                <fieldset>
 
-      </div>
+                    <legend>Other Pertinent Information</legend>
 
-      <div class="col-lg-12">
-              
-              <flow-sub-table flow="flow" task="task" key-var="support" title="Other Support Given"
-                        target-list="task.customerCreate.supportGivens"
-                        id="{{flow.getElementFlowId('customerSupportSubTable')}}" id-field="id"
-                        create-event="createSupportEvent" edit-event="editSupportEvent" look-up="false">
+                    <flow-field model="task.customerCreate.diocese" label="Diocese"></flow-field>
+
+                    <flow-field model="task.customerCreate.congregation" label="Congregation"></flow-field>
+
+                    <flow-field model="task.customerCreate.association" label="Association"></flow-field>
+
+                </fieldset>
+
+            </div>
+
+            <div class="col-lg-6">
+
+                <fieldset>
+
+                    <legend>Buying Cycle</legend>
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <div class="col-lg-1">
+                                <span style="font-size:14px;font-style:inherit;font-variant:inherit">Evaluation</span>
+                            </div>
+                            <div class="col-lg-5">
+                                <flow-select
+                                        task="task"
+                                        id="{{flow.getElementFlowId('evalSelect')}}"
+                                        model="task.customerCreate.evaluation"
+                                        label=""
+                                        source-url="factories/war/table_factories/months">
+                                </flow-select>
+
+                            </div>
+                            <div class="col-lg-1">
+                                <flow-check model="task.isCreateEvaluationTo" label=" to"></flow-check>
+                            </div>
+                            <div class="col-lg-5">
+                                <flow-select ng-if="task.isCreateEvaluationTo"
+                                             change="changeEval()"
+                                             task="task"
+                                             id="{{flow.getElementFlowId('evalSelect2')}}"
+                                             model="task.customerCreate.evaluationTo"
+                                             label=""
+                                             source-url="factories/war/table_factories/months"
+                                        >
+                                </flow-select>
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-lg-12">
+                            <div class="col-lg-1">
+                                <span style="font-size:14px;font-style:inherit;font-variant:inherit">Ordering</span>
+                            </div>
+                            <div class="col-lg-5">
+                                <flow-select
+                                        task="task"
+                                        id="{{flow.getElementFlowId('orderSelect')}}"
+                                        model="task.customerCreate.ordering"
+                                        label=""
+                                        source-url="factories/war/table_factories/months">
+                                </flow-select>
+
+                            </div>
+                            <div class="col-lg-1">
+                                <flow-check model="task.isCreateOrderingTo" label=" to"></flow-check>
+                            </div>
+                            <div class="col-lg-5">
+                                <flow-select ng-if="task.isCreateOrderingTo"
+                                             task="task"
+                                             id="{{flow.getElementFlowId('orderSelect2')}}"
+                                             model="task.customerCreate.orderingTo"
+                                             label=""
+                                             source-url="factories/war/table_factories/months"
+                                        >
+                                </flow-select>
+                            </div>
+
+                        </div>
+
+                        <div class="col-lg-12">
+                            <div class="col-lg-1">
+                                <span style="font-size:14px;font-style:inherit;font-variant:inherit">Delivery</span>
+                            </div>
+                            <div class="col-lg-5">
+                                <flow-select
+                                        task="task"
+                                        id="{{flow.getElementFlowId('deliverySelect')}}"
+                                        model="task.customerCreate.delivery"
+                                        label=""
+                                        source-url="factories/war/table_factories/months">
+                                </flow-select>
+
+                            </div>
+                            <div class="col-lg-1">
+                                <flow-check model="task.isCreateDeliveryTo" label=" to"></flow-check>
+                            </div>
+                            <div class="col-lg-5">
+                                <flow-select ng-if="task.isCreateDeliveryTo"
+                                             task="task"
+                                             id="{{flow.getElementFlowId('deliverySelect2')}}"
+                                             model="task.customerCreate.deliveryTo"
+                                             label=""
+                                             source-url="factories/war/table_factories/months"
+                                        >
+                                </flow-select>
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-lg-12">
+                            <div class="col-lg-1">
+                                <span style="font-size:14px;font-style:inherit;font-variant:inherit">Collection</span>
+                            </div>
+                            <div class="col-lg-5">
+                                <flow-select
+                                        task="task"
+                                        id="{{flow.getElementFlowId('collectionSelect')}}"
+                                        model="task.customerCreate.collection"
+                                        label=""
+                                        source-url="factories/war/table_factories/months">
+                                </flow-select>
+
+                            </div>
+                            <div class="col-lg-1">
+                                <flow-check model="task.isCreateCollectionTo" label=" to"></fslow-check>
+                            </div>
+                            <div class="col-lg-5">
+                                <flow-select ng-if="task.isCreateCollectionTo"
+                                             task="task"
+                                             id="{{flow.getElementFlowId('collectionSelect2')}}"
+                                             model="task.customerCreate.collectionTo"
+                                             label=""
+                                             source-url="factories/war/table_factories/months"
+                                        >
+                                </flow-select>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </fieldset>
+            </div>
+        </div>
+
+        <div>
+
+            <div class="col-lg-6">
+                <flow-radio group="{{flow.getElementFlowId('process_group')}}" label="Buying process" required="true"
+                            model="task.customerCreate.buyingProcess" options="processOptions"></flow-radio>
+
+                <flow-radio group="{{flow.getElementFlowId('nature_of_purchase_group')}}" label="Nature of purchase"
+                            model="task.customerCreate.natureOfPurchase" options="natureOfPurchaseOptions"></flow-radio>
+
+
+                <flow-radio group="{{flow.getElementFlowId('ownership_group')}}" label="Ownership"
+                            model="task.customerCreate.ownership" options="ownershipOptions"></flow-radio>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="form-group flow-form">
+                    <flow-check model="task.customerCreate.usingJournals" label="Using journals"></flow-check>
+                </div>
+
+                <flow-field required="true" ng-if="task.customerCreate.usingJournals"
+                            model="task.customerCreate.journalPublisher"
+                            label="Publisher of journals used"></flow-field>
+
+                <div class="form-group flow-form">
+                    <flow-check model="task.customerCreate.usingSRA" label="Using SRA"></flow-check>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-lg-12">
+
+            <fieldset>
+                <legend>Additional Information Gathered</legend>
+
+                <flow-sub-table flow="flow" task="task" key-var="publisher" title="Other publishers present"
+                                target-list="task.customerCreate.publisher"
+                                id="{{flow.getElementFlowId('customerPublisherSubTable')}}" id-field="id"
+                                create-event="createPublisherEvent" edit-event="editPublisherEvent" look-up="false">
+                    <flow-sub-column title="Publisher" model="publisher.description"></flow-sub-column>
+                </flow-sub-table>
+
+            </fieldset>
+
+        </div>
+
+        <div class="col-lg-12">
+
+            <fieldset>
+
+                <legend>Business Terms</legend>
+
+                <flow-field model="task.customerCreate.standardOutrightDiscount" type="number"
+                            label="Standard/Outright Discount"></flow-field>
+
+                <flow-field model="task.customerCreate.additionalDiscount" type="number"
+                            label="Additional Discount"></flow-field>
+
+                <flow-field model="task.customerCreate.incentives" type="number" label="Incentives"></flow-field>
+
+
+            </fieldset>
+
+        </div>
+
+        <div class="col-lg-12">
+
+            <flow-sub-table flow="flow" task="task" key-var="support" title="Other Support Given"
+                            target-list="task.customerCreate.supportGivens"
+                            id="{{flow.getElementFlowId('customerSupportSubTable')}}" id-field="id"
+                            create-event="createSupportEvent" edit-event="editSupportEvent" look-up="false">
                 <flow-sub-column title="Description" model="support.description"></flow-sub-column>
                 <flow-sub-column title="Amount" model="support.amount"></flow-sub-column>
-              </flow-sub-table>
-      </div>
+            </flow-sub-table>
+        </div>
 
     </form>
 
-    
+
     <flow-modal id="{{flow.getElementFlowId('supportModal')}}">
         <div class="panel panel-primary">
-          
+
             <div class="panel-heading">
-              <span class="heading-title">Add support</span>
+                <span class="heading-title">Add support</span>
             </div>
             <div class="panel-body">
-              
-              <div class="container-fluid form-horizontal">
-                
-                <flow-field label="Description" model="task.customerCreate.supportGivens[task.supportIndex].description"></flow-field>
-                <flow-field label="Amount" type="number" model="task.customerCreate.supportGivens[task.supportIndex].amount"></flow-field>
-              </div>
+
+                <div class="container-fluid form-horizontal">
+
+                    <flow-field label="Description"
+                                model="task.customerCreate.supportGivens[task.supportIndex].description"></flow-field>
+                    <flow-field label="Amount" type="number"
+                                model="task.customerCreate.supportGivens[task.supportIndex].amount"></flow-field>
+                </div>
 
             </div>
             <div class="panel-footer">
-             <button class="btn btn-info" ng-click="saveSupportModal()">{{task.supportManaged ? 'Update' : 'Save'}}</button>
-             <button class="btn btn-danger" ng-click="closeSupportModal()">Cancel</button>
+                <button class="btn btn-info" ng-click="saveSupportModal()">{{task.supportManaged ? 'Update' : 'Save'}}
+                </button>
+                <button class="btn btn-danger" ng-click="closeSupportModal()">Cancel</button>
             </div>
 
         </div>
@@ -342,131 +357,142 @@
 
 
     <flow-modal id="{{flow.getElementFlowId('publisherModal')}}">
-      <div class="panel panel-primary">
-        <div class="panel-heading">
-          <span class="heading-title">Add publisher</span>
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <span class="heading-title">Add publisher</span>
+            </div>
+            <div class="panel-body">
+                <div class="container-fluid form-horizontal">
+                    <flow-field label="Publisher"
+                                model="task.customerCreate.publisher[task.publisherIndex].description"></flow-field>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <button class="btn btn-info" ng-click="savePublisherModal()">{{task.publisherManaged ? 'Update' :
+                    'Save'}}
+                </button>
+                <button class="btn btn-danger" ng-click="closePublisherModal()">Cancel</button>
+            </div>
         </div>
-        <div class="panel-body">
-          <div class="container-fluid form-horizontal">
-              <flow-field label="Publisher" model="task.customerCreate.publisher[task.publisherIndex].description"></flow-field>
-          </div>
-        </div>
-        <div class="panel-footer">
-             <button class="btn btn-info" ng-click="savePublisherModal()">{{task.publisherManaged ? 'Update' : 'Save'}}</button>
-             <button class="btn btn-danger" ng-click="closePublisherModal()">Cancel</button>
-        </div>
-      </div>
     </flow-modal>
 
     <flow-modal id="{{flow.getElementFlowId('levelModal')}}">
-          <div class="panel panel-primary">
+        <div class="panel panel-primary">
             <div class="panel-heading">
-                 <span class="heading-title">Add education level</span>
+                <span class="heading-title">Add education level</span>
             </div>
             <div class="panel-body">
-              <div class="form-horizontal">
+                <div class="form-horizontal">
 
-                <flow-select
-                  task="task"
-                  id="{{flow.getElementFlowId('educationLevelSelect')}}"
-                  model="task.customerCreate.customerLevels[task.levelIndex].level"
-                  label="Education Level"
-                  source-url="services/war/level_query/list"
-                  field-label="levelCourse"
-                  field-value="id"
-                  required="true">
-                </flow-select>
+                    <flow-select
+                            task="task"
+                            id="{{flow.getElementFlowId('educationLevelSelect')}}"
+                            model="task.customerCreate.customerLevels[task.levelIndex].level"
+                            label="Education Level"
+                            source-url="services/war/level_query/list"
+                            field-label="levelCourse"
+                            field-value="id"
+                            required="true">
+                    </flow-select>
 
-                <flow-field model="task.customerCreate.customerLevels[task.levelIndex].population" label="Population" required="true"></flow-field>
-              
-                <flow-field model="task.customerCreate.customerLevels[task.levelIndex].tuitionFeeFrom" label="Tuition fee range from" type="number" required="true"></flow-field>
+                    <flow-field model="task.customerCreate.customerLevels[task.levelIndex].population"
+                                label="Population" required="true"></flow-field>
 
-                <flow-field model="task.customerCreate.customerLevels[task.levelIndex].tuitionFeeTo" label="To" type="number"></flow-field>
-              
+                    <flow-field model="task.customerCreate.customerLevels[task.levelIndex].tuitionFeeFrom"
+                                label="Tuition fee range from" type="number" required="true"></flow-field>
 
-              </div>
-         </div>
+                    <flow-field model="task.customerCreate.customerLevels[task.levelIndex].tuitionFeeTo" label="To"
+                                type="number"></flow-field>
 
-          <div class="panel-footer">
-                  <button class="btn btn-info" ng-click="saveLevelModal()">{{task.levelManaged ? 'Update' : 'Save'}}</button>
-                  <button class="btn btn-danger" ng-click="closeLevelModal()">Cancel</button>
-          </div>
+
+                </div>
+            </div>
+
+            <div class="panel-footer">
+                <button class="btn btn-info" ng-click="saveLevelModal()">{{task.levelManaged ? 'Update' : 'Save'}}
+                </button>
+                <button class="btn btn-danger" ng-click="closeLevelModal()">Cancel</button>
+            </div>
         </div>
     </flow-modal>
 
     <flow-modal id="{{flow.getElementFlowId('contactsModal')}}">
-    
-          <div class="panel panel-primary">   
+
+        <div class="panel panel-primary">
             <div class="panel-heading"><span class="heading-title">Add contacts</span></div>
 
-           <div class="panel-body">
-              <div class="form-horizontal"> 
-        <div class="col-lg-6">
-          <flow-select
-                  task="task"
-                  id="{{flow.getElementFlowId('levelSelect')}}"
-                  model="task.customerCreate.contactDetails[task.contactIndex].level"
-                  label="Education Level"
-                  source-url="factories/war/table_factories/education_levels"
-                  required="true">
-                </flow-select>
-              
-                <flow-field model="task.customerCreate.contactDetails[task.contactIndex].description" label="Contact person" required="true"></flow-field>
-                
-                <flow-field model="task.customerCreate.contactDetails[task.contactIndex].detail" label="Details"></flow-field>
-                
-                <flow-select
-                  task="task" ng-if="task.customerCreate.contactDetails[task.contactIndex].detail != undefined"
-                  id="{{flow.getElementFlowId('typeSelect')}}"
-                  model="task.customerCreate.contactDetails[task.contactIndex].type"
-                  label="Contact type"
-                  source-url="factories/war/table_factories/contact_types"
-                  required="true">
-                </flow-select>
+            <div class="panel-body">
+                <div class="form-horizontal">
+                    <div class="col-lg-6">
+                        <flow-select
+                                task="task"
+                                id="{{flow.getElementFlowId('levelSelect')}}"
+                                model="task.customerCreate.contactDetails[task.contactIndex].level"
+                                label="Education Level"
+                                source-url="factories/war/table_factories/education_levels"
+                                required="true">
+                        </flow-select>
 
-        </div>
-         <div class="col-lg-6">
-           
-              <flow-select
-                  task="task"
-                  id="{{flow.getElementFlowId('positionSelect')}}"
-                  model="task.customerCreate.contactDetails[task.contactIndex].position"
-                  field-label="description"
-                  field-value="id"
-                  label="Position"
-                  source-url="services/war/position_query/list"
-                  required="true">
-                </flow-select>
-                
-                <flow-date-picker model="task.customerCreate.contactDetails[task.contactIndex].birthdate" label="Birth date"></flow-date-picker>
+                        <flow-field model="task.customerCreate.contactDetails[task.contactIndex].description"
+                                    label="Contact person" required="true"></flow-field>
 
-                 <flow-select
-                  task="task"
-                  id="{{flow.getElementFlowId('relationshipTypeSelect')}}"
-                  model="task.customerCreate.contactDetails[task.contactIndex].relationshipType"
-                  label="Relationship type"
-                  source-url="factories/war/table_factories/relationship_types"
-                  required="true">
-                </flow-select>
+                        <flow-field model="task.customerCreate.contactDetails[task.contactIndex].detail"
+                                    label="Details"></flow-field>
 
-              <div class="form-group">
-                   <flow-check model="task.customerCreate.contactDetails[task.contactIndex].decisionMaker" label="Decision maker or influencer"></flow-check>  
-              </div>
+                        <flow-select
+                                task="task"
+                                ng-if="task.customerCreate.contactDetails[task.contactIndex].detail != undefined"
+                                id="{{flow.getElementFlowId('typeSelect')}}"
+                                model="task.customerCreate.contactDetails[task.contactIndex].type"
+                                label="Contact type"
+                                source-url="factories/war/table_factories/contact_types"
+                                required="true">
+                        </flow-select>
 
-         </div>
-                
-              </div>
+                    </div>
+                    <div class="col-lg-6">
+
+                        <flow-select
+                                task="task"
+                                id="{{flow.getElementFlowId('positionSelect')}}"
+                                model="task.customerCreate.contactDetails[task.contactIndex].position"
+                                field-label="description"
+                                field-value="id"
+                                label="Position"
+                                source-url="services/war/position_query/list"
+                                required="true">
+                        </flow-select>
+
+                        <flow-date-picker model="task.customerCreate.contactDetails[task.contactIndex].birthdate"
+                                          label="Birth date"></flow-date-picker>
+
+                        <flow-select
+                                task="task"
+                                id="{{flow.getElementFlowId('relationshipTypeSelect')}}"
+                                model="task.customerCreate.contactDetails[task.contactIndex].relationshipType"
+                                label="Relationship type"
+                                source-url="factories/war/table_factories/relationship_types"
+                                required="true">
+                        </flow-select>
+
+                        <div class="form-group">
+                            <flow-check model="task.customerCreate.contactDetails[task.contactIndex].decisionMaker"
+                                        label="Decision maker or influencer"></flow-check>
+                        </div>
+
+                    </div>
+
+                </div>
             </div>
 
-               <div class="panel-footer">
-                  <button class="btn btn-info" ng-click="saveContactModal()">{{task.contactManaged ? 'Update' : 'Save'}}</button>
-                  <button class="btn btn-danger" ng-click="closeContactModal()">Cancel</button>
-              </div>
+            <div class="panel-footer">
+                <button class="btn btn-info" ng-click="saveContactModal()">{{task.contactManaged ? 'Update' : 'Save'}}
+                </button>
+                <button class="btn btn-danger" ng-click="closeContactModal()">Cancel</button>
+            </div>
 
-          </div>
-    </flow-modal>    
-
-
+        </div>
+    </flow-modal>
 
 
 </div>

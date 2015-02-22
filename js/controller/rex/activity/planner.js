@@ -7,8 +7,24 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
 
 
             s.otherActivity = {};
+            s.refreshCustomer = false;
             s.hangingActivity = {};
             s.calendar = {};
+            s.newCustomer = function () {
+                var customer = {};
+                customer.customers = [];
+                customer.size = 25;
+                customer.tag = "20";
+                customer.start = 0;
+                customer.month = {};
+                customer.isMonth = true;
+                customer.week = 0;
+                customer.agendId = 0;
+                customer.schoolYear = 0;
+                return customer;
+            }
+
+            s.customer = s.newCustomer();
             s.task.preLoad = function () {
 
 
@@ -67,9 +83,12 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
                                     if (type === "json") {
 
                                         var activities = JSON.parse(data);
+
                                         s.task.activities = [];
+
                                         s.task.plannedActivities = [];
                                         s.task.unplannedActivities = [];
+
                                         angular.forEach(activities, function (activity) {
                                             if (activity.planned) {
                                                 s.task.plannedActivities.push(activity);
@@ -82,6 +101,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
                                         s.calendar.plannedCount = s.task.plannedActivities.length;
                                         s.calendar.unPlannedCount = s.task.unplannedActivities.length;
                                     }
+
                                     return data;
                                 },
                                 data: function () {
@@ -103,34 +123,16 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
                             height: 500,
                             droppable: true,
                             viewRender: function (view) {
+
                                 if (s.task.agent !== undefined) {
-                                    var date = view.intervalStart.toDate();
-                                    var month = monthNames[date.getMonth()].toUpperCase();
-                                    var url = QUERY_PLANNER + "?schoolYear=" + s.task.schoolYear.id + "&agent=" + s.task.agent.id + "&year=" + date.getFullYear() + "&month=";
 
-                                    s.http.get(url, month).success(function (data) {
-                                        s.task.planner = data;
-                                    }).error(function () {
-                                        s.task.planner = {};
-                                        s.task.planner = true;
-                                    });
+                                    s.getPlanner(view);
 
-                                    $("#" + s.flow.getElementFlowId("event_body") + " .event-customer td a").each(function () {
+                                    s.customer.previous = undefined;
 
-                                        $(this).data("eventObject", {
-                                            title: $.trim($(this).text()),
-                                            activityType: "SCHOOL"
-                                        });
-                                        $(this).removeClass("non-draggable").addClass("draggable");
-                                        $(this).draggable({
-                                            helper: function () {
-                                                return $("<div>").addClass("event-customer-draggable").html($(this).text()).clone();
-                                            },
-                                            zIndex: 99999,
-                                            revert: true,
-                                            revertDuration: 0
-                                        });
-                                    });
+                                    s.refetchCustomer();
+
+
                                     $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
 
                                         $(this).data("eventObject", {
@@ -138,22 +140,16 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
                                             activityType: $(this).attr("activity-type")
                                         });
 
-                                            $(this).draggable({
+                                        $(this).draggable({
                                             zIndex: 99999,
                                             revert: true,
                                             revertDuration: 0
                                         });
 
                                     });
+
+
                                 } else {
-                                    $("#" + s.flow.getElementFlowId('event_body') + " .event-customer td a").each(function () {
-
-                                        $(this).removeClass("draggable").addClass("non-draggable");
-
-                                        if ($(this).draggable()) {
-                                            $(this).draggable("destroy");
-                                        }
-                                    });
                                     $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
 
                                         if ($(this).draggable()) {
@@ -175,6 +171,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
                             dayRender: function (date, cell) {
 
                                 var currentDate = s.task.plannerCalendar.fullCalendar("getDate").toDate();
+
                                 var dayDate = date.toDate();
 
                                 var dataDate = cell.attr("data-date");
@@ -189,6 +186,32 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
                                     cellValueElement.addClass("disabled-day");
                                 }
 
+                            },
+                            eventDrop: function (event, delta, revertFunc) {
+
+                                var currentDate = s.task.plannerCalendar.fullCalendar("getDate");
+
+                                var evt = s.task.plannerCalendar.fullCalendar("clientEvents", event.id);
+
+                                if (evt.length === 0) {
+                                    if (isDayEnabled(event.start.toDate(), currentDate.toDate())) {
+                                        if (type === SCHOOL) {
+                                            s.task.plannerCalendar.fullCalendar("renderEvent", event, true);
+                                        } else {
+                                            t(function () {
+                                                s.otherActivity.hangingEventObject = event;
+                                                fm.show(s.flow.getElementFlowId("other_activity"));
+                                            });
+
+                                        }
+                                    }
+
+                                } else {
+                                    if (event) {
+                                        s.flow.message.danger("Customer " + event.title + " is already set for " + event.start.toDate());
+                                        revertFunc();
+                                    }
+                                }
                             },
                             drop: function (date) {
 
@@ -206,14 +229,13 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
 
                                 activity.type = copiedEventObject.activityType;
 
-
                                 var type = activity.type;
 
                                 if (SCHOOL === type) {
                                     customer = JSON.parse($(this).attr("customer"));
-                                    copiedEventObject.title = customer.customerName + " - " + customer.marketPotentialSegment;
-                                    activity.customerMarketId = customer.id;
-                                    activity.description = customer.customerName + " - " + customer.marketPotentialSegment;
+                                    copiedEventObject.title = customer.name + " - " + customer.marketSegment;
+                                    activity.customerMarketId = customer.customerMarketId;
+                                    activity.description = customer.name + " - " + customer.marketSegment;
                                     copiedEventObject.id = "event_id_" + s.flow.getElementFlowId(activity.customerMarketId) + "_" + date.toDate().getTime();
                                 } else {
                                     activity.customerMarketId = 0;
@@ -393,8 +415,9 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
                 s.task.onWindowOpened = function () {
                     s.task.schoolYear = undefined;
                     s.task.agent = undefined;
-                    s.task.plannerCalendar.fullCalendar(s.task.calendar);
+                    s.task.plannerCalendar.fullCalendar("destroy");
                     s.task.plannerCalendar.fullCalendar("render");
+                    s.task.plannerCalendar.fullCalendar(s.task.calendar);
                 }
 
                 s.$on(s.flow.event.getSuccessEventId(), function (event, rv, method) {
@@ -407,94 +430,28 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
                 });
 
                 s.flow.onRefreshed = function () {
+
+
+                    s.getPlanner();
+
+                    s.refetchCustomer();
+
                     s.task.plannerCalendar.fullCalendar("refetchEvents");
+
                 }
 
-                s.$watch(function (scope) {
-                    return scope.task.schoolYear
-                }, function (schoolYear) {
-                    if (schoolYear !== undefined) {
-                        var date = new Date(schoolYear.date);
-                        s.task.plannerCalendar.fullCalendar("gotoDate", date);
-                        s.task.plannerCalendar.fullCalendar("refetchEvents");
-                        /*TODO: customer market query top 20,50, All and frequency value*/
-                        s.http.get(QUERY_CUSTOMER_MARKET_BY_SCHOOL_YEAR, s.task.schoolYear.id)
-                            .success(function (customers) {
-                                s.task.customers = customers;
-                            })
-                    }
-                });
-                s.$watch(function (scope) {
-                    return scope.task.agent;
-                }, function (agent) {
-                    if (agent) {
-                        t(function () {
-                            $("#" + s.flow.getElementFlowId("event_body") + " .event-customer td a").each(function () {
-                                $(this).data("eventObject", {
-                                    title: $.trim($(this).text()),
-                                    activityType: "SCHOOL"
-                                });
-
-                                $(this).removeClass("non-draggable").addClass("draggable");
-
-                                $(this).draggable({
-                                    helper: function () {
-                                        return $("<div>").addClass("event-customer-draggable").html($(this).text()).clone();
-                                    },
-                                    zIndex: 99999,
-                                    revert: true,
-                                    revertDuration: 0
-                                });
-
-                            });
-
-                            $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
-
-                                $(this).data("eventObject", {
-                                    title: $.trim($(this).html()),
-                                    activityType: $(this).attr("activity-type")
-                                });
-
-                                $(this).draggable({
-                                    zIndex: 99999,
-                                    revert: true,
-                                    revertDuration: 0
-                                });
-
-                            });
-                        });
-                    } else {
-                        $("#" + s.flow.getElementFlowId('event_body') + " .event-customer td a").each(function () {
-
-                            $(this).removeClass("draggable").addClass("non-draggable");
-
-                            if ($(this).draggable()) {
-                                $(this).draggable("destroy");
-                            }
-                        });
-                        $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
-
-                            if ($(this).draggable()) {
-                                $(this).draggable("destroy");
-                            }
-                        });
-                    }
-                    if (s.task.plannerCalendar) {
-                        s.task.plannerCalendar.fullCalendar("refetchEvents");
-                        s.task.plannerCalendar.fullCalendar("render");
-                    }
-                });
 
             };
-
 
             s.calendar.getCurrentDate = function () {
                 return s.task.plannerCalendar.fullCalendar("getDate").toDate();
             }
+
             s.calendar.clearEvents = function () {
                 s.task.plannerCalendar.fullCalendar("removeEvents");
-                s.task.plannerCalendar.fullCalendar("refetchEvents");
+                s.task.onRefreshed();
             }
+
             s.calendar.valid = function () {
                 var valid = true;
                 if (s.task.schoolYear === undefined) {
@@ -515,7 +472,9 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
             }
             s.calendar.submit = function () {
                 if (s.calendar.valid()) {
-                    if (s.task.planner.id === undefined) {
+
+                    s.getPlanner();
+                    if (!s.task.planner) {
                         s.task.planner = {};
                     }
                     s.task.planner.schoolYear = s.task.schoolYear.id;
@@ -534,8 +493,6 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
                         }
 
                     }
-
-
                     var plannerSession = {};
                     plannerSession.warPlanner = s.task.planner;
                     plannerSession.activities = s.task.activities;
@@ -587,6 +544,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
                         s.http.put(CRUD_ACTIVITY, s.hangingActivity.activity, s.hangingActivity.activity.id)
                             .success(function (msg) {
                                 fm.hide(s.task.activityModalId);
+                                s.refetchCustomer();
                             })
                             .error(function (msg) {
                                 ms.warning(s.flow.getElementFlowId("activity_messages"), msg, 3000).open();
@@ -595,8 +553,6 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
                     else if (s.hangingActivity.activity.type.type === LEAVE) {
 
                     }
-
-
                 } else {
                     ms.warning(s.flow.getElementFlowId("activity_messages"), "No changes has been made.", 3000).open();
                 }
@@ -604,5 +560,208 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
             s.hangingActivity.cancel = function () {
                 fm.hide(s.task.activityModalId);
             }
+
+            s.buildCustomerQuery = function () {
+
+                var date = s.task.plannerCalendar.fullCalendar("getDate").toDate();
+
+                var month = monthNames[date.getMonth()].toUpperCase();
+
+                s.customer.month = month;
+
+                t(function () {
+                    s.customer.isMonth = s.task.plannerCalendar.fullCalendar("getView").name === "month";
+                })
+
+                s.customer.schoolYear = s.task.schoolYear.id;
+
+                s.customer.agentId = s.task.agent.id;
+
+                return PLANNER_CUSTOMERS + "?tag=" + s.customer.tag
+                    + "&size=" + s.customer.size
+                    + "&month=" + s.customer.month
+                    + "&isMonth=" + s.customer.isMonth
+                    + "&start=" + s.customer.start
+                    + "&schoolYear=" + s.customer.schoolYear
+                    + "&agentId=" + s.customer.agentId
+                    + "&week=" + s.customer.week;
+            }
+            s.getCustomerMarket = function () {
+                if (s.task.agent === undefined) return;
+                var promise = s.http.get(s.buildCustomerQuery());
+
+                promise.success(function (customer) {
+                    s.customer = customer;
+
+                    if (!s.customer.customers) {
+                        s.customer = s.newCustomer();
+
+
+                        $("#" + s.flow.getElementFlowId('event_body') + " .event-customer td a").each(function () {
+
+                            $(this).removeClass("draggable").addClass("non-draggable");
+
+                            if ($(this).draggable()) {
+                                $(this).draggable("destroy");
+                            }
+                        });
+
+
+                    }
+
+
+                });
+
+                promise.error(function () {
+                    s.customer = s.newCustomer();
+                })
+
+                return promise;
+            }
+            s.getPlanner = function (view) {
+                var date = undefined;
+
+                if (view === undefined) {
+                    date = s.task.plannerCalendar.fullCalendar("getDate").toDate();
+                } else {
+                    date = view.intervalStart.toDate();
+                }
+
+                var month = monthNames[date.getMonth()].toUpperCase()
+
+                var url = QUERY_PLANNER + "?schoolYear=" + s.task.schoolYear.id + "&agent=" + s.task.agent.id + "&year=" + date.getFullYear() + "&month=";
+
+                var promise = s.http.get(url, month);
+
+                promise.success(function (data) {
+                    s.task.planner = data;
+                })
+
+                promise.error(function () {
+                    s.task.planner = {};
+                });
+
+            }
+            s.refetchCustomer = function () {
+                s.refreshCustomer = true;
+            }
+            s.changeTag = function (tag) {
+                s.customer.tag = tag;
+
+                if (tag === "All") {
+                    s.customer.size = 25;
+                } else {
+                    s.refetchCustomer();
+                }
+            }
+            s.selectSize = function (size) {
+                s.customer.size = size;
+                s.refetchCustomer();
+            }
+
+            s.$watch(function (scope) {
+                return scope.refreshCustomer;
+            }, function (newValue) {
+                if (newValue === true) {
+                    if (s.customer.previous != undefined) {
+                        s.customer.start = s.customer.previous;
+                    }
+                    var promise = s.getCustomerMarket();
+                    if (promise) {
+                        promise.success(function () {
+                            t(function () {
+                                $("#" + s.flow.getElementFlowId("event_body") + " .event-customer td a").each(function () {
+                                    $(this).data("eventObject", {
+                                        title: $.trim($(this).text()),
+                                        activityType: "SCHOOL"
+                                    });
+
+                                    $(this).removeClass("non-draggable").addClass("draggable");
+
+                                    $(this).draggable({
+                                        helper: function () {
+                                            return $("<div>").addClass("event-customer-draggable").html($(this).text()).clone();
+                                        },
+                                        zIndex: 99999,
+                                        revert: true,
+                                        revertDuration: 0
+                                    });
+
+                                });
+                                $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
+
+                                    $(this).data("eventObject", {
+                                        title: $.trim($(this).html()),
+                                        activityType: $(this).attr("activity-type")
+                                    });
+
+                                    $(this).draggable({
+                                        zIndex: 99999,
+                                        revert: true,
+                                        revertDuration: 0
+                                    });
+
+                                });
+                            });
+                        });
+                    }
+                    s.refreshCustomer = false;
+                }
+
+            });
+            s.$watch(function (scope) {
+                return scope.customer.size;
+            }, function (size) {
+                s.selectSize(size);
+            })
+            s.$watch(function (scope) {
+                return scope.task.schoolYear
+            }, function (schoolYear) {
+                if (schoolYear !== undefined) {
+                    var date = new Date(schoolYear.date);
+                    s.task.plannerCalendar.fullCalendar("gotoDate", date);
+                    s.task.plannerCalendar.fullCalendar("refetchEvents");
+                    s.refetchCustomer();
+                }
+            });
+            s.$watch(function (scope) {
+                return scope.task.agent;
+            }, function (agent) {
+                if (agent) {
+                    s.customer.start = 0;
+                    s.getCustomerMarket()
+                        .success(function () {
+                            t(function () {
+                                $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
+
+                                    $(this).data("eventObject", {
+                                        title: $.trim($(this).html()),
+                                        activityType: $(this).attr("activity-type")
+                                    });
+
+                                    $(this).draggable({
+                                        zIndex: 99999,
+                                        revert: true,
+                                        revertDuration: 0
+                                    });
+
+                                });
+                            });
+                        });
+
+                } else {
+                    s.customer = s.newCustomer();
+                    $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
+
+                        if ($(this).draggable()) {
+                            $(this).draggable("destroy");
+                        }
+                    });
+                }
+                if (s.task.plannerCalendar) {
+                    s.task.plannerCalendar.fullCalendar("refetchEvents");
+                }
+            });
+
         }]
 );
