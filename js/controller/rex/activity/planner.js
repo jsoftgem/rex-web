@@ -21,12 +21,12 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
                 customer.week = 0;
                 customer.agendId = 0;
                 customer.schoolYear = 0;
+                customer.page = 1;
                 return customer;
             }
 
             s.customer = s.newCustomer();
             s.task.preLoad = function () {
-
 
                 s.task.schoolYear = undefined;
                 s.task.agent = undefined;
@@ -127,9 +127,8 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
                                 if (s.task.agent !== undefined) {
 
                                     s.getPlanner(view);
-
                                     s.customer.previous = undefined;
-
+                                    s.customer.start = 0;
                                     s.refetchCustomer();
 
 
@@ -247,7 +246,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
                                 copiedEventObject.editable = true;
                                 copiedEventObject.activity = activity;
                                 copiedEventObject.durationEditable = false;
-
+                                copiedEventObject.startEditable = false;
                                 var evt = s.task.plannerCalendar.fullCalendar("clientEvents", copiedEventObject.id);
 
                                 if (evt.length === 0) {
@@ -320,6 +319,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
                                                         "<li>Exam Copies Distribution: " + (event.activity.ecd === true ? " Yes" : "No") + "</li>" +
                                                         "<li>Invitation to Events: " + (event.activity.ite === true ? " Yes" : "No") + "</li>" +
                                                         "<li>Confirmation of Events: " + (event.activity.coe === true ? " Yes" : "No") + "</li>" +
+                                                        "<li>Follow up Payment: " + (event.activity.fp === true ? " Yes" : "No") + "</li>" +
                                                         "<li>Giveaways Distribution: " + (event.activity.gd === true ? " Yes" : "No") + "</li>" +
                                                         "<li>Delivery of Incentive/Donation: " + (event.activity.doi === true ? " Yes" : "No") + "</li>" +
                                                         "<li>Purchase Order: " + (event.activity.po === true ? " Yes" : "No") + "</li>" +
@@ -385,8 +385,57 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
                                                             api.elements.tooltip.find("#" + buttonId).click(function () {
                                                                 api.toggle(false);
                                                                 t(function () {
-                                                                    s.task.currentActivity = event.activity;
-                                                                    angular.copy(s.task.currentActivity, s.task.tempActivity);
+                                                                    s.hangingActivity.activity = event.activity;
+                                                                    angular.copy(s.hangingActivity, s.task.tempActivity);
+                                                                    fm.show(s.flow.getElementFlowId('activity_modal'))
+
+                                                                });
+                                                            });
+
+                                                        }
+                                                    }
+                                                });
+
+                                                var api = tooltip.qtip("api");
+                                                api.toggle(true);
+
+                                            });
+                                        } else {
+                                            element.click(function () {
+                                                var buttonId = "edit_button" + "_" + event.id;
+                                                var tooltip = element.qtip({
+                                                    style: 'qtip-light',
+                                                    show: false,
+                                                    id: "qtip_evt#" + event.id,
+                                                    position: {
+                                                        at: "center",
+                                                        my: "center",
+                                                        adjust: {
+                                                            method: "none shift"
+                                                        }
+                                                    },
+                                                    content: {
+                                                        title: {
+                                                            text: event.title,
+                                                            button: true
+                                                        },
+                                                        text: "<div><ul><li><b>Agent: " + event.activity.materialAdviser + "</b></li>" +
+                                                        "<li>Description: " + (event.activity.description != undefined || event.activity.description != null ? event.activity.description : 'N/A' ) + "</li>" +
+                                                        "</ul></div>" +
+                                                        "<div class='btn-group btn-group-xs'>" +
+                                                        "<button style='display:" + (s.task.agent !== undefined ? "block" : "none") + "' id='" + buttonId + "' type='button' class='btn btn-info'>Update</button></div>"
+                                                    },
+                                                    hide: {
+                                                        event: 'click',
+                                                        inactive: 1500
+                                                    },
+                                                    events: {
+                                                        show: function (evt, api) {
+                                                            api.elements.tooltip.find("#" + buttonId).click(function () {
+                                                                api.toggle(false);
+                                                                t(function () {
+                                                                    s.hangingActivity.activity = event.activity;
+                                                                    angular.copy(s.hangingActivity, s.task.tempActivity);
                                                                     fm.show(s.flow.getElementFlowId('activity_modal'))
 
                                                                 });
@@ -419,7 +468,6 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
                     s.task.plannerCalendar.fullCalendar("render");
                     s.task.plannerCalendar.fullCalendar(s.task.calendar);
                 }
-
                 s.$on(s.flow.event.getSuccessEventId(), function (event, rv, method) {
                     if (method === "put") {
                         s.task.activities = [];
@@ -428,7 +476,6 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
                         s.task.planner.id = rv.plannedId;
                     }
                 });
-
                 s.flow.onRefreshed = function () {
 
 
@@ -446,12 +493,10 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
             s.calendar.getCurrentDate = function () {
                 return s.task.plannerCalendar.fullCalendar("getDate").toDate();
             }
-
             s.calendar.clearEvents = function () {
                 s.task.plannerCalendar.fullCalendar("removeEvents");
-                s.task.onRefreshed();
+                s.task.plannerCalendar.fullCalendar("refetchEvents");
             }
-
             s.calendar.valid = function () {
                 var valid = true;
                 if (s.task.schoolYear === undefined) {
@@ -550,8 +595,39 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
                                 ms.warning(s.flow.getElementFlowId("activity_messages"), msg, 3000).open();
                             })
                     }
-                    else if (s.hangingActivity.activity.type.type === LEAVE) {
+                    else {
+                        var activity = s.hangingActivity.activity;
 
+                        var type = activity.type;
+
+                        var valid = true;
+                        if (type === LEAVE) {
+                            if (activity.description === undefined) {
+                                ms.danger(s.flow.getElementFlowId('other_activity_messages'), "Please fill out reason for leave.", 3000).open();
+                                valid = false;
+                            }
+                        } else if (type === SEMINAR) {
+                            if (activity.description === undefined) {
+                                ms.danger(s.flow.getElementFlowId('other_activity_messages'), "Please fill out the details.", 3000).open();
+                                valid = false;
+                            }
+                        } else if (type === OFFICE) {
+                            if (activity.description === undefined) {
+                                ms.danger(s.flow.getElementFlowId('other_activity_messages'), "Please fill out the description.", 3000).open();
+                                valid = false;
+                            }
+                        }
+
+                        if (valid) {
+                            s.http.put(CRUD_ACTIVITY, s.hangingActivity.activity, s.hangingActivity.activity.id)
+                                .success(function (msg) {
+                                    fm.hide(s.task.activityModalId);
+                                    s.refetchCustomer();
+                                })
+                                .error(function (msg) {
+                                    ms.warning(s.flow.getElementFlowId("activity_messages"), msg, 3000).open();
+                                })
+                        }
                     }
                 } else {
                     ms.warning(s.flow.getElementFlowId("activity_messages"), "No changes has been made.", 3000).open();
@@ -569,14 +645,14 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
 
                 s.customer.month = month;
 
-                t(function () {
-                    s.customer.isMonth = s.task.plannerCalendar.fullCalendar("getView").name === "month";
-                })
+                s.customer.weekStart = date.getTime();
+
+                s.customer.isMonth = s.task.plannerCalendar.fullCalendar("getView").name === "month";
 
                 s.customer.schoolYear = s.task.schoolYear.id;
 
                 s.customer.agentId = s.task.agent.id;
-
+                console.info("customer", s.customer);
                 return PLANNER_CUSTOMERS + "?tag=" + s.customer.tag
                     + "&size=" + s.customer.size
                     + "&month=" + s.customer.month
@@ -584,7 +660,8 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
                     + "&start=" + s.customer.start
                     + "&schoolYear=" + s.customer.schoolYear
                     + "&agentId=" + s.customer.agentId
-                    + "&week=" + s.customer.week;
+                    + "&weekStart=" + s.customer.weekStart
+                    + "&page=" + s.customer.page;
             }
             s.getCustomerMarket = function () {
                 if (s.task.agent === undefined) return;
@@ -650,9 +727,19 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
 
                 if (tag === "All") {
                     s.customer.size = 25;
+                    s.customer.page = 1;
                 } else {
                     s.refetchCustomer();
                 }
+            }
+            s.next = function () {
+                s.customer.page++;
+                s.refetchCustomer();
+            }
+
+            s.prev = function () {
+                s.customer.page--;
+                s.refetchCustomer();
             }
             s.selectSize = function (size) {
                 s.customer.size = size;

@@ -36,7 +36,10 @@
                         </div>
                     </th>
                     <th>Market Segment</th>
-                    <th>Frequency</th>
+                    <th>
+                        <div><span ng-if="customer.tag == 'All'">Page: {{customer.page}}</span></div>
+                        <div>Frequency</div>
+                    </th>
                     </thead>
                     <tbody id="{{flow.getElementFlowId('event_body')}}">
                     <tr>
@@ -60,6 +63,13 @@
                                         type="button"
                                         ng-click="changeTag('50')">Top 50
                                 </button>
+
+                                <button ng-disabled="!customer.hasPrevious" ng-if="customer.tag == 'All'" type="button"
+                                        class="btn btn-default" ng-click="prev()"><i
+                                        class="fa fa-backward"></i></button>
+                                <button ng-disabled="!customer.hasNext" ng-if="customer.tag == 'All'" type="button"
+                                        class="btn btn-default" ng-click="next()"><i
+                                        class="fa fa-forward"></i></button>
                             </div>
                         </td>
                     </tr>
@@ -141,37 +151,43 @@
                     <div class="form-group" style="margin:auto">
                         <div class="col-lg-6">
                             <div class="form-group">
-                                <div class="col-lg-offset-2">
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
                                     <flow-check label="Actual"
                                                 model="hangingActivity.activity.actual"></flow-check>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="col-lg-offset-2">
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
                                     <flow-check label="Exam Copies Distribution"
                                                 model="hangingActivity.activity.ecd"></flow-check>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="col-lg-offset-2">
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
                                     <flow-check label="Invitation to Events"
                                                 model="hangingActivity.activity.ite"></flow-check>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="col-lg-offset-2">
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
                                     <flow-check label="Confirmation of Events"
                                                 model="hangingActivity.activity.coe"></flow-check>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="col-lg-offset-2">
-                                    <flow-check label="Giveaways Distribution"
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                    <flow-check label="Follow up payment"
+                                                model="hangingActivity.activity.fp"></flow-check>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                    <flow-check label="Giveaways / Raffle Items Distribution"
                                                 model="hangingActivity.activity.gd"></flow-check>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="col-lg-offset-2">
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
                                     <flow-check label="Delivery of Incentive/Donation"
                                                 model="hangingActivity.activity.doi"></flow-check>
                                 </div>
@@ -179,22 +195,33 @@
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
-                                <flow-check label="Purchase Order" model="hangingActivity.activity.po"></flow-check>
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                    <flow-check label="Follow-Up / Get PO"
+                                                model="hangingActivity.activity.po"></flow-check>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <flow-check label="Delivery of Add'l Order / TRM / Compli..."
-                                            model="hangingActivity.activity.daotrc"></flow-check>
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                    <flow-check label="Delivery of Add'l Order / TRM / Compli..."
+                                                model="hangingActivity.activity.daotrc"></flow-check>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <flow-check label="Booklist" model="hangingActivity.activity.bookList"></flow-check>
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                    <flow-check label="Booklist" model="hangingActivity.activity.bookList"></flow-check>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <flow-check label="Updated Customer Info Sheet"
-                                            model="hangingActivity.activity.ucis"></flow-check>
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                    <flow-check label="Updated Customer Info Sheet"
+                                                model="hangingActivity.activity.ucis"></flow-check>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <flow-check label="Implemented Ex-Sem"
-                                            model="hangingActivity.activity.ies"></flow-check>
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                    <flow-check label="Implemented Ex-Sem"
+                                                model="hangingActivity.activity.ies"></flow-check>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -207,7 +234,10 @@
                     <flow-text-area label="Reason for leave"
                                     model="hangingActivity.activity.description"></flow-text-area>
                 </div>
-                <div ng-show="hangingActivity.activity.type == 'SEMINAR' || hangingActivity.activity.type == 'OFFICE'"></div>
+                <div ng-show="hangingActivity.activity.type == 'SEMINAR' || hangingActivity.activity.type == 'OFFICE'">
+                    <flow-text-area label="Description"
+                                    model="hangingActivity.activity.description"></flow-text-area>
+                </div>
 
             </div>
 

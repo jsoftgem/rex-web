@@ -636,7 +636,13 @@ flowComponents
                                         scope.userTask.closed = true;
                                         scope.userTask.flowTaskId = scope.task.id.split("_")[0];
                                         scope.userTask.flowId = scope.task.flowId;
-                                        f2.post("services/flow_user_task_crud/save_task_state?field=close", scope.userTask, scope.task);
+                                        f2.post("services/flow_user_task_crud/save_task_state?field=close", scope.userTask, scope.task)
+                                            .success(function (data) {
+                                                scope.$apply();
+                                            })
+                                            .error(function (data) {
+
+                                            });
 
                                     }
                                 }
@@ -2080,6 +2086,8 @@ flowComponents
             /* Task event */
             task.preLoad = function () {
             };
+            task.load = function () {
+            };
             task.postLoad = function () {
             }
             task.onWindowClosing = function (page) {
@@ -2793,10 +2801,10 @@ function generateTask(scope, t, f2) {
         scope.loadGet();
         $("#rfh_btn_" + scope.task.id).find("span").removeClass("fa-spin");
 
-
         if (scope.task.preLoaded) {
-            scope.task.postLoad();
+            scope.task.load();
         }
+        scope.task.postLoad();
 
     };
 
