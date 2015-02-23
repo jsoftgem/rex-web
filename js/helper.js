@@ -67,13 +67,26 @@ function FlowOptionsGET(dto, url, scope, compile, cookies) {
         .withOption("sDom", "<'top'iflp<'clear'>>rt<'bottom'iflp<'clear'>>")
         .withOption("stateSave", true)
         .withOption("serverSide", true)
+        .withTableTools("vendors/DataTables/extensions/TableTools/swf/copy_csv_xls_pdf.swf")
+        .withTableToolsOption("sRowSelect", "os")
+        .withTableToolsButtons([
+            "copy", "print", {
+                "sExtends": "collection",
+                "sButtonText": "Edit",
+                "aButtons": ["select_all", "select_none"]
+            }, {
+                "sExtends": "collection",
+                "sButtonText": "Save",
+                "aButtons": ["csv", "xls", "pdf"]
+            }
+        ])
         .withPaginationType('simple_numbers')
 }
 
-function FlowColumns(dtc, editMethod, deleteMethod) {
+function FlowColumns(dtc, editMethod, deleteMethod, viewMethod) {
     return [dtc.newColumn(null).withTitle('Actions').notSortable().withOption("searchable", false)
         .renderWith(function (data, type, full, meta) {
-            return renderActions(data, editMethod, deleteMethod);
+            return renderActions(data, editMethod, deleteMethod, viewMethod);
         })]
 }
 
@@ -84,9 +97,15 @@ function renderCheckbox(data) {
     }
     return "<p class='text-primary'><span class='" + span + "'></span></p>"
 }
-function renderActions(data, editMethod, deleteMethod) {
+function renderActions(data, editMethod, deleteMethod, viewMethod) {
     var edit = "edit";
     var del = "delete";
+    var view = "view";
+
+    if (viewMethod != undefined) {
+        view = viewMethod;
+    }
+
     if (editMethod !== undefined) {
         edit = editMethod;
     }
@@ -96,7 +115,10 @@ function renderActions(data, editMethod, deleteMethod) {
     }
 
 
-    return "<div class='btn-group btn-group-xs'><button flow-permission-enabled task='task' page='page' method='put'  type='button' class='btn btn-info glyphicon glyphicon-edit field-margin' ng-click='" + edit + "(" + data.id + ")'></button><button flow-permission-enabled task='task' page='page' method='delete' type='button' class='btn btn-danger glyphicon glyphicon-trash field-margin' ng-click='" + del + "(" + data.id + ")'> </button></div>";
+    return "<div class='btn-group btn-group-xs'>" +
+        "<button ng-if=" + view + " flow-permission-enabled flow-tooltip tooltip-title='View' task='task' page='page' method='put'  type='button' class='btn btn-warning glyphicon glyphicon-search field-margin' ng-click='" + view + "(" + data.id + ")'></button>" +
+        "<button flow-permission-enabled flow-tooltip tooltip-title='Edit' task='task' page='page' method='put'  type='button' class='btn btn-info glyphicon glyphicon-edit field-margin' ng-click='" + edit + "(" + data.id + ")'></button>" +
+        "<button flow-permission-enabled flow-tooltip tooltip-title='Delete' task='task' page='page' method='delete' type='button' class='btn btn-danger glyphicon glyphicon-trash field-margin' ng-click='" + del + "(" + data.id + ")'> </button></div>";
 }
 
 
