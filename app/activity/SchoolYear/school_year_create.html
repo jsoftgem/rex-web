@@ -57,7 +57,7 @@ ho
         </fieldset>
 
 
-        <div class="col-lg-12">
+        <!--<div class="col-lg-12">
 
             <flow-sub-table flow="flow" task="task" key-var="customer" title="Customers"
                             target-list="task.modelCreate.warCustomerMarkets"
@@ -70,82 +70,7 @@ ho
                 <flow-sub-column title="Market Potential" model="customer.marketPotential"></flow-sub-column>
             </flow-sub-table>
 
-        </div>
-
-
-        <!-- <flow-modal id="{{flow.getElementFlowId('marketSegmentModal')}}">
-
-             <div class="panel panel-primary">
-
-                 <div class="panel-heading">
-                     <span class="heading-title">Add Market Segment</span>
-                 </div>
-
-
-                 <div class="panel-body">
-
-                     <div class="form-horizontal container-fluid">
-
-                         <flow-select task="task" label="Market Segment"
-                                      source-url="factories/war/table_factories/market_segments"
-                                      required="true"
-                                      model="task.modelCreate.warMarketSegments[task.create.marketIndex].marketSegment"></flow-select>
-
-                         <div class="form-group"
-                              ng-repeat="marketControl in task.modelCreate.warMarketSegments[task.create.marketIndex].marketSegmentControlSet">
-                             <div>
-                                 <div ng-if="$index > 0" class="col-lg-3 col-lg-offset-2">
-                                     <flow-select task="task" label="Control" model="marketControl.control"
-                                                  source-url="factories/war/table_factories/market_controls"></flow-select>
-                                 </div>
-                                 <div class="col-lg-2 text-right" ng-hide="$index > 0"><span
-                                         class="font-size:14px;font:inherit">Market Potential</span>
-                                     <span class="required">*&nbsp;</span>
-                                 </div>
-                                 <div class="col-lg-3">
-                                     <flow-select task="task" label="Operator" model="marketControl.operator"
-                                                  source-url="factories/war/table_factories/market_operators"></flow-select>
-                                 </div>
-                                 <div class="col-lg-3">
-                                     <flow-field type="number" required="true"
-                                                 label="{{marketControl.operator == 'BETWEEN' ? 'Value1':'Value'}}"
-                                                 model="marketControl.value"></flow-field>
-                                 </div>
-
-                                 <div class="col-lg-3" ng-if="marketControl.operator == 'BETWEEN'">
-                                     <flow-field type="number" required="marketControl.operator == 'BETWEEN'"
-                                                 label="Value2"
-                                                 model="marketControl.value2"></flow-field>
-                                 </div>
-
-                                 <div class="btn-group btn-group-xs" sty;e="margin-left:5px;">
-
-                                     <button title="Remove" class="btn btn-danger" ng-if="$index > 0"
-                                             ng-click="task.modelCreate.warMarketSegments[task.create.marketIndex].marketSegmentControlSet.splice($index,1)">
-                                         <i class="fa fa-minus"></i></button>
-
-                                     <button title="Add" class="btn btn-success"
-                                             ng-if="$index == (task.modelCreate.warMarketSegments[task.create.marketIndex].marketSegmentControlSet.length - 1)"
-                                             ng-click="task.modelCreate.warMarketSegments[task.create.marketIndex].marketSegmentControlSet.push({})">
-                                         <i class="fa fa-plus"></i></button>
-                                 </div>
-                             </div>
-                         </div>
-
-                     </div>
-
-                 </div>
-
-                 <div class="panel-footer">
-                     <button class="btn btn-success" type="button">Add</button>
-                     <button class="btn btn-info" type="button">Save & close</button>
-                     <button class="btn btn-danger" type="button">Cancel</button>
-                 </div>
-
-             </div>
-
-
-         </flow-modal>-->
+        </div>-->
 
 
         <flow-modal id="{{flow.getElementFlowId('customerModal')}}">

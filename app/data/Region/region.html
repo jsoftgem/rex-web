@@ -1,8 +1,12 @@
 <div class="container-fluid form-horizontal" ng-controller="regionCtrl">
-
-    <table id="{{flow.getElementFlowId('region_home_tbl')}}" datatable dt-options="dtOptions" dt-columns="dtColumns"
+    
+    <div flow-permission-visible task="task">
+         <table  page="region" id="{{flow.getElementFlowId('region_home_tbl')}}"
+           datatable dt-options="dtOptions" dt-columns="dtColumns"
            class="table table-hover display">
     </table>
+    </div>
+   
 
     <flow-modal id="{{flow.getElementFlowId('regionDeleteModal')}}">
 

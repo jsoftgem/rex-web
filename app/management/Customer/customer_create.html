@@ -7,17 +7,21 @@
 
         <div>
             <div class="col-lg-6">
+
                 <flow-field model="task.customerCreate.customerCode" label="Customer code" required="true"
                             type="text"></flow-field>
+
                 <flow-select
                         task="task"
                         id="{{flow.getElementFlowId('ownershipAgentSelect')}}"
                         label="Materials Advisor"
-                        field-value="id"
                         field-label="user.flowUserDetail.fullName"
-                        model="task.customerCreate.ownerAgentId"
+                        model="task.create.agent" 
                         source-url="services/war/agent_query/list">
                 </flow-select>
+
+                <flow-field disabled="true" model="task.customerCreate.regionCode" label="Region"></flow-field>
+        
                 <flow-look-up
                         task="task"
                         id="{{flow.getElementFlowId('schoolLookUp')}}"
@@ -30,36 +34,37 @@
                     <flow-sub-column title="Address" model="school.addressLine1"></flow-sub-column>
                 </flow-look-up>
 
-                <flow-field model="task.customerCreate.school.addressLine1" label="Address line 1"
-                            required="true"></flow-field>
-
-                <flow-field model="task.customerCreate.school.addressLine2" label="Address line 2"></flow-field>
             </div>
 
             <div class="col-lg-6">
-                <flow-look-up
-                        task="task"
-                        id="{{flow.getElementFlowId('regionLookUp')}}"
-                        parent-id="{{flow.getElementFlowId('customer_edit_form')}}"
-                        model="task.customerCreate.school.region"
-                        label="Region" required="true"
-                        source-url="services/war/region_query/list" title="Region" field-label="regionCode"
-                        key-var="region">
-
-                    <flow-sub-column title="Region" model="region.regionCode"></flow-sub-column>
-
-                    <flow-sub-column title="Name" model="region.regionName"></flow-sub-column>
-
-                </flow-look-up>
-
-
+         
                 <flow-field model="task.customerCreate.school.email" type="email" label="Email"
                             required="true"></flow-field>
 
                 <flow-field model="task.customerCreate.school.landline" label="Landline" required="true"></flow-field>
 
+
+                <flow-field model="task.customerCreate.school.addressLine1" label="Address line 1"
+                            required="true"></flow-field>
+
+                <flow-field model="task.customerCreate.school.addressLine2" label="Address line 2"></flow-field>
+
             </div>
 
+        </div>
+        
+
+        <div class="col-lg-12">
+                <flow-sub-table flow="flow" task="task" key-var="customer" title="Market segment"
+                                target-list="task.customerCreate.warCustomerMarketSchoolYears"
+                                id="{{flow.getElementFlowId('potentialTable')}}" id-field="id"
+                                create-event="addPotential" edit-event="editPotential" look-up="false">
+                    <flow-sub-column title="School Year"
+                                     model="customer.schoolYearDescription"></flow-sub-column>
+                    <flow-sub-column title="Market Potential Segment"
+                                     model="customer.marketPotentialSegment"></flow-sub-column>
+                    <flow-sub-column title="Market Potential" model="customer.marketPotential"></flow-sub-column>
+                </flow-sub-table>
         </div>
 
         <div class="col-lg-12">
@@ -229,7 +234,7 @@
 
                             </div>
                             <div class="col-lg-1">
-                                <flow-check model="task.isCreateCollectionTo" label=" to"></fslow-check>
+                                <flow-check model="task.isCreateCollectionTo" label=" to"></flow-check>
                             </div>
                             <div class="col-lg-5">
                                 <flow-select ng-if="task.isCreateCollectionTo"
@@ -494,5 +499,38 @@
         </div>
     </flow-modal>
 
+
+    <flow-modal id="{{flow.getElementFlowId('potentialModal')}}">
+
+        <div class="panel panel-primary">
+
+            <div class="panel-heading"><span class="heading-title">Add market potential</span></div>
+
+            <div class="panel-body">
+
+                <div class="form-horizontal">
+                    <flow-message id="{{flow.getElementFlowId('potentialInfoMessage')}}"></flow-message>
+                    <flow-select disabled="s.task.potentialManaged" task="task" label="School Year" field-label="description" model="task.tempSchoolYear" change="onChangeSchoolYear(item)"
+                    source-url="services/war/school_year_query/list"></flow-select>
+
+                    <flow-field label="Market Potential" type="number"
+                                model="task.customerCreate.warCustomerMarketSchoolYears[task.potentialIndex].marketPotential"></flow-field>
+
+                </div>
+            </div>
+
+
+            <div class="panel-footer">
+                <div class="btn-group btn-group-md">
+                    <button class="btn btn-info" ng-click="savePotential()" type="button">
+                        {{task.create.customerManaged ? 'Update' : 'Save'}}
+                    </button>
+                    <button class="btn btn-danger" ng-click="cancelPotential()" type="button">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+    </flow-modal>
+  
 
 </div>

@@ -624,12 +624,7 @@ flowComponents
                         };
                         scope.task.close = function () {
                             if (scope.task.onWindowClosing(scope.task.page)) {
-                                for (var i = 0; i < f.taskList.length; i++) {
-                                    var task = f.taskList[i];
-                                    if (scope.task.id === task.id) {
-                                        f.taskList.splice(i, 1);
-                                    }
-                                }
+
 
                                 if (scope.task.generic === false) {
                                     if (scope.task.id.indexOf("gen") === -1) {
@@ -638,7 +633,12 @@ flowComponents
                                         scope.userTask.flowId = scope.task.flowId;
                                         f2.post("services/flow_user_task_crud/save_task_state?field=close", scope.userTask, scope.task)
                                             .success(function (data) {
-                                                scope.$apply();
+                                                for (var i = 0; i < f.taskList.length; i++) {
+                                                    var task = f.taskList[i];
+                                                    if (scope.task.id === task.id) {
+                                                        f.taskList.splice(i, 1);
+                                                    }
+                                                }
                                             })
                                             .error(function (data) {
 
@@ -1509,16 +1509,16 @@ flowComponents
 
                 options += " for item in sourceList";
 
-                var select = element.find("select").attr("ng-options", options).attr("ng-model", "model").attr("ng-change", "change()").get();
+                var select = element.find("select").attr("ng-options", options).attr("ng-model", "model").get();
 
                 if (!scope.sourceList) {
-
                     f.get(scope.sourceUrl, scope.task).success(function (sourceList) {
                         t(function () {
                             scope.sourceList = sourceList;
                         });
                     });
                 }
+
 
 
                 // for IE ng-disabled issue
@@ -1531,7 +1531,16 @@ flowComponents
                         }
                     });
 
-                c(element.contents())(scope);
+                scope.$watch(function (scope) {
+                    return scope.model;
+                 }, function (newValue) {
+                    scope.change({item:newValue});
+                 });
+
+            
+
+               
+                 c(element.contents())(scope);
             },
             template: "<div class='form-group'><label class='col-sm-2 control-label'>{{label}}<span style='color: #ea520a' ng-show='required'>*</span></label><div class='col-sm-10'><select id='{{id}}_select' data-toggle='select' class='form-control' ng-required='required' ng-disabled='disabled'><option class='hidden-lg hidden-md' value='' disabled selected>Select {{label}}</option></select></div></div>",
             replace: true
@@ -1549,7 +1558,6 @@ flowComponents
                 if (attr.method) {
                     scope.method = attr.method;
                 }
-
 
                 var contains = false;
 

@@ -5,54 +5,81 @@
         <input id="{{flow.getElementFlowId('daily_submit')}}" type="submit"
                style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
 
-  
 
         <div class="form-group">
-          <div class="col-lg-2" style="text-align: right"><span class="control-label" style="font:inherit;font-size:14px;">Date</span></div><div class="col-lg-10"><span class="form-control">{{task.modelEdit.startDt | date: 'MM/dd/yyyy'}}</span> </div>
+            <div class="col-lg-2" style="text-align: right"><span class="control-label"
+                                                                  style="font:inherit;font-size:14px;">Date</span></div>
+            <div class="col-lg-10"><span class="form-control">{{task.modelEdit.startDt | date: 'MM/dd/yyyy'}}</span>
+            </div>
         </div>
         <flow-field model="task.modelEdit.description" label="Customer" disabled="true"></flow-field>
-        <div class="form-group" style="margin:auto"> 
-          <div class="col-lg-6">
-              <div class="form-group">
-                <flow-check label="Actual" model="task.modelEdit.actual"></flow-check>
-              </div>
-              <div class="form-group">
-                <flow-check label="Exam Copies Distribution" model="task.modelEdit.ecd"></flow-check>
-              </div>
-              <div class="form-group">
-                <flow-check label="Invitation to Events" model="task.modelEdit.ite"></flow-check>
-              </div>
-              <div class="form-group">
-                <flow-check label="Confirmation of Events" model="task.modelEdit.coe"></flow-check>
-              </div>
-              <div class="form-group">
-                <flow-check label="Giveaways Distribution" model="task.modelEdit.gd"></flow-check>
-              </div>
-              <div class="form-group">
-                <flow-check label="Delivery of Incentive/Donation" model="task.modelEdit.doi"></flow-check>
-              </div>
-          </div>
-          <div class="col-lg-6">
-              <div class="form-group">
-                <flow-check label="Purchase Order" model="task.modelEdit.po"></flow-check>
-              </div>
-              <div class="form-group">
-                <flow-check label="Delivery of Add'l Order / TRM / Compli..." model="task.modelEdit.daotrc"></flow-check>
-              </div>
-              <div class="form-group">
-                <flow-check label="Booklist" model="task.modelEdit.bookList"></flow-check>
-              </div>
-              <div class="form-group">
-                <flow-check label="Updated Customer Info Sheet" model="task.modelEdit.ucis"></flow-check>
-              </div>
-               <div class="form-group">
-                <flow-check label="Implemented Ex-Sem" model="task.modelEdit.ies"></flow-check>
-              </div>
-          </div>
+        <div class="form-group" style="margin:auto">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                        <flow-check label="Actual" model="task.modelEdit.actual"></flow-check>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                        <flow-check label="Exam Copies Distribution" model="task.modelEdit.ecd"></flow-check>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                        <flow-check label="Invitation to Events" model="task.modelEdit.ite"></flow-check>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                        <flow-check label="Confirmation of Events" model="task.modelEdit.coe"></flow-check>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                        <flow-check label="Giveaways Distribution" model="task.modelEdit.gd"></flow-check>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                        <flow-check label="Delivery of Incentive/Donation" model="task.modelEdit.doi"></flow-check>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                        <flow-check label="Purchase Order" model="task.modelEdit.po"></flow-check>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                        <flow-check label="Delivery of Add'l Order / TRM / Compli..."
+                                    model="task.modelEdit.daotrc"></flow-check>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                        <flow-check label="Booklist" model="task.modelEdit.bookList"></flow-check>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                        <flow-check label="Updated Customer Info Sheet" model="task.modelEdit.ucis"></flow-check>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                        <flow-check label="Implemented Ex-Sem" model="task.modelEdit.ies"></flow-check>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <flow-text-area label="CUSTOMER SPECIFIC ACTIVITY (Service, Birthday, Blessing, Etc.)" model="task.modelEdit.customerSpecificActivity"></flow-text-area>
-        <flow-text-area label="REASON FOR NON-COVERAGE / ACTUAL DATE COVERED" model="task.modelEdit.reasonForNonCoverage"></flow-text-area>
+        <flow-text-area label="CUSTOMER SPECIFIC ACTIVITY (Service, Birthday, Blessing, Etc.)"
+                        model="task.modelEdit.customerSpecificActivity"></flow-text-area>
+        <flow-text-area label="REASON FOR NON-COVERAGE / ACTUAL DATE COVERED"
+                        model="task.modelEdit.reasonForNonCoverage"></flow-text-area>
 
 
         <flow-modal id="{{flow.getElementFlowId('dailyDeleteModal')}}">
@@ -63,9 +90,11 @@
                 <div class="panel-body">Do you want to delete {{task.modelEdit.description}}?</div>
                 <div class="panel-footer">
                     <div class="btn-group btn-group-xs">
-                        <button type="button" class="btn btn-warning field-margin" ng-click="task.deleteConfirm()">Yes
+                        <button type="button" class="btn btn-warning field-margin" ng-click="task.deleteConfirm()">
+                            Yes
                         </button>
-                        <button type="button" class="btn btn-info field-margin" ng-click="task.deleteCancel()">No</button>
+                        <button type="button" class="btn btn-info field-margin" ng-click="task.deleteCancel()">No
+                        </button>
                     </div>
                 </div>
             </div>

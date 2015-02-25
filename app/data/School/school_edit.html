@@ -11,17 +11,6 @@
                         source-url="services/download_service/getContent/"
                         url="services/upload_service/upload_file?folder=group&type=emblem" method="post"></flow-image>
             <flow-field model="task.schoolEdit.name" label="Name" type="text" required="true"></flow-field>
-            <flow-look-up
-                parent-id="{{flow.getElementFlowId('school_edit_form')}}"
-                task="task"
-                model="task.schoolEdit.region"
-                label="Region" required="true"
-                source-url="services/war/region_query/list" title="Region" field-label="regionCode"
-                key-var="region"> 
-                    <flow-sub-column title="Region" model="region.regionCode"></flow-sub-column>
-
-                    <flow-sub-column title="Name" model="region.regionName"></flow-sub-column>
-            </flow-look-up>
         </div>
 
         <div class="col-lg-6">
