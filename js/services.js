@@ -32,6 +32,7 @@ angular.module("flowServices", ["ngCookies", "fluid"])
             this.groupOwner = userDetail.groupOwner;
             this.profiles = userDetail.profiles;
             this.editProfileTask = userDetail.editProfileTask;
+            this.agent = userDetail.agent;
 
         };
 

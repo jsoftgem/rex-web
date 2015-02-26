@@ -1,0 +1,68 @@
+<div class="container" ng-controller="regionManagerCtrl">
+	
+	<div class="form-horizontal">
+		<div class="form-group">
+				<div  column="3">
+					<div class="avatar-div">
+						<flow-image label="" disabled="true" model="task.rsm.manager.avatar"></flow-image>
+					</div>
+			
+			</div>
+				<div column="9">
+					<fieldset>
+						<legend>{{task.rsm.region.regionName}}</legend>
+					<div class="form-group">
+						Name: {{task.rsm.manager.fullName}}
+					</div>
+					<div class="form-group">
+						Initials: {{task.rsm.manager.initials}}
+					</div>
+					<div class="form-group">
+						Active: {{task.rsm.manager.active ? 'Yes' : 'No'}}
+					</div>
+					</fieldset>
+			</div>
+
+		
+		</div>
+
+		<div class="form-group">
+			<div class="panel panel-info">
+				<div>
+					<span class="heading-title">Agents</span>
+				</div>
+				<div  column="3" ng-repeat="agent in task.rsm.agents">
+
+						<div class="form-group">
+							{{agent.fullName}}
+						</div>
+
+						<div>
+							<button button info="button" ng-click="alert('update')">Update</button>
+							<button button info="button" ng-click="agent.viewTop=!agent.viewTop">{{agent.viewTop ? 'Hide' : 'View'}}</button>
+						</div>
+
+						<div ng-init="agent.viewTop = false"class="form-group">
+							<div ng-if="agent.viewTop">
+								<table class="table table-hover table-bordered">
+									<thead>
+										<td colspan="2">Top Customers</td>
+									</thead>
+									<tbody>
+										<tr>
+											<td>top</td><td>Customer</td>
+										</tr>
+									</tbody>
+								</table>
+							<div>	
+						<div>	
+					
+
+				</div>
+
+			</fieldset>
+		</div>
+
+	</div>
+
+</div>

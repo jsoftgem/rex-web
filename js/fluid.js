@@ -1757,18 +1757,22 @@ flowComponents
                 method: "@",
                 task: "=",
                 sourceUrl: "@",
-                fileChanged: "&"
+                fileChanged: "&",
+                defaultImage:"@",
+                disabled:"="
             },
             replace: true,
             template: "<div class='form-group'><label class='control-label col-sm-2'>{{label}}<span style='color: #ea520a' ng-show='required'>*</span></label>" +
             "<div class='col-sm-10'><div class='flow-group-icon' accept='image/*' ng-model='preview' ng-file-drop drag-over-class=\"{accept:'flow-group-icon-accept', reject:'flow-group-icon-error', delay:100}\">" +
             "<img class='thumbnail' style='border-radius: 5px' width='198px' height='173px' ng-src='{{preview[0].dataUrl}}'/></div>" +
-            "<div class='marginBottom5px'><span accept='image/*' class='btn btn-info' ng-file-change='onFileSelect(preview[0],$files)' ng-file-select ng-model='preview'>" +
-            "<span class='fa fa-image'></span>&nbsp;&nbsp;{{preview[0].dataUrl != null ? 'Change' : 'Attach'}}</span></span></div></div></div>",
+            "<div class='marginBottom5px' ng-show='!disabled'><span accept='image/*' class='btn btn-info' ng-show='!disabled' ng-file-change='onFileSelect(preview[0],$files)' ng-file-select ng-model='preview'>" +
+            "<span ' class='fa fa-image'  ng-show='!disabled'></span>&nbsp;&nbsp;{{preview[0].dataUrl != null ? 'Change' : 'Attach'}}</span></span></div></div></div>",
             link: function (scope) {
                 scope.fileReaderSupported = window.FileReader != null && (window.FileAPI == null || FileAPI.html5 != false);
                 scope.preview = [];
                 var tries = 0;
+
+
                 scope.refresh = function () {
                     t(function () {
                         if (scope.model) {
@@ -1788,6 +1792,15 @@ flowComponents
                 };
                 scope.refresh();
 
+
+                 if(!scope.model || scope.model === null){
+                        if(!scope.defaultImage){
+                            scope.defaultImage =  "images/gallery/profile_default.png";
+                        }
+                        scope.url = scope.defaultImage;
+                     }
+
+
                 scope.onFileSelect = function (file) {
 
                     if (file != null) {
@@ -1803,6 +1816,7 @@ flowComponents
                                 var bufferRead = new FileReader();
 
                                 bufferRead.readAsArrayBuffer(file);
+                                
                                 bufferRead.onload = function (e) {
                                     t(function () {
                                         file.data = e.target.result;

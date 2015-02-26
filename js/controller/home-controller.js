@@ -75,7 +75,8 @@ angular.module("home", ["flowServices", "ngCookies", "fluid", "ui.bootstrap","fl
     })
     .controller("signinCtrl", function ($scope, $http, $cookies, flowMessageService, userSessionService,HOST) {
         $scope.login = function (user) {
-
+        $cookies.authorization = undefined;
+        $cookies.remember = undefined;
         var base64 = window.btoa(user.username+":"+user.password); 
 
 
