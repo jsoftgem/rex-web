@@ -103,15 +103,12 @@ angular.module("flowServices", ["ngCookies", "fluid"])
         return this;
 
     }])
-
-
-    .services("hasProfile",["flowHttpProvider",function(f){
+    .service("hasProfile",["flowHttpProvider",function(f){
         this.url = "";
+        
         this.check = function(profiles,task){
             return f.post(this.url,profiles,task);
         }
 
         return this;
-    }])
-
-;
+    }]);

@@ -27,13 +27,11 @@ angular.module("regionController",["fluid", "ngResource", "datatables", "ngCooki
 	delCtl.action= function(){
 		fm.show(s.flow.getElementFlowId(s.deleleModalId));
 	}
-
-
-	s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, co);
-    s.dtColumns = FlowColumns(dtc);
-
-    s.dtColumns.push(dtc.newColumn("regionCode").withTitle("Region code").withOption("searchable", true));
-	s.dtColumns.push(dtc.newColumn("regionName").withTitle("Region name").withOption("searchable", true));
+			s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, co);
+    		s.dtColumns = FlowColumns(dtc);
+	   	 	s.dtColumns.push(dtc.newColumn("regionCode").withTitle("Region code").withOption("searchable", true));
+			s.dtColumns.push(dtc.newColumn("regionName").withTitle("Region name").withOption("searchable", true));
+	
 
 
 	s.edit = function(id){

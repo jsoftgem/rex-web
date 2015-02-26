@@ -96,9 +96,8 @@ angular.module("home", ["flowServices", "ngCookies", "fluid", "ui.bootstrap","fl
             if (data) {
                 $cookies.authorization = data.bs64auth;
                 $cookies.remember = $scope.user.remember;
-              
+                 window.location = "home.html";
             }
-            window.location = "home.html";
         });
 
         request.error(function (data) {
