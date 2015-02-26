@@ -2642,10 +2642,12 @@ flowComponents
                 if (fls.enabled) {
                     fls.loaded = false;
                 }
+                
+                config.headers["Access-Control-Allow-Origin"] = "*";
+
                 if (config.headers['flow-container-id'] !== undefined) {
                     $('#' + config.headers['flow-container-id']).loadingOverlay();
-                    config.headers["Access-Control-Allow-Origin"] = "*";
-
+                   
                 }
                 if (c.authorization !== undefined) {
                     config.headers['Authorization'] = "Basic " + c.authorization;

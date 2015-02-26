@@ -1,12 +1,18 @@
 <div class="container-fluid form-horizontal" ng-controller="regionCtrl">
     
-    <div flow-permission-visible task="task">
+    <div flow-profile-visible task="task" profiles="['rex_group_admin']">
          <table  page="region" id="{{flow.getElementFlowId('region_home_tbl')}}"
            datatable dt-options="dtOptions" dt-columns="dtColumns"
            class="table table-hover display">
-    </table>
+        </table>
     </div>
-   
+
+
+    <div flow-profile-visible task="task" profiles="['agent_regional_manager']">
+
+            agent manager
+
+    </div>
 
     <flow-modal id="{{flow.getElementFlowId('regionDeleteModal')}}">
 

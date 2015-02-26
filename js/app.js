@@ -6,7 +6,7 @@
 
 'use strict';
 angular.module("app", ["MAdmin", "ngCookies", "flowServices", "flowFactories", "home", "fluid", "devControllers", "adminControllers", "flowAppDirectives", "sessionControllers", "fNotify", "infinite-scroll"])
-    .run(["flowFrameService", "flowHttpProvider", "userProfile", "$cookies", "responseEvent", "fnService", "userAppSetting", "HOST", function (f, fhp, up, c, re, fns, uas, h) {
+    .run(["flowFrameService", "flowHttpProvider", "userProfile", "$cookies", "responseEvent", "fnService", "userAppSetting", "HOST","hasProfile", function (f, fhp, up, c, re, fns, uas, h,hp) {
 
         fhp.host = h;
 
@@ -28,6 +28,7 @@ angular.module("app", ["MAdmin", "ngCookies", "flowServices", "flowFactories", "
 
         fns.url = "session/notification/alerts";
         fns.topUrl = "session/notification/top?limit=5";
+        hp.url = "services/flow_permission/has_profile";
 
     }])
     .filter('setDecimal', function ($filter) {

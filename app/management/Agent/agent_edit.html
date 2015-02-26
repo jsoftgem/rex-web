@@ -17,9 +17,8 @@
                          source-url="services/war/region_query/list" field-label="regionName"
                          field-value="regionCode"></flow-select>
             <div class="form-group">
-                <div class="col-lg-offset-2 col-me-offset-2 col-sm-offset-2 col-xs-offset-2">
-                    <flow-check flow-permission-visible task="task" page="agent_edit" model="task.agentCreate.isManager"
-                                label="Manager"></flow-check>
+                <div offset="3">
+                     <flow-check model="task.agentEdit.isManager" label="Manager"></flow-check>
                     <flow-check model="task.agentEdit.active" label="Active" required="true"></flow-check>
                 </div>
             </div>

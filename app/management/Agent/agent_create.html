@@ -4,8 +4,6 @@
 
         <input id="{{flow.getElementFlowId('agent_submit')}}" type="submit"
                style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
-
-
         <div column="6">
             <flow-field model="task.agentCreate.user.flowUserDetail.fullName" label="Full name" type="text"
                         required="true"></flow-field>
@@ -16,8 +14,7 @@
                          field-value="regionCode"></flow-select>
             <div class="form-group">
                 <div offset="3">
-                    <flow-check flow-permission-visible task="task" page="agent_edit" model="task.agentCreate.isManager"
-                                label="Manager"></flow-check>
+                    <flow-check model="task.agentCreate.isManager" label="Manager"></flow-check>
                     <flow-check model="task.agentCreate.active" label="Active" required="true"></flow-check>
                 </div>
             </div>
