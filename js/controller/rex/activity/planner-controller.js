@@ -1,13 +1,25 @@
-angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies"])
-    .controller("plannerCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "$cookies", "HOST", "$timeout", "flowFrameService",
-        function (s, dto, dtc, ms, fm, c, f, co, h, t, ffs) {
+angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies", "flowServices"])
+    .controller("plannerCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "$cookies",
+        "HOST", "$timeout", "flowFrameService", "hasProfile", "userProfile",
+        function (s, dto, dtc, ms, fm, c, f, co, h, t, ffs, hp, up) {
 
             s.task.table = {};
-            s.task.table.isMaterialsAdvisor = true;
+            s.task.table.isMaterialsAdvisor = true; 
             s.task.table.isWeek = true;
             s.task.table.isYear = true;
+            s.task.hideAgentFilter = false;
+
+
+            hp.check("agent", s.task)
+                .success(function (valid) {
+                    s.task.hideAgentFilter = valid;
+                    s.task.agent = up.agent;
+                });
+
 
             s.task.preLoad = function () {
+
+
                 s.task.basicWeek = "basicWeek";
                 s.task.month = "month";
                 s.task.customerMarketQuery = "services/war/war_customer_market_query/"

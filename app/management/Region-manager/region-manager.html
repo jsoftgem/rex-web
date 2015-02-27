@@ -1,68 +1,108 @@
-<div class="container" ng-controller="regionManagerCtrl">
-	
-	<div class="form-horizontal">
-		<div class="form-group">
-				<div  column="3">
-					<div class="avatar-div">
-						<flow-image label="" disabled="true" model="task.rsm.manager.avatar"></flow-image>
-					</div>
-			
-			</div>
-				<div column="9">
-					<fieldset>
-						<legend>{{task.rsm.region.regionName}}</legend>
-					<div class="form-group">
-						Name: {{task.rsm.manager.fullName}}
-					</div>
-					<div class="form-group">
-						Initials: {{task.rsm.manager.initials}}
-					</div>
-					<div class="form-group">
-						Active: {{task.rsm.manager.active ? 'Yes' : 'No'}}
-					</div>
-					</fieldset>
-			</div>
+<div class="container-fluid" ng-controller="regionManagerCtrl">
 
-		
-		</div>
+    <div class="form-horizontal">
+        <div class="form-group">
+            <fieldset>
+                <legend>{{task.rsm.region.regionName}}</legend>
+                <div column="2">
+                    <img class="thumbnail" height="90" width="85"
+                         ng-src="{{imageService.getAvatar(task.rsm.manager.avatar)}}" class="img-circle"/>
+                </div>
 
-		<div class="form-group">
-			<div class="panel panel-info">
-				<div>
-					<span class="heading-title">Agents</span>
-				</div>
-				<div  column="3" ng-repeat="agent in task.rsm.agents">
+                <div column="10">
+                    <div class="form-group">
+                        Manager: {{task.rsm.manager.fullName}}
+                    </div>
+                    <div class="form-group">
+                        Initials: {{task.rsm.manager.initials}}
+                    </div>
+                    <div class="form-group">
+                        Active: {{task.rsm.manager.active ? 'Yes' : 'No'}}
+                    </div>
 
-						<div class="form-group">
-							{{agent.fullName}}
-						</div>
+                </div>
 
-						<div>
-							<button button info="button" ng-click="alert('update')">Update</button>
-							<button button info="button" ng-click="agent.viewTop=!agent.viewTop">{{agent.viewTop ? 'Hide' : 'View'}}</button>
-						</div>
+            </fieldset>
+        </div>
 
-						<div ng-init="agent.viewTop = false"class="form-group">
-							<div ng-if="agent.viewTop">
-								<table class="table table-hover table-bordered">
-									<thead>
-										<td colspan="2">Top Customers</td>
-									</thead>
-									<tbody>
-										<tr>
-											<td>top</td><td>Customer</td>
-										</tr>
-									</tbody>
-								</table>
-							<div>	
-						<div>	
-					
+        <div class="form-group form-horizota">
+            <fieldset>
+                <legend>Agents</legend>
+                <table class="table table-hover table-condensed">
+                    <tr>
+                        <td ng-repeat="agent in task.rsm.agents">
 
-				</div>
+                        </td>
+                    </tr>
+                </table>
+                <div column="4" ng-repeat="agent in task.rsm.agents">
+                    <div class="panel panel-info">
 
-			</fieldset>
-		</div>
+                        <div class="panel-heading">
+                            <span class="heading-title">{{agent.fullName}}</span>
+                        </div>
 
-	</div>
+                        <div class="panel-body container-fluid">
+                            <div class="form-group">
+                                <div column="12">
+                                    <div column="5">
+                                        <img class="thumbnail" style="margin-left:auto;margin-right:auto;"
+                                             height="120"
+                                             width="110"
+                                             ng-src="{{imageService.getAvatar(agent.avatar)}}"
+                                             class="img-circle"/>
+
+                                        <div>
+                                            <div style="text-align:center;margin-left:auto;margin-right:auto;">
+                                                Initials:
+                                                {{agent.initials}}
+                                            </div>
+                                            <div style="text-align:center;margin-left:auto;margin-right:auto;"> Active:
+                                                {{agent.active ?
+                                                'Yes' : 'No'}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div column="7" class="btn-group btn-group-xs">
+                                        <button style="margin-left:auto;margin-right:auto;" button info="button"
+                                                ng-click="flow.goTo('region_manager_tagging',agent.id)">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <button style="margin-left:auto;margin-right:auto;" button info="button"
+                                                ng-click="agent.viewTop=!agent.viewTop"><i ng-class="agent.viewTop ?
+                                    'fa fa-minus' :
+                                    'fa fa-search'"> </i>
+                                        </button>
+
+                                        <div style="margin:auto" ng-init="agent.viewTop = false" class="form-group">
+                                            <div ng-if="agent.viewTop">
+                                                <table class="table table-hover table-bordered">
+                                                    <thead>
+                                                    <td colspan="2">Top Customers</td>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>top</td>
+                                                        <td>Customer</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </fieldset>
+        </div>
+    </div>
 
 </div>

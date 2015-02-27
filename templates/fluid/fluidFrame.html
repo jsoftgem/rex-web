@@ -1,0 +1,18 @@
+<div class="container-fluid form-horizontal">
+    <!--<div class="form-group" ng-show="flowFrameService.isSearch">
+        <div class="col-lg-3">
+            <button class="btn btn-danger btn-xs fa fa-close" type="button"
+                    ng-click="flowFrameService.toggleSearch()"></button>
+            <div class="input-icon right">
+                <i class="fa fa-search">
+                </i><input type="text" placeholder="Search task" name="taskSearchField" class="form-control"
+                           ng-model="flowFrameService.searchTask"/>
+            </div>
+        </div>
+    </div>-->
+    <div class="form-group">
+        <div ng-init="initTask(task)" ng-repeat='task in flowFrameService.taskList | filter:{active:true, title:flowFrameService.searchTask}'>
+            <flow-panel task='task'></flow-panel>
+        </div>
+    </div>
+</div>

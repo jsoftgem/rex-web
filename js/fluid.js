@@ -1520,7 +1520,6 @@ flowComponents
                 }
 
 
-
                 // for IE ng-disabled issue
                 scope.$watch(function (scope) {
                         return scope.disabled;
@@ -1533,14 +1532,12 @@ flowComponents
 
                 scope.$watch(function (scope) {
                     return scope.model;
-                 }, function (newValue) {
-                    scope.change({item:newValue});
-                 });
+                }, function (newValue) {
+                    scope.change({item: newValue});
+                });
 
-            
 
-               
-                 c(element.contents())(scope);
+                c(element.contents())(scope);
             },
             template: "<div class='form-group'><label class='col-sm-2 control-label'>{{label}}<span style='color: #ea520a' ng-show='required'>*</span></label><div class='col-sm-10'><select id='{{id}}_select' data-toggle='select' class='form-control' ng-required='required' ng-disabled='disabled'><option class='hidden-lg hidden-md' value='' disabled selected>Select {{label}}</option></select></div></div>",
             replace: true
@@ -1758,11 +1755,11 @@ flowComponents
                 task: "=",
                 sourceUrl: "@",
                 fileChanged: "&",
-                defaultImage:"@",
-                disabled:"="
+                defaultImage: "@",
+                disabled: "="
             },
             replace: true,
-            template: "<div class='form-group'><label class='control-label col-sm-2'>{{label}}<span style='color: #ea520a' ng-show='required'>*</span></label>" +
+            template: "<div class='form-group'><label class='control-label col-sm-2'>{{label}}<i ng-if='notDone' class='fa fa-spinner fa-spin'></i><span style='color: #ea520a' ng-show='required'>*</span></label>" +
             "<div class='col-sm-10'><div class='flow-group-icon' accept='image/*' ng-model='preview' ng-file-drop drag-over-class=\"{accept:'flow-group-icon-accept', reject:'flow-group-icon-error', delay:100}\">" +
             "<img class='thumbnail' style='border-radius: 5px' width='198px' height='173px' ng-src='{{preview[0].dataUrl}}'/></div>" +
             "<div class='marginBottom5px' ng-show='!disabled'><span accept='image/*' class='btn btn-info' ng-show='!disabled' ng-file-change='onFileSelect(preview[0],$files)' ng-file-select ng-model='preview'>" +
@@ -1770,35 +1767,45 @@ flowComponents
             link: function (scope) {
                 scope.fileReaderSupported = window.FileReader != null && (window.FileAPI == null || FileAPI.html5 != false);
                 scope.preview = [];
+                scope.notDone = true;
                 var tries = 0;
 
+                if (!scope.defaultImage) {
+                    scope.defaultImage = "../images/gallery/profile_default.png";
+                }
 
                 scope.refresh = function () {
                     t(function () {
+                        console.info("model", scope.model);
                         if (scope.model) {
+                            console.info("model-2", scope.model);
                             if (scope.sourceUrl) {
                                 scope.preview[0] = {};
                                 scope.preview[0].dataUrl = fh.host + scope.sourceUrl + scope.model;
                             }
-                        } else {
-                            if (tries == 3) {
+                            if (tries == 5) {
                                 tries = 0;
+                                scope.notDone = false;
+                            } else {
+                                tries++;
+                                scope.refresh();
+                            }
+                        } else {
+                            if (!scope.model) {
+                                scope.preview[0] = {};
+                                scope.preview[0].dataUrl = scope.defaultImage;
+                            }
+                            if (tries == 5) {
+                                tries = 0;
+                                scope.notDone = false;
                             } else {
                                 tries++;
                                 scope.refresh();
                             }
                         }
-                    }, 800);
+                    }, 1000);
                 };
                 scope.refresh();
-
-
-                 if(!scope.model || scope.model === null){
-                        if(!scope.defaultImage){
-                            scope.defaultImage =  "images/gallery/profile_default.png";
-                        }
-                        scope.url = scope.defaultImage;
-                     }
 
 
                 scope.onFileSelect = function (file) {
@@ -1816,7 +1823,7 @@ flowComponents
                                 var bufferRead = new FileReader();
 
                                 bufferRead.readAsArrayBuffer(file);
-                                
+
                                 bufferRead.onload = function (e) {
                                     t(function () {
                                         file.data = e.target.result;
@@ -2656,12 +2663,12 @@ flowComponents
                 if (fls.enabled) {
                     fls.loaded = false;
                 }
-                
+
                 config.headers["Access-Control-Allow-Origin"] = "*";
 
                 if (config.headers['flow-container-id'] !== undefined) {
                     $('#' + config.headers['flow-container-id']).loadingOverlay();
-                   
+
                 }
                 if (c.authorization !== undefined) {
                     config.headers['Authorization'] = "Basic " + c.authorization;

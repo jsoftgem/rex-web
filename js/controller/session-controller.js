@@ -25,11 +25,12 @@ angular.module("sessionControllers", ["fluid", "ngResource", "datatables", "flow
             if (method === "put") {
                 u.updateProfile(s.task.flowUserDetail);
                 s.task.tempData = {};
+                window.location = "/home.html";
             }
         });
 
         s.fileChanged = function () {
-            window.location = "/home.html";
+
         }
 
     }])

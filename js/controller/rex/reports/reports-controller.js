@@ -1,9 +1,10 @@
 /**
  * Created by Jerico on 2/6/2015.
  */
-angular.module("reportsController", ["fluid", "ngResource", "datatables", "ngCookies", "angular.filter"])
-    .controller("reportsCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "$cookies", "HOST", "$timeout", "flowFrameService",
-        function (s, dto, dtc, ms, fm, c, f, co, h, t, ffs) {
+angular.module("reportsController", ["fluid", "ngResource", "datatables", "ngCookies", "angular.filter", "flowServices"])
+    .controller("reportsCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService",
+        "$compile", "$filter", "$cookies", "HOST", "$timeout", "flowFrameService", "userProfile", "hasProfile",
+        function (s, dto, dtc, ms, fm, c, f, co, h, t, ffs, up, hp) {
 
 
             s.task.preLoad = function () {
@@ -12,6 +13,7 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "ngCoo
                 s.task.pageAgent = "report_weekly_agent";
                 s.task.service = "services/war/report_weekly_service"
                 s.task.serviceCustomer = s.task.service + "/agent_customer";
+                s.task.hideAgentFilter = false;
 
                 s.flow.pageCallBack = function (page, data) {
                     if (page === s.task.pageAgent) {
@@ -104,6 +106,14 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "ngCoo
                     return report;
                 }
                 s.task.report = s.task.newReport();
+
+                hp.check("agent", s.task)
+                    .success(function (valid) {
+                        s.task.hideAgentFilter = valid;
+                        s.task.report.isAgent = valid;
+                        s.task.report.agent = up.agent;
+                    });
+
 
                 s.task.change = function () {
                     if (!s.task.report.isYear) {
@@ -264,10 +274,10 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "ngCoo
 
         }
     ])
-    .controller("reportsMCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "$cookies", "HOST", "$timeout", "flowFrameService",
-        function (s, dto, dtc, ms, fm, c, f, co, h, t, ffs) {
+    .controller("reportsMCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "$cookies", "HOST", "$timeout", "flowFrameService", "hasProfile", "userProfile",
+        function (s, dto, dtc, ms, fm, c, f, co, h, t, ffs, hp, up) {
 
-
+            s.task.hideAgentFilter = false;
             s.task.preLoad = function () {
                 s.task.pageCustomer = "report_monthly_customer";
 
@@ -284,10 +294,10 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "ngCoo
                     return report;
                 }
 
-                s.task.report = s.task.newReport();
 
                 s.flow.pageCallBack = function (page, data) {
                     if (page === s.task.pageCustomer) {
+                        s.task.report = s.task.newReport();
                         s.task.query();
                     }
                 }
@@ -298,6 +308,14 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "ngCoo
             }
 
             s.task.load = function () {
+
+
+                hp.check("agent", s.task)
+                    .success(function (valid) {
+                        s.task.hideAgentFilter = valid;
+                        s.task.report.isAgent = valid;
+                        s.task.agent = up.agent;
+                    });
 
                 s.task.change = function () {
                     s.task.report.start = 0;

@@ -648,7 +648,7 @@ directives.directive("column", function () {
 });
 
 
-directive("button", [function () {
+directives.directive("button", [function () {
     return {
         restrict: 'A',
         link: function (scope, iElement, iAttrs) {
@@ -675,6 +675,11 @@ directive("button", [function () {
         }
     };
 }]);
+
+
+
+
+
 
 
 

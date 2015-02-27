@@ -1,0 +1,229 @@
+<nav id="topbar" ng-controller="homeCtrl" role="navigation" style="margin-bottom: 0;" data-step="1"
+     data-intro="&lt;b&gt;Topbar&lt;/b&gt; has other styles with live demo. Go to &lt;b&gt;Layouts-&gt;Header&amp;Topbar&lt;/b&gt; and check it out."
+     class="navbar navbar-default navbar-static-top">
+    <div class="navbar-header">
+        <button type="button" data-toggle="collapse" data-target=".sidebar-collapse" class="navbar-toggle"><span
+                class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
+                class="icon-bar"></span><span class="icon-bar"></span></button>
+        <a id="logo" href="#" class="navbar-brand"><span class="fa fa-rocket"></span><span class="logo-text">{{userProfile.group}}</span><img
+                style="display: none" ng-src="{{userProfile.groupEmblem}}" height="46" width="48"
+                class="logo-text-icon emblem"></a>
+    </div>
+    <div class="topbar-main">
+        <a href="#" id="menu-toggle" href="javascript:void(0);" ng-click="header.collapse('k')" class="hidden-xs">
+            <i class="fa fa-bars"></i></a>
+
+        <ul class="nav navabar" ng-show="flowFrameSerivce.taskList.length > 10" class=" hidden-xs">
+            <li class="dropdown dropdown-toggle">
+                <a data-hover="dropdown" href="javascript:void(0);">
+                    <span ng-show="flowFrameService.taskList.length > 0" class="badge badge-blue">{{taskbar.getExcessCount(flowFrameService.taskList)}}</span>&nbsp;<span
+                        class="caret"></span>
+                </a>
+                <ul class="dropdown-menu dropdown-user" style="height:200px;overflow:auto">
+                    <li ng-repeat="task in flowFrameService.taskList" ng-show="$index >= 10"><a href="#"><i
+                            class="{{task.glyph}}"></i>&nbsp;<span>{{task.title}}</span></a></li>
+                </ul>
+            </li>
+        </ul>
+
+        <ul class="nav navbar navbar-top-links navbar-right">
+            <li>
+                <fluid-loader><img src="images/loader/loader6.GIF">
+            </li>
+            <li>
+                <div class="search-tasks">
+                    <input class="animted anim-dur fadeIn" ng-show="flowFrameService.isSearch" type="text"
+                           placeholder="Search task"
+                           name="taskSearchField"
+                           ng-model="flowFrameService.searchTask"/>
+
+                    <a href="#"
+                       ng-click="flowFrameService.toggleSearch()"
+                       flow-tooltip class="fa fa-search"
+                       tooltip-title="Search tasks"></a>
+                </div>
+
+            </li>
+            <li class="dropdown topbar-user"><a data-hover="dropdown" href="javascript:void(0);"
+                                                class="dropdown-toggle"><img ng-src="{{userProfile.avatar}}" alt=""
+                                                                             class="img-responsive img-circle"/>&nbsp;<span
+                    class="hidden-xs">{{userProfile.fullName}}</span>&nbsp;<span class="caret"></span></a>
+                <ul class="dropdown-menu dropdown-user">
+                    <li><a href="#" ng-click="editProfile()"><i class="octicon octicon-file-media"></i>My Profile</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li><a href="#" ng-click="logout()"><i class="fa fa-key"></i>Log Out</a></li>
+                </ul>
+            </li>
+            <li fn-bar></li>
+            <li class="dropdown hidden-lg hidden-md hidden-sm">
+                <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle "><i class="fa fa-th"></i>
+                    <span ng-show="flowFrameService.taskList.length > 0" class="badge badge-blue">{{flowFrameService.taskList.length}}</span>&nbsp;<span
+                            class="caret"></span></a>
+                <ul class="dropdown-menu dropdown-tasks translucent">
+                    <li>
+                        <div class="dropdown-slimscroll" style="width:250px;height:300px;overflow:auto">
+                            <ul>
+                                <li class="fluid-task-item-xs {{tsk.active ? 'fluid-task-item-active':'fluid-task-item-hidden'}}"
+                                    ng-repeat="tsk in flowFrameService.taskList">
+                                    <a href="#" ng-click="taskbar.open(tsk)">
+                                        <i class="{{tsk.glyph}}"></i>&nbsp;&nbsp;&nbsp;<span>{{tsk.title}}</span></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <li id="dropdown-theme-setting" class="dropdown hidden-xs">
+                <!--BEGIN THEME SETTING-->
+                <a id="theme-setting" href="javascript:;" ng-click="header.toggle('theme')" class="dropdown-toggle"><i
+                        class="fa fa-cogs"></i></a>
+                <ul ng-class="{show:header.theme}" class="dropdown-menu dropdown-theme-setting pull-right">
+                    <li>
+                        <h4 class="mtn">Theme Styles</h4>
+                        <select id="list-style" ng-model="header.theme_style" ng-change="style_change()"
+                                class="form-control">
+                            <option value="style1">Flat Squared style</option>
+                            <option value="style2">Flat Rounded style</option>
+                            <option value="style3">Flat Border style</option>
+                        </select>
+                    </li>
+                    <li>
+                        <h4 class="mtn">Menu Styles</h4>
+                        <select id="list-menu" ng-model="header.menu_style" ng-change="header.collapse('change')"
+                                class="form-control">
+                            <option value="sidebar-default">Menu style 1</option>
+                            <option value="sidebar-colors">Menu style 2</option>
+                            <option value="sidebar-icons">Menu style 3</option>
+                            <option value="sidebar-collapsed">Menu style 4</option>
+                        </select>
+                    </li>
+                    <li>
+                        <h4 class="mtn">Theme Colors</h4>
+                        <ul id="list-color" class="list-unstyled list-inline">
+                            <li data-color="green-dark" ng-click="theme_change('green-dark')" data-hover="tooltip"
+                                title="Green - Dark" class="green-dark"></li>
+                            <li data-color="red-dark" ng-click="theme_change('red-dark')" data-hover="tooltip"
+                                title="Red - Dark" class="red-dark"></li>
+                            <li data-color="pink-dark" ng-click="theme_change('pink-dark')" data-hover="tooltip"
+                                title="Pink - Dark" class="pink-dark"></li>
+                            <li data-color="blue-dark" ng-click="theme_change('blue-dark')" data-hover="tooltip"
+                                title="Blue - Dark" class="blue-dark"></li>
+                            <li data-color="yellow-dark" ng-click="theme_change('yellow-dark')" data-hover="tooltip"
+                                title="Yellow - Dark" class="yellow-dark"></li>
+                            <li data-color="green-grey" ng-click="theme_change('green-grey')" data-hover="tooltip"
+                                title="Green - Grey" class="green-grey"></li>
+                            <li data-color="red-grey" ng-click="theme_change('red-grey')" data-hover="tooltip"
+                                title="Red - Grey" class="red-grey"></li>
+                            <li data-color="pink-grey" ng-click="theme_change('pink-grey')" data-hover="tooltip"
+                                title="Pink - Grey" class="pink-grey"></li>
+                            <li data-color="blue-grey" ng-click="theme_change('blue-grey')" data-hover="tooltip"
+                                title="Blue - Grey" class="blue-grey"></li>
+                            <li data-color="yellow-grey" ng-click="theme_change('yellow-grey')" data-hover="tooltip"
+                                title="Yellow - Grey" class="yellow-grey"></li>
+                            <li data-color="yellow-green" ng-click="theme_change('yellow-green')" data-hover="tooltip"
+                                title="Yellow - Green" class="yellow-green"></li>
+                            <li data-color="orange-grey" ng-click="theme_change('orange-grey')" data-hover="tooltip"
+                                title="Orange - Grey" class="orange-grey"></li>
+                            <li data-color="pink-blue" ng-click="theme_change('pink-blue')" data-hover="tooltip"
+                                title="Pink - Blue" class="pink-blue"></li>
+                            <li data-color="pink-violet" ng-click="theme_change('pink-violet')" data-hover="tooltip"
+                                title="Pink - Violet" class="pink-violet active"></li>
+                            <li data-color="orange-violet" ng-click="theme_change('orange-violet')" data-hover="tooltip"
+                                title="Orange - Violet" class="orange-violet"></li>
+                            <li data-color="pink-green" ng-click="theme_change('orange-violet')" data-hover="tooltip"
+                                title="Pink - Green" class="pink-green"></li>
+                            <li data-color="pink-brown" ng-click="theme_change('pink-brown')" data-hover="tooltip"
+                                title="Pink - Brown" class="pink-brown"></li>
+                            <li data-color="orange-blue" ng-click="theme_change('orange-blue')" data-hover="tooltip"
+                                title="Orange - Blue" class="orange-blue"></li>
+                            <li data-color="yellow-blue" ng-click="theme_change('yellow-blue')" data-hover="tooltip"
+                                title="Yellow - Blue" class="yellow-blue"></li>
+                            <li data-color="green-blue" ng-click="theme_change('green-blue')" data-hover="tooltip"
+                                title="Green - Blue" class="green-blue"></li>
+                        </ul>
+                    </li>
+                </ul>
+                <!--END THEME SETTING
+                -->
+            </li>
+        </ul>
+
+
+        <!-- taskbar for large screen -->
+        <a href="#" class="fluidTaskBar hidden-md hidden-sm hidden-xs"
+           ng-class="task.active ? 'fluidTaskBar-icon-shown' : ''" style="height:47px;width:48px; margin: 1px;"
+           ng-repeat="task in flowFrameService.taskList | limitTo:10" ng-click="taskbar.open(task)" flow-bar-tooltip
+           index="$index"
+           task="task">
+            <i class="fluid-bar-icon {{task.glyph}}"></i>
+        </a>
+
+        <div class="dropdown fluidTaskBarMore hidden-md hidden-sm hidden-xs">
+            <a href="#" data-hover="dropdown" class="hiddex-xs dropdown-toggle"
+               ng-show="flowFrameService.taskList.length > 10">
+                <i class="fluid-bar-icon-sub-task fa fa-th"></i>&nbsp;<span class="badge badge-blue">{{taskbar.getExcessCount(10)}}</span>
+            </a>
+
+            <ul class="dropdown-menu dropdown-tasks translucent">
+                <li>
+                    <div class="dropdown-slimscroll" style="width:250px;height:300px;overflow:auto">
+                        <ul>
+                            <li class="fluid-task-item {{tsk.active ? 'fluid-task-item-active':'fluid-task-item-hidden'}}"
+                                ng-repeat="tsk in flowFrameService.taskList"
+                                ng-hide="$index < 10">
+                                <div class="btn-group btn-group-sm" style="color:white;">
+                                    <a href="#" class="btn btn-danger btn-xs text-inverse"
+                                       ng-click="taskbar.close(tsk,$index)"><i class="fa fa-close"></i></a>
+                                    <a href="#" class="btn btn-info btn-xs" ng-click="taskbar.hide(tsk)"><i
+                                            class="fa fa-angle-down"></i></a>
+                                </div>
+                                <a href="#" ng-click="taskbar.open(tsk)">
+                                    <i class="{{tsk.glyph}}"></i>&nbsp;&nbsp;&nbsp;<span
+                                        class="task-item">{{tsk.title}}</span></a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+
+
+        <!-- taskbar from medium to small screens -->
+        <a href="#" class="fluidTaskBar hidden-lg hidden-xs" ng-class="task.active ? 'fluidTaskBar-icon-shown' : ''"
+           style="height:47px;width:48px; margin: 1px;" ng-repeat="task in flowFrameService.taskList | limitTo:5"
+           ng-click="taskbar.open(task)" flow-tooltip tooltip-title="{{task.title}}">
+            <i class="fluid-bar-icon {{task.glyph}}"></i>
+        </a>
+
+        <div class="dropdown fluidTaskBarMore hidden-lg hidden-xs">
+            <a href="#" data-hover="dropdown" class="hiddex-xs dropdown-toggle"
+               ng-show="flowFrameService.taskList.length > 5">
+                <i class="fluid-bar-icon-sub-task fa fa-th"></i>&nbsp;<span class="badge badge-blue">{{taskbar.getExcessCount(5)}}</span>
+            </a>
+
+            <ul class="dropdown-menu dropdown-tasks translucent">
+                <li>
+                    <div class="dropdown-slimscroll" style="width:250px;height:300px;overflow:auto">
+                        <ul>
+                            <li class="fluid-task-item {{tsk.active ? 'fluid-task-item-active':'fluid-task-item-hidden'}}"
+                                ng-repeat="tsk in flowFrameService.taskList"
+                                ng-hide="$index < 5">
+                                <div class="btn-group btn-group-sm" style="color:white;">
+                                    <a href="#" class="btn btn-danger btn-xs text-inverse"
+                                       ng-click="taskbar.close(tsk,$index)"><i class="fa fa-close"></i></a>
+                                    <a href="#" class="btn btn-info btn-xs" ng-click="taskbar.hide(tsk)"><i
+                                            class="fa fa-angle-down"></i></a>
+                                </div>
+                                <a href="#" ng-click="taskbar.open(tsk)">
+                                    <i class="{{tsk.glyph}}"></i>&nbsp;&nbsp;&nbsp;<span
+                                        class="task-item">{{tsk.title}}</span></a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

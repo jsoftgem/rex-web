@@ -3,13 +3,17 @@
  */
 angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies"])
     .controller("plannerCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "$cookies", "HOST", "$timeout", "flowFrameService",
-        function (s, dto, dtc, ms, fm, c, f, co, h, t, ffs) {
+        "hasProfile", "userProfile",
+        function (s, dto, dtc, ms, fm, c, f, co, h, t, ffs, hp, up) {
 
 
             s.otherActivity = {};
             s.refreshCustomer = false;
             s.hangingActivity = {};
             s.calendar = {};
+            s.task.hideAgentFilter = false;
+
+
             s.newCustomer = function () {
                 var customer = {};
                 customer.customers = [];
@@ -27,7 +31,11 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies
 
             s.customer = s.newCustomer();
             s.task.preLoad = function () {
-
+                hp.check("agent", s.task)
+                    .success(function (valid) {
+                        s.task.hideAgentFilter = valid;
+                        s.task.agent = up.agent;
+                    });
                 s.task.schoolYear = undefined;
                 s.task.agent = undefined;
                 s.task.activities = [];

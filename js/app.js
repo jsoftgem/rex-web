@@ -6,7 +6,7 @@
 
 'use strict';
 angular.module("app", ["MAdmin", "ngCookies", "flowServices", "flowFactories", "home", "fluid", "devControllers", "adminControllers", "flowAppDirectives", "sessionControllers", "fNotify", "infinite-scroll"])
-    .run(["flowFrameService", "flowHttpProvider", "userProfile", "$cookies", "responseEvent", "fnService", "userAppSetting", "HOST","hasProfile", function (f, fhp, up, c, re, fns, uas, h,hp) {
+    .run(["flowFrameService", "flowHttpProvider", "userProfile", "$cookies", "responseEvent", "fnService", "userAppSetting", "HOST", "hasProfile", function (f, fhp, up, c, re, fns, uas, h, hp) {
 
         fhp.host = h;
 

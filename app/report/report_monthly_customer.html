@@ -29,7 +29,7 @@
                     </div>
                 </div>
 
-                <div>
+                <div ng-hide="task.hideAgentFilter">
                     <div class="col-lg-10">
                         <flow-look-up disabled="!task.report.isAgent" model="task.agent" task="task" flow="flow"
                                       id="{{flow.getElementFlowId('agentLookUp')}}"

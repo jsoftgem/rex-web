@@ -104,11 +104,19 @@ angular.module("flowServices", ["ngCookies", "fluid"])
         return this;
 
     }])
-    .service("hasProfile",["flowHttpProvider",function(f){
-        this.url = "";
-        
-        this.check = function(profiles,task){
-            return f.post(this.url,profiles,task);
+    .service("hasProfile", ["flowHttpProvider", function (f) {
+
+        this.check = function (profiles, task) {
+            return f.post(this.url, profiles, task);
+        }
+        return this;
+    }])
+    .service("imageService", ["flowHttpProvider", function (f) {
+
+        this.url = "services/download_service/getContent/";
+
+        this.getAvatar = function (id) {
+            return f.host + this.url + id;
         }
 
         return this;
