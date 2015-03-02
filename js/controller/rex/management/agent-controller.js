@@ -1,8 +1,8 @@
 /**
  * Created by Jerico on 1/11/2015.
  */
-angular.module("agentController", ["fluid", "ngResource", "datatables", "ngCookies"])
-    .controller("agentCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "$cookies", function (s, dto, dtc, ms, fm, c, f, co) {
+angular.module("agentController", ["fluid", "ngResource", "datatables"])
+    .controller("agentCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", function (s, dto, dtc, ms, fm, c, f, ss) {
         s.editPassword = false;
 
         var create = new CreateControl();
@@ -46,7 +46,7 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "ngCooki
         var deleteCtl = new DeleteControl();
         deleteCtl.id = "agent_del_ctl";
 
-        s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, co);
+        s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, ss);
         s.dtColumns = FlowColumns(dtc);
         s.dtColumns.push(dtc.newColumn("user.flowUserDetail.fullName").withTitle("Name").withOption("searchable", true));
         s.dtColumns.push(dtc.newColumn("active").withTitle("Active").renderWith(function (data) {

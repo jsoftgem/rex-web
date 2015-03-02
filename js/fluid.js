@@ -1,9 +1,13 @@
 /**Flow Components v0.0.1
  * Created by Jerico de Guzman
  * October 2014**/
-var flowComponents = angular.module("fluid", ["ngCookies", "angularFileUpload", "oc.lazyLoad"]);
+var flowComponents = angular.module("fluid", ["angularFileUpload", "oc.lazyLoad", "LocalStorageModule"]);
 
-flowComponents.config(["$httpProvider", function (h) {
+flowComponents.config(["$httpProvider", "localStorageServiceProvider", function (h, ls) {
+    ls.setPrefix("fluid")
+        .setStorageType("sessionStorage")
+        .setNotify(true, true);
+
     h.interceptors.push("flowInjector");
 }]);
 flowComponents.run(["$templateCache", function (tc) {
@@ -15,7 +19,7 @@ flowComponents.run(["$templateCache", function (tc) {
     tc.put("flowCheck.html", "<label class='checkbox' ng-class=\"'checked':model\"><input class='custom-checkbox' type='checkbox' ng-model='model' ng-required='required' ng-disabled='disabled' name='{{name}}' data-toggle='checkbox'><span class='icons marginBottom5px'><span class='text-info icon-checked'></span><span class='text-info icon-unchecked'></span></span>{{label}}</label>");
 }]);
 flowComponents
-    .directive("flowPanel", ["flowFrameService", "flowHttpProvider", "$templateCache", "$compile", "flowMessageService", "$rootScope", "$q", "$timeout", "$ocLazyLoad",
+    .directive("flowPanel", ["flowFrameService", "flowHttpService", "$templateCache", "$compile", "flowMessageService", "$rootScope", "$q", "$timeout", "$ocLazyLoad",
         function (f, f2, tc, c, ms, rs, q, t, oc) {
             return {
                 scope: {task: '='},
@@ -25,11 +29,15 @@ flowComponents
                 link: {
                     pre: function (scope, element) {
                         /* Initialize variables*/
+                        scope.flowFrameService = f;
+
+                        console.info("fullScreen", scope.flowFrameService.fullScreen);
+                        console.info("fluidPanel-task", scope.task);
                         scope.userTask = {};
                         scope.userTask.closed = false;
-                        scope.showToolBar = scope.task.showToolBar;
+                        scope.showToolBar = scope.task ? scope.task.showToolBar : false;
                         scope.pages = [];
-                        scope.page = scope.task.page;
+                        scope.page = scope.task ? scope.task.page : undefined;
                         scope.flow = {};
                         scope.toolbars = [
                             {"id": 'home', "glyph": "fa fa-home", "label": "home", "disabled": false, uiType: "info"},
@@ -489,16 +497,15 @@ flowComponents
 
                         };
                         scope.task.refresh = function () {
-
                             if (scope.page.autoGet) {
-                                $("#rfh_btn_" + scope.task.id).find("span").addClass("fa-spin");
+                                scope.task.loaded = false;
                                 f2.get(scope.homeUrl, scope.task)
                                     .success(function (data) {
                                         scope.flow.pageCallBack(scope.page.name, data, "refresh");
-                                        $("#rfh_btn_" + scope.task.id).find("span").removeClass("fa-spin");
+                                        scope.task.loaded = true;
                                     })
                                     .error(function (data) {
-                                        $("#rfh_btn_" + scope.task.id).find("span").removeClass("fa-spin");
+                                        scope.task.loaded = true;
                                     });
                             } else {
                                 rs.$broadcast(scope.flow.event.getRefreshId());
@@ -669,6 +676,9 @@ flowComponents
                                 }
                             }
                         };
+                        scope.task.fullScreen = function () {
+                            f.toggleFullscreen(scope.task);
+                        }
                         /*********************/
 
                         /*Instance creation*/
@@ -678,32 +688,38 @@ flowComponents
                                 var $task = {};
                                 scope.copy = {};
                                 angular.copy(scope.task, scope.copy);
-                                angular.forEach(f.taskList, function (task, key) {
+                                if (!f.fullScreen) {
 
-                                    if (task.id === scope.task.id) {
-                                        this.task = task;
-                                        this.index = key;
-                                    }
+                                    angular.forEach(f.taskList, function (task, key) {
 
-                                }, $task);
+                                        if (task.id === scope.task.id) {
+                                            this.task = task;
+                                            this.index = key;
+                                        }
 
-                                f.taskList[$task.index] = f.buildTask(d);
-                                f.taskList[$task.index].id = f.taskList[$task.index].id + "_" + $task.index;
-                                f.taskList[$task.index].origin = scope.task.origin;
+                                    }, $task);
+
+                                    f.taskList[$task.index] = f.buildTask(d);
+                                    f.taskList[$task.index].id = f.taskList[$task.index].id + "_" + $task.index;
+                                    f.taskList[$task.index].origin = scope.task.origin;
+                                    scope.task = f.taskList[$task.index];
+                                } else {
+                                    scope.task = f.buildTask(d);
+                                    scope.task.id = "fullscreen_" + d.id;
+                                }
 
                                 var newTask = scope.task.newTask;
-                                scope.task = f.taskList[$task.index];
                                 scope.task.generic = false;
                                 scope.task.newTask = newTask;
-
-                            })
+                                console.info("task-initialization-finished", scope.task);
+                            });
                         }
                         /*********************/
 
                     },
-                    post: function (scope) {
+                    post: function (scope, element) {
 
-
+                        var parent = element.parent();
 
                         /*events*/
 
@@ -779,7 +795,7 @@ flowComponents
 
                         /* Post creation */
 
-                        if (scope.task) {
+                        if (scope.task && !scope.flowFrameService.fullscreen) {
                             if (scope.task.size) {
                                 if (scope.task.size == '25') {
                                     scope.task.max25(true);
@@ -793,33 +809,80 @@ flowComponents
                             }
                         }
 
-                        if (!scope.task.generic) {
-
-                            if (scope.task.lazyLoad === true) {
-                                var pathArr = undefined;
-                                if (scope.task.moduleFiles.indexOf(",") > 0) {
-                                    pathArr = scope.task.moduleFiles.split(",");
-                                }
-
-                                var files = [];
-                                if (pathArr) {
-                                    for (var i = 0; i < pathArr.length; i++) {
-                                        files.push(pathArr[i]);
-                                    }
-                                } else {
-                                    files.push(scope.task.moduleFiles);
-                                }
-                                oc.load({
-                                    name: scope.task.moduleJS,
-                                    files: files
-                                }).then(function () {
-                                    generateTask(scope, t, f2);
-                                });
-                            } else {
-                                generateTask(scope, t, f2);
+                        scope.$watch(function (scope) {
+                            if (scope.task) {
+                                return scope.task.generic;
                             }
+                            return;
+                        }, function (generic) {
+                            if (generic === false) {
+                                if (scope.task.lazyLoad === true) {
+                                    var pathArr = undefined;
+                                    if (scope.task.moduleFiles.indexOf(",") > 0) {
+                                        pathArr = scope.task.moduleFiles.split(",");
+                                    }
 
-                        }
+                                    var files = [];
+                                    if (pathArr) {
+                                        for (var i = 0; i < pathArr.length; i++) {
+                                            files.push(pathArr[i]);
+                                        }
+                                    } else {
+                                        files.push(scope.task.moduleFiles);
+                                    }
+                                    oc.load({
+                                        name: scope.task.moduleJS,
+                                        files: files
+                                    }).then(function () {
+                                        generateTask(scope, t, f2);
+                                    });
+                                } else {
+                                    generateTask(scope, t, f2);
+                                }
+                            }
+                        });
+
+
+                        scope.$watch(function (scope) {
+                            return (!scope.task.generic && scope.flowFrameService.fullScreen);
+                        }, function (fullScreen) {
+                            if (fullScreen) {
+
+                                var height = scope.flowFrameService.getFrame().height();
+
+                                console.info("height", height);
+                                console.info("panel height", parent.height());
+
+                                var panel = $("#_id_fpb_" + scope.task.id + ".portlet-body.flow-panel");
+                                console.info("id", "#_id_fpb_" + scope.task.id + ".portlet-body.flow-panel");
+
+                                if (panel.height() < height) {
+                                    panel.height(height - 1);
+                                }
+                                console.info("panel", panel.height());
+
+                            }
+                        });
+
+
+                        $(window).on("resize", function () {
+                            if (scope.flowFrameService.fullScreen) {
+                                var height = scope.flowFrameService.getFrame().height();
+
+                                console.info("height", height);
+                                console.info("panel height", parent.height());
+
+                                var panel = $("#_id_fpb_" + scope.task.id + ".portlet-body.flow-panel");
+                                console.info("id", "#_id_fpb_" + scope.task.id + ".portlet-body.flow-panel");
+
+                                if (panel.height() < height) {
+                                    panel.height(height - 1);
+                                }
+                                console.info("panel", panel.height());
+
+                            }
+                        });
+
 
                         /********************/
                     }
@@ -883,18 +946,20 @@ flowComponents
 
 
                 scope.initTask = function (task) {
-                    scope.$watch(function () {
-                        return task.active;
-                    }, function (newValue, oldValue) {
-                        if (true === newValue) {
-                            if (task.onWindowOpening()) {
-                                task.onWindowOpened();
-                            } else {
-                                task.active = false;
+                    if (task) {
+                        scope.$watch(function () {
+                            return task.active;
+                        }, function (newValue, oldValue) {
+                            if (true === newValue) {
+                                if (task.onWindowOpening()) {
+                                    task.onWindowOpened();
+                                } else {
+                                    task.active = false;
+                                }
                             }
-                        }
 
-                    });
+                        });
+                    }
                 }
             }
         };
@@ -944,7 +1009,7 @@ flowComponents
             }
         }
     }])
-    .directive("flowBar", ["flowFrameService", "$templateCache", "$compile", "flowHttpProvider", function (f, tc, c, f2) {
+    .directive("flowBar", ["flowFrameService", "$templateCache", "$compile", "flowHttpService", function (f, tc, c, f2) {
 
         return {
             restrict: "AEC",
@@ -1070,7 +1135,7 @@ flowComponents
             }
         }
     }])
-    .directive("flowSubTable", ["$compile", "flowModalService", "flowHttpProvider", "flowFrameService", "$rootScope", function (c, fm, f, f2, rs) {
+    .directive("flowSubTable", ["$compile", "flowModalService", "flowHttpService", "flowFrameService", "$rootScope", function (c, fm, f, f2, rs) {
         return {
             restrict: "AE",
             transclude: true,
@@ -1287,7 +1352,7 @@ flowComponents
 
         }
     }])
-    .directive("flowLookUp", ["$compile", "flowModalService", "flowHttpProvider", "flowFrameService", "$timeout", function (c, fm, f, f2, t) {
+    .directive("flowLookUp", ["$compile", "flowModalService", "flowHttpService", "flowFrameService", "$timeout", function (c, fm, f, f2, t) {
         return {
             restrict: "AE",
             scope: {
@@ -1461,7 +1526,7 @@ flowComponents
             transclude: true
         }
     }])
-    .directive("flowSelect", ["flowHttpProvider", "$compile", "$timeout", "browser", function (f, c, t, b) {
+    .directive("flowSelect", ["flowHttpService", "$compile", "$timeout", function (f, c, t, b) {
         return {
             scope: {
                 id: "@",
@@ -1543,7 +1608,7 @@ flowComponents
             replace: true
         }
     }])
-    .directive("flowPermissionEnabled", ["flowHttpProvider", "$compile", "$cookies", function (f, c, cc) {
+    .directive("flowPermissionEnabled", ["flowHttpService", "$compile", function (f, c) {
         return {
             restrict: "A",
             scope: {task: "=", page: "="},
@@ -1571,7 +1636,7 @@ flowComponents
 
                 }
                 if (!contains) {
-                    f.get(f.permissionUrl + "?authorization=" + cc.authorization + "&pageName=" + scope.page.name + "&method=" + scope.method, scope.task)
+                    f.get(f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method, scope.task)
                         .success(function (data) {
                             if (!data) {
                                 scope.task.permssionCache.push({
@@ -1588,7 +1653,7 @@ flowComponents
 
         }
     }])
-    .directive("flowPermissionVisible", ["flowHttpProvider", "$compile", "$cookies", function (f, c, cc) {
+    .directive("flowPermissionVisible", ["flowHttpService", "$compile", function (f, c) {
         return {
             restrict: "A",
             scope: {task: "=", page: "="},
@@ -1617,7 +1682,7 @@ flowComponents
 
                 }
                 if (!contains) {
-                    f.get(f.permissionUrl + "?authorization=" + cc.authorization + "&pageName=" + scope.page.name + "&method=" + scope.method, scope.task)
+                    f.get(f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method, scope.task)
                         .success(function (data) {
                             if (!data) {
                                 scope.task.permssionCache.push({
@@ -1744,7 +1809,7 @@ flowComponents
             }
         }
     }])
-    .directive("flowImage", ["$timeout", "$upload", "$cookies", "flowHttpProvider", function (t, u, ck, fh) {
+    .directive("flowImage", ["$timeout", "$upload", "sessionService", "flowHttpService", function (t, u, ss, fh) {
         return {
             scope: {
                 model: "=",
@@ -1832,7 +1897,7 @@ flowComponents
                                             method: scope.method,
                                             headers: {
                                                 "flow-container-id": "_id_fpb_" + scope.task.id,
-                                                "Authorization": "Basic " + ck.authorization,
+                                                "Authorization": ss.getSessionProperty(AUTHORIZATION),
                                                 "flowPage": scope.task.currentPage,
                                                 "flowUploadFileId": scope.model
                                             },
@@ -2037,12 +2102,15 @@ function setChildIndexIds(element, taskId, suffix, depth) {
 }
 
 flowComponents
-    .service("flowFrameService", ["$cookies", "$timeout", function (c, t) {
+    .service("flowFrameService", ["flowHttpService", "$timeout", function (f, t) {
         this.isSearch = false;
+
         this.searchTask = "";
+
+        this.taskUrl = "services/flow_task_service/getTask?name="
+
         if (this.taskList === undefined) {
             this.taskList = [];
-            c.taskList = this.taskList;
         }
 
         this.pushTask = function (task) {
@@ -2078,6 +2146,29 @@ flowComponents
         }
 
 
+        this.toggleFullscreen = function (task) {
+            this.fullScreen = true;
+            this.fullScreenTask = this.getFullTask(task);
+        }
+
+        this.toogleFluidscreen = function () {
+            this.fullScreen = false;
+        }
+
+        this.getFullTask = function (task) {
+            var fullScreenTask = undefined;
+
+            if (task) {
+                var fullScreenTask = this.createGenericTask();
+
+                fullScreenTask.url = this.taskUrl + task.name;
+                fullScreenTask.size = 100;
+                console.info("task", fullScreenTask);
+            }
+
+            return fullScreenTask;
+        }
+
         this.createGenericTask = function () {
 
             var genericTask = Task();
@@ -2108,6 +2199,11 @@ flowComponents
 
             return genericTask;
         };
+
+
+        this.getFrame = function () {
+            return $("div.frame-content.frame-fullscreen");
+        }
 
 
         this.buildTask = function (task) {
@@ -2142,7 +2238,7 @@ flowComponents
         return this;
 
     }])
-    .service("flowHttpProvider", ["$rootScope", "$http", "flowLoaderService", "$cookies", "$resource", function (rs, h, fl, c, r) {
+    .service("flowHttpService", ["$rootScope", "$http", "flowLoaderService", "$resource", function (rs, h, fl, r) {
 
         this.post = function (url, data, task) {
             var promise = null;
@@ -2379,8 +2475,7 @@ flowComponents
             }
             var headers = {
                 "flow-container-id": "_id_fpb_" + task.id,
-                "Content-type": "application/json",
-                "Authorization": "Basic " + c.authorization
+                "Content-type": "application/json"
             };
 
             if (task.currentPage) {
@@ -2634,29 +2729,56 @@ flowComponents
 
 
     }])
-    .service("browser", ["$window", function (w) {
+    .service("sessionService", ["localStorageService", function (ls) {
 
-        return function () {
+        this.isSessionSupported = ls.isSupported;
 
-            var userAgent = w.navigator.userAgent;
+        this.type = function () {
+            return this.isSessionSupported ? "session storage" : "cookie storage";
+        }
 
-            var browsers = {chrome: /chrome/i, safari: /safari/i, firefox: /firefox/i, ie: /internet explorer/i};
+        this.isSessionOpened = function () {
+            return ls.get(AUTHORIZATION) !== null;
+        }
 
-
-            for (var key in browsers) {
-                if (browsers[key].test(userAgent)) {
-                    return key;
-                }
+        this.addSessionProperty = function (key, value) {
+            if (this.isSessionSupported) {
+                ls.set(key, value);
+            } else {
+                ls.cookie.set(key, value);
             }
+        }
 
+        this.getSessionProperty = function (key) {
+            if (this.isSessionSupported) {
+                return ls.get(key);
+            } else {
+                return ls.cookie.get(key);
+            }
+        }
 
-            return 'unknown';
+        this.login = function (username, password, remember) {
+            var base64 = window.btoa(username + ":" + password);
+            this.addSessionProperty("remember", remember);
+            this.addSessionProperty(AUTHORIZATION, "basic " + base64);
+        }
+
+        this.createSession = function (base64) {
+            this.addSessionProperty(AUTHORIZATION, "basic " + base64);
+        }
+
+        this.logout = function () {
+            if (this.isSessionSupported) {
+                ls.clearAll();
+            } else {
+                ls.cookie.clearAll();
+            }
         }
 
     }]);
 
 flowComponents
-    .factory("flowInjector", ["$q", "$rootScope", "$cookies", "flowLoaderService", "responseEvent", function (q, rs, c, fls, r) {
+    .factory("flowInjector", ["$q", "$rootScope", "sessionService", "flowLoaderService", "responseEvent", function (q, rs, ss, fls, r) {
 
         return {
             "request": function (config) {
@@ -2670,8 +2792,8 @@ flowComponents
                     $('#' + config.headers['flow-container-id']).loadingOverlay();
 
                 }
-                if (c.authorization !== undefined) {
-                    config.headers['Authorization'] = "Basic " + c.authorization;
+                if (ss.isSessionOpened()) {
+                    config.headers['Authorization'] = ss.getSessionProperty(AUTHORIZATION);
                 }
                 return config;
             }
@@ -2764,10 +2886,11 @@ function Control() {
 var eventInterceptorId = "event_interceptor_id_";
 var goToEventID = "event_got_id_";
 var EVENT_NOT_ALLOWED = "not_allowed_";
+var AUTHORIZATION = "authorization";
 
 
 function generateTask(scope, t, f2) {
-
+    console.info("generateTask > scope.page", scope.page);
     if (scope.page === undefined || scope.page === null) {
         if (scope.task.pages) {
             var $page = getHomePageFromTaskPages(scope.task);
@@ -2775,6 +2898,7 @@ function generateTask(scope, t, f2) {
             scope.homeUrl = $page.page.get;
             scope.home = $page.page.name;
             scope.pages = [$page.page];
+            console.info("page", scope.page);
         }
     } else {
         scope.homeUrl = scope.page.get;
@@ -2830,10 +2954,9 @@ function generateTask(scope, t, f2) {
             scope.task.preLoaded = true;
         }
         scope.loadGet();
-        $("#rfh_btn_" + scope.task.id).find("span").removeClass("fa-spin");
-
         if (scope.task.preLoaded) {
             scope.task.load();
+            scope.task.loaded = true;
         }
         scope.task.postLoad();
 

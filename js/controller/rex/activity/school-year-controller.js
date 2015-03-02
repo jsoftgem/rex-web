@@ -1,6 +1,6 @@
-angular.module("schoolYearController", ["fluid", "ngResource", "datatables", "ngCookies"])
-    .controller("schoolYearCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "$cookies",
-        function (s, dto, dtc, ms, fm, c, f, co) {
+angular.module("schoolYearController", ["fluid", "ngResource", "datatables"])
+    .controller("schoolYearCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService",
+        function (s, dto, dtc, ms, fm, c, f, ss) {
 
             s.task.preLoad = function () {
                 s.task.deleleModalId = "schoolYearDeleteModal";
@@ -98,13 +98,13 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables", "ng
 
             }
 
-            s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, co);
+            s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, ss);
             s.dtColumns = FlowColumns(dtc, "task.edit", "task.delete");
             s.dtColumns.push(dtc.newColumn("description").withTitle("School Year").withOption("searchable", true));
 
         }])
-    .controller("schoolYearCreateCtrl", ["$scope", "flowMessageService", "flowModalService", "$compile", "$filter", "$cookies",
-        function (s, ms, fm, c, f, co) {
+    .controller("schoolYearCreateCtrl", ["$scope", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService",
+        function (s, ms, fm, c, f, ss) {
 
             s.task.create = {};
 
@@ -189,21 +189,6 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables", "ng
                 }
             });
 
-
-            /*   s.$on(s.flow.getEventId("createMarketSegmentEvent"), function (event) {
-             if (s.task.modelCreate.warMarketSegments === undefined) {
-             s.task.modelCreate.warMarketSegments = [];
-             }
-
-             s.task.create.marketSegment = {};
-             s.task.create.marketSegment.marketSegmentControlSet = [];
-             s.task.create.marketSegment.marketSegmentControlSet.push({control: undefined})
-             s.task.create.customerManaged = false;
-             s.task.modelCreate.warMarketSegments.push(s.task.create.marketSegment);
-             s.task.create.marketIndex = s.task.modelCreate.warMarketSegments.length - 1;
-             fm.show(s.flow.getElementFlowId("marketSegmentModal"));
-             });*/
-
  
             s.$watch(function (scope) {
                     return scope.task.modelCreate.warCustomerMarkets[s.task.create.customerIndex].marketPotential
@@ -216,8 +201,8 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables", "ng
             );
 
         }])
-    .controller("schoolYearEditCtrl", ["$scope", "flowMessageService", "flowModalService", "$compile", "$filter", "$cookies",
-        function (s, ms, fm, c, f, co) {
+    .controller("schoolYearEditCtrl", ["$scope", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService",
+        function (s, ms, fm, c, f, ss) {
 
             s.save = function () {
                 if (!angular.equals(s.task.modelEdit, s.task.tempEdit)) {

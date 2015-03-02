@@ -1,10 +1,10 @@
 /**
  * Created by Jerico on 2/6/2015.
  */
-angular.module("reportsController", ["fluid", "ngResource", "datatables", "ngCookies", "angular.filter", "flowServices"])
+angular.module("reportsController", ["fluid", "ngResource", "datatables", "angular.filter", "flowServices"])
     .controller("reportsCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService",
-        "$compile", "$filter", "$cookies", "HOST", "$timeout", "flowFrameService", "userProfile", "hasProfile",
-        function (s, dto, dtc, ms, fm, c, f, co, h, t, ffs, up, hp) {
+        "$compile", "$filter", "sessionService", "HOST", "$timeout", "flowFrameService", "userProfile", "hasProfile",
+        function (s, dto, dtc, ms, fm, c, f, ss, h, t, ffs, up, hp) {
 
 
             s.task.preLoad = function () {
@@ -274,8 +274,8 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "ngCoo
 
         }
     ])
-    .controller("reportsMCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "$cookies", "HOST", "$timeout", "flowFrameService", "hasProfile", "userProfile",
-        function (s, dto, dtc, ms, fm, c, f, co, h, t, ffs, hp, up) {
+    .controller("reportsMCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", "HOST", "$timeout", "flowFrameService", "hasProfile", "userProfile",
+        function (s, dto, dtc, ms, fm, c, f, ss, h, t, ffs, hp, up) {
 
             s.task.hideAgentFilter = false;
             s.task.preLoad = function () {

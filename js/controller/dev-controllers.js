@@ -1,8 +1,8 @@
 /**
  * Created by Jerico on 11/5/2014.
  */
-angular.module("devControllers", ["fluid", "ngResource", "datatables", "ngCookies"])
-    .controller("menuCtrl", ["$scope", "flowFrameService", "flowHttpProvider", function (s, f, ff) {
+angular.module("devControllers", ["fluid", "ngResource", "datatables"])
+    .controller("menuCtrl", ["$scope", "flowFrameService", "flowHttpService", function (s, f, ff) {
 
         s.addModule = function (module) {
             f.addTask(module.task);
@@ -20,7 +20,7 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables", "ngCookie
         };
 
     }])
-    .controller("pageCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$filter", "$compile", "$cookies", function (s, dto, dtc, ms, fm, f, c, co) {
+    .controller("pageCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$filter", "$compile", "sessionService", function (s, dto, dtc, ms, fm, f, c, ss) {
 
 
         var create = new CreateControl();
@@ -42,7 +42,7 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables", "ngCookie
             fm.show(s.flow.getElementFlowId("pageDeleteModal"));
         };
 
-        s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, co);
+        s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, ss);
         s.dtColumns = FlowColumns(dtc);
         s.dtColumns.push(dtc.newColumn("name").withTitle("Name"));
         s.dtColumns.push(dtc.newColumn('title').withTitle('Title').withOption("searchable", true));
@@ -145,7 +145,7 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables", "ngCookie
         };
 
     }])
-    .controller("taskCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$cookies", function (s, dto, dtc, ms, fm, c, co) {
+    .controller("taskCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "sessionService", function (s, dto, dtc, ms, fm, c, ss) {
 
 
         var create = new CreateControl();
@@ -167,7 +167,7 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables", "ngCookie
             fm.show(s.flow.getElementFlowId("taskDeleteModal"));
         };
 
-        s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, co);
+        s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, ss);
 
         s.dtColumns = FlowColumns(dtc);
 
@@ -261,7 +261,7 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables", "ngCookie
         };
 
     }])
-    .controller("mdCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$cookies", function (s, dto, dtc, ms, fm, c, co) {
+    .controller("mdCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "sessionService", function (s, dto, dtc, ms, fm, c, ss) {
 
         var create = new CreateControl();
         create.id = "md_create_ctl";
@@ -281,7 +281,7 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables", "ngCookie
             fm.show(s.flow.getElementFlowId("mdDeleteModal"));
         };
 
-        s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, co);
+        s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, ss);
         s.dtColumns = FlowColumns(dtc);
 
         s.dtColumns.push(dtc.newColumn("moduleName").withTitle("Name").withOption("searchable", true));
@@ -372,7 +372,7 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables", "ngCookie
         };
 
     }])
-    .controller("moduleGroupCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$cookies", function (s, dto, dtc, ms, fm, c, co) {
+    .controller("moduleGroupCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "sessionService", function (s, dto, dtc, ms, fm, c, ss) {
 
         var create = new CreateControl();
         create.id = "moduleGroup_create_ctl";
@@ -393,7 +393,7 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables", "ngCookie
         };
 
 
-        s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, co);
+        s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, ss);
         s.dtColumns = FlowColumns(dtc);
         s.dtColumns.push(dtc.newColumn("name").withTitle("Name").withOption("searchable", true));
         s.dtColumns.push(dtc.newColumn("title").withTitle("Title").withOption("searchable", true));

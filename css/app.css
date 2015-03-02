@@ -10,7 +10,9 @@ and open the template in the editor.
 
 body {
     /*background-color: #95a5a6;*/
-    background: #FF6A6A;
+    background: #888888;
+    /*font-family: "Arial Black", arial-black;*/
+  /*  font-size: 18px;*/
     /* background-color: #ecf0f1;*/
     /*background: url(../img/bg-10-full.jpg) no-repeat center center fixed;*/
     /* background: url(../img/fancy_deboss.png);*/
@@ -82,15 +84,6 @@ body {
     width: 135px;
     margin: 0 auto;
     border-radius: 70px;
-}
-
-.frame-content {
-    /* z-index: 9999;*/
-    margin: 0 auto;
-    padding-top: 15px;
-    /* min-height: 700px;*/
-    clear: both;
-    background: #FF8C69;
 }
 
 .frame-content input {
@@ -258,7 +251,7 @@ li.fluid-task-item-xs a {
 
 /* Font */
 .app-font {
-    font-size: 12px;
+    font-size: 14px;
     font-style: normal;
     font-stretch: condensed;
 }
@@ -273,9 +266,11 @@ li.fluid-task-item-xs a {
     float: left;;
 }
 
-
 .margin-center {
-    margin:auto !important;
+    margin: auto !important;
 }
 
+.page-header-topbar{
+    height: 50px !important;
+}
 

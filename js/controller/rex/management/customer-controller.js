@@ -1,5 +1,5 @@
-    angular.module("customerController", ["fluid", "ngResource", "datatables", "ngCookies"])
-    .controller("customerCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "$cookies", function (s, dto, dtc, ms, fm, c, f, co) {
+    angular.module("customerController", ["fluid", "ngResource", "datatables"])
+    .controller("customerCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", function (s, dto, dtc, ms, fm, c, f, ss) {
 
         s.deleleModalId = "customerDeleteModal";
         s.create_name = "customer_create";
@@ -37,7 +37,7 @@
 
         s.flow.controls = [create, save, delCtl];
 
-        s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, co);
+        s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, ss);
         s.dtColumns = FlowColumns(dtc);
 
         s.dtColumns.push(dtc.newColumn("customerCode").withTitle("Customer code").withOption("searchable", true));
@@ -612,7 +612,7 @@
 
 
 }])
-    .filter("position", ["flowHttpProvider", function (f) {
+    .filter("position", ["flowHttpService", function (f) {
 
         return function (input) {
             if (input) {

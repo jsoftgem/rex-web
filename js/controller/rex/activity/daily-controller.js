@@ -1,6 +1,6 @@
-angular.module("dailyController",["fluid", "ngResource", "datatables", "ngCookies"])
-.controller("dailyCtl",["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "$cookies", 
-	function(s, dto, dtc, ms, fm, c, f, co){
+angular.module("dailyController",["fluid", "ngResource", "datatables"])
+.controller("dailyCtl",["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService",
+	function(s, dto, dtc, ms, fm, c, f, ss){
 
 	 s.task.preLoad = function(){
 		s.task.deleleModalId = "dailyDeleteModal";
@@ -72,7 +72,7 @@ angular.module("dailyController",["fluid", "ngResource", "datatables", "ngCookie
          });
 
 		
-	 	s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, co);
+	 	s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, ss);
 
    		s.dtColumns = FlowColumns(dtc,"task.edit","task.delete");       
         

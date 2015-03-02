@@ -1,5 +1,5 @@
 angular.module("fNotify", ["fluid", "truncate"])
-    .directive("fnBar", ["fnService", "$timeout", "flowHttpProvider", "flowFrameService", function (fs, t, f, frs) {
+    .directive("fnBar", ["fnService", "$timeout", "flowHttpService", "flowFrameService", function (fs, t, f, frs) {
         return {
 
             restrict: "AE",

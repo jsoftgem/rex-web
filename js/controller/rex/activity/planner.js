@@ -1,10 +1,10 @@
 /**
  * Created by Jerico on 2/16/2015.
  */
-angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngCookies"])
-    .controller("plannerCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "$cookies", "HOST", "$timeout", "flowFrameService",
+angular.module("plannerModule", ["fluid", "ngResource", "datatables"])
+    .controller("plannerCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", "HOST", "$timeout", "flowFrameService",
         "hasProfile", "userProfile",
-        function (s, dto, dtc, ms, fm, c, f, co, h, t, ffs, hp, up) {
+        function (s, dto, dtc, ms, fm, c, f, ss, h, t, ffs, hp, up) {
 
 
             s.otherActivity = {};

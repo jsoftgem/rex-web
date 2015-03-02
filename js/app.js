@@ -5,32 +5,43 @@
  */
 
 'use strict';
-angular.module("app", ["MAdmin", "ngCookies", "flowServices", "flowFactories", "home", "fluid", "devControllers", "adminControllers", "flowAppDirectives", "sessionControllers", "fNotify", "infinite-scroll"])
-    .run(["flowFrameService", "flowHttpProvider", "userProfile", "$cookies", "responseEvent", "fnService", "userAppSetting", "HOST", "hasProfile", function (f, fhp, up, c, re, fns, uas, h, hp) {
+angular.module("app", ["MAdmin", "flowServices", "flowFactories", "home", "fluid", "devControllers", "adminControllers", "flowAppDirectives", "sessionControllers", "fNotify", "infinite-scroll"])
+    .run(["flowFrameService", "flowHttpService", "userProfile", "responseEvent", "fnService", "userAppSetting", "HOST", "hasProfile", "$rootScope", "sessionService",
+        function (f, fhp, up, re, fns, uas, h, hp, rs, ss) {
 
-        fhp.host = h;
+            fhp.host = h;
 
-        fhp.permissionUrl = "services/flow_permission/has_permission";
+            fhp.permissionUrl = "services/flow_permission/has_permission";
 
-        fhp.getLocal("session/profile/user_detail").success(function (data) {
-            up.createUserProfile(data);
-        });
 
-        fhp.getLocal("services/flow_module_service/user_tasks").success(function (tasks) {
-            angular.forEach(tasks, function (task) {
-                f.addTask(task);
-            });
-        });
+            rs.$watch(function (scope) {
+                return ss.isSessionOpened();
+            }, function (session) {
+                if (session) {
+                    fhp.getLocal("session/profile/user_detail").success(function (data) {
+                        up.createUserProfile(data);
+                    });
 
-        re.addResponse(undefined, 401, true, "signin.html");
+                    fhp.getLocal("services/flow_module_service/user_tasks").success(function (tasks) {
+                        angular.forEach(tasks, function (task) {
+                            f.addTask(task);
+                        });
+                    });
+                } else {
+                    window.location = "signin.html";
+                }
+            })
 
-        re.addResponse("NOT_AUTHENTICATED", 401);
 
-        fns.url = "session/notification/alerts";
-        fns.topUrl = "session/notification/top?limit=5";
-        hp.url = "services/flow_permission/has_profile";
+            re.addResponse(undefined, 401, true, "signin.html");
 
-    }])
+            re.addResponse("NOT_AUTHENTICATED", 401);
+
+            fns.url = "session/notification/alerts";
+            fns.topUrl = "session/notification/top?limit=5";
+            hp.url = "services/flow_permission/has_profile";
+
+        }])
     .filter('setDecimal', function ($filter) {
         return function (input, places) {
             if (isNaN(input)) return input;

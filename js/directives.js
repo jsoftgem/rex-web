@@ -5,7 +5,7 @@ var directives = angular.module("flowAppDirectives", ["fluid"]);
 
 
 /* Framework Helper */
-directives.directive("addPages", ["flowHttpProvider", "flowModalService", "$compile", function (f, fm, c) {
+directives.directive("addPages", ["flowHttpService", "flowModalService", "$compile", function (f, fm, c) {
     return {
         scope: {task: "=", pageUrl: "@", targetList: "=", id: "@", disabled: "="},
         restrict: "AE",
@@ -112,7 +112,7 @@ directives.directive("addPages", ["flowHttpProvider", "flowModalService", "$comp
         }
     }
 }]);
-directives.directive("addAllPages", ["flowHttpProvider", function (f) {
+directives.directive("addAllPages", ["flowHttpService", function (f) {
 
     return {
         scope: {task: "=", pageUrl: "@", targetList: "=", id: "@", disabled: "="},
@@ -155,7 +155,7 @@ directives.directive("addAllPages", ["flowHttpProvider", function (f) {
         }
     }
 }]);
-directives.directive("fluidMenu", function ($parse, $compile, $timeout, flowHttpProvider, flowFrameService) {
+directives.directive("fluidMenu", function ($parse, $compile, $timeout, flowHttpService, flowFrameService) {
     return {
         link: function ($scope, element, attributes) {
             $scope._menu = {status: [], collapse: {}, hover: []};
@@ -207,7 +207,7 @@ directives.directive("fluidMenu", function ($parse, $compile, $timeout, flowHttp
 
             if (attributes.fluidMenu) {
                 var groupLength = 0;
-                flowHttpProvider.getLocal(attributes.fluidMenu).success(function (groups) {
+                flowHttpService.getLocal(attributes.fluidMenu).success(function (groups) {
 
                     groupLength = groups.length - 1;
 
@@ -430,7 +430,7 @@ directives.directive("fluidRenderWidth", [function () {
         }
     }
 }]);
-directives.directive("flowBarTooltip", ["$timeout", "flowFrameService", "flowHttpProvider", function (t, f, f2) {
+directives.directive("flowBarTooltip", ["$timeout", "flowFrameService", "flowHttpService", function (t, f, f2) {
     return {
         scope: {task: '=', index: "="},
         restrict: "A",
@@ -588,7 +588,7 @@ directives.directive("flowBarTooltip", ["$timeout", "flowFrameService", "flowHtt
 
     }
 }]);
-directives.directive('flowProfileVisible', ["flowHttpProvider",function (f) {
+directives.directive('flowProfileVisible', ["flowHttpService",function (f) {
     return {
         restrict: 'A',
         scope:{task:"=", profiles:"="},

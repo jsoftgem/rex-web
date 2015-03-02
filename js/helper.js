@@ -8,7 +8,7 @@ var monthNames = ["January", "February", "March", "April", "May", "June",
 var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
     'Thursday', 'Friday', 'Saturday'];
 
-var REG_NUM = /^[0-9]+$/; 
+var REG_NUM = /^[0-9]+$/;
 
 function SaveControl() {
     var saveControl = new Control();
@@ -48,8 +48,12 @@ function CopyControl() {
     return copyControl;
 }
 
-function FlowOptionsGET(dto, url, scope, compile, cookies) {
-    var headers = {Authorization: "Basic " + cookies.authorization, method: "get", flowPage: scope.page.name};
+function FlowOptionsGET(dto, url, scope, compile, sessionService) {
+    var headers = {
+        Authorization: sessionService.getSessionProperty("authorization"),
+        method: "get",
+        flowPage: scope.page.name
+    };
     return dto.fromFnPromise()
         .withOption("ajax", {
             url: url,
@@ -69,7 +73,7 @@ function FlowOptionsGET(dto, url, scope, compile, cookies) {
         .withOption("sDom", "<'top'iflp<'clear'>>rt<'bottom'iflp<'clear'>>")
         .withOption("stateSave", true)
         .withOption("serverSide", true)
-        .withTableTools("vendors/DataTables/extensions/TableTools/swf/copy_csv_xls_pdf.swf")
+        .withTableTools("swf/copy_csv_xls_pdf.swf")
         .withTableToolsOption("sRowSelect", "os")
         .withTableToolsButtons([
             "copy", "print", {

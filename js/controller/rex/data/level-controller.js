@@ -1,6 +1,6 @@
 
 angular.module("levelController",["fluid", "ngResource", "datatables", "ngCookies"])
-.controller("levelCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "$cookies", function (s, dto, dtc, ms, fm, c, f, co) {
+.controller("levelCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", function (s, dto, dtc, ms, fm, c, f, ss) {
 
      s.deleleModalId = "levelDeleteModal";
      s.create_name = "level_create";
@@ -34,7 +34,7 @@ angular.module("levelController",["fluid", "ngResource", "datatables", "ngCookie
     }
 
 
-    s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, co);
+    s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, ss);
     s.dtColumns = FlowColumns(dtc);
 
     s.dtColumns.push(dtc.newColumn("description").withTitle("Education level").withOption("searchable", true));

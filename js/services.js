@@ -5,7 +5,7 @@
  */
 
 
-angular.module("flowServices", ["ngCookies", "fluid"])
+angular.module("flowServices", ["fluid"])
     .service("userSessionService", [function () {
 
         this.createUserSession = function (username, bs64auth) {
@@ -19,7 +19,7 @@ angular.module("flowServices", ["ngCookies", "fluid"])
 
         return this;
     }])
-    .service("userProfile", ["flowHttpProvider", function (f) {
+    .service("userProfile", ["flowHttpService", function (f) {
 
         this.createUserProfile = function (userDetail) {
             this.fullName = userDetail.fullName;
@@ -55,12 +55,12 @@ angular.module("flowServices", ["ngCookies", "fluid"])
 
         return this;
     }])
-    .service("notificationService", ["flowHttpProvider", function (f) {
+    .service("notificationService", ["flowHttpService", function (f) {
         this.queueUrl = "session/notification/queue";
 
 
     }])
-    .service("userAppSetting", ["flowHttpProvider", function (f) {
+    .service("userAppSetting", ["flowHttpService", function (f) {
 
         this.menu = "sidebar-default";
 
@@ -104,14 +104,14 @@ angular.module("flowServices", ["ngCookies", "fluid"])
         return this;
 
     }])
-    .service("hasProfile", ["flowHttpProvider", function (f) {
+    .service("hasProfile", ["flowHttpService", function (f) {
 
         this.check = function (profiles, task) {
             return f.post(this.url, profiles, task);
         }
         return this;
     }])
-    .service("imageService", ["flowHttpProvider", function (f) {
+    .service("imageService", ["flowHttpService", function (f) {
 
         this.url = "services/download_service/getContent/";
 

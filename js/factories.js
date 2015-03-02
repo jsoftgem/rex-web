@@ -5,7 +5,7 @@
  */
 
 
-angular.module("flowFactories", ["ngCookies"])
+angular.module("flowFactories",[])
     .constant("HOST", "http://localhost:9080/rex-services/");
 
 /*add http://192.168.1.2:9080/rex-war/ when accessing via remote*/

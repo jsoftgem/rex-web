@@ -1,8 +1,8 @@
 /**
  * Created by Jerico on 11/16/2014.
  */
-angular.module("adminControllers", ["fluid", "ngResource", "datatables", "ngCookies"])
-    .controller("usrMgrCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "$cookies", function (s, dto, dtc, ms, fm, c, f, co) {
+angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
+    .controller("usrMgrCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", function (s, dto, dtc, ms, fm, c, f, ss) {
         s.editPassword = false;
         var create = new CreateControl();
         create.id = "usr_mgr_create_ctl";
@@ -52,7 +52,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables", "ngCook
         var deleteCtl = new DeleteControl();
         deleteCtl.id = "usr_mgr_del_ctl";
 
-        s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, co);
+        s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, ss);
         s.dtColumns = FlowColumns(dtc);
 
         s.dtColumns.push(dtc.newColumn("username").withTitle("Username").withOption("searchable", true));
@@ -156,7 +156,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables", "ngCook
         };
 
     }])
-    .controller("profileCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "$cookies", function (s, dto, dtc, ms, fm, c, f, co) {
+    .controller("profileCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", function (s, dto, dtc, ms, fm, c, f, ss) {
         var create = new CreateControl();
         create.id = "profile_create_ctl";
         create.action = function () {
@@ -177,7 +177,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables", "ngCook
             fm.show(s.flow.getElementFlowId("profileDeleteModal"));
         };
 
-        s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, co);
+        s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, ss);
         s.dtColumns = FlowColumns(dtc);
 
         s.dtColumns.push(dtc.newColumn("profileName").withTitle("Name").withOption("searchable", true));
@@ -271,7 +271,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables", "ngCook
         };
 
     }])
-    .controller("groupCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "$cookies", function (s, dto, dtc, ms, fm, c, f, co) {
+    .controller("groupCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", function (s, dto, dtc, ms, fm, c, f, ss) {
 
         if (!s.task.editTemp) {
             s.task.editTemp = {};
@@ -305,7 +305,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables", "ngCook
         var deleteCtl = new DeleteControl();
         deleteCtl.id = "group_del_ctl";
 
-        s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, co);
+        s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, ss);
         s.dtColumns = FlowColumns(dtc);
 
         s.dtColumns.push(dtc.newColumn("groupName").withTitle("Name").withOption("searchable", true));
