@@ -61,12 +61,12 @@
                     <i title='minimize'
                        class=' fa fa-angle-down'></i>
                 </button>
-                <button ng-hide='flowFrameService.fullScreen' class="btn btn-info" ng-click='task.fullScreen()'>
+                <button ng-if="!flowFrameService.fullScreen" class="btn btn-info" ng-click='task.fullScreen()'>
                     <i title="Full screen"><span class='fa fa-expand'></span></i>
                 </button>
-                <button ng-show='flowFrameService.fullScreen'
+                <button ng-if='flowFrameService.fullScreen'
                         class="btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}"
-                        ng-click='flowFrameService.toogleFluidscreen()'>
+                        ng-click="task.fluidScreen()">
                     <i title="Fluid screen"><span class='fa fa-th'></span></i>
                 </button>
                 <button class="btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}"

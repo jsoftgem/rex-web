@@ -682,6 +682,9 @@ flowComponents
                         scope.task.fullScreen = function () {
                             f.toggleFullscreen(scope.task);
                         }
+                        scope.task.fluidScreen = function(){
+                            f.toggleFluidscreen();
+                        };
                         /*********************/
 
                         /*Instance creation*/
@@ -859,7 +862,7 @@ flowComponents
                                 }
 
 
-                                if(scope.flowFrameService.fullScreen){
+                                if (scope.flowFrameService.fullScreen) {
                                     parent.addClass("col-lg-12");
                                     parent.addClass("col-md-12");
                                     parent.removeClass("col-lg-8");
@@ -878,23 +881,15 @@ flowComponents
                             return (!scope.task.generic && scope.flowFrameService.fullScreen);
                         }, function (fullScreen) {
                             if (fullScreen) {
-
                                 var height = window.innerHeight;
-
-                                var _00pc = height >= 800 ? height * 0.05 : height <= 800 && height > 600 ? height * 0.07 : height <= 600 && height > 400 ? height * 0.09 : height <= 400 ? height * 0.15 : height * 0.50;
-
-                                height = height - _00pc;
-
-                                console.info("height", height);
-                                console.info("panel height", parent.height());
-
-                                var panel = $("#_id_fpb_" + scope.task.id + ".portlet-body.flow-panel");
-                                console.info("id", "#_id_fpb_" + scope.task.id + ".portlet-body.flow-panel");
-
-                                if (panel.height() < height) {
-                                    panel.height(height - 1);
-                                }
-                                console.info("panel", panel.height());
+                                height = estimateHeight(height) - 50;
+                               // scope.flowFrameService.getFrame().css("overflow", "hidden");
+                                var panel = $("#_id_fp_" + scope.task.id + ".portlet");
+                                var panelBody = panel.find(".portlet-body");
+                                panel.height(height);
+                                var headerHeight = panel.find("div.portlet-header").height();
+                                panelBody.height(height - headerHeight);
+                                panelBody.css("overflow", "auto");
 
                             }
                         });
@@ -903,26 +898,25 @@ flowComponents
                             if (scope.flowFrameService.fullScreen) {
                                 var height = window.innerHeight;
 
-                                var _00pc = height >= 800 ? height * 0.05 : height <= 800 && height > 600 ? height * 0.07 : height <= 600 && height > 400 ? height * 0.09 : height <= 400 ? height * 0.15 : height * 0.50;
-
-                                height = height - _00pc;
+                                height = estimateHeight(height) - 50;
 
                                 scope.flowFrameService.getFrame().css("overflow", "hidden");
 
-                                console.info("height", height);
-                                console.info("panel height", parent.height());
+                                var panel = $("#_id_fp_" + scope.task.id + ".portlet");
 
-                                var panel = $("#_id_fpb_" + scope.task.id + ".portlet-body.flow-panel");
-                                panel.css("overflow","auto")
+                                var panelBody = panel.find(".portlet-body");
 
-                                if (panel.height() < height) {
-                                    panel.height(height);
-                                }
-                                console.info("panel", panel.height());
+                                panel.height(height);
 
-                            } else {
-                                var panel = $("#_id_fpb_" + scope.task.id + ".portlet-body.flow-panel");
-                                panel.css("overflow","");
+                                var headerHeight = panel.find("div.portlet-header").height();
+
+                                panelBody.height(height - headerHeight);
+
+                                panelBody.css("overflow", "auto");
+
+                                console.info("panelBody", panelBody);
+                                console.info("headerHeight", headerHeight);
+
                             }
                         });
 
@@ -955,28 +949,23 @@ flowComponents
 
                     if (!fullScreen) {
                         var height = window.innerHeight;
-
-                        var _00pc = height >= 800 ? height * 0.05 : height <= 800 && height > 600 ? height * 0.07 : height <= 600 && height > 400 ? height * 0.09 : height <= 400 ? height * 0.15 : height * 0.50;
-
-                        height = height - _00pc;
-
+                        height = estimateHeight(height);
                         if (scope.flowFrameService.isSearch) {
-                            frameDiv.attr("style", "height:" + (height - 6) + "px;overflow:auto");
+                            frameDiv.attr("style", "height:" + height + "px;overflow:auto");
                         } else {
-                            element.attr("style", "height:" + (height - 6) + "px;overflow:auto");
+                            element.attr("style", "height:" + height + "px;overflow:auto");
                         }
-
-                        $("body").attr("style", "height: " + (height - 6) + "px;overflow:hidden");
-
+                        $("body").attr("style", "height: " + height + "px;overflow:hidden");
                     } else {
-
+                        var height = window.innerHeight;
+                        height = estimateHeight(height);
                         if (scope.flowFrameService.isSearch) {
-                            frameDiv.css("overflow", "hidden");
+                            //frameDiv.attr("style", "height:" + height + "px;overflow:hidden");
                         } else {
-                            element.css("overflow", "hidden");
+                            //element.attr("style", "height:" + height + "px;overflow:hidden");
                         }
                     }
-                })
+                });
 
 
                 scope.show = function (task) {
@@ -988,16 +977,19 @@ flowComponents
                 $(window).on("resize", function () {
                     if (!scope.flowFrameService.fullScreen) {
                         var height = window.innerHeight;
-
-                        var _00pc = height >= 800 ? height * 0.05 : height <= 800 && height > 600 ? height * 0.07 : height <= 600 && height > 400 ? height * 0.09 : height <= 400 ? height * 0.15 : height * 0.50;
-
-                        height = height - _00pc;
-
-
+                        height = estimateHeight(height);
                         if (scope.flowFrameService.isSearch) {
-                            frameDiv.attr("style", "height:" + (height - 6) + "px;overflow:auto");
+                            frameDiv.attr("style", "height:" + height + "px;overflow:auto");
                         } else {
-                            element.attr("style", "height:" + (height - 6) + "px;overflow:auto");
+                            element.attr("style", "height:" + height + "px;overflow:auto");
+                        }
+                    } else {
+                        var height = window.innerHeight;
+                        height = estimateHeight(height);
+                        if (scope.flowFrameService.isSearch) {
+                            frameDiv.attr("style", "height:" + height + "px;overflow:hidden");
+                        } else {
+                            element.attr("style", "height:" + height + "px;overflow:hidden");
                         }
                     }
 
@@ -2203,18 +2195,21 @@ flowComponents
             if (this.isSearch === false) {
                 this.searchTask = "";
             }
-        }
+        };
 
 
         this.toggleFullscreen = function (task) {
             this.fullScreen = true;
             this.fullScreenTask = this.getFullTask(task);
-        }
+            t(function () {
+                $(".frame-content").scrollTop(0);
+            });
+        };
 
-        this.toogleFluidscreen = function () {
+        this.toggleFluidscreen = function () {
             this.fullScreen = false;
             this.fullScreenTask = undefined;
-        }
+        };
 
         this.getFullTask = function (task) {
             console.info("getFullTask", task);
@@ -2229,7 +2224,7 @@ flowComponents
             }
 
             return fullScreenTask;
-        }
+        };
 
         this.createGenericTask = function () {
 
@@ -2949,6 +2944,12 @@ var eventInterceptorId = "event_interceptor_id_";
 var goToEventID = "event_got_id_";
 var EVENT_NOT_ALLOWED = "not_allowed_";
 var AUTHORIZATION = "authorization";
+
+function estimateHeight(height) {
+    var _pc = window.innerWidth <= 768 ? 100 : 50;
+    /*var _pc = height >= 768 ? height * 0.055 : height <= 768 && height > 600 ? height * 0.065 : height <= 600 && height > 400 ? height * 0.09 : height * 0.15;*/
+    return height - _pc
+}
 
 
 function generateTask(scope, t, f2) {
