@@ -45,6 +45,7 @@ angular.module("flowServices", ["fluid"])
             this.group = undefined;
             this.groupOwner = undefined;
             this.profiles = undefined;
+            this.agent = undefined;
         };
 
 
@@ -91,6 +92,8 @@ angular.module("flowServices", ["fluid"])
                 value = this.style;
             } else if (query === "hideMenu") {
                 value = this.hideMenu;
+            } else if (query === "layout") {
+                value = this.layout;
             }
 
             var url = this.url + "/update?" + query + "=" + value;

@@ -16,23 +16,31 @@ angular.module("home", ["flowServices", "fluid", "flowFactories"])
         }
 
         $scope.taskbar.open = function (task) {
-
-            if (task.active === true) {
-
-                $(".frame-content").scrollTo($("#_id_fp_" + task.id), 800);
-
+            console.info("open", task);
+            console.info("open-frame-service", flowFrameService);
+            if (flowFrameService.fullScreen) {
+                flowFrameService.fullScreenTask = task;
+                console.info("open-task", $scope.flowFrameService.fullScreenTask);
             } else {
+                if (task.active === true) {
 
-                task.active = true;
-                if (task.id.indexOf("gen") === -1) {
-                    $scope.userTask = {};
-                    $scope.userTask.flowTaskId = task.id.split("_")[0];
-                    $scope.userTask.active = task.active;
-                    $scope.userTask.flowId = task.flowId;
-                    flowHttpService.post("services/flow_user_task_crud/save_task_state?field=active", $scope.userTask, task);
+                    $(".frame-content").scrollTo($("#_id_fp_" + task.id), 800);
 
+                } else {
+
+                    task.active = true;
+                    if (task.id.indexOf("gen") === -1) {
+                        $scope.userTask = {};
+                        $scope.userTask.flowTaskId = task.id.split("_")[0];
+                        $scope.userTask.active = task.active;
+                        $scope.userTask.flowId = task.flowId;
+                        flowHttpService.post("services/flow_user_task_crud/save_task_state?field=active", $scope.userTask, task);
+
+                    }
                 }
             }
+
+
         };
 
         $scope.taskbar.close = function (task, index) {

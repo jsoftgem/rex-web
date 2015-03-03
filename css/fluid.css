@@ -144,7 +144,6 @@ and open the template in the editor.
 }
 
 .flow-modal div.panel {
-    width: 50pc;
     margin: auto;
 }
 
@@ -313,4 +312,15 @@ div.flow-form label {
 
 .frame-fluidscreen {
     padding-top: 15px;
+}
+
+
+.element-center{
+    padding: 1px;
+    margin: auto;
+}
+
+
+overflow-x {
+    overflow-x: auto;
 }

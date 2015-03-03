@@ -559,18 +559,31 @@ directives.directive("flowBarTooltip", ["$timeout", "flowFrameService", "flowHtt
                                                     for (var p = 0; p < scope.task.pages.length; p++) {
                                                         var pg = scope.task.pages[p];
                                                         if (pg.name === page) {
-                                                            scope.task.currentPage = {name: page};
+                                                            if (f.fullScreen) {
+                                                                f.fullScreenTask.currentPage = {name: page};
+                                                            } else {
+                                                                scope.task.currentPage = {name: page};
+                                                                t(function () {
+                                                                    $(".frame-content").scrollTo($("div.box[task]:eq(" + scope.index + ") div.flow-panel"), 200);
+                                                                });
+                                                            }
                                                             scope.$apply();
-                                                            t(function () {
-                                                                $(".frame-content").scrollTo($("div.box[task]:eq(" + scope.index + ") div.flow-panel"), 200);
-                                                            });
+
                                                         }
                                                     }
                                                 } else if (current.text() === "Minimize") {
-                                                    scope.task.hide();
+                                                    if (f.fullScreen) {
+                                                        f.fullScreenTask.hide();
+                                                    } else {
+                                                        scope.task.hide();
+                                                    }
 
                                                 } else if (current.text() === "Close") {
-                                                    scope.task.close();
+                                                    if (f.fullScreen) {
+                                                        f.fullScreenTask.close();
+                                                    } else {
+                                                        scope.task.close();
+                                                    }
                                                 }
                                                 api.toggle(false);
                                             }
@@ -588,18 +601,18 @@ directives.directive("flowBarTooltip", ["$timeout", "flowFrameService", "flowHtt
 
     }
 }]);
-directives.directive('flowProfileVisible', ["flowHttpService",function (f) {
+directives.directive('flowProfileVisible', ["flowHttpService", function (f) {
     return {
         restrict: 'A',
-        scope:{task:"=", profiles:"="},
+        scope: {task: "=", profiles: "="},
         link: function (scope, iElement, iAttrs) {
-                f.post("services/flow_permission/has_profile",scope.profiles, scope.task).
-                success(function(data){
-                        if(data){
-                             iElement.removeClass("hidden"); 
-                        }else{
-                             iElement.addClass("hidden"); 
-                        }
+            f.post("services/flow_permission/has_profile", scope.profiles, scope.task).
+                success(function (data) {
+                    if (data) {
+                        iElement.removeClass("hidden");
+                    } else {
+                        iElement.addClass("hidden");
+                    }
                 });
         }
     };
@@ -654,20 +667,20 @@ directives.directive("button", [function () {
         link: function (scope, iElement, iAttrs) {
 
             iElement.addClass("btn");
-            if(iAttrs.info){
-                 iElement.attr("type",iAttrs.info);
-                 iElement.addClass("btn-info");
-            }else if(iAttrs.warning){
-                 iElement.attr("type",iAttrs.warning);
-                 iElement.addClass("btn-warning");
-            }else if(iAttrs.danger){
-                 iElement.attr("type",iAttrs.danger);
-                 iElement.addClass("btn-danger");
-            }else if(iAttrs.primary){
-                 iElement.attr("type",iAttrs.primary);
-                 iElement.addClass("btn-primary");
-            }else {
-                iElement.attr("type","button");
+            if (iAttrs.info) {
+                iElement.attr("type", iAttrs.info);
+                iElement.addClass("btn-info");
+            } else if (iAttrs.warning) {
+                iElement.attr("type", iAttrs.warning);
+                iElement.addClass("btn-warning");
+            } else if (iAttrs.danger) {
+                iElement.attr("type", iAttrs.danger);
+                iElement.addClass("btn-danger");
+            } else if (iAttrs.primary) {
+                iElement.attr("type", iAttrs.primary);
+                iElement.addClass("btn-primary");
+            } else {
+                iElement.attr("type", "button");
                 iElement.addClass("btn-default");
             }
 

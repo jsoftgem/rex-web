@@ -257,6 +257,7 @@ flowComponents
                                     if (name === page.name) {
                                         scope.prevPage = scope.page;
                                         scope.page = page;
+                                        scope.task.page = page;
 
                                         var uri = page.get;
 
@@ -311,6 +312,7 @@ flowComponents
                                         if (name === page.name) {
                                             scope.prevPage = scope.page;
                                             scope.page = page;
+                                            scope.task.page = page;
                                             var uri = page.get;
 
                                             if (param !== undefined && param !== "null") {
@@ -474,6 +476,7 @@ flowComponents
                             angular.forEach(scope.task.pages, function (page) {
                                 if (page.isHome) {
                                     scope.page = page;
+                                    scope.task.page = page;
                                     scope.homeUrl = page.get;
 
                                     if (page.param) {
@@ -682,38 +685,50 @@ flowComponents
                         /*********************/
 
                         /*Instance creation*/
-                        if (scope.task.generic) {
-                            f2.get(scope.task.url, scope.task).success(function (d) {
 
-                                var $task = {};
-                                scope.copy = {};
-                                angular.copy(scope.task, scope.copy);
-                                if (!f.fullScreen) {
 
-                                    angular.forEach(f.taskList, function (task, key) {
+                        scope.$watch(function (scope) {
+                            return scope.task;
+                        }, function (task) {
+                            if (task) {
+                                if (task.generic) {
+                                    f2.get(scope.task.url, scope.task).success(function (d) {
 
-                                        if (task.id === scope.task.id) {
-                                            this.task = task;
-                                            this.index = key;
+                                        var newTask = scope.task.newTask;
+                                        var $task = {};
+                                        scope.copy = {};
+                                        angular.copy(scope.task, scope.copy);
+                                        if (!f.fullScreen) {
+
+                                            angular.forEach(f.taskList, function (task, key) {
+
+                                                if (task.id === scope.task.id) {
+                                                    this.task = task;
+                                                    this.index = key;
+                                                }
+
+                                            }, $task);
+
+                                            f.taskList[$task.index] = f.buildTask(d);
+                                            f.taskList[$task.index].id = f.taskList[$task.index].id + "_" + $task.index;
+                                            f.taskList[$task.index].origin = scope.task.origin;
+                                            scope.task = f.taskList[$task.index];
+                                        } else {
+                                            scope.task = f.buildTask(d);
+                                            scope.task.id = "fullscreen_" + d.id;
                                         }
 
-                                    }, $task);
 
-                                    f.taskList[$task.index] = f.buildTask(d);
-                                    f.taskList[$task.index].id = f.taskList[$task.index].id + "_" + $task.index;
-                                    f.taskList[$task.index].origin = scope.task.origin;
-                                    scope.task = f.taskList[$task.index];
-                                } else {
-                                    scope.task = f.buildTask(d);
-                                    scope.task.id = "fullscreen_" + d.id;
+                                        scope.task.generic = false;
+                                        scope.task.newTask = newTask;
+                                        console.info("task-initialization-finished", scope.task);
+                                        scope.page = undefined;
+                                    });
                                 }
+                            }
 
-                                var newTask = scope.task.newTask;
-                                scope.task.generic = false;
-                                scope.task.newTask = newTask;
-                                console.info("task-initialization-finished", scope.task);
-                            });
-                        }
+                        });
+
                         /*********************/
 
                     },
@@ -811,35 +826,51 @@ flowComponents
 
                         scope.$watch(function (scope) {
                             if (scope.task) {
-                                return scope.task.generic;
+                                return scope.task;
                             }
                             return;
-                        }, function (generic) {
-                            if (generic === false) {
-                                if (scope.task.lazyLoad === true) {
-                                    var pathArr = undefined;
-                                    if (scope.task.moduleFiles.indexOf(",") > 0) {
-                                        pathArr = scope.task.moduleFiles.split(",");
-                                    }
-
-                                    var files = [];
-                                    if (pathArr) {
-                                        for (var i = 0; i < pathArr.length; i++) {
-                                            files.push(pathArr[i]);
+                        }, function (task) {
+                            if (task) {
+                                console.info("post-task-watcher", task);
+                                if (task.generic === false) {
+                                    if (scope.task.lazyLoad === true) {
+                                        var pathArr = undefined;
+                                        if (scope.task.moduleFiles.indexOf(",") > 0) {
+                                            pathArr = scope.task.moduleFiles.split(",");
                                         }
+
+                                        var files = [];
+                                        if (pathArr) {
+                                            for (var i = 0; i < pathArr.length; i++) {
+                                                files.push(pathArr[i]);
+                                            }
+                                        } else {
+                                            files.push(scope.task.moduleFiles);
+                                        }
+                                        oc.load({
+                                            name: scope.task.moduleJS,
+                                            files: files
+                                        }).then(function () {
+                                            generateTask(scope, t, f2);
+                                        });
                                     } else {
-                                        files.push(scope.task.moduleFiles);
-                                    }
-                                    oc.load({
-                                        name: scope.task.moduleJS,
-                                        files: files
-                                    }).then(function () {
                                         generateTask(scope, t, f2);
-                                    });
-                                } else {
-                                    generateTask(scope, t, f2);
+                                    }
+                                }
+
+
+                                if(scope.flowFrameService.fullScreen){
+                                    parent.addClass("col-lg-12");
+                                    parent.addClass("col-md-12");
+                                    parent.removeClass("col-lg-8");
+                                    parent.removeClass("col-md-8");
+                                    parent.removeClass("col-lg-4");
+                                    parent.removeClass("col-md-4");
+                                    parent.removeClass("col-lg-6");
+                                    parent.removeClass("col-md-6");
                                 }
                             }
+
                         });
 
 
@@ -848,7 +879,11 @@ flowComponents
                         }, function (fullScreen) {
                             if (fullScreen) {
 
-                                var height = scope.flowFrameService.getFrame().height();
+                                var height = window.innerHeight;
+
+                                var _00pc = height >= 800 ? height * 0.05 : height <= 800 && height > 600 ? height * 0.07 : height <= 600 && height > 400 ? height * 0.09 : height <= 400 ? height * 0.15 : height * 0.50;
+
+                                height = height - _00pc;
 
                                 console.info("height", height);
                                 console.info("panel height", parent.height());
@@ -864,22 +899,30 @@ flowComponents
                             }
                         });
 
-
                         $(window).on("resize", function () {
                             if (scope.flowFrameService.fullScreen) {
-                                var height = scope.flowFrameService.getFrame().height();
+                                var height = window.innerHeight;
+
+                                var _00pc = height >= 800 ? height * 0.05 : height <= 800 && height > 600 ? height * 0.07 : height <= 600 && height > 400 ? height * 0.09 : height <= 400 ? height * 0.15 : height * 0.50;
+
+                                height = height - _00pc;
+
+                                scope.flowFrameService.getFrame().css("overflow", "hidden");
 
                                 console.info("height", height);
                                 console.info("panel height", parent.height());
 
                                 var panel = $("#_id_fpb_" + scope.task.id + ".portlet-body.flow-panel");
-                                console.info("id", "#_id_fpb_" + scope.task.id + ".portlet-body.flow-panel");
+                                panel.css("overflow","auto")
 
                                 if (panel.height() < height) {
-                                    panel.height(height - 1);
+                                    panel.height(height);
                                 }
                                 console.info("panel", panel.height());
 
+                            } else {
+                                var panel = $("#_id_fpb_" + scope.task.id + ".portlet-body.flow-panel");
+                                panel.css("overflow","");
                             }
                         });
 
@@ -900,26 +943,41 @@ flowComponents
             replace: true,
             link: function (scope, element) {
 
-
                 scope.frame = {};
                 scope.flowFrameService = f;
 
-                var frameDiv = $(element.find("div.form-group")[1]);
 
-                var height = window.innerHeight;
+                scope.$watch(function (scope) {
+                    return scope.flowFrameService.fullScreen;
+                }, function (fullScreen) {
 
-                var _00pc = height >= 800 ? height * 0.05 : height <= 800 && height > 600 ? height * 0.07 : height <= 600 && height > 400 ? height * 0.09 : height <= 400 ? height * 0.15 : height * 0.50;
+                    var frameDiv = $(element.find("div.form-group")[1]);
 
-                height = height - _00pc;
-                if (scope.flowFrameService.isSearch) {
+                    if (!fullScreen) {
+                        var height = window.innerHeight;
 
-                    frameDiv.attr("style", "height:" + height + "px;overflow:auto");
-                } else {
+                        var _00pc = height >= 800 ? height * 0.05 : height <= 800 && height > 600 ? height * 0.07 : height <= 600 && height > 400 ? height * 0.09 : height <= 400 ? height * 0.15 : height * 0.50;
 
-                    element.attr("style", "height:" + height + "px;overflow:auto");
-                }
+                        height = height - _00pc;
 
-                $("body").attr("style", "height: " + (height - 6) + "px;overflow:hidden");
+                        if (scope.flowFrameService.isSearch) {
+                            frameDiv.attr("style", "height:" + (height - 6) + "px;overflow:auto");
+                        } else {
+                            element.attr("style", "height:" + (height - 6) + "px;overflow:auto");
+                        }
+
+                        $("body").attr("style", "height: " + (height - 6) + "px;overflow:hidden");
+
+                    } else {
+
+                        if (scope.flowFrameService.isSearch) {
+                            frameDiv.css("overflow", "hidden");
+                        } else {
+                            element.css("overflow", "hidden");
+                        }
+                    }
+                })
+
 
                 scope.show = function (task) {
                     if (!task.pinned) {
@@ -928,20 +986,22 @@ flowComponents
                 };
 
                 $(window).on("resize", function () {
+                    if (!scope.flowFrameService.fullScreen) {
+                        var height = window.innerHeight;
 
-                    var height = window.innerHeight;
+                        var _00pc = height >= 800 ? height * 0.05 : height <= 800 && height > 600 ? height * 0.07 : height <= 600 && height > 400 ? height * 0.09 : height <= 400 ? height * 0.15 : height * 0.50;
 
-                    var _00pc = height >= 800 ? height * 0.05 : height <= 800 && height > 600 ? height * 0.07 : height <= 600 && height > 400 ? height * 0.09 : height <= 400 ? height * 0.15 : height * 0.50;
+                        height = height - _00pc;
 
-                    height = height - _00pc;
 
-                    $("body").attr("style", "height: " + height + "px;overflow:hidden");
-                    if (scope.flowFrameService.isSearch) {
-                        frameDiv.attr("style", "height:" + (height - 6) + "px;overflow:auto");
-                    } else {
-                        element.attr("style", "height:" + (height - 6) + "px;overflow:auto");
+                        if (scope.flowFrameService.isSearch) {
+                            frameDiv.attr("style", "height:" + (height - 6) + "px;overflow:auto");
+                        } else {
+                            element.attr("style", "height:" + (height - 6) + "px;overflow:auto");
+                        }
                     }
 
+                    $("body").attr("style", "height: " + height + "px;overflow:hidden");
                 });
 
 
@@ -2153,9 +2213,11 @@ flowComponents
 
         this.toogleFluidscreen = function () {
             this.fullScreen = false;
+            this.fullScreenTask = undefined;
         }
 
         this.getFullTask = function (task) {
+            console.info("getFullTask", task);
             var fullScreenTask = undefined;
 
             if (task) {
@@ -2937,8 +2999,8 @@ function generateTask(scope, t, f2) {
     }
 
     scope.userTask.flowId = scope.task.flowId;
-
-    if (scope.task.id.indexOf("gen") === -1 && scope.task.newTask === true) {
+    console.info("new_task", scope.task);
+    if (scope.task.newTask) {
         scope.userTask.flowTaskId = scope.task.id.split("_")[0];
         scope.userTask.flowId = scope.task.flowId;
         f2.post("services/flow_user_task_crud/save_task_state?newTask=true", scope.userTask, scope.task);

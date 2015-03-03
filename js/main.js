@@ -1,7 +1,7 @@
 "use strict";
 var App = angular.module('MAdmin', ['ui.bootstrap', 'fluid', 'flowServices']);
 
-App.controller('AppController', function ($scope, $rootScope, $location, userAppSetting) {
+App.controller('AppController', function ($scope, $rootScope, $location, userAppSetting, sessionService) {
 
     $scope.data = {};
     $scope.effect = '';
@@ -63,31 +63,37 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
         }
     };
 
-    userAppSetting.
-        createAppSetting()
-        .success(function (data) {
-            if (data.menu) {
-                userAppSetting.menu = data.menu;
-            }
-            if (data.style) {
-                userAppSetting.style = data.style;
-            }
-            if (data.theme) {
-                userAppSetting.theme = data.theme;
-            }
-            if (data.bgColor) {
-                userAppSetting.bgColor = data.bgColor;
-            }
-            if(data.hideMenu){
-                userAppSetting.hideMenu = data.hideMenu;
-            }
-
-            $rootScope.style = userAppSetting.style;
-            $rootScope.theme = userAppSetting.theme;
-            $scope.header.menu_style = userAppSetting.menu;
-            $scope.header.theme_style = userAppSetting.style;
-            $scope.header.menu_collapse = (userAppSetting.hideMenu ? 'sidebar-collapsed' : '');
-        });
+    $scope.$watch(function (scope) {
+        return sessionService.isSessionOpened();
+    }, function (session) {
+        if (session) {
+            userAppSetting.
+                createAppSetting()
+                .success(function (data) {
+                    if (data.menu) {
+                        userAppSetting.menu = data.menu;
+                    }
+                    if (data.style) {
+                        userAppSetting.style = data.style;
+                    }
+                    if (data.theme) {
+                        userAppSetting.theme = data.theme;
+                    }
+                    if (data.bgColor) {
+                        userAppSetting.bgColor = data.bgColor;
+                    }
+                    if (data.hideMenu) {
+                        userAppSetting.hideMenu = data.hideMenu;
+                    }
+                    $rootScope.style = userAppSetting.style;
+                    $rootScope.theme = userAppSetting.theme;
+                    $scope.header.menu_style = userAppSetting.menu;
+                    $scope.header.theme_style = userAppSetting.style;
+                    $scope.header.menu_collapse = (userAppSetting.hideMenu ? 'sidebar-collapsed' : '');
+                    console.info("AppController > session-opened", userAppSetting);
+                });
+        }
+    });
 
 
     $scope.style_change = function () {

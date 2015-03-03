@@ -18,14 +18,20 @@ angular.module("app", ["MAdmin", "flowServices", "flowFactories", "home", "fluid
                 return ss.isSessionOpened();
             }, function (session) {
                 if (session) {
+                    console.info("session-opened", session);
                     fhp.getLocal("session/profile/user_detail").success(function (data) {
                         up.createUserProfile(data);
+
+                        console.info("user_detail", data);
                     });
 
                     fhp.getLocal("services/flow_module_service/user_tasks").success(function (tasks) {
                         angular.forEach(tasks, function (task) {
                             f.addTask(task);
                         });
+
+
+                        console.info("flow_user_tasks", tasks);
                     });
                 } else {
                     window.location = "signin.html";

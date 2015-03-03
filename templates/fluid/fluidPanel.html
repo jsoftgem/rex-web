@@ -1,9 +1,12 @@
-<div id='_id_fp_{{task.id}}' class="portlet box portlet-primary">
+<div id='_id_fp_{{task.id}}'
+     class="portlet box {{!flowFrameService.fullScreen ? 'portlet-primary' : 'portlet-default'}}">
 
     <div class='portlet-header' ng-show="!task.locked">
-        <div class="caption"><a data-toggle='collapse' data-target='#_{{task.id}}' href='#'
+        <div class="caption"><a ng-if="!flowFrameService.fullScreen " data-toggle='collapse' data-target='#_{{task.id}}'
+                                href='#'
                                 class="flow-panel-heading-title"><span ng-class="task.glyph"
                                                                        class='hidden-sm hidden-md hidden-xs'></span><span>&nbsp;{{task.title}} - {{page.title}}</span></a>
+            <span ng-if="flowFrameService.fullScreen">&nbsp;{{task.title}} - {{page.title}}</span>
         </div>
         <div class="tools">
             <div class='btn-group hidden-lg'><a href='#' class='dropdown-toggle'
@@ -54,22 +57,25 @@
                             ><span class='fa fa-arrows-h' style="transform: scaleX(1.3)"></span></i>
                 </button>
                 <button ng-disabled='task.pinned' title="Minimize" ng-click='task.hide(task)'
-                        class="btn btn-info">
+                        class="btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}">
                     <i title='minimize'
                        class=' fa fa-angle-down'></i>
                 </button>
                 <button ng-hide='flowFrameService.fullScreen' class="btn btn-info" ng-click='task.fullScreen()'>
                     <i title="Full screen"><span class='fa fa-expand'></span></i>
                 </button>
-                <button ng-show='flowFrameService.fullScreen' class="btn btn-info"
+                <button ng-show='flowFrameService.fullScreen'
+                        class="btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}"
                         ng-click='flowFrameService.toogleFluidscreen()'>
                     <i title="Fluid screen"><span class='fa fa-th'></span></i>
                 </button>
-                <button class="btn btn-info" ng-click='task.refresh()'>
-                    <i title="Refresh"><span class='fa'
+                <button class="btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}"
+                        ng-click='task.refresh()'>
+                    <i title="Refresh"><span class="fa"
                                              ng-class="task.loaded ? 'fa-refresh' : 'fa-spin fa-refresh'"></span></i>
                 </button>
-                <button class="btn btn-danger" ng-disabled='task.pinned||task.locked' ng-click='task.close()'>
+                <button class="btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-danger'}}"
+                        ng-disabled='task.pinned||task.locked' ng-click='task.close()'>
                     <i class='fa fa-close' title="Close"
                        title='close'></i>
                 </button>
@@ -82,7 +88,7 @@
             <flow-message id="{{flow.getElementFlowId('pnl_msg')}}"></flow-message>
             <flow-tool id="{{flow.getElementFlowId('flw_tl')}}" ng-show='showToolBar' controls='toolbars'
                        task='task' pages='pages'></flow-tool>
-            <div id='page_div_{{task.id}}' class=' flow-panel-page' style='overflow: auto;'
+            <div id='page_div_{{task.id}}' class='flow-panel-page' style='overflow: auto;'
                  ng-include='page.home'></div>
         </div>
     </div>
