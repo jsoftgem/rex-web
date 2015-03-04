@@ -35,25 +35,53 @@ flowComponents
                         console.info("fluidPanel-task", scope.task);
                         scope.userTask = {};
                         scope.userTask.closed = false;
-                        scope.showToolBar = scope.task ? scope.task.showToolBar : false;
-                        scope.pages = [];
-                        scope.page = scope.task ? scope.task.page : undefined;
                         scope.flow = {};
+
+
                         scope.toolbars = [
-                            {"id": 'home', "glyph": "fa fa-home", "label": "home", "disabled": false, uiType: "info"},
+                            {
+                                "id": 'home',
+                                "glyph": "fa fa-home",
+                                "label": "home",
+                                "disabled": false,
+                                "uiType": "info",
+                                "action": function () {
+                                    scope.flow.goToHome();
+                                }
+                            },
                             {
                                 "id": 'back',
                                 "glyph": "fa fa-arrow-left",
                                 "label": "back",
                                 "disabled": true,
-                                uiType: "info"
+                                "uiType": "info",
+                                "action": function () {
+                                    if (scope.task.navPages.length > 0 && scope.task.navPages.length > scope.currentPageIndex) {
+                                        var i = --scope.currentPageIndex;
+                                        var count = scope.task.navPages.length - (i + 1);
+                                        var page = scope.task.navPages[i];
+                                        scope.task.navPages.splice((i + 1), count);
+                                        scope.flow.navTo(page.name);
+                                        console.info("back",scope.task.navPages);
+                                    } else {
+                                        this.disabled = true;
+                                    }
+                                }
                             },
                             {
                                 "id": 'forward',
                                 "glyph": "fa fa-arrow-right",
                                 "label": "forward",
                                 "disabled": true,
-                                uiType: "info"
+                                "uiType": "info",
+                                "action": function () {
+                                    if (scope.task.navPages.length - 1 > scope.currentPageIndex) {
+                                        var page = scope.task.navPages[++scope.currentPageIndex];
+                                        scope.flow.navTo(page.name);
+                                    } else {
+                                        this.disabled = true;
+                                    }
+                                }
                             }
                         ];
 
@@ -188,15 +216,15 @@ flowComponents
                             }
 
                             return q(function (resolve, reject) {
-                                if ((scope.page !== undefined && scope.page !== null) && (scope.page.autoGet !== null && scope.page.autoGet === true)) {
-                                    scope.task.currentPage = scope.page.name;
+                                if ((scope.task.page !== undefined && scope.task.page !== null) && (scope.task.page.autoGet !== null && scope.task.page.autoGet === true)) {
+                                    scope.task.currentPage = scope.task.page.name;
                                     f2.get(scope.homeUrl, scope.task)
                                         .success(function (data) {
-                                            resolve({page: scope.page.name, value: data});
+                                            resolve({page: scope.task.page.name, value: data});
                                         });
-                                } else if ((scope.page !== undefined && scope.page !== null) && (scope.page.autoGet === null || scope.page.autoGet === false)) {
-                                    scope.task.currentPage = scope.page.name;
-                                    resolve({page: scope.page.name});
+                                } else if ((scope.task.page !== undefined && scope.task.page !== null) && (scope.task.page.autoGet === null || scope.task.page.autoGet === false)) {
+                                    scope.task.currentPage = scope.task.page.name;
+                                    resolve({page: scope.task.page.name});
                                 }
                             }).then(function (data) {
                                 if (scope.task.pinned) {
@@ -218,7 +246,7 @@ flowComponents
 
                             if (Array.isArray(pageName)) {
 
-                                var index = pageName.indexOf(scope.page.name);
+                                var index = pageName.indexOf(scope.task.page.name);
                                 if (index > -1) {
                                     if (!exists) {
                                         scope.toolbars.push(control);
@@ -236,7 +264,7 @@ flowComponents
                                 }
                             }
 
-                            else if (scope.page.name === pageName) {
+                            else if (scope.task.page.name === pageName) {
                                 if (!exists) {
                                     scope.toolbars.push(control);
                                 }
@@ -253,23 +281,22 @@ flowComponents
                         };
                         scope.navToPage = function (name) {
                             return q(function (resolve) {
-                                angular.forEach(scope.pages, function (page) {
+                                angular.forEach(scope.task.navPages, function (page) {
                                     if (name === page.name) {
-                                        scope.prevPage = scope.page;
-                                        scope.page = page;
+                                        scope.prevPage = scope.task.page;
                                         scope.task.page = page;
 
                                         var uri = page.get;
 
-                                        if (scope.page.param !== undefined) {
-                                            uri = uri + scope.page.param;
+                                        if (scope.task.page.param !== undefined) {
+                                            uri = uri + scope.task.page.param;
                                         }
 
                                         scope.homeUrl = uri
 
                                         if (scope.task.pinned === true) {
-                                            scope.userTask.page = scope.page.name;
-                                            scope.userTask.param = scope.page.param;
+                                            scope.userTask.page = scope.task.page.name;
+                                            scope.userTask.param = scope.task.page.param;
 
                                             if (scope.task.generic === false) {
                                                 if (scope.task.id.indexOf("gen") === -1) {
@@ -281,8 +308,8 @@ flowComponents
                                             }
                                         }
 
-                                        for (var i = 0; i < scope.pages.length; i++) {
-                                            if (scope.pages[i].name === name) {
+                                        for (var i = 0; i < scope.task.navPages.length; i++) {
+                                            if (scope.task.navPages[i].name === name) {
                                                 scope.currentPageIndex = i;
                                                 break;
                                             }
@@ -293,7 +320,7 @@ flowComponents
                                                 scope.toolbars[i].disabled = !(scope.currentPageIndex > 0);
                                             }
                                             if (scope.toolbars[i].id === 'forward') {
-                                                scope.toolbars[i].disabled = !(scope.currentPageIndex < scope.pages.length - 1);
+                                                scope.toolbars[i].disabled = !(scope.currentPageIndex < scope.task.navPages.length - 1);
                                             }
                                         }
                                         resolve();
@@ -307,11 +334,11 @@ flowComponents
                             }
                         };
                         scope.getToPage = function (name, param) {
+                            console.info("getToPage", scope.task.pages);
                             return q(function (resolve, reject) {
                                 angular.forEach(scope.task.pages, function (page) {
                                         if (name === page.name) {
-                                            scope.prevPage = scope.page;
-                                            scope.page = page;
+                                            scope.prevPage = scope.task.page;
                                             scope.task.page = page;
                                             var uri = page.get;
 
@@ -327,8 +354,8 @@ flowComponents
                                             scope.homeUrl = uri;
 
                                             if (scope.task.pinned === true) {
-                                                scope.userTask.page = scope.page.name;
-                                                scope.userTask.param = scope.page.param;
+                                                scope.userTask.page = scope.task.page.name;
+                                                scope.userTask.param = scope.task.page.param;
 
                                                 if (scope.task.generic === false) {
                                                     if (scope.task.id.indexOf("gen") === -1) {
@@ -343,8 +370,8 @@ flowComponents
 
                                             var contains = false;
 
-                                            for (var i = 0; i < scope.pages.length; i++) {
-                                                if (scope.pages[i].name === name) {
+                                            for (var i = 0; i < scope.task.navPages.length; i++) {
+                                                if (scope.task.navPages[i].name === name) {
                                                     contains = true;
                                                     scope.currentPageIndex = i;
                                                     break;
@@ -352,8 +379,8 @@ flowComponents
                                             }
 
                                             if (contains === false) {
-                                                scope.pages.push(page);
-                                                scope.currentPageIndex = scope.pages.length - 1;
+                                                scope.task.navPages.push(page);
+                                                scope.currentPageIndex = scope.task.navPages.length - 1;
 
                                             }
 
@@ -362,7 +389,7 @@ flowComponents
                                                     scope.toolbars[i].disabled = !(scope.currentPageIndex > 0);
                                                 }
                                                 if (scope.toolbars[i].id === 'forward') {
-                                                    scope.toolbars[i].disabled = !(scope.currentPageIndex < scope.pages.length - 1);
+                                                    scope.toolbars[i].disabled = !(scope.currentPageIndex < scope.task.navPages.length - 1);
                                                 }
                                             }
                                             resolve();
@@ -372,6 +399,7 @@ flowComponents
                             });
                         };
                         scope.flow.goTo = function (name, param) {
+                            console.info("goTo", name);
                             if (scope.flow.onPageChanging(name, param)) {
                                 return scope.getToPage(name, param).then(scope.loadGet());
                             }
@@ -390,7 +418,7 @@ flowComponents
                             if (method) {
                                 var uri = "";
                                 if (method.toLowerCase() === "put") {
-                                    uri = scope.page.put;
+                                    uri = scope.task.page.put;
                                     if (param !== undefined && param !== "null") {
                                         uri = uri + param;
                                     }
@@ -409,7 +437,7 @@ flowComponents
                                         });
 
                                 } else if (method.toLowerCase() === "get") {
-                                    uri = scope.page.get;
+                                    uri = scope.task.page.get;
                                     if (param !== undefined && param !== "null") {
                                         uri = uri + param;
                                     }
@@ -428,7 +456,7 @@ flowComponents
                                         });
 
                                 } else if (method.toLowerCase() === "delete") {
-                                    uri = scope.page.delURL;
+                                    uri = scope.task.page.delURL;
                                     if (param !== undefined && param !== "null") {
                                         uri = uri + param;
                                     }
@@ -448,7 +476,7 @@ flowComponents
                                             rs.$broadcast(scope.flow.event.getErrorEventId(), data, method);
                                         });
                                 } else if (method.toLowerCase() === "post") {
-                                    uri = scope.page.post;
+                                    uri = scope.task.page.post;
 
                                     if (param !== undefined && param !== "null") {
                                         uri = uri + param;
@@ -475,7 +503,6 @@ flowComponents
                         scope.flow.goToHome = function () {
                             angular.forEach(scope.task.pages, function (page) {
                                 if (page.isHome) {
-                                    scope.page = page;
                                     scope.task.page = page;
                                     scope.homeUrl = page.get;
 
@@ -492,7 +519,7 @@ flowComponents
                                         }
                                     }
                                     scope.currentPageIndex = 0;
-                                    scope.pages = [page];
+                                    scope.task.pages = [page];
 
                                     scope.loadGet();
                                 }
@@ -500,11 +527,11 @@ flowComponents
 
                         };
                         scope.task.refresh = function () {
-                            if (scope.page.autoGet) {
+                            if (scope.task.page.autoGet) {
                                 scope.task.loaded = false;
                                 f2.get(scope.homeUrl, scope.task)
                                     .success(function (data) {
-                                        scope.flow.pageCallBack(scope.page.name, data, "refresh");
+                                        scope.flow.pageCallBack(scope.task.page.name, data, "refresh");
                                         scope.task.loaded = true;
                                     })
                                     .error(function (data) {
@@ -526,8 +553,8 @@ flowComponents
                             parent.addClass("col-lg-4");
                             parent.addClass("col-md-4");
                             if (clientState === undefined || clientState === false) {
-                                if (scope.page && scope.task) {
-                                    rs.$broadcast(scope.flow.event.getResizeEventId(), scope.page.name, scope.task.size);
+                                if (scope.task.page && scope.task) {
+                                    rs.$broadcast(scope.flow.event.getResizeEventId(), scope.task.page.name, scope.task.size);
                                 }
                                 scope.userTask.size = scope.task.size;
                                 if (scope.task.generic === false) {
@@ -551,8 +578,8 @@ flowComponents
                             parent.addClass("col-lg-6");
                             parent.addClass("col-md-6");
                             if (clientState === undefined || clientState === false) {
-                                if (scope.page && scope.task) {
-                                    rs.$broadcast(scope.flow.event.getResizeEventId(), scope.page.name, scope.task.size);
+                                if (scope.task.page && scope.task) {
+                                    rs.$broadcast(scope.flow.event.getResizeEventId(), scope.task.page.name, scope.task.size);
                                 }
                                 scope.userTask.size = scope.task.size;
                                 if (scope.task.generic === false) {
@@ -576,8 +603,8 @@ flowComponents
                             parent.addClass("col-lg-8");
                             parent.addClass("col-md-8");
                             if (clientState === undefined || clientState === false) {
-                                if (scope.page && scope.task) {
-                                    rs.$broadcast(scope.flow.event.getResizeEventId(), scope.page.name, scope.task.size);
+                                if (scope.task.page && scope.task) {
+                                    rs.$broadcast(scope.flow.event.getResizeEventId(), scope.task.page.name, scope.task.size);
                                 }
                                 scope.userTask.size = scope.task.size;
                                 if (scope.task.generic === false) {
@@ -602,8 +629,8 @@ flowComponents
                             parent.addClass("col-lg-12");
                             parent.addClass("col-md-12");
                             if (clientState === undefined || clientState === false) {
-                                if (scope.page && scope.task) {
-                                    rs.$broadcast(scope.flow.event.getResizeEventId(), scope.page.name, scope.task.size);
+                                if (scope.task.page && scope.task) {
+                                    rs.$broadcast(scope.flow.event.getResizeEventId(), scope.task.page.name, scope.task.size);
                                 }
                                 scope.userTask.size = scope.task.size;
                                 if (scope.task.generic === false) {
@@ -662,8 +689,8 @@ flowComponents
                         scope.task.pin = function () {
                             scope.task.pinned = !scope.task.pinned;
                             if (scope.task.pinned === true) {
-                                scope.userTask.page = scope.page.name;
-                                scope.userTask.param = scope.page.param;
+                                scope.userTask.page = scope.task.page.name;
+                                scope.userTask.param = scope.task.page.param;
                                 scope.task.onWindowPinned(scope.task.page);
                             } else {
                                 scope.userTask.page = "";
@@ -682,7 +709,7 @@ flowComponents
                         scope.task.fullScreen = function () {
                             f.toggleFullscreen(scope.task);
                         }
-                        scope.task.fluidScreen = function(){
+                        scope.task.fluidScreen = function () {
                             f.toggleFluidscreen();
                         };
                         /*********************/
@@ -701,6 +728,7 @@ flowComponents
                                         var $task = {};
                                         scope.copy = {};
                                         angular.copy(scope.task, scope.copy);
+                                        console.info("generated-taskp", d);
                                         if (!f.fullScreen) {
 
                                             angular.forEach(f.taskList, function (task, key) {
@@ -717,6 +745,7 @@ flowComponents
                                             f.taskList[$task.index].origin = scope.task.origin;
                                             scope.task = f.taskList[$task.index];
                                         } else {
+
                                             scope.task = f.buildTask(d);
                                             scope.task.id = "fullscreen_" + d.id;
                                         }
@@ -725,7 +754,10 @@ flowComponents
                                         scope.task.generic = false;
                                         scope.task.newTask = newTask;
                                         console.info("task-initialization-finished", scope.task);
-                                        scope.page = undefined;
+                                        scope.task.page = undefined;
+                                        scope.task.navPages = scope.task.pages;
+
+                                        console.info("generated-task-pages", scope.task.pages);
                                     });
                                 }
                             }
@@ -747,19 +779,19 @@ flowComponents
 
                         scope.$on(scope.flow.getEventId('back'), function () {
 
-                            if (scope.pages.length > 0 && scope.pages.length > scope.currentPageIndex) {
+                            if (scope.task.navPages.length > 0 && scope.task.navPages.length > scope.currentPageIndex) {
                                 var i = --scope.currentPageIndex;
-                                var count = scope.pages.length - (i + 1);
-                                var page = scope.pages[i];
-                                scope.pages.splice((i + 1), count);
+                                var count = scope.task.navPages.length - (i + 1);
+                                var page = scope.task.navPages[i];
+                                scope.task.navPages.splice((i + 1), count);
                                 scope.flow.navTo(page.name);
 
                             }
                         });
 
                         scope.$on(scope.flow.getEventId('forward'), function () {
-                            if (scope.pages.length - 1 > scope.currentPageIndex) {
-                                var page = scope.pages[++scope.currentPageIndex];
+                            if (scope.task.navPages.length - 1 > scope.currentPageIndex) {
+                                var page = scope.navPages.pages[++scope.currentPageIndex];
                                 scope.flow.navTo(page.name);
                             }
 
@@ -772,15 +804,15 @@ flowComponents
 
                         scope.$on(scope.flow.getEventId("selectPage"), function (event, name) {
                             var i = scope.currentPageIndex;
-                            for (var index = 0; i < scope.pages.length; i++) {
-                                if (scope.pages[index].name == name) {
+                            for (var index = 0; i < scope.task.navPages.length; i++) {
+                                if (scope.task.navPages[index].name == name) {
                                     i = index;
                                     break;
                                 }
                             }
-                            var count = scope.pages.length - (i + 1);
-                            var page = scope.pages[i];
-                            scope.pages.splice((i + 1), count);
+                            var count = scope.task.navPages.length - (i + 1);
+                            var page = scope.task.navPages[i];
+                            scope.task.navPages.splice((i + 1), count);
                             scope.flow.navTo(name);
                         });
 
@@ -798,10 +830,10 @@ flowComponents
 
                         scope.$on(EVENT_NOT_ALLOWED + scope.task.id, function (event, msg) {
                             scope.flow.message.danger(msg);
-                            angular.forEach(scope.pages, function (page, key) {
+                            angular.forEach(scope.task.navPages, function (page, key) {
 
-                                if (page.name === scope.page.name) {
-                                    scope.pages.splice(key, 1);
+                                if (page.name === scope.task.navPages.name) {
+                                    scope.task.navPages.splice(key, 1);
                                     scope.flow.goTo(scope.prevPage.name);
                                 }
                             });
@@ -883,7 +915,7 @@ flowComponents
                             if (fullScreen) {
                                 var height = window.innerHeight;
                                 height = estimateHeight(height) - 50;
-                               // scope.flowFrameService.getFrame().css("overflow", "hidden");
+                                // scope.flowFrameService.getFrame().css("overflow", "hidden");
                                 var panel = $("#_id_fp_" + scope.task.id + ".portlet");
                                 var panelBody = panel.find(".portlet-body");
                                 panel.height(height);
@@ -1019,12 +1051,28 @@ flowComponents
     .directive("flowTool", ["$rootScope", "$compile", function (r, c) {
 
         return {
-            scope: {task: '=', controls: '=', pages: '='},
+            scope: {task: '=', controls: '=', pages: '=', flow: "=", size: "@"},
             restrict: "E",
             replace: true,
             templateUrl: "templates/fluid/fluidToolbar.html",
             link: function (scope, element, attr) {
+
+
+                if (scope.size) {
+                    if (scope.size === "small") {
+                        scope.size = "btn-group-xs";
+                    } else if (scope.size === "medium") {
+                        scope.size = "btn-group-sm";
+                    } else if (scope.size === "large") {
+                        scope.size = "btn-group-md";
+                    }
+                } else {
+                    scope.size = "btn-group-md";
+                }
+
+
                 scope.runEvent = function (control) {
+                    console.info("control", control);
                     if (control.action) {
                         control.action();
                     } else {
@@ -1036,9 +1084,7 @@ flowComponents
 
 
                 scope.goToEvent = function (name, param) {
-                    var event = "navTo_fp_" + scope.task.id;
-                    r.$broadcast(event, name);
-
+                    scope.flow.navTo(name);
                 };
 
                 scope.getClass = function (uiType) {
@@ -1168,13 +1214,14 @@ flowComponents
 
         }
     }])
-    .directive("flowModal", [function () {
+    .directive("flowModal", ["flowFrameService", function (f) {
         return {
             restrict: "AE",
-            template: "<div class='overlay hidden animated fadeIn anim-dur'><div ng-style='style' class='flow-modal animated pulse anim-dur'><div ng-transclude></div></div></div>",
+            template: "<div ng-class='flowFrameService.fullScreen ? \"overlay-full\" : \"overlay\"' class='hidden animated fadeIn anim-dur'><div ng-style='style' class='flow-modal animated pulse anim-dur'><div ng-transclude></div></div></div>",
             replace: true,
             transclude: true,
             link: function (scope, element, attr) {
+                scope.flowFrameService = f;
                 scope.style = {};
 
                 if (attr.height) {
@@ -2817,11 +2864,11 @@ flowComponents
         this.login = function (username, password, remember) {
             var base64 = window.btoa(username + ":" + password);
             this.addSessionProperty("remember", remember);
-            this.addSessionProperty(AUTHORIZATION, "basic " + base64);
+            this.addSessionProperty(AUTHORIZATION, "Basic " + base64);
         }
 
         this.createSession = function (base64) {
-            this.addSessionProperty(AUTHORIZATION, "basic " + base64);
+            this.addSessionProperty(AUTHORIZATION, "Basic " + base64);
         }
 
         this.logout = function () {
@@ -2953,40 +3000,40 @@ function estimateHeight(height) {
 
 
 function generateTask(scope, t, f2) {
-    console.info("generateTask > scope.page", scope.page);
-    if (scope.page === undefined || scope.page === null) {
+    console.info("generateTask >scope.task.page", scope.task.page);
+    if (scope.task.page === undefined || scope.task.page === null) {
         if (scope.task.pages) {
             var $page = getHomePageFromTaskPages(scope.task);
-            scope.page = $page.page;
+            scope.task.page = $page.page;
             scope.homeUrl = $page.page.get;
             scope.home = $page.page.name;
-            scope.pages = [$page.page];
-            console.info("page", scope.page);
+            scope.task.pages = [$page.page];
+            console.info("page", scope.task.page);
         }
     } else {
-        scope.homeUrl = scope.page.get;
-        scope.page.param = scope.task.pageParam;
+        scope.homeUrl = scope.task.page.get;
+        scope.task.page.param = scope.task.pageParam;
         var page = scope.task.page;
 
-        if (scope.page.isHome === false) {
+        if (scope.task.page.isHome === false) {
             if (scope.task.pages) {
                 var $page = getHomePageFromTaskPages(scope.task);
                 scope.home = $page.page.name;
-                scope.pages = [$page.page];
+                scope.task.pages = [$page.page];
             }
         } else {
-            scope.pages = [page];
+            scope.task.pages = [page];
         }
 
-        if (scope.page.param && scope.page.param !== "null") {
-            scope.homeUrl = scope.page.get + scope.page.param;
+        if (scope.task.page.param && scope.task.page.param !== "null") {
+            scope.homeUrl = scope.task.page.get + scope.task.page.param;
         }
 
-        if (scope.pages.indexOf(page) > -1) {
-            scope.currentPageIndex = getPageIndexFromPages(scope.page.name, scope.pages).index;
+        if (scope.task.pages.indexOf(page) > -1) {
+            scope.currentPageIndex = getPageIndexFromPages(scope.task.page.name, scope.task.pages).index;
         } else {
-            scope.pages.push(page);
-            scope.currentPageIndex = scope.pages.length - 1;
+            scope.task.pages.push(page);
+            scope.currentPageIndex = scope.task.pages.length - 1;
         }
 
         for (var i = 0; i < scope.toolbars.length; i++) {
@@ -2994,7 +3041,7 @@ function generateTask(scope, t, f2) {
                 scope.toolbars[i].disabled = !(scope.currentPageIndex > 0);
             }
             if (scope.toolbars[i].id === 'forward') {
-                scope.toolbars[i].disabled = !(scope.currentPageIndex < scope.pages.length - 1);
+                scope.toolbars[i].disabled = !(scope.currentPageIndex < scope.task.pages.length - 1);
             }
         }
     }

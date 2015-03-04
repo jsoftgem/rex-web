@@ -48,11 +48,11 @@ angular.module("defaulController",["fluid", "ngResource", "datatables", "ngCooki
     	s.$on(s.flow.event.getSuccessEventId(),function(event,data,method){
 
         	if(method ==="put"){
-            	if(s.page.name === s.edit_name){
+            	if(s.task.page.name === s.edit_name){
                	 	s.task.modelEdit = {};
                 	angular.copy(s.task.modelEdit,s.task.tempEdit);
                 	s.flow.goToHome();
-            	}else if(s.page.name === s.create_name){
+            	}else if(s.task.page.name === s.create_name){
                 	s.task.modelCreate = {};
                 	s.flow.goToHome();
             	}
@@ -82,7 +82,7 @@ angular.module("defaulController",["fluid", "ngResource", "datatables", "ngCooki
      	s.task.deleteConfirm = function () {
                     s.flow.action("delete", s.task.modelEdit, s.task.modelEdit.id);
                     fm.hide(s.flow.getElementFlowId(s.task.deleleModalId));
-                    if (s.page.name !== s.home) {
+                    if (s.task.page.name !== s.home) {
                         s.flow.goToHome();
                     }
                     s.dtOptions.reloadData();

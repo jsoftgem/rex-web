@@ -1,2 +1,3 @@
 Fluid Core
+ - full screen issues.
  - persist task state.

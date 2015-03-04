@@ -126,11 +126,23 @@ and open the template in the editor.
 }
 
 .overlay {
+     position: absolute;
+     top: 34px;
+     left: 15px;
+     right: 15px;
+     bottom: 24px;
+     background-color: rgba(52, 73, 94, 0.85);
+     z-index: 9999 !important;
+
+}
+
+.overlay-full {
     position: absolute;
-    top: 34px;
-    left: 15px;
-    right: 15px;
-    bottom: 24px;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    margin-bottom: -22px;
     background-color: rgba(52, 73, 94, 0.85);
     z-index: 9999 !important;
 

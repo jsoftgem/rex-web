@@ -54,13 +54,13 @@ angular.module("levelController",["fluid", "ngResource", "datatables", "ngCookie
     }
 
     s.save = function(){
-        if(s.page.name === s.edit_name){
+        if(s.task.page.name === s.edit_name){
             if(!angular.equals(s.task.levelEdit,s.task.tempEdit)){
                 s.flow.action("put",s.task.levelEdit, s.task.levelEdit.id);
             }else{
                 s.flow.message.info(UI_MESSAGE_NO_CHANGE);
             }
-        }else if(s.page.name === s.create_name){
+        }else if(s.task.page.name === s.create_name){
             s.flow.action("put", s.task.levelCreate);
         }
     }
@@ -69,11 +69,11 @@ angular.module("levelController",["fluid", "ngResource", "datatables", "ngCookie
     s.$on(s.flow.event.getSuccessEventId(),function(event,data,method){
 
         if(method ==="put"){
-            if(s.page.name === s.edit_name){
+            if(s.task.page.name === s.edit_name){
                 s.task.levelEdit = {};
                 angular.copy(s.task.levelEdit,s.task.tempEdit);
                 s.flow.goToHome();
-            }else if(s.page.name === s.create_name){
+            }else if(s.task.page.name === s.create_name){
                 s.task.levelCreate = {};
                 s.flow.goToHome();
             }
@@ -104,7 +104,7 @@ angular.module("levelController",["fluid", "ngResource", "datatables", "ngCookie
     s.deleteConfirm = function () {
                     s.flow.action("delete", s.task.levelEdit, s.task.levelEdit.id);
                     fm.hide(s.flow.getElementFlowId("levelDeleteModal"));
-                    if (s.page.name !== s.home) {
+                    if (s.task.page.name !== s.home) {
                         s.flow.goToHome();
                     }
                     s.dtOptions.reloadData();

@@ -52,7 +52,7 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
     var headers = {
         Authorization: sessionService.getSessionProperty("authorization"),
         method: "get",
-        flowPage: scope.page.name
+        flowPage: scope.task.page.name
     };
     return dto.fromFnPromise()
         .withOption("ajax", {
@@ -122,9 +122,9 @@ function renderActions(data, editMethod, deleteMethod, viewMethod) {
 
 
     return "<div class='btn-group btn-group-xs'>" +
-        "<button ng-if=" + view + " flow-permission-enabled flow-tooltip tooltip-title='View' task='task' page='page' method='put'  type='button' class='btn btn-warning glyphicon glyphicon-search field-margin' ng-click='" + view + "(" + data.id + ")'></button>" +
-        "<button flow-permission-enabled flow-tooltip tooltip-title='Edit' task='task' page='page' method='put'  type='button' class='btn btn-info glyphicon glyphicon-edit field-margin' ng-click='" + edit + "(" + data.id + ")'></button>" +
-        "<button flow-permission-enabled flow-tooltip tooltip-title='Delete' task='task' page='page' method='delete' type='button' class='btn btn-danger glyphicon glyphicon-trash field-margin' ng-click='" + del + "(" + data.id + ")'> </button></div>";
+        "<button ng-if=" + view + " flow-permission-enabled flow-tooltip tooltip-title='View' task='task' page='task.page' method='put'  type='button' class='btn btn-warning glyphicon glyphicon-search field-margin' ng-click='" + view + "(" + data.id + ")'></button>" +
+        "<button flow-permission-enabled flow-tooltip tooltip-title='Edit' task='task' page='task.page' method='put'  type='button' class='btn btn-info glyphicon glyphicon-edit field-margin' ng-click='" + edit + "(" + data.id + ")'></button>" +
+        "<button flow-permission-enabled flow-tooltip tooltip-title='Delete' task='task' page='task.page' method='delete' type='button' class='btn btn-danger glyphicon glyphicon-trash field-margin' ng-click='" + del + "(" + data.id + ")'> </button></div>";
 }
 
 

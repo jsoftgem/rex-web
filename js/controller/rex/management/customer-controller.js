@@ -55,13 +55,13 @@
         }
 
         s.save = function () {
-            if (s.page.name === s.edit_name) {
+            if (s.task.page.name === s.edit_name) {
                 if (!angular.equals(s.task.customerEdit, s.task.tempEdit)) {
                     s.flow.action("put", s.task.customerEdit, s.task.customerEdit.id);
                 } else {
                     s.flow.message.info(UI_MESSAGE_NO_CHANGE);
                 }
-            } else if (s.page.name === s.create_name) {
+            } else if (s.task.page.name === s.create_name) {
                 s.flow.action("put", s.task.customerCreate);
             }
         }
@@ -70,11 +70,11 @@
         s.$on(s.flow.event.getSuccessEventId(), function (event, data, method) {
 
             if (method === "put") {
-                if (s.page.name === s.edit_name) {
+                if (s.task.page.name === s.edit_name) {
                     s.task.customerEdit = {};
                     angular.copy(s.task.customerEdit, s.task.tempEdit);
                     s.flow.goToHome();
-                } else if (s.page.name === s.create_name) {
+                } else if (s.task.page.name === s.create_name) {
                     s.task.customerCreate = {};
                     s.flow.goToHome();
                 }
@@ -142,7 +142,7 @@
         s.deleteConfirm = function () {
             s.flow.action("delete", s.task.customerEdit, s.task.customerEdit.id);
             fm.hide(s.flow.getElementFlowId("customerDeleteModal"));
-            if (s.page.name !== s.home) {
+            if (s.task.page.name !== s.home) {
                 s.flow.goToHome();
             }
             s.dtOptions.reloadData();
@@ -156,13 +156,13 @@
         s.$on(s.flow.getEventId("createContactEvent"), function (event) {
             s.task.contact = {};
             s.task.contactManaged = false;
-            if (s.page.name === s.create_name) {
+            if (s.task.page.name === s.create_name) {
                 if (s.task.customerCreate.contactDetails === undefined) {
                     s.task.customerCreate.contactDetails = [];
                 }
                 s.task.customerCreate.contactDetails.push(s.task.contact);
                 s.task.contactIndex = s.task.customerCreate.contactDetails.length - 1;
-            } else if (s.page.name === s.edit_name) {
+            } else if (s.task.page.name === s.edit_name) {
                 if (s.task.customerEdit.contactDetails === undefined) {
                     s.task.customerEdit.contactDetails = [];
                 }
@@ -175,9 +175,9 @@
 
         s.$on(s.flow.getEventId("editContactEvent"),
             function (event, id, index) {
-                if (s.page.name === s.create_name) {
+                if (s.task.page.name === s.create_name) {
                     angular.copy(s.task.customerCreate.contactDetails[index], s.task.contactTemp);
-                } else if (s.page.name === s.edit_name) {
+                } else if (s.task.page.name === s.edit_name) {
                     angular.copy(s.task.customerEdit.contactDetails[index], s.task.contactTemp);
                 }
                 s.task.contactManaged = true;
@@ -187,15 +187,15 @@
 
         s.closeContactModal = function () {
             if (s.task.contactManaged === false) {
-                if (s.page.name === s.create_name) {
+                if (s.task.page.name === s.create_name) {
                     s.task.customerCreate.contactDetails.splice(s.task.contactIndex, 1);
-                } else if (s.page.name === s.edit_name) {
+                } else if (s.task.page.name === s.edit_name) {
                     s.task.customerEdit.contactDetails.splice(s.task.contactIndex, 1);
                 }
             } else if (s.task.contactManaged === true) {
-                if (s.page.name === s.create_name) {
+                if (s.task.page.name === s.create_name) {
                     s.task.customerCreate.contactDetails[s.task.contactIndex] = s.task.contactTemp;
-                } else if (s.page.name === s.edit_name) {
+                } else if (s.task.page.name === s.edit_name) {
                     s.task.customerEdit.contactDetails[s.task.contactIndex] = s.task.contactTemp;
                 }
                 s.task.contactTemp = {};
@@ -210,10 +210,10 @@
 
             var contact = undefined;
 
-            if (s.page.name === s.create_name) {
+            if (s.task.page.name === s.create_name) {
                 contact = s.task.customerCreate.contactDetails[s.task.contactIndex];
 
-            } else if (s.page.name === s.edit_name) {
+            } else if (s.task.page.name === s.edit_name) {
                 contact = s.task.customerEdit.contactDetails[s.task.contactIndex];
             }
 
@@ -231,9 +231,9 @@
             if (contact.position) {
                 s.http.get("services/war/position_query/getInstance/", contact.position)
                 .success(function (data) {
-                    if (s.page.name === s.create_name) {
+                    if (s.task.page.name === s.create_name) {
                         s.task.customerCreate.contactDetails[s.task.contactIndex].positionDesc = data.description;
-                    } else if (s.page.name === s.edit_name) {
+                    } else if (s.task.page.name === s.edit_name) {
                         s.task.customerEdit.contactDetails[s.task.contactIndex].positionDesc = data.description;
                     }
                 });
@@ -250,13 +250,13 @@
         s.$on(s.flow.getEventId("createLevelEvent"), function () {
             s.task.level = {};
             s.task.levelManaged = false;
-            if (s.page.name === s.create_name) {
+            if (s.task.page.name === s.create_name) {
                 if (s.task.customerCreate.customerLevels === undefined) {
                     s.task.customerCreate.customerLevels = [];
                 }
                 s.task.customerCreate.customerLevels.push(s.task.level);
                 s.task.levelIndex = s.task.customerCreate.customerLevels.length - 1;
-            } else if (s.page.name === s.edit_name) {
+            } else if (s.task.page.name === s.edit_name) {
                 if (s.task.customerEdit.customerLevels === undefined) {
                     s.task.customerEdit.customerLevels = [];
                 }
@@ -270,9 +270,9 @@
 
         s.$on(s.flow.getEventId("editLevelEvent"),
             function (event, id, index) {
-                if (s.page.name === s.create_name) {
+                if (s.task.page.name === s.create_name) {
                     angular.copy(s.task.customerCreate.customerLevels[index], s.task.levelTemp);
-                } else if (s.page.name === s.edit_name) {
+                } else if (s.task.page.name === s.edit_name) {
                     angular.copy(s.task.customerEdit.customerLevels[index], s.task.levelTemp);
                 }
                 s.task.levelManaged = true;
@@ -282,15 +282,15 @@
 
         s.closeLevelModal = function () {
             if (s.task.levelManaged === false) {
-                if (s.page.name === s.create_name) {
+                if (s.task.page.name === s.create_name) {
                     s.task.customerCreate.customerLevels.splice(s.task.levelIndex, 1);
-                } else if (s.page.name === s.edit_name) {
+                } else if (s.task.page.name === s.edit_name) {
                     s.task.customerEdit.customerLevels.splice(s.task.levelIndex, 1);
                 }
             } else if (s.task.levelManaged === true) {
-                if (s.page.name === s.create_name) {
+                if (s.task.page.name === s.create_name) {
                     s.task.customerCreate.customerLevels[s.task.levelIndex] = s.task.levelTemp;
-                } else if (s.page.name === s.edit_name) {
+                } else if (s.task.page.name === s.edit_name) {
                     s.task.customerEdit.customerLevels[s.task.levelIndex] = s.task.levelTemp;
                 }
                 s.task.levelTemp = {};
@@ -305,9 +305,9 @@
 
             var customerLevel = undefined;
 
-            if (s.page.name === s.create_name) {
+            if (s.task.page.name === s.create_name) {
                 customerLevel = s.task.customerCreate.customerLevels[s.task.levelIndex];
-            } else if (s.page.name === s.edit_name) {
+            } else if (s.task.page.name === s.edit_name) {
                 customerLevel = s.task.customerEdit.customerLevels[s.task.levelIndex];
             }
 
@@ -315,10 +315,10 @@
 
             if (customerLevel.level) {
                 s.http.get("services/war/level_query/getInstance/", customerLevel.level).success(function (data) {
-                    if (s.page.name === s.create_name) {
+                    if (s.task.page.name === s.create_name) {
                         s.task.customerCreate.customerLevels[s.task.levelIndex].educationLevel = data.description;
                         s.task.customerCreate.customerLevels[s.task.levelIndex].levelCourse = data.levelCourse;
-                    } else if (s.page.name === s.edit_name) {
+                    } else if (s.task.page.name === s.edit_name) {
                         s.task.customerEdit.customerLevels[s.task.levelIndex].educationLevel = data.description;
                         s.task.customerEdit.customerLevels[s.task.levelIndex].levelCourse = data.levelCourse;
                     }
@@ -336,13 +336,13 @@
         s.$on(s.flow.getEventId("createPublisherEvent"), function () {
             s.task.publisher = {};
             s.task.publisherManaged = false;
-            if (s.page.name === s.create_name) {
+            if (s.task.page.name === s.create_name) {
                 if (s.task.customerCreate.publisher === undefined) {
                     s.task.customerCreate.publisher = [];
                 }
                 s.task.customerCreate.publisher.push(s.task.publisher);
                 s.task.publisherIndex = s.task.customerCreate.publisher.length - 1;
-            } else if (s.page.name === s.edit_name) {
+            } else if (s.task.page.name === s.edit_name) {
                 if (s.task.customerEdit.publisher === undefined) {
                     s.task.customerEdit.publisher = [];
                 }
@@ -356,9 +356,9 @@
 
         s.$on(s.flow.getEventId("editPublisherEvent"),
             function (event, id, index) {
-                if (s.page.name === s.create_name) {
+                if (s.task.page.name === s.create_name) {
                     angular.copy(s.task.customerCreate.publisher[index], s.task.publisherTemp);
-                } else if (s.page.name === s.edit_name) {
+                } else if (s.task.page.name === s.edit_name) {
                     angular.copy(s.task.customerEdit.publisher[index], s.task.publisherTemp);
                 }
                 s.task.publisherManaged = true;
@@ -369,15 +369,15 @@
 
         s.closePublisherModal = function () {
             if (s.task.publisherManaged === false) {
-                if (s.page.name === s.create_name) {
+                if (s.task.page.name === s.create_name) {
                     s.task.customerCreate.publisher.splice(s.task.publisherIndex, 1);
-                } else if (s.page.name === s.edit_name) {
+                } else if (s.task.page.name === s.edit_name) {
                     s.task.customerEdit.publisher.splice(s.task.publisherIndex, 1);
                 }
             } else if (s.task.publisherManaged === true) {
-                if (s.page.name === s.create_name) {
+                if (s.task.page.name === s.create_name) {
                     s.task.customerCreate.publisher[s.task.publisherIndex] = s.task.publisherTemp;
-                } else if (s.page.name === s.edit_name) {
+                } else if (s.task.page.name === s.edit_name) {
                     s.task.customerEdit.publisher[s.task.publisherIndex] = s.task.publisherTemp;
                 }
                 s.task.publisherTemp = {};
@@ -394,13 +394,13 @@
         s.$on(s.flow.getEventId("createSupportEvent"), function () {
             s.task.support = {};
             s.task.supportManaged = false;
-            if (s.page.name === s.create_name) {
+            if (s.task.page.name === s.create_name) {
                 if (s.task.customerCreate.supportGivens === undefined) {
                     s.task.customerCreate.supportGivens = [];
                 }
                 s.task.customerCreate.supportGivens.push(s.task.support);
                 s.task.supportIndex = s.task.customerCreate.supportGivens.length - 1;
-            } else if (s.page.name === s.edit_name) {
+            } else if (s.task.page.name === s.edit_name) {
                 if (s.task.customerEdit.supportGivens === undefined) {
                     s.task.customerEdit.supportGivens = [];
                 }
@@ -414,9 +414,9 @@
 
         s.$on(s.flow.getEventId("editSupportEvent"),
             function (event, id, index) {
-                if (s.page.name === s.create_name) {
+                if (s.task.page.name === s.create_name) {
                     angular.copy(s.task.customerCreate.supportGivens[index], s.task.supportTemp);
-                } else if (s.page.name === s.edit_name) {
+                } else if (s.task.page.name === s.edit_name) {
                     angular.copy(s.task.customerEdit.supportGivens[index], s.task.supportTemp);
                 }
                 s.task.supportManaged = true;
@@ -427,15 +427,15 @@
 
         s.closeSupportModal = function () {
             if (s.task.supportManaged === false) {
-                if (s.page.name === s.create_name) {
+                if (s.task.page.name === s.create_name) {
                     s.task.customerCreate.supportGivens.splice(s.task.supportIndex, 1);
-                } else if (s.page.name === s.edit_name) {
+                } else if (s.task.page.name === s.edit_name) {
                     s.task.customerEdit.supportGivens.splice(s.task.supportIndex, 1);
                 }
             } else if (s.task.supportManaged === true) {
-                if (s.page.name === s.create_name) {
+                if (s.task.page.name === s.create_name) {
                     s.task.customerCreate.supportGivens[s.task.supportIndex] = s.task.supportTemp;
-                } else if (s.page.name === s.edit_name) {
+                } else if (s.task.page.name === s.edit_name) {
                     s.task.customerEdit.supportGivens[s.task.supportIndex] = s.task.supportTemp;
                 }
                 s.task.supportTemp = {};
@@ -457,7 +457,7 @@
            s.task.potential = {}; 
            s.task.potentialManaged = false;
 
-           if (s.page.name === s.create_name) {
+           if (s.task.page.name === s.create_name) {
 
             if (s.task.customerCreate.warCustomerMarketSchoolYears === undefined) {
                 s.task.customerCreate.warCustomerMarketSchoolYears = [];
@@ -465,7 +465,7 @@
 
             s.task.customerCreate.warCustomerMarketSchoolYears.push(s.task.potential);
             s.task.potentialIndex = s.task.customerCreate.warCustomerMarketSchoolYears.length - 1;
-        } else if (s.page.name === s.edit_name) {
+        } else if (s.task.page.name === s.edit_name) {
             if (s.task.customerEdit.warCustomerMarketSchoolYears === undefined) {
                 s.task.customerEdit.warCustomerMarketSchoolYears = [];
             }
@@ -474,10 +474,10 @@
         }
 
         s.onChangeSchoolYear = function(item){
-         if (s.page.name === s.create_name) {
+         if (s.task.page.name === s.create_name) {
             s.task.customerCreate.warCustomerMarketSchoolYears[s.task.potentialIndex].schoolYearDescription = item.description;
             s.task.customerCreate.warCustomerMarketSchoolYears[s.task.potentialIndex].schoolYear = item.id;
-            }else if(s.page.name === s.edit_name){
+            }else if(s.task.page.name === s.edit_name){
             s.task.customerEdit.warCustomerMarketSchoolYears[s.task.potentialIndex].schoolYearDescription = item.description;
             s.task.customerEdit.warCustomerMarketSchoolYears[s.task.potentialIndex].schoolYear = item.id;
         }
@@ -490,10 +490,10 @@
 
        s.$on(s.flow.getEventId("editPotential"),function(event,id,index){
 
-                if (s.page.name === s.create_name) {
+                if (s.task.page.name === s.create_name) {
                     angular.copy(s.task.customerCreate.warCustomerMarketSchoolYears[index], s.task.potentialTemp);
                     s.task.tempSchoolYear ={description:s.task.customerCreate.warCustomerMarketSchoolYears[index].schoolYearDescription,id:s.task.customerCreate.warCustomerMarketSchoolYears[index].schoolYear};
-                } else if (s.page.name === s.edit_name) {
+                } else if (s.task.page.name === s.edit_name) {
                     angular.copy(s.task.customerEdit.warCustomerMarketSchoolYears[index], s.task.potentialTemp);
                     s.task.tempSchoolYear = {description:s.task.customerEdit.warCustomerMarketSchoolYears[index].schoolYearDescription,id:s.task.customerEdit.warCustomerMarketSchoolYears[index].schoolYear};
                 }
@@ -565,11 +565,11 @@
     s.savePotential = function(){
         var wcmsy = undefined;
 
-        if(s.page.name === s.create_name)
+        if(s.task.page.name === s.create_name)
         {
              wcmsy = s.task.customerCreate.warCustomerMarketSchoolYears[s.task.potentialIndex];
         }
-        else if(s.page.name === s.edit_name)
+        else if(s.task.page.name === s.edit_name)
         {
              wcmsy = s.task.customerEdit.warCustomerMarketSchoolYears[s.task.potentialIndex];
         }
@@ -588,21 +588,21 @@
 
     s.cancelPotential = function(){
         if(!s.task.potentialManaged){
-            if(s.page.name === s.create_name)
+            if(s.task.page.name === s.create_name)
             {
                 s.task.customerCreate.warCustomerMarketSchoolYears.splice(s.task.potentialIndex,1);
             }
-            else if(s.page.name === s.edit_name)
+            else if(s.task.page.name === s.edit_name)
             {
                 s.task.customerEdit.warCustomerMarketSchoolYears.splice(s.task.potentialIndex,1);
             }
         } else {
-            if(s.page.name === s.create_name)
+            if(s.task.page.name === s.create_name)
             {
                 console.log(s.task.potentialTemp);
                 s.task.customerCreate.warCustomerMarketSchoolYears[s.task.potentialIndex] = s.task.potentialTemp;
             }
-            else if(s.page.name === s.edit_name)
+            else if(s.task.page.name === s.edit_name)
             {
                 s.task.customerEdit.warCustomerMarketSchoolYears[s.task.potentialIndex] = s.task.potentialTemp;
             }

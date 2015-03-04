@@ -20,7 +20,7 @@ angular.module("agentController", ["fluid", "ngResource", "datatables"])
         };
 
         s.save = function () {
-            if (s.page.name === "agent_edit") {
+            if (s.task.page.name === "agent_edit") {
                 if (!angular.equals(s.task.agentEdit, s.task.editTemp)) {
                     if (!s.editPassword) {
                         s.task.agentEdit.user.password = null;
@@ -34,7 +34,7 @@ angular.module("agentController", ["fluid", "ngResource", "datatables"])
                 } else {
                     s.flow.message.info(UI_MESSAGE_NO_CHANGE);
                 }
-            } else if (s.page.name === "agent_create") {
+            } else if (s.task.page.name === "agent_create") {
                 if (s.reTypePassword !== s.task.agentCreate.user.password) {
                     s.flow.message.warning("Password did not match.");
                     return;
@@ -98,10 +98,10 @@ angular.module("agentController", ["fluid", "ngResource", "datatables"])
 
         s.$on(s.flow.event.getSuccessEventId(), function (event, data, method) {
             if (method === "put") {
-                if (s.page.name == "agent_edit") {
+                if (s.task.page.name == "agent_edit") {
                     angular.copy(s.task.agentEdit, s.task.editTemp);
                     s.flow.goToHome();
-                } else if (s.page.name === "agent_create") {
+                } else if (s.task.page.name === "agent_create") {
                     s.task.agentCreate = {};
                     angular.copy(s.task.agentCreate, s.tempData);
                     s.flow.goToHome();
@@ -109,7 +109,7 @@ angular.module("agentController", ["fluid", "ngResource", "datatables"])
 
             }
             else if (method === "delete") {
-                if (s.page.name === "agent_home") {
+                if (s.task.page.name === "agent_home") {
                     s.dtOptions.reloadData();
                 }
             }
@@ -157,7 +157,7 @@ angular.module("agentController", ["fluid", "ngResource", "datatables"])
         s.deleteConfirm = function () {
             s.flow.action("delete", s.task.agentEdit, s.task.agentEdit.id);
             fm.hide(s.flow.getElementFlowId("agentDeleteModal"));
-            if (s.page.name !== "agent_home") {
+            if (s.task.page.name !== "agent_home") {
                 s.flow.goToHome();
             }
             s.dtOptions.reloadData();

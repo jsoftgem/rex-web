@@ -26,7 +26,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
         };
 
         s.save = function () {
-            if (s.page.name === "usr_mgr_edit") {
+            if (s.task.page.name === "usr_mgr_edit") {
                 if (!angular.equals(s.task.usrMgrEdit, s.task.editTemp)) {
                     if (!s.editPassword) {
                         s.task.usrMgrEdit.flowInstance.password = null;
@@ -40,7 +40,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
                 } else {
                     s.flow.message.info(UI_MESSAGE_NO_CHANGE);
                 }
-            } else if (s.page.name === "usr_mgr_create") {
+            } else if (s.task.page.name === "usr_mgr_create") {
                 if (s.reTypePassword !== s.task.usrMgrCreate.flowInstance.password) {
                     s.flow.message.warning("Password did not match.");
                     return;
@@ -77,10 +77,10 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
 
         s.$on(s.flow.event.getSuccessEventId(), function (event, data, method) {
             if (method === "put") {
-                if (s.page.name == "usr_mgr_edit") {
+                if (s.task.page.name == "usr_mgr_edit") {
                     angular.copy(s.task.usrMgrEdit, s.task.editTemp);
                     s.flow.goToHome();
-                } else if (s.page.name === "usr_mgr_create") {
+                } else if (s.task.page.name === "usr_mgr_create") {
                     s.task.usrMgrCreate = {};
                     s.task.usrMgrCreate.flowUserGroup = {};
                     angular.copy(s.task.usrMgrCreate, s.tempData);
@@ -89,7 +89,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
 
             }
             else if (method === "delete") {
-                if (s.page.name === "usr_mgr_settings") {
+                if (s.task.page.name === "usr_mgr_settings") {
                     s.dtOptions.reloadData();
                 }
             }
@@ -145,7 +145,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
         s.deleteConfirm = function () {
             s.flow.action("delete", s.task.usrMgrEdit, s.task.usrMgrEdit.flowInstance.id);
             fm.hide(s.flow.getElementFlowId("usrMgrDeleteModal"));
-            if (s.page.name !== "usr_mgr_settings") {
+            if (s.task.page.name !== "usr_mgr_settings") {
                 s.flow.goToHome();
             }
             s.dtOptions.reloadData();
@@ -199,31 +199,31 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
         };
 
         s.save = function () {
-            if (s.page.name == "profile_edit") {
+            if (s.task.page.name == "profile_edit") {
                 if (!angular.equals(s.task.profileEdit, s.task.tempEdit)) {
                     s.flow.action("put", s.task.profileEdit, s.task.profileEdit.id);
                 } else {
                     s.flow.message.info(UI_MESSAGE_NO_CHANGE);
                 }
-            } else if (s.page.name === "profile_create") {
+            } else if (s.task.page.name === "profile_create") {
                 s.flow.action("put", s.task.profileCreate);
             }
         };
 
         s.$on(s.flow.event.getSuccessEventId(), function (event, data, method) {
             if (method === "put") {
-                if (s.page.name == "profile_edit") {
+                if (s.task.page.name == "profile_edit") {
                     s.task.profileEdit = {};
                     angular.copy(s.task.profileEdit, s.task.tempEdit);
                     s.flow.goToHome();
-                } else if (s.page.name === "profile_create") {
+                } else if (s.task.page.name === "profile_create") {
                     s.task.profileCreate = {};
                     s.flow.goToHome();
                 }
 
             }
             else if (method === "delete") {
-                if (s.page.name === "profile_settings") {
+                if (s.task.page.name === "profile_settings") {
                     s.dtOptions.reloadData();
                 }
             }
@@ -260,7 +260,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
         s.deleteConfirm = function () {
             s.flow.action("delete", s.task.profileEdit, s.task.profileEdit.id);
             fm.hide(s.flow.getElementFlowId("profileDeleteModal"));
-            if (s.page.name !== "profile_settings") {
+            if (s.task.page.name !== "profile_settings") {
                 s.flow.goToHome();
             }
             s.dtOptions.reloadData();
@@ -295,7 +295,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
         var save = new SaveControl();
         save.id = "group_edit_ctl";
         save.action = function () {
-            if (s.page.name === "group_usr_mgr_create") {
+            if (s.task.page.name === "group_usr_mgr_create") {
                 $("#" + s.flow.getElementFlowId("usrMgr_submit")).trigger("click");
             } else {
                 $("#" + s.flow.getElementFlowId("group_submit")).trigger("click");
@@ -328,7 +328,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
         };
 
         s.save = function () {
-            if (s.page.name == "group_edit") {
+            if (s.task.page.name == "group_edit") {
                 if (!angular.equals(s.task.groupEdit, s.task.editTemp)) {
                     for (var i = 0; i < s.task.groupEdit.flowUserGroupModules.length; i++) {
                         s.task.groupEdit.flowUserGroupModules[i].groupName = s.task.groupEdit.groupName;
@@ -338,7 +338,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
                 } else {
                     s.flow.message.info(UI_MESSAGE_NO_CHANGE);
                 }
-            } else if (s.page.name === "group_create") {
+            } else if (s.task.page.name === "group_create") {
                 for (var i = 0; i < s.task.groupCreate.flowUserGroupModules.length; i++) {
                     s.task.groupCreate.flowUserGroupModules[i].groupName = s.task.groupCreate.groupName;
                 }
@@ -348,17 +348,17 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
 
         s.$on(s.flow.event.getSuccessEventId(), function (event, data, method) {
             if (method === "put") {
-                if (s.page.name == "group_edit") {
+                if (s.task.page.name == "group_edit") {
                     angular.copy(s.task.groupEdit, s.task.editTemp);
                     s.flow.goToHome();
-                } else if (s.page.name === "group_create") {
+                } else if (s.task.page.name === "group_create") {
                     s.task.groupCreate = {};
                     angular.copy(s.task.groupCreate, s.task.createTemp);
                     s.flow.goToHome();
                 }
             }
             else if (method === "delete") {
-                if (s.page.name === "group_settings") {
+                if (s.task.page.name === "group_settings") {
                     s.dtOptions.reloadData();
                 }
             }
@@ -395,7 +395,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
         s.deleteConfirm = function () {
             s.flow.action("delete", s.task.groupEdit, s.task.groupEdit.id);
             fm.hide(s.flow.getElementFlowId("groupDeleteModal"));
-            if (s.page.name !== "group_settings") {
+            if (s.task.page.name !== "group_settings") {
                 s.flow.goToHome();
             }
             s.dtOptions.reloadData();
@@ -415,7 +415,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
         s.$on(s.flow.getEventId('editFlowModules'), function (event, id) {
             s.task.groupModuleEdit = true;
             var groupModule;
-            if (s.page.name === "group_create") {
+            if (s.task.page.name === "group_create") {
                 for (var i = 0; i < s.task.groupEdit.flowUserGroupModules.length; i++) {
                     var mod = s.task.groupEdit.flowUserGroupModules[i];
                     if (mod.flowModuleId === id) {
@@ -423,7 +423,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
                         break;
                     }
                 }
-            } else if (s.page.name === "group_edit") {
+            } else if (s.task.page.name === "group_edit") {
                 for (var i = 0; i < s.task.groupEdit.flowUserGroupModules.length; i++) {
                     var mod = s.task.groupEdit.flowUserGroupModules[i];
                     if (mod.flowModuleId === id) {
@@ -437,7 +437,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
         });
 
         s.addGroupModule = function () {
-            if (s.page.name === "group_create") {
+            if (s.task.page.name === "group_create") {
 
                 var contains = false;
                 var index = 0;
@@ -463,7 +463,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
                     fm.hide(s.flow.getElementFlowId("groupModuleModal"));
 
                 }
-            } else if (s.page.name === "group_edit") {
+            } else if (s.task.page.name === "group_edit") {
                 if (!s.task.groupEdit.flowUserGroupModules) {
                     s.task.groupEdit.flowUserGroupModules = [];
                 }

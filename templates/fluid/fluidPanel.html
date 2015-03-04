@@ -5,8 +5,8 @@
         <div class="caption"><a ng-if="!flowFrameService.fullScreen " data-toggle='collapse' data-target='#_{{task.id}}'
                                 href='#'
                                 class="flow-panel-heading-title"><span ng-class="task.glyph"
-                                                                       class='hidden-sm hidden-md hidden-xs'></span><span>&nbsp;{{task.title}} - {{page.title}}</span></a>
-            <span ng-if="flowFrameService.fullScreen">&nbsp;{{task.title}} - {{page.title}}</span>
+                                                                       class='hidden-sm hidden-md hidden-xs'></span><span>&nbsp;{{task.title}} - {{task.page.title}}</span></a>
+            <span ng-if="flowFrameService.fullScreen">&nbsp;{{task.title}} - {{task.page.title}}</span>
         </div>
         <div class="tools">
             <div class='btn-group hidden-lg'><a href='#' class='dropdown-toggle'
@@ -86,10 +86,11 @@
     <div id='_{{task.id}}' class='panel-collapse collapse in'>
         <div id='_id_fpb_{{task.id}}' class='portlet-body minHeight flow-panel'>
             <flow-message id="{{flow.getElementFlowId('pnl_msg')}}"></flow-message>
-            <flow-tool id="{{flow.getElementFlowId('flw_tl')}}" ng-show='showToolBar' controls='toolbars'
-                       task='task' pages='pages'></flow-tool>
+            <flow-tool size="large" flow="flow" id="{{flow.getElementFlowId('flw_tl')}}"
+                       ng-if='task.showToolBar' controls='toolbars'
+                       task='task' pages='task.pages'></flow-tool>
             <div id='page_div_{{task.id}}' class='flow-panel-page' style='overflow: auto;'
-                 ng-include='page.home'></div>
+                 ng-include='task.page.home'></div>
         </div>
     </div>
 </div>
