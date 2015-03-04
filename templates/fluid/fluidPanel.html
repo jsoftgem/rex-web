@@ -88,8 +88,8 @@
             <flow-message id="{{flow.getElementFlowId('pnl_msg')}}"></flow-message>
             <flow-tool size="large" flow="flow" id="{{flow.getElementFlowId('flw_tl')}}"
                        ng-if='task.showToolBar' controls='toolbars'
-                       task='task' pages='task.pages'></flow-tool>
-            <div id='page_div_{{task.id}}' class='flow-panel-page' style='overflow: auto;'
+                       task='task' pages='task.navPages'></flow-tool>
+            <div id='page_div_{{task.id}}' class='flow-panel-page'
                  ng-include='task.page.home'></div>
         </div>
     </div>

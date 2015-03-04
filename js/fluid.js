@@ -100,7 +100,8 @@ flowComponents
                         };
                         scope.flow.onOpenPinned = function (page, param) {
 
-                        }
+                        };
+
                         var parent = element.parent();
                         /***********/
 
@@ -292,7 +293,7 @@ flowComponents
                                             uri = uri + scope.task.page.param;
                                         }
 
-                                        scope.homeUrl = uri
+                                        scope.homeUrl = uri;
 
                                         if (scope.task.pinned === true) {
                                             scope.userTask.page = scope.task.page.name;
@@ -519,7 +520,7 @@ flowComponents
                                         }
                                     }
                                     scope.currentPageIndex = 0;
-                                    scope.task.pages = [page];
+                                    scope.task.navPages = [page];
 
                                     scope.loadGet();
                                 }
@@ -706,9 +707,11 @@ flowComponents
                                 }
                             }
                         };
+
                         scope.task.fullScreen = function () {
                             f.toggleFullscreen(scope.task);
-                        }
+                        };
+
                         scope.task.fluidScreen = function () {
                             f.toggleFluidscreen();
                         };
@@ -755,8 +758,6 @@ flowComponents
                                         scope.task.newTask = newTask;
                                         console.info("task-initialization-finished", scope.task);
                                         scope.task.page = undefined;
-                                        scope.task.navPages = scope.task.pages;
-
                                         console.info("generated-task-pages", scope.task.pages);
                                     });
                                 }
@@ -814,6 +815,7 @@ flowComponents
                             var page = scope.task.navPages[i];
                             scope.task.navPages.splice((i + 1), count);
                             scope.flow.navTo(name);
+                            scope.task.page = page;
                         });
 
                         scope.$on(scope.flow.event.getGoToEventId(), function (event, name, param) {
@@ -947,6 +949,7 @@ flowComponents
                                 panelBody.css("overflow", "auto");
 
                                 console.info("panelBody", panelBody);
+
                                 console.info("headerHeight", headerHeight);
 
                             }
@@ -3000,14 +3003,14 @@ function estimateHeight(height) {
 
 
 function generateTask(scope, t, f2) {
-    console.info("generateTask >scope.task.page", scope.task.page);
+    console.info("generateTask > scope.task.page", scope.task.page);
     if (scope.task.page === undefined || scope.task.page === null) {
         if (scope.task.pages) {
             var $page = getHomePageFromTaskPages(scope.task);
             scope.task.page = $page.page;
             scope.homeUrl = $page.page.get;
             scope.home = $page.page.name;
-            scope.task.pages = [$page.page];
+            scope.task.navPages = [$page.page];
             console.info("page", scope.task.page);
         }
     } else {
@@ -3019,21 +3022,21 @@ function generateTask(scope, t, f2) {
             if (scope.task.pages) {
                 var $page = getHomePageFromTaskPages(scope.task);
                 scope.home = $page.page.name;
-                scope.task.pages = [$page.page];
+                scope.task.navPages = [$page.page];
             }
-        } else {
-            scope.task.pages = [page];
+        }else{
+            scope.task.navPages = [page];
         }
 
         if (scope.task.page.param && scope.task.page.param !== "null") {
             scope.homeUrl = scope.task.page.get + scope.task.page.param;
         }
 
-        if (scope.task.pages.indexOf(page) > -1) {
-            scope.currentPageIndex = getPageIndexFromPages(scope.task.page.name, scope.task.pages).index;
+        if (scope.task.navPages.indexOf(page) > -1) {
+            scope.currentPageIndex = getPageIndexFromPages(scope.task.page.name, scope.task.navPages).index;
         } else {
-            scope.task.pages.push(page);
-            scope.currentPageIndex = scope.task.pages.length - 1;
+            scope.task.navPages.push(page);
+            scope.currentPageIndex = scope.task.navPages.length - 1;
         }
 
         for (var i = 0; i < scope.toolbars.length; i++) {
@@ -3041,7 +3044,7 @@ function generateTask(scope, t, f2) {
                 scope.toolbars[i].disabled = !(scope.currentPageIndex > 0);
             }
             if (scope.toolbars[i].id === 'forward') {
-                scope.toolbars[i].disabled = !(scope.currentPageIndex < scope.task.pages.length - 1);
+                scope.toolbars[i].disabled = !(scope.currentPageIndex < scope.task.navPages.length - 1);
             }
         }
     }
