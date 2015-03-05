@@ -1,3 +1,14 @@
 Fluid Core
- - full screen issues.
+ - full screen issues (done).
  - persist task state.
+
+
+
+Rex
+- RSM > customer tag configuration per agent.
+- Fix customer tagging in planner.
+- SchoolYear > historical sales uploadable/viewable in planner or schoolyear.
+- Reports print, export (csv, pdf) - use Jasper Reports.
+- Agent > customer summary view in planner > editable customer info e.g. Name, Address, Contacts etc. except Customer Code.
+- Full calendar rendering.
+

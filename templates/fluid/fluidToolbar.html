@@ -1,8 +1,8 @@
 <div class='container-fluid animated fadeIn anim-dur' style='overflow: auto'>
     <div>
         <ul class='breadcrumb'>
-            <li ng-repeat='page in task.navPages'><a title='page.title' href='#'
-                                                  ng-click='goToEvent(task.page.name,task.page.param)'>{{task.page.title}}</a>
+            <li ng-repeat='page in task.navPages'>
+                <a title='page.title' href='#' ng-click='goToEvent(page.name,page.param)'>{{page.title}}</a>
             </li>
         </ul>
     </div>

@@ -62,7 +62,6 @@ flowComponents
                                         var page = scope.task.navPages[i];
                                         scope.task.navPages.splice((i + 1), count);
                                         scope.flow.navTo(page.name);
-                                        console.info("back",scope.task.navPages);
                                     } else {
                                         this.disabled = true;
                                     }
@@ -284,7 +283,7 @@ flowComponents
                             return q(function (resolve) {
                                 angular.forEach(scope.task.navPages, function (page) {
                                     if (name === page.name) {
-                                        scope.prevPage = scope.task.page;
+                                        scope.task.prevPage = scope.task.page;
                                         scope.task.page = page;
 
                                         var uri = page.get;
@@ -339,7 +338,8 @@ flowComponents
                             return q(function (resolve, reject) {
                                 angular.forEach(scope.task.pages, function (page) {
                                         if (name === page.name) {
-                                            scope.prevPage = scope.task.page;
+                                            scope.task.prevPage = {};
+                                            angular.copy(scope.task.page, scope.task.prevPage);
                                             scope.task.page = page;
                                             var uri = page.get;
 
@@ -382,7 +382,6 @@ flowComponents
                                             if (contains === false) {
                                                 scope.task.navPages.push(page);
                                                 scope.currentPageIndex = scope.task.navPages.length - 1;
-
                                             }
 
                                             for (var i = 0; i < scope.toolbars.length; i++) {
@@ -527,194 +526,7 @@ flowComponents
                             });
 
                         };
-                        scope.task.refresh = function () {
-                            if (scope.task.page.autoGet) {
-                                scope.task.loaded = false;
-                                f2.get(scope.homeUrl, scope.task)
-                                    .success(function (data) {
-                                        scope.flow.pageCallBack(scope.task.page.name, data, "refresh");
-                                        scope.task.loaded = true;
-                                    })
-                                    .error(function (data) {
-                                        scope.task.loaded = true;
-                                    });
-                            } else {
-                                rs.$broadcast(scope.flow.event.getRefreshId());
-                                scope.flow.onRefreshed();
-                            }
-                        };
-                        scope.task.max25 = function (clientState) {
-                            scope.task.size = 25;
-                            parent.removeClass("col-lg-12");
-                            parent.removeClass("col-md-12");
-                            parent.removeClass("col-lg-8");
-                            parent.removeClass("col-md-8");
-                            parent.removeClass("col-lg-6");
-                            parent.removeClass("col-md-6");
-                            parent.addClass("col-lg-4");
-                            parent.addClass("col-md-4");
-                            if (clientState === undefined || clientState === false) {
-                                if (scope.task.page && scope.task) {
-                                    rs.$broadcast(scope.flow.event.getResizeEventId(), scope.task.page.name, scope.task.size);
-                                }
-                                scope.userTask.size = scope.task.size;
-                                if (scope.task.generic === false) {
-                                    if (scope.task.id.indexOf("gen") === -1) {
-                                        scope.userTask.flowTaskId = scope.task.id.split("_")[0];
-                                        scope.userTask.flowId = scope.task.flowId;
-                                        f2.post("services/flow_user_task_crud/save_task_state?field=size", scope.userTask, scope.task);
-                                    }
-                                }
-                            }
 
-                        };
-                        scope.task.max50 = function (clientState) {
-                            scope.task.size = 50;
-                            parent.removeClass("col-lg-12");
-                            parent.removeClass("col-md-12");
-                            parent.removeClass("col-lg-8");
-                            parent.removeClass("col-md-8");
-                            parent.removeClass("col-lg-4");
-                            parent.removeClass("col-md-4");
-                            parent.addClass("col-lg-6");
-                            parent.addClass("col-md-6");
-                            if (clientState === undefined || clientState === false) {
-                                if (scope.task.page && scope.task) {
-                                    rs.$broadcast(scope.flow.event.getResizeEventId(), scope.task.page.name, scope.task.size);
-                                }
-                                scope.userTask.size = scope.task.size;
-                                if (scope.task.generic === false) {
-                                    if (scope.task.id.indexOf("gen") === -1) {
-                                        scope.userTask.flowTaskId = scope.task.id.split("_")[0];
-                                        scope.userTask.flowId = scope.task.flowId;
-                                        f2.post("services/flow_user_task_crud/save_task_state?field=size", scope.userTask, scope.task);
-
-                                    }
-                                }
-                            }
-                        };
-                        scope.task.max75 = function (clientState) {
-                            scope.task.size = 75;
-                            parent.removeClass("col-lg-12");
-                            parent.removeClass("col-md-12");
-                            parent.removeClass("col-lg-6");
-                            parent.removeClass("col-md-6");
-                            parent.removeClass("col-lg-4");
-                            parent.removeClass("col-md-4");
-                            parent.addClass("col-lg-8");
-                            parent.addClass("col-md-8");
-                            if (clientState === undefined || clientState === false) {
-                                if (scope.task.page && scope.task) {
-                                    rs.$broadcast(scope.flow.event.getResizeEventId(), scope.task.page.name, scope.task.size);
-                                }
-                                scope.userTask.size = scope.task.size;
-                                if (scope.task.generic === false) {
-                                    if (scope.task.id.indexOf("gen") === -1) {
-                                        scope.userTask.flowTaskId = scope.task.id.split("_")[0];
-                                        scope.userTask.flowId = scope.task.flowId;
-                                        f2.post("services/flow_user_task_crud/save_task_state?field=size", scope.userTask, scope.task);
-                                        console.log("max75");
-                                    }
-                                }
-                            }
-
-                        };
-                        scope.task.max100 = function (clientState) {
-                            scope.task.size = 100;
-                            parent.removeClass("col-lg-8");
-                            parent.removeClass("col-md-8");
-                            parent.removeClass("col-lg-6");
-                            parent.removeClass("col-md-6");
-                            parent.removeClass("col-lg-4");
-                            parent.removeClass("col-md-4");
-                            parent.addClass("col-lg-12");
-                            parent.addClass("col-md-12");
-                            if (clientState === undefined || clientState === false) {
-                                if (scope.task.page && scope.task) {
-                                    rs.$broadcast(scope.flow.event.getResizeEventId(), scope.task.page.name, scope.task.size);
-                                }
-                                scope.userTask.size = scope.task.size;
-                                if (scope.task.generic === false) {
-                                    if (scope.task.id.indexOf("gen") === -1) {
-                                        scope.userTask.flowTaskId = scope.task.id.split("_")[0];
-                                        scope.userTask.flowId = scope.task.flowId;
-                                        f2.post("services/flow_user_task_crud/save_task_state?field=size", scope.userTask, scope.task);
-
-                                    }
-                                }
-                            }
-                        };
-                        scope.task.hide = function () {
-                            if (scope.task.onWindowHiding(scope.task.page)) {
-                                scope.task.active = false;
-                                scope.userTask.active = scope.task.active;
-                                if (scope.task.generic === false) {
-                                    if (scope.task.id.indexOf("gen") === -1) {
-                                        scope.userTask.flowTaskId = scope.task.id.split("_")[0];
-                                        scope.userTask.flowId = scope.task.flowId;
-                                        f2.post("services/flow_user_task_crud/save_task_state?field=active", scope.userTask, scope.task);
-
-                                    }
-                                }
-
-                            }
-
-                        };
-                        scope.task.close = function () {
-                            if (scope.task.onWindowClosing(scope.task.page)) {
-
-
-                                if (scope.task.generic === false) {
-                                    if (scope.task.id.indexOf("gen") === -1) {
-                                        scope.userTask.closed = true;
-                                        scope.userTask.flowTaskId = scope.task.id.split("_")[0];
-                                        scope.userTask.flowId = scope.task.flowId;
-                                        f2.post("services/flow_user_task_crud/save_task_state?field=close", scope.userTask, scope.task)
-                                            .success(function (data) {
-                                                for (var i = 0; i < f.taskList.length; i++) {
-                                                    var task = f.taskList[i];
-                                                    if (scope.task.id === task.id) {
-                                                        f.taskList.splice(i, 1);
-                                                    }
-                                                }
-                                            })
-                                            .error(function (data) {
-
-                                            });
-
-                                    }
-                                }
-                            }
-
-                        };
-                        scope.task.pin = function () {
-                            scope.task.pinned = !scope.task.pinned;
-                            if (scope.task.pinned === true) {
-                                scope.userTask.page = scope.task.page.name;
-                                scope.userTask.param = scope.task.page.param;
-                                scope.task.onWindowPinned(scope.task.page);
-                            } else {
-                                scope.userTask.page = "";
-                                scope.userTask.param = "";
-                            }
-
-                            if (scope.task.generic === false) {
-                                if (scope.task.id.indexOf("gen") === -1) {
-                                    scope.userTask.flowTaskId = scope.task.id.split("_")[0];
-                                    scope.userTask.flowId = scope.task.flowId;
-                                    scope.userTask.pinned = scope.task.pinned;
-                                    f2.post("services/flow_user_task_crud/save_task_state?field=pin", scope.userTask, scope.task);
-                                }
-                            }
-                        };
-
-                        scope.task.fullScreen = function () {
-                            f.toggleFullscreen(scope.task);
-                        };
-
-                        scope.task.fluidScreen = function () {
-                            f.toggleFluidscreen();
-                        };
                         /*********************/
 
                         /*Instance creation*/
@@ -774,29 +586,29 @@ flowComponents
 
                         /*events*/
 
-                        scope.$on(scope.flow.getEventId('home'), function () {
-                            scope.flow.goToHome();
-                        });
+                        /* scope.$on(scope.flow.getEventId('home'), function () {
+                         scope.flow.goToHome();
+                         });*/
 
-                        scope.$on(scope.flow.getEventId('back'), function () {
+                        /*  scope.$on(scope.flow.getEventId('back'), function () {
 
-                            if (scope.task.navPages.length > 0 && scope.task.navPages.length > scope.currentPageIndex) {
-                                var i = --scope.currentPageIndex;
-                                var count = scope.task.navPages.length - (i + 1);
-                                var page = scope.task.navPages[i];
-                                scope.task.navPages.splice((i + 1), count);
-                                scope.flow.navTo(page.name);
+                         if (scope.task.navPages.length > 0 && scope.task.navPages.length > scope.currentPageIndex) {
+                         var i = --scope.currentPageIndex;
+                         var count = scope.task.navPages.length - (i + 1);
+                         var page = scope.task.navPages[i];
+                         scope.task.navPages.splice((i + 1), count);
+                         scope.flow.navTo(page.name);
 
-                            }
-                        });
+                         }
+                         });*/
 
-                        scope.$on(scope.flow.getEventId('forward'), function () {
-                            if (scope.task.navPages.length - 1 > scope.currentPageIndex) {
-                                var page = scope.navPages.pages[++scope.currentPageIndex];
-                                scope.flow.navTo(page.name);
-                            }
+                        /*   scope.$on(scope.flow.getEventId('forward'), function () {
+                         if (scope.task.navPages.length - 1 > scope.currentPageIndex) {
+                         var page = scope.navPages.pages[++scope.currentPageIndex];
+                         scope.flow.navTo(page.name);
+                         }
 
-                        });
+                         });*/
 
 
                         scope.$on(scope.flow.getEventId("navTo"), function (event, name) {
@@ -836,7 +648,7 @@ flowComponents
 
                                 if (page.name === scope.task.navPages.name) {
                                     scope.task.navPages.splice(key, 1);
-                                    scope.flow.goTo(scope.prevPage.name);
+                                    scope.flow.goTo(scope.task.prevPage.name);
                                 }
                             });
 
@@ -847,19 +659,6 @@ flowComponents
 
                         /* Post creation */
 
-                        if (scope.task && !scope.flowFrameService.fullscreen) {
-                            if (scope.task.size) {
-                                if (scope.task.size == '25') {
-                                    scope.task.max25(true);
-                                } else if (scope.task.size == '50') {
-                                    scope.task.max50(true);
-                                } else if (scope.task.size == '75') {
-                                    scope.task.max75(true);
-                                } else if (scope.task.size == '100') {
-                                    scope.task.max100(true);
-                                }
-                            }
-                        }
 
                         scope.$watch(function (scope) {
                             if (scope.task) {
@@ -892,6 +691,212 @@ flowComponents
                                         });
                                     } else {
                                         generateTask(scope, t, f2);
+                                    }
+
+                                    scope.task.refresh = function () {
+                                        if (scope.task.page.autoGet) {
+                                            scope.task.loaded = false;
+                                            f2.get(scope.homeUrl, scope.task)
+                                                .success(function (data) {
+                                                    scope.flow.pageCallBack(scope.task.page.name, data, "refresh");
+                                                    scope.task.loaded = true;
+                                                })
+                                                .error(function (data) {
+                                                    scope.task.loaded = true;
+                                                });
+                                        } else {
+                                            rs.$broadcast(scope.flow.event.getRefreshId());
+                                            scope.flow.onRefreshed();
+                                        }
+                                    };
+                                    scope.task.max25 = function (clientState) {
+                                        scope.task.size = 25;
+                                        parent.removeClass("col-lg-12");
+                                        parent.removeClass("col-md-12");
+                                        parent.removeClass("col-lg-8");
+                                        parent.removeClass("col-md-8");
+                                        parent.removeClass("col-lg-6");
+                                        parent.removeClass("col-md-6");
+                                        parent.addClass("col-lg-4");
+                                        parent.addClass("col-md-4");
+                                        if (clientState === undefined || clientState === false) {
+                                            if (scope.task.page && scope.task) {
+                                                rs.$broadcast(scope.flow.event.getResizeEventId(), scope.task.page.name, scope.task.size);
+                                            }
+                                            scope.userTask.size = scope.task.size;
+                                            if (scope.task.generic === false) {
+                                                if (scope.task.id.indexOf("gen") === -1) {
+                                                    scope.userTask.flowTaskId = scope.task.id.split("_")[0];
+                                                    scope.userTask.flowId = scope.task.flowId;
+                                                    f2.post("services/flow_user_task_crud/save_task_state?field=size", scope.userTask, scope.task);
+                                                }
+                                            }
+                                        }
+
+                                    };
+                                    scope.task.max50 = function (clientState) {
+                                        scope.task.size = 50;
+                                        parent.removeClass("col-lg-12");
+                                        parent.removeClass("col-md-12");
+                                        parent.removeClass("col-lg-8");
+                                        parent.removeClass("col-md-8");
+                                        parent.removeClass("col-lg-4");
+                                        parent.removeClass("col-md-4");
+                                        parent.addClass("col-lg-6");
+                                        parent.addClass("col-md-6");
+                                        if (clientState === undefined || clientState === false) {
+                                            if (scope.task.page && scope.task) {
+                                                rs.$broadcast(scope.flow.event.getResizeEventId(), scope.task.page.name, scope.task.size);
+                                            }
+                                            scope.userTask.size = scope.task.size;
+                                            if (scope.task.generic === false) {
+                                                if (scope.task.id.indexOf("gen") === -1) {
+                                                    scope.userTask.flowTaskId = scope.task.id.split("_")[0];
+                                                    scope.userTask.flowId = scope.task.flowId;
+                                                    f2.post("services/flow_user_task_crud/save_task_state?field=size", scope.userTask, scope.task);
+
+                                                }
+                                            }
+                                        }
+                                    };
+                                    scope.task.max75 = function (clientState) {
+                                        scope.task.size = 75;
+                                        parent.removeClass("col-lg-12");
+                                        parent.removeClass("col-md-12");
+                                        parent.removeClass("col-lg-6");
+                                        parent.removeClass("col-md-6");
+                                        parent.removeClass("col-lg-4");
+                                        parent.removeClass("col-md-4");
+                                        parent.addClass("col-lg-8");
+                                        parent.addClass("col-md-8");
+                                        if (clientState === undefined || clientState === false) {
+                                            if (scope.task.page && scope.task) {
+                                                rs.$broadcast(scope.flow.event.getResizeEventId(), scope.task.page.name, scope.task.size);
+                                            }
+                                            scope.userTask.size = scope.task.size;
+                                            if (scope.task.generic === false) {
+                                                if (scope.task.id.indexOf("gen") === -1) {
+                                                    scope.userTask.flowTaskId = scope.task.id.split("_")[0];
+                                                    scope.userTask.flowId = scope.task.flowId;
+                                                    f2.post("services/flow_user_task_crud/save_task_state?field=size", scope.userTask, scope.task);
+                                                    console.log("max75");
+                                                }
+                                            }
+                                        }
+
+                                    };
+                                    scope.task.max100 = function (clientState) {
+                                        scope.task.size = 100;
+                                        parent.removeClass("col-lg-8");
+                                        parent.removeClass("col-md-8");
+                                        parent.removeClass("col-lg-6");
+                                        parent.removeClass("col-md-6");
+                                        parent.removeClass("col-lg-4");
+                                        parent.removeClass("col-md-4");
+                                        parent.addClass("col-lg-12");
+                                        parent.addClass("col-md-12");
+                                        if (clientState === undefined || clientState === false) {
+                                            if (scope.task.page && scope.task) {
+                                                rs.$broadcast(scope.flow.event.getResizeEventId(), scope.task.page.name, scope.task.size);
+                                            }
+                                            scope.userTask.size = scope.task.size;
+                                            if (scope.task.generic === false) {
+                                                if (scope.task.id.indexOf("gen") === -1) {
+                                                    scope.userTask.flowTaskId = scope.task.id.split("_")[0];
+                                                    scope.userTask.flowId = scope.task.flowId;
+                                                    f2.post("services/flow_user_task_crud/save_task_state?field=size", scope.userTask, scope.task);
+
+                                                }
+                                            }
+                                        }
+                                    };
+                                    scope.task.hide = function () {
+                                        if (scope.task.onWindowHiding(scope.task.page)) {
+                                            if (scope.flowFrameService.fullScreen) {
+                                                scope.task.fluidScreen();
+                                            }
+                                            scope.task.active = false;
+                                            scope.userTask.active = scope.task.active;
+                                            if (scope.task.generic === false) {
+                                                if (scope.task.id.indexOf("gen") === -1) {
+                                                    scope.userTask.flowTaskId = scope.task.id.split("_")[0];
+                                                    scope.userTask.flowId = scope.task.flowId;
+                                                    f2.post("services/flow_user_task_crud/save_task_state?field=active", scope.userTask, scope.task);
+
+                                                }
+
+                                            }
+
+                                        }
+
+                                    };
+                                    scope.task.close = function () {
+                                        if (scope.task.onWindowClosing(scope.task.page)) {
+
+                                            if (scope.task.generic === false) {
+                                                if (scope.task.id.indexOf("gen") === -1) {
+                                                    scope.userTask.closed = true;
+                                                    scope.userTask.flowTaskId = scope.task.id.split("_")[0];
+                                                    scope.userTask.flowId = scope.task.flowId;
+                                                    f2.post("services/flow_user_task_crud/save_task_state?field=close", scope.userTask, scope.task)
+                                                        .success(function (data) {
+                                                            for (var i = 0; i < f.taskList.length; i++) {
+                                                                var task = f.taskList[i];
+                                                                if (scope.task.id === task.id) {
+                                                                    f.taskList.splice(i, 1);
+                                                                }
+                                                                if (scope.flowFrameService.fullScreen) {
+                                                                    scope.task.fluidScreen();
+                                                                }
+                                                            }
+                                                        })
+                                                        .error(function (data) {
+
+                                                        });
+
+                                                }
+                                            }
+                                        }
+
+                                    };
+                                    scope.task.pin = function () {
+                                        scope.task.pinned = !scope.task.pinned;
+                                        if (scope.task.pinned === true) {
+                                            scope.userTask.page = scope.task.page.name;
+                                            scope.userTask.param = scope.task.page.param;
+                                            scope.task.onWindowPinned(scope.task.page);
+                                        } else {
+                                            scope.userTask.page = "";
+                                            scope.userTask.param = "";
+                                        }
+
+                                        if (scope.task.generic === false) {
+                                            if (scope.task.id.indexOf("gen") === -1) {
+                                                scope.userTask.flowTaskId = scope.task.id.split("_")[0];
+                                                scope.userTask.flowId = scope.task.flowId;
+                                                scope.userTask.pinned = scope.task.pinned;
+                                                f2.post("services/flow_user_task_crud/save_task_state?field=pin", scope.userTask, scope.task);
+                                            }
+                                        }
+                                    };
+                                    scope.task.fullScreen = function () {
+                                        f.toggleFullscreen(scope.task);
+                                    };
+                                    scope.task.fluidScreen = function () {
+                                        f.toggleFluidscreen();
+                                    };
+                                    if (scope.task && !scope.flowFrameService.fullscreen) {
+                                        if (scope.task.size) {
+                                            if (scope.task.size == '25') {
+                                                scope.task.max25(true);
+                                            } else if (scope.task.size == '50') {
+                                                scope.task.max50(true);
+                                            } else if (scope.task.size == '75') {
+                                                scope.task.max75(true);
+                                            } else if (scope.task.size == '100') {
+                                                scope.task.max100(true);
+                                            }
+                                        }
                                     }
                                 }
 
@@ -2250,7 +2255,7 @@ flowComponents
 
         this.toggleFullscreen = function (task) {
             this.fullScreen = true;
-            this.fullScreenTask = this.getFullTask(task);
+            this.fullScreenTask = task;
             t(function () {
                 $(".frame-content").scrollTop(0);
             });
@@ -3024,7 +3029,7 @@ function generateTask(scope, t, f2) {
                 scope.home = $page.page.name;
                 scope.task.navPages = [$page.page];
             }
-        }else{
+        } else {
             scope.task.navPages = [page];
         }
 

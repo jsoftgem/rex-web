@@ -490,9 +490,9 @@ directives.directive("flowBarTooltip", ["$timeout", "flowFrameService", "flowHtt
 
 
             scope.$watch(function (scope) {
-                return scope.task.generic
+                return scope.task.generic || f.fullScreen
             }, function (newValue) {
-                if (newValue === false) {
+                if (scope.task.generic === false) {
                     var content = "<ul class='nav nav-pills nav-stacked'>";
 
                     if (scope.task.pages) {
@@ -504,8 +504,13 @@ directives.directive("flowBarTooltip", ["$timeout", "flowFrameService", "flowHtt
                             }
                         });
                     }
-                    content += "<li><a href='#' class='color-white'>Minimize</a></li>";
 
+                    content += "<li><a href='#' class='color-white'>Minimize</a></li>";
+                    if (!f.fullScreen) {
+                        content += "<li><a href='#' class='color-white'>Fullscreen</a></li>";
+                    } else {
+                        content += "<li><a href='#' class='color-white'>Fluidscreen</a></li>";
+                    }
                     content += "<li><a href='#' class='color-white'>Close</a></li>";
 
                     content += "</ul>"
@@ -584,6 +589,12 @@ directives.directive("flowBarTooltip", ["$timeout", "flowFrameService", "flowHtt
                                                     } else {
                                                         scope.task.close();
                                                     }
+                                                } else if (current.text() === "Fullscreen") {
+                                                    scope.task.fullScreen();
+
+                                                } else if (current.text() === "Fluidscreen") {
+                                                    f.fullScreenTask.fluidScreen();
+                                                    scope.$apply();
                                                 }
                                                 api.toggle(false);
                                             }
