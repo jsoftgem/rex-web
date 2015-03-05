@@ -288,7 +288,7 @@ flowComponents
 
                                         var uri = page.get;
 
-                                        if (scope.task.page.param !== undefined) {
+                                        if (scope.task.page.param !== undefined && scope.task.page.param != null) {
                                             uri = uri + scope.task.page.param;
                                         }
 
@@ -3060,6 +3060,7 @@ function generateTask(scope, t, f2) {
         scope.userTask.flowTaskId = scope.task.id.split("_")[0];
         scope.userTask.flowId = scope.task.flowId;
         f2.post("services/flow_user_task_crud/save_task_state?newTask=true", scope.userTask, scope.task);
+        scope.task.newTask = false;
     }
 
     var loadGetFn = function () {
