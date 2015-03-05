@@ -881,9 +881,11 @@ flowComponents
                                     };
                                     scope.task.fullScreen = function () {
                                         f.toggleFullscreen(scope.task);
+                                        scope.$apply();
                                     };
                                     scope.task.fluidScreen = function () {
                                         f.toggleFluidscreen();
+                                        scope.$apply();
                                     };
                                     if (scope.task && !scope.flowFrameService.fullscreen) {
                                         if (scope.task.size) {

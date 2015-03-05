@@ -1,6 +1,7 @@
 Fluid Core
  - full screen issues (done).
  - persist task state.
+ - fix flowUserAppSettings (remove applayout).
 
 
 

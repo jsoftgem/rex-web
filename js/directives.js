@@ -594,7 +594,6 @@ directives.directive("flowBarTooltip", ["$timeout", "flowFrameService", "flowHtt
 
                                                 } else if (current.text() === "Fluidscreen") {
                                                     f.fullScreenTask.fluidScreen();
-                                                    scope.$apply();
                                                 }
                                                 api.toggle(false);
                                             }

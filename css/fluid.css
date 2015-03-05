@@ -126,13 +126,13 @@ and open the template in the editor.
 }
 
 .overlay {
-     position: absolute;
-     top: 34px;
-     left: 15px;
-     right: 15px;
-     bottom: 24px;
-     background-color: rgba(52, 73, 94, 0.85);
-     z-index: 9999 !important;
+    position: absolute;
+    top: 34px;
+    left: 15px;
+    right: 15px;
+    bottom: 24px;
+    background-color: rgba(52, 73, 94, 0.85);
+    z-index: 9999 !important;
 
 }
 
@@ -206,6 +206,7 @@ and open the template in the editor.
 
 .flow-panel-icon-control {
     margin-right: 5px;
+    transform: scale(1.5, 1.5);
 }
 
 .flow-panel-page {
@@ -318,7 +319,8 @@ div.flow-form label {
     padding-left: 0px;
     padding-right: 0px;
 }
-.frame-fullscreen{
+
+.frame-fullscreen {
     padding: 0;
 }
 
@@ -326,12 +328,10 @@ div.flow-form label {
     padding-top: 15px;
 }
 
-
-.element-center{
+.element-center {
     padding: 1px;
     margin: auto;
 }
-
 
 overflow-x {
     overflow-x: auto;
