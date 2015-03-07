@@ -1,7 +1,7 @@
 Fluid Core
  - Profile add change password field.
  - persist task state.
- - fix fluid task bar for fullscreen.
+ - fix fluid task bar for fullscreen. (done)
  - fluid panel ui (toolbar must be on header when fullscreen).
  - use $resource in flowHttpService (fluid version 2.0).
  - full screen issues (done).
@@ -9,8 +9,8 @@ Fluid Core
 
 
 Rex
-- Agent > customer summary view in planner > editable customer info e.g. Name, Address, Contacts etc. except Customer Code.
 - Fix customer tagging in planner.
+- Agent > customer summary view in planner > editable customer info e.g. Name, Address, Contacts etc. except Customer Code.
 - SchoolYear > historical sales uploadable/viewable in planner.
 - Reports print, export (csv, pdf) - use Jasper Reports.
 - RSM > customer tag configuration per agent. (done)
