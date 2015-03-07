@@ -30,6 +30,7 @@
     "moment": "2.9.0",
     "fullcalendar": "2.2.6",
     "bootstrap-hover-dropdown": "latest",
-    "angular-local-storage": "0.1.5"
+    "angular-local-storage": "0.1.5",
+    "angular-dragdrop":"1.0.11"
   }
 }

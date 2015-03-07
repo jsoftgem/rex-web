@@ -256,7 +256,10 @@ directives.directive("fluidMenu", function ($parse, $compile, $timeout, flowHttp
                 }, $scope.data);
 
                 if ($scope.data && $scope.data.task) {
-                    var task = flowFrameService.addTask($scope.data.task, undefined, true);
+                    /*   if (flowFrameService.fullScreen) {
+                     flowFrameService.toggleFluidscreen();
+                     }*/
+                    var task = flowFrameService.addTask($scope.data.task);
                 }
             };
 
@@ -565,7 +568,8 @@ directives.directive("flowBarTooltip", ["$timeout", "flowFrameService", "flowHtt
                                                         var pg = scope.task.pages[p];
                                                         if (pg.name === page) {
                                                             if (f.fullScreen) {
-                                                                f.fullScreenTask.currentPage = {name: page};
+                                                                scope.task.currentPage = {name: page};
+                                                                f.fullScreenTask = scope.task;
                                                             } else {
                                                                 scope.task.currentPage = {name: page};
                                                                 t(function () {
@@ -577,23 +581,14 @@ directives.directive("flowBarTooltip", ["$timeout", "flowFrameService", "flowHtt
                                                         }
                                                     }
                                                 } else if (current.text() === "Minimize") {
-                                                    if (f.fullScreen) {
-                                                        f.fullScreenTask.hide();
-                                                    } else {
-                                                        scope.task.hide();
-                                                    }
-
+                                                    scope.task.hide();
                                                 } else if (current.text() === "Close") {
-                                                    if (f.fullScreen) {
-                                                        f.fullScreenTask.close();
-                                                    } else {
-                                                        scope.task.close();
-                                                    }
+                                                    scope.task.close();
                                                 } else if (current.text() === "Fullscreen") {
                                                     scope.task.fullScreen();
 
                                                 } else if (current.text() === "Fluidscreen") {
-                                                    f.fullScreenTask.fluidScreen();
+                                                    scope.task.fluidScreen();
                                                 }
                                                 api.toggle(false);
                                             }
@@ -662,7 +657,7 @@ directives.directive("column", function () {
 
             if (scope.column) {
                 element.addClass("col-lg-" + scope.column)
-                    .addClass("col-md-" + scope.column)
+                    .addClass("col-md-12")
                     .addClass("col-sm-12")
                     .addClass("col-xs-12")
             }

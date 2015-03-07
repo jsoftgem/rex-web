@@ -5,7 +5,7 @@
  */
 
 'use strict';
-angular.module("app", ["MAdmin", "flowServices", "flowFactories", "home", "fluid", "devControllers", "adminControllers", "flowAppDirectives", "sessionControllers", "fNotify", "infinite-scroll"])
+angular.module("app", ["MAdmin", "flowServices", "flowFactories", "home", "fluid", "devControllers", "adminControllers", "flowAppDirectives", "sessionControllers", "fNotify", "infinite-scroll", "ngDragDrop"])
     .run(["flowFrameService", "flowHttpService", "userProfile", "responseEvent", "fnService", "userAppSetting", "HOST", "hasProfile", "$rootScope", "sessionService",
         function (f, fhp, up, re, fns, uas, h, hp, rs, ss) {
 
@@ -25,7 +25,7 @@ angular.module("app", ["MAdmin", "flowServices", "flowFactories", "home", "fluid
                         console.info("user_detail", data);
                     });
 
-                    fhp.getLocal("services/flow_module_service/user_tasks").success(function (tasks) {
+                    fhp.postGlobal("services/flow_module_service/user_tasks").success(function (tasks) {
                         angular.forEach(tasks, function (task) {
                             f.addTask(task);
                         });

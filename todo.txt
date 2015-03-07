@@ -1,15 +1,22 @@
 Fluid Core
- - full screen issues (done).
+ - Profile add change password field.
  - persist task state.
- - fix flowUserAppSettings (remove applayout).
-
+ - fix fluid task bar for fullscreen.
+ - fluid panel ui (toolbar must be on header when fullscreen).
+ - use $resource in flowHttpService (fluid version 2.0).
+ - full screen issues (done).
+ - fix flowUserAppSettings. (done)
 
 
 Rex
-- RSM > customer tag configuration per agent.
-- Fix customer tagging in planner.
-- SchoolYear > historical sales uploadable/viewable in planner or schoolyear.
-- Reports print, export (csv, pdf) - use Jasper Reports.
 - Agent > customer summary view in planner > editable customer info e.g. Name, Address, Contacts etc. except Customer Code.
-- Full calendar rendering.
+- Fix customer tagging in planner.
+- SchoolYear > historical sales uploadable/viewable in planner.
+- Reports print, export (csv, pdf) - use Jasper Reports.
+- RSM > customer tag configuration per agent. (done)
+
+
+Rex UI
+- ui enhancement for mobile.
+- Full calendar rendering. (done)
 

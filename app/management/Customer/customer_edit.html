@@ -53,19 +53,18 @@
         </div>
 
 
-
         <div class="col-lg-12">
 
-                <flow-sub-table flow="flow" task="task" key-var="customer" title="Market segment"
-                                target-list="task.customerEdit.warCustomerMarketSchoolYears"
-                                id="{{flow.getElementFlowId('potentialTable')}}" id-field="id"
-                                create-event="addPotential" edit-event="editPotential" look-up="false">
-                    <flow-sub-column title="School Year"
-                                     model="customer.schoolYearDescription"></flow-sub-column>
-                    <flow-sub-column title="Market Potential Segment"
-                                     model="customer.marketPotentialSegment"></flow-sub-column>
-                    <flow-sub-column title="Market Potential" model="customer.marketPotential"></flow-sub-column>
-                </flow-sub-table>
+            <flow-sub-table flow="flow" task="task" key-var="customer" title="Market segment"
+                            target-list="task.customerEdit.warCustomerMarketSchoolYears"
+                            id="{{flow.getElementFlowId('potentialTable')}}" id-field="id"
+                            create-event="addPotential" edit-event="editPotential" look-up="false">
+                <flow-sub-column title="School Year"
+                                 model="customer.schoolYearDescription"></flow-sub-column>
+                <flow-sub-column title="Market Potential Segment"
+                                 model="customer.marketPotentialSegment"></flow-sub-column>
+                <flow-sub-column title="Market Potential" model="customer.marketPotential"></flow-sub-column>
+            </flow-sub-table>
 
 
             <flow-sub-table flow="flow" task="task" key-var="contact" title="Contact Information"
@@ -257,7 +256,7 @@
         <div>
 
             <div class="col-lg-6">
-                <flow-radio group="{{flow.getElementFlowId('process_group')}}" label="Buying process" required="true"
+                <flow-radio group="{{flow.getElementFlowId('process_group')}}" label="Buying process"
                             model="task.customerEdit.buyingProcess" options="processOptions"></flow-radio>
 
                 <flow-radio group="{{flow.getElementFlowId('nature_of_purchase_group')}}" label="Nature of purchase"
@@ -273,7 +272,7 @@
                     <flow-check model="task.customerEdit.usingJournals" label="Using journals"></flow-check>
                 </div>
 
-                <flow-field required="true" ng-if="task.customerEdit.usingJournals"
+                <flow-field ng-if="task.customerEdit.usingJournals"
                             model="task.customerEdit.journalPublisher" label="Publisher of journals used"></flow-field>
 
                 <div class="form-group flow-form">
@@ -514,7 +513,7 @@
     </flow-modal>
 
 
-     <flow-modal id="{{flow.getElementFlowId('potentialModal')}}">
+    <flow-modal id="{{flow.getElementFlowId('potentialModal')}}">
 
         <div class="panel panel-primary">
 
@@ -524,8 +523,9 @@
 
                 <div class="form-horizontal">
                     <flow-message id="{{flow.getElementFlowId('potentialInfoMessage')}}"></flow-message>
-                    <flow-select disabled="s.task.potentialManaged" task="task" label="School Year" field-label="description" model="task.tempSchoolYear" change="onChangeSchoolYear(item)"
-                    source-url="services/war/school_year_query/list"></flow-select>
+                    <flow-select disabled="s.task.potentialManaged" task="task" label="School Year"
+                                 field-label="description" model="task.tempSchoolYear" change="onChangeSchoolYear(item)"
+                                 source-url="services/war/school_year_query/list"></flow-select>
 
                     <flow-field label="Market Potential" type="number"
                                 model="task.customerEdit.warCustomerMarketSchoolYears[task.potentialIndex].marketPotential"></flow-field>

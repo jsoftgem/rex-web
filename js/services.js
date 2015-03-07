@@ -75,6 +75,8 @@ angular.module("flowServices", ["fluid"])
 
         this.hideMenu = false;
 
+        this.layout = "FLUIDSCREEN";
+
         this.createAppSetting = function () {
             return f.getGlobal(this.url + "/setting");
         }

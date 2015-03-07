@@ -274,3 +274,15 @@ li.fluid-task-item-xs a {
     height: 50px !important;
 }
 
+
+/*width */
+.width70px {
+    width: 70px;
+}
+.width120px {
+    width: 120px;
+}
+
+.width300px {
+    width: 300px;
+}

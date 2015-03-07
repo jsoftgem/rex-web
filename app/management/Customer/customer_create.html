@@ -258,7 +258,7 @@
         <div>
 
             <div class="col-lg-6">
-                <flow-radio group="{{flow.getElementFlowId('process_group')}}" label="Buying process" required="true"
+                <flow-radio group="{{flow.getElementFlowId('process_group')}}" label="Buying process"
                             model="task.customerCreate.buyingProcess" options="processOptions"></flow-radio>
 
                 <flow-radio group="{{flow.getElementFlowId('nature_of_purchase_group')}}" label="Nature of purchase"
@@ -274,7 +274,7 @@
                     <flow-check model="task.customerCreate.usingJournals" label="Using journals"></flow-check>
                 </div>
 
-                <flow-field required="true" ng-if="task.customerCreate.usingJournals"
+                <flow-field ng-if="task.customerCreate.usingJournals"
                             model="task.customerCreate.journalPublisher"
                             label="Publisher of journals used"></flow-field>
 

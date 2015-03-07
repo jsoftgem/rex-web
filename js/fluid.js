@@ -214,23 +214,25 @@ flowComponents
                                     }
                                 });
                             }
-
+                            console.info("autoget-page", scope.task.page);
                             return q(function (resolve, reject) {
                                 if ((scope.task.page !== undefined && scope.task.page !== null) && (scope.task.page.autoGet !== null && scope.task.page.autoGet === true)) {
                                     scope.task.currentPage = scope.task.page.name;
                                     f2.get(scope.homeUrl, scope.task)
                                         .success(function (data) {
+                                            console.info("autoget", data);
                                             resolve({page: scope.task.page.name, value: data});
                                         });
                                 } else if ((scope.task.page !== undefined && scope.task.page !== null) && (scope.task.page.autoGet === null || scope.task.page.autoGet === false)) {
                                     scope.task.currentPage = scope.task.page.name;
+                                    console.info("autoget false", false);
                                     resolve({page: scope.task.page.name});
                                 }
                             }).then(function (data) {
                                 if (scope.task.pinned) {
                                     scope.flow.onOpenPinned(scope.task.page, scope.task.pageParam);
                                 } else {
-                                    scope.flow.pageCallBack(data.page, data.value);
+                                    t(scope.flow.pageCallBack(data.page, data.value), 400);
                                 }
                             });
                         };
@@ -444,7 +446,9 @@ flowComponents
                                     f2.get(uri, scope.task)
                                         .success(function (rv) {
                                             if (rv) {
-                                                scope.flow.message.success(rv.msg);
+                                                if (rv.msg) {
+                                                    scope.flow.message.success(rv.msg);
+                                                }
                                             }
                                             rs.$broadcast(scope.flow.event.getSuccessEventId(), rv, method);
                                         })
@@ -464,7 +468,9 @@ flowComponents
                                         .success(function (rv) {
                                             if (rv) {
                                                 if (rv) {
-                                                    scope.flow.message.success(rv.msg);
+                                                    if (rv.msg) {
+                                                        scope.flow.message.success(rv.msg);
+                                                    }
                                                 }
                                                 rs.$broadcast(scope.flow.event.getSuccessEventId(), rv, method);
                                             }
@@ -485,7 +491,9 @@ flowComponents
                                     f2.post(uri, data, scope.task)
                                         .success(function (rv) {
                                             if (rv) {
-                                                scope.flow.message.success(rv.msg);
+                                                if (rv.msg) {
+                                                    scope.flow.message.success(rv.msg);
+                                                }
                                             }
                                             rs.$broadcast(scope.flow.event.getSuccessEventId(), rv, method);
                                         })
@@ -537,8 +545,8 @@ flowComponents
                         }, function (task) {
                             if (task) {
                                 if (task.generic) {
+                                    scope.task.page = undefined;
                                     f2.get(scope.task.url, scope.task).success(function (d) {
-
                                         var newTask = scope.task.newTask;
                                         var $task = {};
                                         scope.copy = {};
@@ -569,7 +577,6 @@ flowComponents
                                         scope.task.generic = false;
                                         scope.task.newTask = newTask;
                                         console.info("task-initialization-finished", scope.task);
-                                        scope.task.page = undefined;
                                         console.info("generated-task-pages", scope.task.pages);
                                     });
                                 }
@@ -712,13 +719,9 @@ flowComponents
                                     scope.task.max25 = function (clientState) {
                                         scope.task.size = 25;
                                         parent.removeClass("col-lg-12");
-                                        parent.removeClass("col-md-12");
                                         parent.removeClass("col-lg-8");
-                                        parent.removeClass("col-md-8");
                                         parent.removeClass("col-lg-6");
-                                        parent.removeClass("col-md-6");
                                         parent.addClass("col-lg-4");
-                                        parent.addClass("col-md-4");
                                         if (clientState === undefined || clientState === false) {
                                             if (scope.task.page && scope.task) {
                                                 rs.$broadcast(scope.flow.event.getResizeEventId(), scope.task.page.name, scope.task.size);
@@ -737,13 +740,9 @@ flowComponents
                                     scope.task.max50 = function (clientState) {
                                         scope.task.size = 50;
                                         parent.removeClass("col-lg-12");
-                                        parent.removeClass("col-md-12");
                                         parent.removeClass("col-lg-8");
-                                        parent.removeClass("col-md-8");
                                         parent.removeClass("col-lg-4");
-                                        parent.removeClass("col-md-4");
                                         parent.addClass("col-lg-6");
-                                        parent.addClass("col-md-6");
                                         if (clientState === undefined || clientState === false) {
                                             if (scope.task.page && scope.task) {
                                                 rs.$broadcast(scope.flow.event.getResizeEventId(), scope.task.page.name, scope.task.size);
@@ -762,13 +761,9 @@ flowComponents
                                     scope.task.max75 = function (clientState) {
                                         scope.task.size = 75;
                                         parent.removeClass("col-lg-12");
-                                        parent.removeClass("col-md-12");
                                         parent.removeClass("col-lg-6");
-                                        parent.removeClass("col-md-6");
                                         parent.removeClass("col-lg-4");
-                                        parent.removeClass("col-md-4");
                                         parent.addClass("col-lg-8");
-                                        parent.addClass("col-md-8");
                                         if (clientState === undefined || clientState === false) {
                                             if (scope.task.page && scope.task) {
                                                 rs.$broadcast(scope.flow.event.getResizeEventId(), scope.task.page.name, scope.task.size);
@@ -788,13 +783,9 @@ flowComponents
                                     scope.task.max100 = function (clientState) {
                                         scope.task.size = 100;
                                         parent.removeClass("col-lg-8");
-                                        parent.removeClass("col-md-8");
                                         parent.removeClass("col-lg-6");
-                                        parent.removeClass("col-md-6");
                                         parent.removeClass("col-lg-4");
-                                        parent.removeClass("col-md-4");
                                         parent.addClass("col-lg-12");
-                                        parent.addClass("col-md-12");
                                         if (clientState === undefined || clientState === false) {
                                             if (scope.task.page && scope.task) {
                                                 rs.$broadcast(scope.flow.event.getResizeEventId(), scope.task.page.name, scope.task.size);
@@ -848,6 +839,7 @@ flowComponents
                                                                 if (scope.flowFrameService.fullScreen) {
                                                                     scope.task.fluidScreen();
                                                                 }
+                                                                scope.$apply();
                                                             }
                                                         })
                                                         .error(function (data) {
@@ -905,13 +897,9 @@ flowComponents
 
                                 if (scope.flowFrameService.fullScreen) {
                                     parent.addClass("col-lg-12");
-                                    parent.addClass("col-md-12");
                                     parent.removeClass("col-lg-8");
-                                    parent.removeClass("col-md-8");
                                     parent.removeClass("col-lg-4");
-                                    parent.removeClass("col-md-4");
                                     parent.removeClass("col-lg-6");
-                                    parent.removeClass("col-md-6");
                                 }
                             }
 
@@ -924,15 +912,33 @@ flowComponents
                             if (fullScreen) {
                                 var height = window.innerHeight;
                                 height = estimateHeight(height) - 50;
-                                // scope.flowFrameService.getFrame().css("overflow", "hidden");
                                 var panel = $("#_id_fp_" + scope.task.id + ".portlet");
                                 var panelBody = panel.find(".portlet-body");
                                 panel.height(height);
                                 var headerHeight = panel.find("div.portlet-header").height();
                                 panelBody.height(height - headerHeight);
                                 panelBody.css("overflow", "auto");
-
                             }
+                            if (scope.task.generic === false) {
+                                scope.task.loaded = false;
+                                var loadGetFn = function () {
+                                    if (scope.task) {
+                                        scope.task.preLoad();
+                                        scope.task.preLoaded = true;
+
+                                        scope.loadGet();
+                                        if (scope.task.preLoaded) {
+                                            scope.task.load();
+
+                                            scope.task.loaded = true;
+                                        }
+                                        scope.task.postLoad();
+                                    }
+                                };
+
+                                t(loadGetFn, 500);
+                            }
+
                         });
 
                         $(window).on("resize", function () {
@@ -2227,7 +2233,7 @@ flowComponents
         };
 
         this.addTask = function (url, origin, newTask) {
-
+            //TODO: remove newTask
             var genericTask = this.createGenericTask();
 
             genericTask.origin = origin;
@@ -2238,9 +2244,11 @@ flowComponents
 
             genericTask.url = url;
 
-            genericTask.newTask = newTask;
-
             var index = this.taskList.length - 1;
+
+            if (this.fullScreen) {
+                this.toggleFluidscreen();
+            }
 
             t(function () {
                 $(".frame-content").scrollTo($("div.box[task]:eq(" + index + ") div"), 200);
@@ -3037,6 +3045,7 @@ function generateTask(scope, t, f2) {
 
         if (scope.task.page.param && scope.task.page.param !== "null") {
             scope.homeUrl = scope.task.page.get + scope.task.page.param;
+            console.info("homeUrl", scope.homeUrl);
         }
 
         if (scope.task.navPages.indexOf(page) > -1) {
@@ -3058,12 +3067,12 @@ function generateTask(scope, t, f2) {
 
     scope.userTask.flowId = scope.task.flowId;
     console.info("new_task", scope.task);
-    if (scope.task.newTask) {
-        scope.userTask.flowTaskId = scope.task.id.split("_")[0];
-        scope.userTask.flowId = scope.task.flowId;
-        f2.post("services/flow_user_task_crud/save_task_state?newTask=true", scope.userTask, scope.task);
-        scope.task.newTask = false;
-    }
+    /* if (scope.task.newTask) {
+     scope.userTask.flowTaskId = scope.task.id.split("_")[0];
+     scope.userTask.flowId = scope.task.flowId;
+     f2.post("services/flow_user_task_crud/save_task_state?newTask=true", scope.userTask, scope.task);
+     scope.task.newTask = false;
+     }*/
 
     var loadGetFn = function () {
 

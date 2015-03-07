@@ -20,14 +20,12 @@ angular.module("home", ["flowServices", "fluid", "flowFactories"])
             console.info("open-frame-service", flowFrameService);
             if (flowFrameService.fullScreen) {
                 flowFrameService.fullScreenTask = task;
-                console.info("open-task", $scope.flowFrameService.fullScreenTask);
             } else {
                 if (task.active === true) {
 
                     $(".frame-content").scrollTo($("#_id_fp_" + task.id), 800);
 
                 } else {
-
                     task.active = true;
                     if (task.id.indexOf("gen") === -1) {
                         $scope.userTask = {};
@@ -76,7 +74,8 @@ angular.module("home", ["flowServices", "fluid", "flowFactories"])
         });
 
         $scope.editProfile = function () {
-            flowFrameService.addTask($scope.userProfile.editProfileTask, undefined, false);
+            console.info("edit_profile", $scope.userProfile.editProfileTask + "&newTask=false");
+            flowFrameService.addTask($scope.userProfile.editProfileTask + "&newTask=false");
         }
 
     })
