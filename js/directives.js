@@ -621,7 +621,7 @@ directives.directive('flowProfileVisible', ["flowHttpService", function (f) {
                 });
         }
     };
-}])
+}]);
 
 
 /*UI Helper*/
@@ -693,6 +693,108 @@ directives.directive("button", [function () {
         }
     };
 }]);
+
+
+/* icons */
+
+directives.directive("fluidIconSave", function () {
+    return {
+        restrict: "A",
+        link: function (scope, element) {
+            element.addClass("fa fa-save");
+        }
+    }
+});
+
+directives.directive("fluidIconAttach", function () {
+    return {
+        restrict: "A",
+        link: function (scope, element) {
+            element.addClass("fa fa-paperclip");
+        }
+    }
+});
+
+directives.directive("fluidIconEdit", function () {
+    return {
+        restrict: "A",
+        link: function (scope, element) {
+            element.addClass("fa fa-edit");
+        }
+    }
+});
+
+directives.directive("fluidIconNew", function () {
+    return {
+        restrict: "A",
+        link: function (scope, element) {
+            element.addClass("fa fa-plus");
+        }
+    }
+});
+
+directives.directive("fluidIconSearch", function () {
+    return {
+        restrict: "A",
+        link: function (scope, element) {
+            element.addClass("fa fa-search");
+        }
+    }
+});
+
+directives.directive("fluidIconTrash", function () {
+    return {
+        restrict: "A",
+        link: function (scope, element) {
+            element.addClass("fa fa-trash-o");
+        }
+    }
+});
+
+directives.directive("fluidIconDownload", function () {
+    return {
+        restrict: "A",
+        link: function (scope, element) {
+            element.addClass("fa fa-download");
+        }
+    }
+});
+
+directives.directive("fluidIconClose", function () {
+    return {
+        restrict: "A",
+        link: function (scope, element) {
+            element.addClass("fa fa-close");
+        }
+    }
+});
+
+directives.directive("fluidIconRefresh", function () {
+    return {
+        restrict: "A",
+        link: function (scope, element, attr) {
+            element.addClass("fa fa-refresh");
+
+            scope.$watch(function () {
+                return attr.loading;
+            }, function (loading) {
+                if (loading) {
+                    if (loading === 'true') {
+                        element.addClass("fa-spin");
+                    } else {
+                        element.removeClass("fa-spin");
+                    }
+                }
+            })
+
+        }
+    }
+});
+
+
+
+
+
 
 
 

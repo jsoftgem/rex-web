@@ -2192,7 +2192,17 @@ flowComponents
                 c(element.contents())(scope);
             }
         }
-    }]);
+    }])
+    .directive("flowUploader", ["$upload", function (u) {
+        return {
+            restict: "AE",
+            link: function (scope, element, attr) {
+
+            },
+            templateUrl: "templates/fluid/fluidUploader.html"
+        }
+    }])
+;
 
 
 function setChildIndexIds(element, taskId, suffix, depth) {

@@ -8,6 +8,8 @@ var monthNames = ["January", "February", "March", "April", "May", "June",
 var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
     'Thursday', 'Friday', 'Saturday'];
 
+var VIEWER_PATH = "ViewerJS/#../"
+
 var REG_NUM = /^[0-9]+$/;
 
 function SaveControl() {

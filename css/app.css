@@ -12,7 +12,7 @@ body {
     /*background-color: #95a5a6;*/
     background: #888888;
     /*font-family: "Arial Black", arial-black;*/
-  /*  font-size: 18px;*/
+    /*  font-size: 18px;*/
     /* background-color: #ecf0f1;*/
     /*background: url(../img/bg-10-full.jpg) no-repeat center center fixed;*/
     /* background: url(../img/fancy_deboss.png);*/
@@ -270,19 +270,38 @@ li.fluid-task-item-xs a {
     margin: auto !important;
 }
 
-.page-header-topbar{
+.page-header-topbar {
     height: 50px !important;
 }
-
 
 /*width */
 .width70px {
     width: 70px;
 }
+
 .width120px {
     width: 120px;
 }
 
 .width300px {
     width: 300px;
+}
+
+.width400px {
+    width: 400px;
+}
+
+.width268px {
+    width: 268px;
+}
+
+.max-height120px {
+    height: 115px;
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+/*cursor*/
+.cursor-pointer {
+    cursor: pointer;
 }

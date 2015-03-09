@@ -9,10 +9,10 @@ Fluid Core
 
 
 Rex
-- Fix customer tagging in planner.
-- Agent > customer summary view in planner > editable customer info e.g. Name, Address, Contacts etc. except Customer Code.
-- SchoolYear > historical sales uploadable/viewable in planner.
 - Reports print, export (csv, pdf) - use Jasper Reports.
+- Agent > customer summary view in planner > editable customer info e.g. Name, Address, Contacts etc. except Customer Code
+- Fix customer tagging in planner. Add daily notes in planner. Activity actual is true when updated. (done)
+- SchoolYear > historical sales uploadable/viewable in planner. (done)
 - RSM > customer tag configuration per agent. (done)
 
 
