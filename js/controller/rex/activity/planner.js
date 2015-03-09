@@ -603,7 +603,9 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                         attachment.total = undefined;
                         attachment.uploadedFileId = flowUploadedFile.id;
                         console.info("success-upload", flowUploadedFile);
-                        s.http.put(s.task.attachmentCrud, attachment);
+                        s.http.put(s.task.attachmentCrud, attachment).success(function () {
+                            s.task.refreshAttach();
+                        });
                     });
                 }
                 s.task.download = function (uploadFieldId) {
