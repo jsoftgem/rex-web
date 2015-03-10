@@ -9,6 +9,7 @@ Fluid Core
 
 
 Rex
+- Agent Customer > pagination next/prev > customer summary
 - Reports print, export (csv, pdf), activity productivity up to 125% - use Jasper Reports.
 - Agent > customer summary view in planner > editable customer info e.g. Name, Address, Contacts etc. except Customer Code
 - Fix customer tagging in planner. Add daily notes in planner. Activity actual is true when updated. (done)

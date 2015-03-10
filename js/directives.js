@@ -647,7 +647,6 @@ directives.directive("offset", [function () {
 }]);
 
 
-
 directives.directive("button", [function () {
     return {
         restrict: 'A',
@@ -760,6 +759,16 @@ directives.directive("fluidIconPrint", function () {
         }
     }
 })
+
+directives.directive("fluidIconClear", function () {
+    return {
+        restrict: "A",
+        link: function (scope, element) {
+            element.addClass("fa fa-eraser");
+        }
+    }
+})
+
 
 directives.directive("fluidIconRefresh", function () {
     return {

@@ -174,12 +174,21 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
 
 
         s.agent = up.agent;
+
+        s.agent.week = "all";
+
         s.imageService = is;
         s.flow.openTaskBaseUrl = "services/flow_task_service/getTask?showToolBar=false&size=100&";
 
         s.editCustomer = function (customerId) {
-            s.task.agent = up.agent;
+            s.task.agent = s.agent;
             s.flow.openTask("customer_task", "customer_edit", customerId, false);
+        }
+
+
+        s.editActivity = function (activityId) {
+            s.task.agent = s.agent;
+            s.flow.openTask("daily_task", "daily_edit", activityId, false);
         }
 
         s.task.preLoad = function () {
@@ -216,6 +225,7 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
                 }
 
             }
+
             s.flow.onRefreshed = function () {
                 if (s.task.page.name === s.task.homePage) {
                     s.http.post(s.task.homeUrl)
@@ -224,6 +234,7 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
                         });
                 }
             }
+
             s.task.change = function () {
                 s.task.report.start = 0;
                 s.task.report.size = 25;
@@ -236,6 +247,7 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
                     s.task.customer = undefined;
                 }
             }
+
             s.task.query = function () {
                 var url = "services/war/report_monthly_service/customers?";
 
@@ -295,6 +307,7 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
                     })
                 }
             }
+
             s.task.valid = function () {
                 var valid = true;
 
@@ -337,11 +350,88 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
                 return valid;
 
             }
+
+
+            s.$on(s.flow.event.getSuccessEventId(), function (event, data, method) {
+                if (s.task.page.name === s.task.homePage) {
+                    if (method === "post") {
+                        s.task.agent.activity = data;
+                    }
+                }
+            });
+
+
+            s.$watch(function (scope) {
+                return scope.selectedCustomer;
+            }, function (newValue) {
+                console.info("agent-watcher", newValue);
+                if (newValue) {
+                    s.flow.action("post", undefined, s.buildQuery());
+                }
+            });
+
+            s.$watch(function (scope) {
+                return scope.agent.schoolYear;
+            }, function (newValue) {
+                console.info("agent-watcher", newValue);
+                if (newValue) {
+                    s.flow.action("post", undefined, s.buildQuery());
+                }
+            });
+
+            s.$watch(function (scope) {
+                return scope.agent.month;
+            }, function (newValue) {
+                console.info("agent-watcher", newValue);
+                if (newValue) {
+                    s.flow.action("post", undefined, s.buildQuery());
+                }
+            });
+
+            s.$watch(function (scope) {
+                return scope.agent.week;
+            }, function (newValue) {
+                console.info("agent-watcher", newValue);
+                if (newValue) {
+                    s.flow.action("post", undefined, s.buildQuery());
+                }
+            });
+
         }
 
 
         s.select = function (school) {
             s.selectedCustomer = school;
         }
+
+        s.clearFilter = function () {
+            s.agent.schoolYear = undefined;
+            s.agent.month = undefined;
+            s.agent.week = undefined;
+        }
+
+        s.buildQuery = function () {
+            var url = "";
+            if (s.selectedCustomer) {
+
+                url += "?customerId=" + s.selectedCustomer.id
+
+                if (s.agent.schoolYear) {
+                    url += "&schoolYearId=" + s.agent.schoolYear.id;
+                }
+
+                if (s.agent.month) {
+                    url += "&month=" + s.agent.month;
+                }
+
+                if (s.agent.week) {
+                    url += "&week=" + s.agent.week;
+                }
+            }
+
+
+            return url;
+        }
+
 
     }]);

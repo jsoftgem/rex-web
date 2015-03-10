@@ -1699,9 +1699,11 @@ flowComponents
                 if (!scope.name) {
                     scope.name = scope.label.trim().split(" ").join("_");
                 }
+
                 if (!scope.id) {
                     scope.id = "fl_slt_" + scope.task.id;
                 }
+
                 if (scope.required === undefined || scope.required === "undefined") {
                     scope.required = false;
                 }
@@ -1732,14 +1734,32 @@ flowComponents
 
                 var select = element.find("select").attr("ng-options", options).attr("ng-model", "model").get();
 
-                if (!scope.sourceList) {
-                    f.get(scope.sourceUrl, scope.task).success(function (sourceList) {
-                        t(function () {
+                /*      if (!scope.sourceList) {
+                 f.get(scope.sourceUrl, scope.task).success(function (sourceList) {
+                 scope.sourceList = sourceList;
+                 });
+                 }*/
+
+
+                scope.$watch(function (scope) {
+                    return scope.sourceUrl;
+                }, function (value, old) {
+                    console.info("flow-select.sourceUrl", value);
+                    if (value) {
+                        f.get(scope.sourceUrl, scope.task).success(function (sourceList) {
                             scope.sourceList = sourceList;
                         });
-                    });
-                }
+                    }
+                });
 
+                scope.$watch(function (scope) {
+                    return attr.values;
+                }, function (value, old) {
+                    console.info("flow-select.values", value);
+                    if (value) {
+                        scope.sourceList = value.split(",");
+                    }
+                })
 
                 // for IE ng-disabled issue
                 scope.$watch(function (scope) {

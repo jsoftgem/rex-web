@@ -68,7 +68,7 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
                 compile(angular.element(row).contents())(scope);
             }
         })
-        .withOption("autoWidth", false)
+        .withOption("autoWidth", true)
         .withOption("info", true)
         .withOption("processing", true)
         .withOption("responsive", true)

@@ -305,3 +305,256 @@ li.fluid-task-item-xs a {
 .cursor-pointer {
     cursor: pointer;
 }
+
+/*****************************************************************/
+/************************** NDG-FIX ******************************/
+/*****************************************************************/
+/* FORMS */
+/* FORM LABEL */
+.form-horizontal .form-group label.ndg-label {
+    text-align: left;
+}
+/* FORM INPUT */
+.form-horizontal .form-group .ndg-column-input {
+}
+/* END FORMS */
+
+/* BREADCRUMB */
+.ndg-breadcrumb .breadcrumb {
+    background-color: #eee;
+}
+.ndg-breadcrumb .breadcrumb li {
+    margin-top: 9px;
+}
+.ndg-breadcrumb .breadcrumb .form-group {
+    margin-bottom: 0px;
+}
+.ndg-breadcrumb .breadcrumb .button-tool {
+    font-size: 18px;
+    padding: 3px 6px;
+}
+/* END BREADCRUMB */
+
+/* TABLE TOOLS */
+/* CPES */
+.form-horizontal .DTTT_container {
+    float: none;
+    margin-bottom: 0;
+    border: solid 1px #ccc;
+}
+.form-horizontal .DTTT_container .DTTT_button {
+    background-image: none;
+    border: none;
+    padding: 10px;
+}
+.form-horizontal .DTTT_container .DTTT_button:hover {
+    background-color: #dfdfdf;
+}
+/* TOOLS ON TOP */
+.form-horizontal .top:before,
+.form-horizontal .top:after {
+    display: block;
+    clear: both;
+    content: "";
+}
+.form-horizontal .top {
+    border-bottom: solid 1px #ccc;
+}
+
+.form-horizontal .top .dataTables_info {
+    margin: 0px;
+    padding: 10px;
+    text-align: left;
+    position: absolute;
+    right: 0;
+    top: 1px;
+}
+/* ENTRY */
+.form-horizontal .top .dataTables_length {
+    padding: 8px 10px 7px;
+    border-right: solid 1px #ccc;
+    float: right;
+}
+.form-horizontal .top .dataTables_length label {
+    margin: 0px;
+}
+.form-horizontal .top .dataTables_length select {
+    width: 50px;
+    border: solid 1px #999;
+    height: 22px;
+    margin: 0px 5px;
+}
+/* PAGINATION */
+.form-horizontal .top .dataTables_paginate {
+    padding: 0;
+}
+.form-horizontal .top .dataTables_paginate .paginate_button {
+    padding: 10px;
+    margin: 0px;
+    border-right: solid 1px #ccc;
+    border-top: none;
+    border-left: none;
+    border-bottom: none;
+}
+.form-horizontal .top .dataTables_paginate .previous {
+    border-left: solid 1px #ccc;
+}
+.form-horizontal .top .dataTables_paginate .current {
+    background-color: #3498db;
+    background-image: none;
+    color: #fff !important;
+    border-top: none;
+    border-left: none;
+    border-bottom: none;
+}
+.form-horizontal .top .dataTables_paginate .disabled {
+    color: #999 !important;
+}
+
+/* PAGINATION HOVER STATES */
+.form-horizontal .top .dataTables_paginate .paginate_button:hover {
+    background-color: #3498db;
+    background-image: none;
+    border-right: solid 1px #ccc;
+    border-top: none;
+    border-left: none;
+    border-bottom: none;
+    color: #fff !important;
+}
+.form-horizontal .top .dataTables_paginate .previous:hover {
+    border-left: solid 1px #ccc;
+    border-top: none;
+    border-bottom: none;
+}
+.form-horizontal .top .dataTables_paginate .current:hover {
+    border-right: solid 1px #ccc;
+    border-top: none;
+    border-left: none;
+    border-bottom: none;
+    color: #fff !important;
+}
+.form-horizontal .top .dataTables_paginate .disabled:hover {
+    background: #fff;
+    color: #999 !important;
+}
+
+/* SEARCH TOOL */
+.form-horizontal .top .dataTables_filter {
+    padding: 8px 10px 7px;
+    border-left: solid 1px #ccc;
+    float: left;
+}
+.form-horizontal .top .dataTables_filter label {
+    margin-bottom: 0;
+}
+
+.form-horizontal .top .dataTables_filter input {
+    padding-bottom: 2px;
+    padding-left: 4px;
+    border: solid 1px #999;
+}
+
+/* BOTTOM TOOLS */
+.form-horizontal .bottom .dataTables_info,
+.form-horizontal .bottom .dataTables_length,
+.form-horizontal .bottom .dataTables_filter {
+    display: none;
+}
+.form-horizontal .bottom .dataTables_paginate {
+    padding: 0;
+    margin-top: -6px;
+    margin-bottom: 10px;
+}
+.form-horizontal .bottom .dataTables_paginate .paginate_button {
+    padding: 5px 10px;
+    margin: 0px;
+    border-right: solid 1px #ccc;
+    border-top: none;
+    border-left: none;
+    border-bottom: solid 1px #ccc;
+}
+.form-horizontal .bottom .dataTables_paginate .previous {
+    border-left: solid 1px #ccc;
+}
+.form-horizontal .bottom .dataTables_paginate .current {
+    background-color: #3498db;
+    background-image: none;
+    color: #fff !important;
+    border-top: none;
+    border-left: none;
+    border-bottom: solid 1px #ccc;
+}
+.form-horizontal .bottom .dataTables_paginate .disabled {
+    color: #999 !important;
+}
+
+/* PAGINATION HOVER STATES */
+.form-horizontal .bottom .dataTables_paginate .paginate_button:hover {
+    background-color: #3498db;
+    background-image: none;
+    border-right: solid 1px #ccc;
+    border-top: none;
+    border-left: none;
+    border-bottom: solid 1px #ccc;
+    color: #fff !important;
+}
+.form-horizontal .bottom .dataTables_paginate .previous:hover {
+    border-left: solid 1px #ccc;
+    border-top: none;
+    border-bottom: solid 1px #ccc;
+}
+.form-horizontal .bottom .dataTables_paginate .current:hover {
+    border-right: solid 1px #ccc;
+    border-top: none;
+    border-left: none;
+    border-bottom: solid 1px #ccc;
+    color: #fff !important;
+}
+.form-horizontal .bottom .dataTables_paginate .disabled:hover {
+    background: #fff;
+    color: #999 !important;
+}
+
+/* END TABLE TOOLS */
+
+/* TABLE TEMPLATE */
+.form-horizontal table.table {
+    margin-top: 0px !important;
+    border-bottom: solid 1px #ccc;
+}
+.form-horizontal table.dataTable thead th {
+    padding: 10px;
+    border-bottom: solid 1px #ccc;
+}
+.form-horizontal table.dataTable thead th:first-child {
+    border-left: solid 1px #ccc;
+}
+.form-horizontal table.dataTable thead th:last-child {
+    border-right: solid 1px #ccc;
+}
+.form-horizontal table.dataTable.display tbody tr.odd {
+    background-color: #fff;
+}
+.form-horizontal table.dataTable.display tbody tr.even {
+    background-color: #f6f6f6;
+}
+.form-horizontal table.dataTable.display tbody tr.odd td,
+.form-horizontal table.dataTable.display tbody tr.even td {
+    background-color: transparent;
+    vertical-align: middle;
+    border: none;
+}
+
+/* TABLE ROW HOVER STATE */
+.form-horizontal table.dataTable.display tbody tr.odd:hover,
+.form-horizontal table.dataTable.display tbody tr.even:hover {
+    background-color: #eaeaea;
+}
+.form-horizontal table.dataTable.display tbody tr.odd.selected,
+.form-horizontal table.dataTable.display tbody tr.even.selected {
+    background-color: #eaeaea;
+}
+.form-horizontal table.dataTable.display tbody tr.odd.selected > .sorting_1,
+.form-horizontal table.dataTable.display tbody tr.even.selected >.sorting_1 {
+    background-color: #eaeaea;
+}
