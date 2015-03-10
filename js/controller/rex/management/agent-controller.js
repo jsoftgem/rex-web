@@ -1,7 +1,7 @@
 /**
  * Created by Jerico on 1/11/2015.
  */
-angular.module("agentController", ["fluid", "ngResource", "datatables"])
+angular.module("agentController", ["fluid", "ngResource", "datatables", "flowServices"])
     .controller("agentCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", function (s, dto, dtc, ms, fm, c, f, ss) {
         s.editPassword = false;
 
@@ -9,7 +9,7 @@ angular.module("agentController", ["fluid", "ngResource", "datatables"])
         create.id = "agent_create_ctl";
 
         create.action = function () {
-           
+
             s.flow.goTo("agent_create");
         };
 
@@ -79,9 +79,9 @@ angular.module("agentController", ["fluid", "ngResource", "datatables"])
         };
 
 
-         s.flow.onPageChanging = function(page){
-                
-            if("agent_create" === page){
+        s.flow.onPageChanging = function (page) {
+
+            if ("agent_create" === page) {
                 s.task.agentCreate = {};
                 s.task.agentCreate.user = {};
                 s.task.agentCreate.user.flowUserDetail = {};
@@ -89,12 +89,12 @@ angular.module("agentController", ["fluid", "ngResource", "datatables"])
                 s.reTypePassword = "";
                 angular.copy(s.task.agentCreate, s.tempData);
                 if (s.task.agentCreate.user.flowUserProfileSet === undefined) {
-                 s.task.agentCreate.user.flowUserProfileSet = [];
-               }
-            }    
+                    s.task.agentCreate.user.flowUserProfileSet = [];
+                }
+            }
 
             return true;
-        }    
+        }
 
         s.$on(s.flow.event.getSuccessEventId(), function (event, data, method) {
             if (method === "put") {
@@ -168,5 +168,180 @@ angular.module("agentController", ["fluid", "ngResource", "datatables"])
         };
 
 
+    }])
+
+    .controller("customerSummaryCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", "hasProfile", "userProfile", "imageService", function (s, dto, dtc, ms, fm, c, f, ss, hp, up, is) {
+
+
+        s.agent = up.agent;
+        s.imageService = is;
+        s.flow.openTaskBaseUrl = "services/flow_task_service/getTask?showToolBar=false&size=100&";
+
+        s.editCustomer = function (customerId) {
+            s.task.agent = up.agent;
+            s.flow.openTask("customer_task", "customer_edit", customerId, false);
+        }
+
+        s.task.preLoad = function () {
+
+
+            s.task.homePage = "customer_agent_home";
+
+            s.task.homeUrl = "services/war/customer_light_query/find_by_assigned_agent"
+
+            hp.check("agent", s.task)
+                .success(function (valid) {
+                    s.task.hideAgentFilter = valid;
+                    s.task.agent = up.agent;
+                });
+
+            s.task.newSummary = function () {
+                var summary = {};
+                summary.isSchoolYear = false;
+                summary.schoolYear = undefined;
+                summary.isAgent = false;
+
+                return summary;
+            }
+
+            s.task.summary = s.task.newSummary();
+
+            s.flow.pageCallBack = function (page, data) {
+                console.info(page, data);
+                if (page === s.task.homePage) {
+                    s.http.post(s.task.homeUrl)
+                        .success(function (data) {
+                            s.task.summary.result = data;
+                        });
+                }
+
+            }
+            s.flow.onRefreshed = function () {
+                if (s.task.page.name === s.task.homePage) {
+                    s.http.post(s.task.homeUrl)
+                        .success(function (data) {
+                            s.task.summary.result = data;
+                        });
+                }
+            }
+            s.task.change = function () {
+                s.task.report.start = 0;
+                s.task.report.size = 25;
+
+                if (!s.task.report.isYear) {
+                    s.task.report.schoolYear = undefined;
+                }
+
+                if (!s.task.report.isCustomer) {
+                    s.task.customer = undefined;
+                }
+            }
+            s.task.query = function () {
+                var url = "services/war/report_monthly_service/customers?";
+
+                var count = 0;
+
+                if (s.task.report.isYear) {
+                    url += "isYear=true&schoolYear=" + s.task.report.schoolYear;
+                    count++;
+                }
+
+                if (s.task.report.isMonth) {
+                    if (count > 0) {
+                        url += "&";
+                    } else {
+                        count++;
+                    }
+                    url += "isMonth=true&month=" + s.task.report.month;
+                }
+
+                if (s.task.report.isAgent) {
+                    if (count > 0) {
+                        url += "&"
+                    } else {
+                        count++;
+                    }
+                    url += "isAgent=true&agentId=" + s.task.agent.id;
+                }
+
+                if (s.task.report.isRegion) {
+                    if (count > 0) {
+                        url += "&"
+                    } else {
+                        count++;
+                    }
+                    url += "isRegion=true&region=" + s.task.report.region;
+                }
+
+                if (s.task.report.isCustomer) {
+                    if (count > 0) {
+                        url += "&";
+                    } else {
+                        count++;
+                    }
+                    url += "isCustomer=true&customerId=" + s.task.customer.id;
+                }
+
+
+                if (s.task.valid()) {
+                    if (count > 0) {
+                        url += "&"
+                    }
+                    url += "size=" + s.task.report.size;
+                    url += "&tag=" + s.task.report.tag;
+                    url += "&start=" + s.task.report.start;
+                    s.http.get(url).success(function (data) {
+                        s.task.report = data;
+                    })
+                }
+            }
+            s.task.valid = function () {
+                var valid = true;
+
+                if (s.task.report.isYear) {
+                    if (s.task.report.schoolYear === undefined) {
+                        s.flow.message.danger("Please select a year.");
+                        valid = false;
+                    }
+                }
+
+
+                if (s.task.report.isMonth) {
+                    if (s.task.report.month === undefined) {
+                        s.flow.message.danger("Please select a month.");
+                        valid = false;
+                    }
+                }
+
+                if (s.task.report.isAgent) {
+                    if (s.task.agent === undefined) {
+                        s.flow.message.danger("Please select an agent.");
+                        valid = false;
+                    }
+                }
+
+                if (s.task.report.isRegion) {
+                    if (s.task.report.region === undefined) {
+                        s.flow.message.danger("Please select a region.");
+                        valid = false;
+                    }
+                }
+
+                if (s.task.report.isCustomer) {
+                    if (s.task.customer === undefined) {
+                        s.flow.message.danger("Please select a customer");
+                        valid = false;
+                    }
+                }
+
+                return valid;
+
+            }
+        }
+
+
+        s.select = function (school) {
+            s.selectedCustomer = school;
+        }
 
     }]);

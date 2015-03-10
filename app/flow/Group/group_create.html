@@ -47,13 +47,13 @@
                     <div class="form-group col-lg-7 col-md-7 col-sm-12 col-xs-12">
                         <flow-select disabled="task.groupModuleEdit" required="!task.groupModuleEdit" label="Module"
                                      task="task" model="task.groupModule.flowModuleId"
-                                     field-label="moduleTitle" field-value="id"
+                                     field-label="moduleName" field-value="id"
                                      source-url="services/flow_module_query/list"></flow-select>
 
                         <flow-select disabled="task.groupModuleEdit" required="!task.groupModuleEdit" required="true"
                                      label="Task" task="task"
                                      model="task.groupModule.flowUserGroupTask.flowUserTaskId"
-                                     field-label="title" field-value="id"
+                                     field-label="name" field-value="id"
                                      source-url="services/flow_task_query/list"></flow-select>
                         <flow-select label="Size" task="task"
                                      field-value="value" field-label="label"

@@ -769,6 +769,16 @@ directives.directive("fluidIconClose", function () {
     }
 });
 
+
+directives.directive("fluidIconPrint", function () {
+    return {
+        restrict: "A",
+        link: function (scope, element) {
+            element.addClass("fa fa-print");
+        }
+    }
+})
+
 directives.directive("fluidIconRefresh", function () {
     return {
         restrict: "A",

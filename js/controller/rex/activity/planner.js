@@ -532,9 +532,10 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                         promise = s.http.put("services/war/activity_note_crud/", note, note.id);
                     }
 
-                    promise.success(function () {
-                        s.task.editNote = false;
-                    });
+                    promise.then(function () {
+                            s.task.editNote = false
+                        }
+                    );
 
                 }
                 s.task.uploadAttachmentUrl = "services/upload_service/upload_file?folder=";
@@ -611,12 +612,9 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                 s.task.download = function (uploadFieldId) {
                     return fh.host + "services/download_service/getContent/" + uploadFieldId;
                 }
-
                 s.task.downloadInfo = function (uploadFieldId) {
                     return s.http.get("services/download_service/getInfo/", uploadFieldId)
                 }
-
-
                 s.task.deleteAttach = function (attachment) {
                     s.task.deleteAttachId = attachment.id;
                     s.task.attachPrompt = true;
@@ -965,7 +963,6 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                     + "&weekStart=" + s.customer.weekStart
                     + "&page=" + s.customer.page;
             }
-
             s.getCustomerMarket = function () {
                 if (s.task.agent === undefined) return;
                 var promise = s.http.get(s.buildCustomerQuery());
@@ -998,7 +995,6 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
 
                 return promise;
             }
-
             s.getPlanner = function (view) {
                 var date = undefined;
 

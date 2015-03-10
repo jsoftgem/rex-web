@@ -67,7 +67,7 @@
                     </div>
                 </div>
 
-                <div>
+                <div ng-hide="task.hideAgentFilter">
                     <div class="col-lg-10">
 
                         <flow-select disabled="!task.report.isRegion" model="task.report.region" task="task"
@@ -181,7 +181,8 @@
                 <tr>
                     <td class="bg-warning" colspan="4"><span>{{month}}</span>
 
-                        <div data-toggle="buttons" class="btn-group btn-group-xs pull-right"
+                        <div ng-if="!task.report.isCustomer" data-toggle="buttons"
+                             class="btn-group btn-group-xs pull-right"
                              ng-init="rep[$index].limit = task.report.length">
 
                             <label class="btn btn-info active" ng-click="rep[$index].limit = task.report.length">
@@ -199,7 +200,7 @@
                         </div>
                     </td>
                 </tr>
-                <tr ng-repeat="day in reports| orderBy: 'customerFrequency' : true | limitTo:rep[$index].limit ">
+                <tr ng-repeat="day in reports| orderBy: 'index' : false | limitTo:rep[$index].limit ">
                     <td colspan="14">
                         <div class="margin-leftl5px">
                             <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"

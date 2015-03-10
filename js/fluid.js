@@ -29,6 +29,8 @@ flowComponents
                 link: {
                     pre: function (scope, element) {
                         /* Initialize variables*/
+
+
                         scope.flowFrameService = f;
 
                         console.info("fullScreen", scope.flowFrameService.fullScreen);
@@ -101,6 +103,40 @@ flowComponents
 
                         };
 
+                        scope.flow.navToTask = function (task) {
+
+                            var $index = {index: 0};
+
+                            angular.forEach(f.taskList, function (tsk, index) {
+                                if (tsk.name === task.name) {
+                                    this.index = index;
+                                }
+                            }, $index);
+
+                            t(function () {
+                                $(".frame-content").scrollTo($("div.box[task]:eq(" + $index.index + ") div"), 200);
+                            });
+                        }
+                        scope.flow.openTaskBaseUrl = "services/flow_task_service/getTask?";
+
+                        scope.flow.openTask = function (name, page, param, newTask) {
+
+                            var url = scope.flow.openTaskBaseUrl;
+                            url += "active=true&name=" + name;
+                            if (page) {
+
+                                url += "&page=" + page;
+                            }
+                            if (param) {
+                                url += "&page-path=" + param;
+                            }
+
+                            if (newTask) {
+                                url += "&newTask=" + newTask;
+                            }
+
+                            f.addTask(url, scope.task, true);
+                        }
                         var parent = element.parent();
                         /***********/
 
@@ -568,7 +604,6 @@ flowComponents
                                             f.taskList[$task.index].origin = scope.task.origin;
                                             scope.task = f.taskList[$task.index];
                                         } else {
-
                                             scope.task = f.buildTask(d);
                                             scope.task.id = "fullscreen_" + d.id;
                                         }

@@ -52,5 +52,6 @@
 }
 
 .daily-view {
-    width: 100pc;
+    width: 95pc;
+    overflow: auto;
 }

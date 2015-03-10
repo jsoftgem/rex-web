@@ -6,33 +6,38 @@
                style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
 
         <div>
-
+            <div ng-if="task.origin" class="form-group">
+                <div class="btn-group btn-group-md">
+                    <button button info="submit">Save</button>
+                </div>
+            </div>
             <div class="col-lg-6">
                 <flow-field model="task.customerEdit.customerCode" label="Customer code" required="true"
                             type="text"></flow-field>
-                <flow-select
-                        task="task"
-                        id="{{flow.getElementFlowId('ownershipAgentSelect')}}"
-                        label="Materials Advisor"
-                        field-value="id"
-                        field-label="user.flowUserDetail.fullName"
-                        model="task.customerEdit.ownerAgentId"
-                        source-url="services/war/agent_query/list">
+
+                <flow-select disabled="task.origin && task.origin.agent"
+                             task="task"
+                             id="{{flow.getElementFlowId('ownershipAgentSelect')}}"
+                             label="Materials Advisor"
+                             field-value="id"
+                             field-label="user.flowUserDetail.fullName"
+                             model="task.customerEdit.ownerAgentId"
+                             source-url="services/war/agent_query/list">
                 </flow-select>
 
                 <flow-field model="task.customerEdit.regionCode" label="Region" disabled="true"></flow-field>
-
-                <flow-look-up
-                        task="task"
-                        id="{{flow.getElementFlowId('schoolLookUp')}}"
-                        parent-id="{{flow.getElementFlowId('customer_edit_form')}}"
-                        model="task.customerEdit.school"
-                        label="School"
-                        source-url="services/war/school_query/list" title="School" field-label="name"
-                        key-var="school">
-                    <flow-sub-column title="Name" model="school.name"></flow-sub-column>
-                    <flow-sub-column title="Address" model="school.addressLine1"></flow-sub-column>
-                </flow-look-up>
+                <flow-field model="task.customerEdit.school.name" label="School" disabled="true"></flow-field>
+                <!-- <flow-look-up
+                         task="task"
+                         id="{{flow.getElementFlowId('schoolLookUp')}}"
+                         parent-id="{{flow.getElementFlowId('customer_edit_form')}}"
+                         model="task.customerEdit.school"
+                         label="School"
+                         source-url="services/war/school_query/list" title="School" field-label="name"
+                         key-var="school">
+                     <flow-sub-column title="Name" model="school.name"></flow-sub-column>
+                     <flow-sub-column title="Address" model="school.addressLine1"></flow-sub-column>
+                 </flow-look-up>-->
 
             </div>
 

@@ -9,7 +9,7 @@
         </div>
         <div class="tools">
             <div class='btn-group btn-group-lg hidden-lg'><a href='#' class='dropdown-toggle'
-                                                data-toggle='dropdown'>
+                                                             data-toggle='dropdown'>
                 <span ng-class="task.glyph" class='flow-panel-icon-control'/></a>
                 <ul class='dropdown-menu dropdown-menu-right dropdown-menu-inverse'>
                     <li><a href='#' ng-click='task.refresh()'>Refresh</a></li>
@@ -90,6 +90,7 @@
                        ng-if='task.showToolBar' controls='toolbars'
                        task='task' pages='task.navPages'></flow-tool>
             <div id='page_div_{{task.id}}' class='flow-panel-page'
+                 ng-style="!flowFrameService.fullScreen?{overflow:auto}:{}"
                  ng-include='task.page.home'></div>
         </div>
     </div>

@@ -1,0 +1,96 @@
+<div ng-controller="customerSummaryCtrl" class="container-fluid">
+
+    <form id="{{flow.getElementFlowId('customersFrame')}}" class="form-horizontal" novalidate>
+
+        <div column="4">
+            <div class="form-group">
+                <div class="panel panel-info activies-panel">
+                    <div class="panel-heading">
+                        <div class="panel-title">{{agent.fullName}}
+                            <div ng-if="selectedCustomer" class="pull-right btn-group btn-group-sm">
+                                <button button info="button" title="Edit Info"
+                                        ng-click="editCustomer(selectedCustomer.id)"><i fluid-icon-edit></i></button>
+                                <button button info="button" title="View Summary"><i fluid-icon-search></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div ng-if="selectedCustomer">
+                            <flow-field label="Customer" model="selectedCustomer.school.name"
+                                        disabled="true"></flow-field>
+                            <flow-select label="by School Year" task="task" field-label="description"
+                                         source-url="services/war/school_year_query/list"
+                                         model="agent.schoolYear">
+
+                            </flow-select>
+                            <flow-select ng-if="agent.schoolYear" model="agent.month" task="task" label="by Month"
+                                         source-url="factories/war/table_factories/months">
+                            </flow-select>
+
+                            <flow-select ng-if="agent.month" model="agent.week" task="task" label="by Week"
+                                         source-url="factories/war/table_factories/weeks">
+                            </flow-select>
+                        </div>
+                        <div ng-if="!selectedCustomer">
+                            <span>No customer selected.</span>
+                        </div>
+
+
+                    </div>
+
+                    <table class="table table-striped table-bordered table-responsive">
+                        <thead>
+                        <th class="bg-info">Activity Date</th>
+                        <th class="bg-info">Visited</th>
+                        <th class="bg-info">Reason for non-coverage</th>
+                        </thead>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+        <div column="8">
+
+            <table class="table table-hover table-striped table-responsive table-bordered table-condensed  customer-table">
+
+                <thead>
+                <th>
+                    <div class="input-icon right"><i fluid-icon-search></i>
+                        <input type="text" placeholder="Customer" class="form-control" ng-model="customer.school.name"/>
+                    </div>
+                </th>
+
+                <th>
+                    <div class="input-icon right"><i fluid-icon-search></i>
+                        <input type="text" placeholder="Customer Code" class="form-control"
+                               ng-model="customer.customerCode"/>
+                    </div>
+                </th>
+                <th>
+                    Market Detail
+                </th>
+                <th>
+                    Date Created
+                </th>
+                </thead>
+
+                <tbody>
+                <tr ng-click="select(school)" ng-repeat="school in task.summary.result | filter: customer">
+                    <td><a href="#"> <img ng-if="school.school.logoId" height="25" width="27" class="school-emblem"
+                                          ng-src="{{imageService.getAvatar(school.school.logoId)}}"></img>
+                        {{school.school.name}}</a></td>
+                    <td>{{school.customerCode}}</td>
+                    <td>{{school.marketDetail}}</td>
+                    <td>{{school.createdDt | date : 'medium'}}</td>
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+
+
+    </form>
+
+</div>

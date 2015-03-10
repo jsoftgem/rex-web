@@ -7,12 +7,25 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
         function (s, dto, dtc, ms, fm, c, f, ss, h, t, ffs, up, hp) {
 
 
+            s.totalProductivity = function (planned, unplanned, target) {
+
+                var total = ((100 * (planned + unplanned)) / target);
+
+                if (total > 125) {
+                    total = 125;
+                }
+
+                return total;
+            }
+
             s.task.preLoad = function () {
 
-
                 s.task.pageAgent = "report_weekly_agent";
+
                 s.task.service = "services/war/report_weekly_service"
+
                 s.task.serviceCustomer = s.task.service + "/agent_customer";
+
                 s.task.hideAgentFilter = false;
 
                 s.flow.pageCallBack = function (page, data) {
@@ -88,6 +101,20 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                 s.task.getDayName = function (dayOfWeek) {
                     return getDayName(dayOfWeek);
                 }
+
+                s.task.reportTable = $("#" + s.flow.getElementFlowId('reportTable'));
+
+                s.task.print = {};
+
+                s.task.print.current = function () {
+                    s.task.reportTable.print({
+                        globalStyles: true,
+                        iframe: true,
+                        noPrintSelector: ".no-print",
+                        manuallyCopyFormValues: true,
+                        deferred: $.Deferred()
+                    })
+                }
             }
 
 
@@ -112,8 +139,8 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                         s.task.hideAgentFilter = valid;
                         s.task.report.isAgent = valid;
                         s.task.report.agent = up.agent;
+                        console.info("profileAgent", up);
                     });
-
 
                 s.task.change = function () {
                     if (!s.task.report.isYear) {
@@ -128,6 +155,7 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                     if (!s.task.report.isRegion) {
                         s.task.report.region = undefined;
                     }
+
                 }
                 s.task.query = function () {
                     var url = "services/war/report_weekly_service/agents?";
@@ -157,7 +185,7 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                         } else {
                             count++;
                         }
-                        url += "isAgent=true&agent=" + agentId;
+                        url += "isAgent=true&agentId=" + agentId;
                     }
 
                     if (s.task.report.isRegion) {
@@ -170,7 +198,7 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                     }
 
 
-                    if (s.task.valid()) {
+                    if (s.task.valid() && s.task.report.closed === false) {
                         if (count > 0) {
                             url += "&"
                         }
@@ -179,7 +207,9 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                         url += "&start=" + s.task.report.start;
 
                         s.http.get(url).success(function (data) {
-                            s.task.report = data;
+                            s.task.report.size = data.size;
+                            s.task.report.tag = data.tag;
+                            s.task.report.weeklyReports = data.weeklyReports;
                         })
                     }
                 }
@@ -224,54 +254,73 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
             s.task.postLoad = function () {
                 s.$watch(function (scope) {
                     return scope.task.report.isYear
-                }, function () {
-                    s.task.change();
+                }, function (newValue, oldValue) {
+                    if (newValue !== oldValue) {
+                        s.task.change();
+                    }
                 });
 
                 s.$watch(function (scope) {
                     return scope.task.report.isMonth
-                }, function () {
-                    s.task.change();
+                }, function (newValue, oldValue) {
+                    if (newValue !== oldValue) {
+                        s.task.change();
+                    }
                 });
 
                 s.$watch(function (scope) {
                     return scope.task.report.isAgent
-                }, function () {
-                    s.task.change();
+                }, function (newValue, oldValue) {
+                    i
+                    if (newValue !== oldValue) {
+                        s.task.change();
+                    }
                 });
 
                 s.$watch(function (scope) {
                     return scope.task.report.isRegion
-                }, function () {
-                    s.task.change();
+                }, function (newValue, oldValue) {
+                    if (newValue !== oldValue) {
+                        s.task.change();
+                    }
                 });
 
                 s.$watch(function (scope) {
                     return scope.task.report.year
-                }, function () {
-                    s.task.query();
+                }, function (newValue, oldValue) {
+                    if (newValue !== oldValue) {
+                        s.task.report.closed = false;
+                        s.task.query();
+                    }
                 })
 
                 s.$watch(function (scope) {
                     return scope.task.report.month
-                }, function () {
-                    s.task.query();
+                }, function (newValue, oldValue) {
+                    if (newValue !== oldValue) {
+                        s.task.report.closed = false;
+                        s.task.query();
+                    }
                 })
 
                 s.$watch(function (scope) {
                     return scope.task.report.agent
-                }, function () {
-                    s.task.query();
+                }, function (newValue, oldValue) {
+                    if (newValue !== oldValue) {
+                        s.task.report.closed = false;
+                        s.task.query();
+                    }
                 })
 
                 s.$watch(function (scope) {
                     return scope.task.report.region
-                }, function () {
-                    s.task.query();
+                }, function (newValue, oldValue) {
+                    if (newValue !== oldValue) {
+                        s.task.report.closed = false;
+                        s.task.query();
+                    }
                 })
             }
-
-
         }
     ])
     .controller("reportsMCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", "HOST", "$timeout", "flowFrameService", "hasProfile", "userProfile",
