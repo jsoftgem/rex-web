@@ -4,14 +4,7 @@
 
         <input id="{{flow.getElementFlowId('daily_submit')}}" type="submit"
                style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
-
-
-        <div class="form-group">
-            <div class="col-lg-2" style="text-align: right"><span class="control-label"
-                                                                  style="font:inherit;font-size:14px;">Date</span></div>
-            <div class="col-lg-10"><span class="form-control">{{task.modelEdit.startDt | date: 'MM/dd/yyyy'}}</span>
-            </div>
-        </div>
+        <flow-field label="Date" disabled="true" model="task.modelEdit.startDt | date: 'MM/dd/yyyy'"></flow-field>
         <flow-field model="task.modelEdit.description" label="Customer" disabled="true"></flow-field>
         <div class="form-group" style="margin:auto">
             <div class="col-lg-6">

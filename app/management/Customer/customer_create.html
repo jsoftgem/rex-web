@@ -16,12 +16,12 @@
                         id="{{flow.getElementFlowId('ownershipAgentSelect')}}"
                         label="Materials Advisor"
                         field-label="user.flowUserDetail.fullName"
-                        model="task.create.agent" 
+                        model="task.create.agent"
                         source-url="services/war/agent_query/list">
                 </flow-select>
 
                 <flow-field disabled="true" model="task.customerCreate.regionCode" label="Region"></flow-field>
-        
+
                 <flow-look-up
                         task="task"
                         id="{{flow.getElementFlowId('schoolLookUp')}}"
@@ -37,7 +37,7 @@
             </div>
 
             <div class="col-lg-6">
-         
+
                 <flow-field model="task.customerCreate.school.email" type="email" label="Email"
                             required="true"></flow-field>
 
@@ -52,19 +52,19 @@
             </div>
 
         </div>
-        
+
 
         <div class="col-lg-12">
-                <flow-sub-table flow="flow" task="task" key-var="customer" title="Market segment"
-                                target-list="task.customerCreate.warCustomerMarketSchoolYears"
-                                id="{{flow.getElementFlowId('potentialTable')}}" id-field="id"
-                                create-event="addPotential" edit-event="editPotential" look-up="false">
-                    <flow-sub-column title="School Year"
-                                     model="customer.schoolYearDescription"></flow-sub-column>
-                    <flow-sub-column title="Market Potential Segment"
-                                     model="customer.marketPotentialSegment"></flow-sub-column>
-                    <flow-sub-column title="Market Potential" model="customer.marketPotential"></flow-sub-column>
-                </flow-sub-table>
+            <flow-sub-table flow="flow" task="task" key-var="customer" title="Market segment"
+                            target-list="task.customerCreate.warCustomerMarketSchoolYears"
+                            id="{{flow.getElementFlowId('potentialTable')}}" id-field="id"
+                            create-event="addPotential" edit-event="editPotential" look-up="false">
+                <flow-sub-column title="School Year"
+                                 model="customer.schoolYearDescription"></flow-sub-column>
+                <flow-sub-column title="Market Potential Segment"
+                                 model="customer.marketPotentialSegment"></flow-sub-column>
+                <flow-sub-column title="Market Potential" model="customer.marketPotential"></flow-sub-column>
+            </flow-sub-table>
         </div>
 
         <div class="col-lg-12">
@@ -126,24 +126,20 @@
 
                     <legend>Buying Cycle</legend>
                     <div class="form-group">
-                        <div class="col-lg-12">
-                            <div class="col-lg-1">
-                                <span style="font-size:14px;font-style:inherit;font-variant:inherit">Evaluation</span>
-                            </div>
-                            <div class="col-lg-5">
-                                <flow-select
-                                        task="task"
-                                        id="{{flow.getElementFlowId('evalSelect')}}"
-                                        model="task.customerCreate.evaluation"
-                                        label=""
-                                        source-url="factories/war/table_factories/months">
+                        <div column="12">
+                            <div column="6">
+                                <flow-select label="Evaluation"
+                                             task="task"
+                                             id="{{flow.getElementFlowId('evalSelect')}}"
+                                             model="task.customerCreate.evaluation"
+                                             source-url="factories/war/table_factories/months">
                                 </flow-select>
 
                             </div>
-                            <div class="col-lg-1">
+                            <div column="1">
                                 <flow-check model="task.isCreateEvaluationTo" label=" to"></flow-check>
                             </div>
-                            <div class="col-lg-5">
+                            <div column="5">
                                 <flow-select ng-if="task.isCreateEvaluationTo"
                                              change="changeEval()"
                                              task="task"
@@ -158,24 +154,21 @@
                         </div>
 
 
-                        <div class="col-lg-12">
-                            <div class="col-lg-1">
-                                <span style="font-size:14px;font-style:inherit;font-variant:inherit">Ordering</span>
-                            </div>
-                            <div class="col-lg-5">
+                        <div column="12">
+                            <div column="6">
                                 <flow-select
                                         task="task"
                                         id="{{flow.getElementFlowId('orderSelect')}}"
                                         model="task.customerCreate.ordering"
-                                        label=""
+                                        label="Ordering"
                                         source-url="factories/war/table_factories/months">
                                 </flow-select>
 
                             </div>
-                            <div class="col-lg-1">
+                            <div column="1">
                                 <flow-check model="task.isCreateOrderingTo" label=" to"></flow-check>
                             </div>
-                            <div class="col-lg-5">
+                            <div column="5">
                                 <flow-select ng-if="task.isCreateOrderingTo"
                                              task="task"
                                              id="{{flow.getElementFlowId('orderSelect2')}}"
@@ -188,62 +181,54 @@
 
                         </div>
 
-                        <div class="col-lg-12">
-                            <div class="col-lg-1">
-                                <span style="font-size:14px;font-style:inherit;font-variant:inherit">Delivery</span>
-                            </div>
-                            <div class="col-lg-5">
+                        <div column="12">
+                            <div column="6">
                                 <flow-select
                                         task="task"
                                         id="{{flow.getElementFlowId('deliverySelect')}}"
                                         model="task.customerCreate.delivery"
-                                        label=""
+                                        label="Delivery"
                                         source-url="factories/war/table_factories/months">
                                 </flow-select>
 
                             </div>
-                            <div class="col-lg-1">
+                            <div column="1">
                                 <flow-check model="task.isCreateDeliveryTo" label=" to"></flow-check>
                             </div>
-                            <div class="col-lg-5">
+                            <div column="5">
                                 <flow-select ng-if="task.isCreateDeliveryTo"
                                              task="task"
                                              id="{{flow.getElementFlowId('deliverySelect2')}}"
                                              model="task.customerCreate.deliveryTo"
                                              label=""
-                                             source-url="factories/war/table_factories/months"
-                                        >
+                                             source-url="factories/war/table_factories/months">
                                 </flow-select>
                             </div>
 
                         </div>
 
 
-                        <div class="col-lg-12">
-                            <div class="col-lg-1">
-                                <span style="font-size:14px;font-style:inherit;font-variant:inherit">Collection</span>
-                            </div>
-                            <div class="col-lg-5">
+                        <div column="12">
+                            <div column="6">
                                 <flow-select
                                         task="task"
                                         id="{{flow.getElementFlowId('collectionSelect')}}"
                                         model="task.customerCreate.collection"
-                                        label=""
+                                        label="Collection"
                                         source-url="factories/war/table_factories/months">
                                 </flow-select>
 
                             </div>
-                            <div class="col-lg-1">
+                            <div column="1">
                                 <flow-check model="task.isCreateCollectionTo" label=" to"></flow-check>
                             </div>
-                            <div class="col-lg-5">
+                            <div column="5">
                                 <flow-select ng-if="task.isCreateCollectionTo"
                                              task="task"
                                              id="{{flow.getElementFlowId('collectionSelect2')}}"
                                              model="task.customerCreate.collectionTo"
                                              label=""
-                                             source-url="factories/war/table_factories/months"
-                                        >
+                                             source-url="factories/war/table_factories/months">
                                 </flow-select>
                             </div>
 
@@ -510,8 +495,9 @@
 
                 <div class="form-horizontal">
                     <flow-message id="{{flow.getElementFlowId('potentialInfoMessage')}}"></flow-message>
-                    <flow-select disabled="s.task.potentialManaged" task="task" label="School Year" field-label="description" model="task.tempSchoolYear" change="onChangeSchoolYear(item)"
-                    source-url="services/war/school_year_query/list"></flow-select>
+                    <flow-select disabled="s.task.potentialManaged" task="task" label="School Year"
+                                 field-label="description" model="task.tempSchoolYear" change="onChangeSchoolYear(item)"
+                                 source-url="services/war/school_year_query/list"></flow-select>
 
                     <flow-field label="Market Potential" type="number"
                                 model="task.customerCreate.warCustomerMarketSchoolYears[task.potentialIndex].marketPotential"></flow-field>
@@ -531,6 +517,6 @@
         </div>
 
     </flow-modal>
-  
+
 
 </div>

@@ -301,6 +301,7 @@ div.flow-form label {
     font-style: inherit;
     font-variant: inherit;
     font: bold;
+    text-align: left !important;
 }
 
 .panel-control {
@@ -333,6 +334,17 @@ div.flow-form label {
     margin: auto;
 }
 
-overflow-x {
+.overflow-x {
     overflow-x: auto;
+}
+
+.fluid-checkbox {
+    height: 30px;
+    width: 30px;
+    background: none;
+    border: 1px solid #888888;
+}
+
+.fluid-checkbox i {
+    font-size: 17px;
 }

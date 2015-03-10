@@ -130,29 +130,26 @@
                     <legend>Buying Cycle</legend>
                     <div class="form-group">
 
-                        <div class="col-lg-12">
-                            <div class="col-lg-1">
-                                <span style="font-size:14px;font-style:inherit;font-variant:inherit">Evaluation</span>
-                            </div>
-                            <div class="col-lg-5">
+                        <div column="12">
+                            <div column="6">
                                 <flow-select
                                         task="task"
                                         id="{{flow.getElementFlowId('evalSelect')}}"
                                         model="task.customerEdit.evaluation"
-                                        label=" "
+                                        label="Evaluation"
                                         source-url="factories/war/table_factories/months">
                                 </flow-select>
 
                             </div>
-                            <div class="col-lg-1">
+                            <div column="1">
                                 <flow-check model="task.isEditEvaluationTo" label=" to"></flow-check>
                             </div>
-                            <div class="col-lg-5">
+                            <div column="5">
                                 <flow-select ng-if="task.isEditEvaluationTo"
                                              task="task"
                                              id="{{flow.getElementFlowId('evalSelect2')}}"
                                              model="task.customerEdit.evaluationTo"
-                                             label=" "
+                                             label=""
                                              source-url="factories/war/table_factories/months"
                                         >
                                 </flow-select>
@@ -161,24 +158,20 @@
                         </div>
 
 
-                        <div class="col-lg-12">
-                            <div class="col-lg-1">
-                                <span style="font-size:14px;font-style:inherit;font-variant:inherit">Ordering</span>
-                            </div>
-                            <div class="col-lg-5">
+                        <div column="12">
+                            <div column="6">
                                 <flow-select
                                         task="task"
                                         id="{{flow.getElementFlowId('orderSelect')}}"
                                         model="task.customerEdit.ordering"
-                                        label=" "
+                                        label="Ordering"
                                         source-url="factories/war/table_factories/months">
                                 </flow-select>
-
                             </div>
-                            <div class="col-lg-1">
+                            <div column="1">
                                 <flow-check model="task.isEditOrderingTo" label=" to"></flow-check>
                             </div>
-                            <div class="col-lg-5">
+                            <div column="5">
                                 <flow-select ng-if="task.isEditOrderingTo"
                                              task="task"
                                              id="{{flow.getElementFlowId('orderSelect2')}}"
@@ -191,24 +184,21 @@
 
                         </div>
 
-                        <div class="col-lg-12">
-                            <div class="col-lg-1">
-                                <span style="font-size:14px;font-style:inherit;font-variant:inherit">Delivery</span>
-                            </div>
-                            <div class="col-lg-5">
+                        <div column="12">
+                            <div column="6">
                                 <flow-select
                                         task="task"
                                         id="{{flow.getElementFlowId('deliverySelect')}}"
                                         model="task.customerEdit.delivery"
-                                        label=" "
+                                        label="Delivery"
                                         source-url="factories/war/table_factories/months">
                                 </flow-select>
 
                             </div>
-                            <div class="col-lg-1">
+                            <div column="1">
                                 <flow-check model="task.isEditDeliveryTo" label=" to"></flow-check>
                             </div>
-                            <div class="col-lg-5">
+                            <div column="5">
                                 <flow-select ng-if="task.isEditDeliveryTo"
                                              task="task"
                                              id="{{flow.getElementFlowId('deliverySelect2')}}"
@@ -221,24 +211,21 @@
 
                         </div>
 
-                        <div class="col-lg-12">
-                            <div class="col-lg-1">
-                                <span style="font-size:14px;font-style:inherit;font-variant:inherit">Collection</span>
-                            </div>
-                            <div class="col-lg-5">
+                        <div column="12">
+                            <div column="6">
                                 <flow-select
                                         task="task"
                                         id="{{flow.getElementFlowId('collectionSelect')}}"
                                         model="task.customerEdit.collection"
-                                        label=" "
+                                        label="Collection"
                                         source-url="factories/war/table_factories/months">
                                 </flow-select>
 
                             </div>
-                            <div class="col-lg-1">
+                            <div column="1">
                                 <flow-check model="task.isEditCollectionTo" label=" to"></flow-check>
                             </div>
-                            <div class="col-lg-5">
+                            <div column="5">
                                 <flow-select ng-if="task.isEditCollectionTo"
                                              task="task"
                                              id="{{flow.getElementFlowId('collectionSelect2')}}"

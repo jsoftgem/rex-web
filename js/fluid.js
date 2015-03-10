@@ -14,8 +14,6 @@ flowComponents.run(["$templateCache", function (tc) {
     tc.put("flowBar.html", "<div><ul class='nav navbar-nav col-lg-7 task-glyph-size'><li  ng-class=\"task.active ? 'flow-bar-icon-active':''\" ng-repeat='task in taskList | limitTo:10' ><a class='flow-bar-icon' task='task' flow-bar-tooltip tooltip-title='{{task.title}}' href='#' ng-click='open(task)'><span class='flow-bar-icon-span hidden-xs' ng-class='task.glyph'></span><p  style='text-align: left' class='hidden-lg hidden-md hidden-sm'><span ng-class='task.glyph' class='task-glyph-size'></span> <span>{{task.title}}</span></p></a></li><li class='dropdown' ng-hide='taskList.length < 11'><a href='#' class='dropdown-toggle' data-toggle='dropdown'><span class='fui-triangle-down'></span></a><ul  class='dropdown-menu flow-bar-task-collapse' style='overflow: auto'><li ng-show='$index >= 10' class='border' ng-class=\"tsk.active ? 'active':''\" ng-repeat='tsk in taskList'><a href='#' class='flow-bar-task' title='{{tsk.title}}' ng-click='open(tsk)'<p> <span ng-class='tsk.glyph' class='task-glyph-size'></span> <span>{{tsk.title}}</span></p></a></ul></li></ul></div></div>")
     tc.put("flowPanel.html", "<div id='_id_fp_{{task.id}}' class=\"panel panel-primary {{task.freeze ? 'freeze' :''}}\" ><div class='panel-heading'><a data-toggle='collapse' data-target='#_{{task.id}}' href='#' class='flow-panel-heading-title text-inverse'><span  ng-class='task.glyph'class='flow-panel-icon-control hidden-sm hidden-md hidden-xs'></span>&nbsp;{{task.title}}</a><div class='pull-right btn-group hidden-lg'><a href='#' class='dropdown-toggle' data-toggle='dropdown'><span ng-class='task.glyph'class='flow-panel-icon-control text-primary'/></a><ul class='dropdown-menu dropdown-menu-right dropdown-menu-inverse'><li><a href='#' ng-click='refresh()'>Refresh</a></li><li class='divider hidden-lg hidden-sm hidden-xs'></li><li class='hidden-lg hidden-sm hidden-xs'><a href='#' ng-click='max25()'>Maximize - 25</a> </li><li class='hidden-lg hidden-sm hidden-xs'><a href='#' ng-click='max50()'>Maximize - 50</a> </li><li class='hidden-lg hidden-sm hidden-xs'><a href='#' ng-click='max75()'>Maximize - 75</a></li><li class='hidden-lg hidden-sm hidden-xs'><a href='#' ng-click='max100()'>Maximize - 100</a> </li><li ng-class=\"task.locked ? 'hidden-sm hidden-md hidden-xs' : ''\" class='divider'></li><li><a ng-class=\"task.locked ? 'hidden-sm hidden-md hidden-xs' : ''\" href='#' ng-click='close()'>Close</a></li></ul></div><div class='hidden-md hidden-xs hidden-sm btn-group btn-group-xs pull-right panel-control'><!-- ToDo: Allow panel to freeze. <button class='btn btn-info fa fa-paperclip' ng-click='freeze(task)'ng-class=\"task.freeze ? 'active' :''\" title='Clip'></button>--><button type='button' class='btn btn-info octicon octicon-pin' ng-click='pin()'ng-class=\"task.pinned ? 'active' :''\" title='Pin'></button><button type='button' ng-disabled='task.pinned' class='btn btn-info fa fa-arrows-h size25pc' ng-click='max25()'></button><button type='button' ng-disabled='task.pinned' class='btn btn-info fa fa-arrows-h size50pc' ng-click='max50()'></button><button type='button' ng-disabled='task.pinned' class='btn btn-info fa fa-arrows-h size75pc'  ng-click='max75()'></button><button type='button' ng-disabled='task.pinned' class='btn btn-info fa fa-arrows-h size100pc' ng-click='max100()'></button><button type='button' title='minimize' ng-disabled='task.pinned' class='btn btn-info fui-triangle-down-small' ng-click='hide(task)'></button><button type='button' id='rfh_btn_{{task.id}}' title='refresh' ng-click='refresh()' class='btn btn-info'><span class='fa fa-spin fa-refresh'></span></button><button type='button' ng-disabled='task.pinned||task.locked' class='btn btn-danger fa fa-close' title='close' ng-click='close()'></button></div></div><div id='_{{task.id}}'class='panel-collapse collapse in'><div id='_id_fpb_{{task.id}}'  class='panel-body minHeight flow-panel'><flow-message id=\"{{flow.getElementFlowId('pnl_msg')}}\"></flow-message><flow-tool id=\"{{flow.getElementFlowId('flw_tl')}}\" ng-show='showToolBar' controls='toolbars' task='task' pages='pages'></flow-tool><div id='page_div_{{task.id}}' class=' flow-panel-page' style='overflow: auto;' ng-include='page.home'></div></div></div></div>");
     tc.put("flowFrame.html", "<div><div><div ng-repeat='task in flowFrameService.taskList | filter:{active:true}'><fluid-panel task='task'></fluid-panel></div></div></div>");
-    tc.put("flowField.html", "<div class='form-group flow-form'><label class='col-sm-2 control-label'>{{label}}<span style='color: #ea520a' ng-show='required'>*</span></label><div class='col-sm-10'><input name='{{name}}' ng-disabled='disabled' class='form-control' ng-model='model' type='{{type}}' ng-required='required'/></div></div>");
-    tc.put("flowTextArea.html", "<div class='form-group'><label class='col-sm-2 control-label'>{{label}}<span style='color: #ea520a' ng-show='required'>*</span></label><div class='col-sm-10'><textarea rows='{{rows}}' cols='{{cols}}' name='{{name}}' ng-disabled='disabled' class='form-control' ng-model='model' type='{{type}}' ng-required='required'/></div></div>");
     tc.put("flowCheck.html", "<label class='checkbox' ng-class=\"'checked':model\"><input class='custom-checkbox' type='checkbox' ng-model='model' ng-required='required' ng-disabled='disabled' name='{{name}}' data-toggle='checkbox'><span class='icons marginBottom5px'><span class='text-info icon-checked'></span><span class='text-info icon-unchecked'></span></span>{{label}}</label>");
 }]);
 flowComponents
@@ -1201,11 +1199,11 @@ flowComponents
                 required: "=",
                 disabled: "="
             },
-            template: tc.get("flowField.html"),
+            templateUrl: "templates/fluid/fluidField.html",
             replace: true,
             link: function (scope, elem, attr) {
                 if (!scope.name) {
-                    scope.name = scope.label.trim();
+                    scope.name = scope.label.trim().split(" ").join("_");
                 }
                 if (scope.type === undefined) {
                     scope.type = "text";
@@ -1225,11 +1223,11 @@ flowComponents
                 rows: "=",
                 cols: "="
             },
-            template: tc.get("flowTextArea.html"),
+            templateUrl: "templates/fluid/fluidTextArea.html",
             replace: true,
             link: function (scope, elem, attr) {
                 if (!scope.name) {
-                    scope.name = scope.label.trim();
+                    scope.name = scope.label.trim().split(" ").join("_");
                 }
             }
         }
@@ -1237,10 +1235,12 @@ flowComponents
     .directive("flowCheck", ["$compile", function (c) {
         return {
             restrict: "AE",
-            scope: {model: "=", label: "@", required: "=", disabled: "="},
+            scope: {model: "=", label: "@", required: "=", disabled: "=", name: "@"},
             templateUrl: "templates/fluid/fluidCheckbox.html",
             link: function (scope, element) {
-
+                if (!scope.name) {
+                    scope.name = scope.label.trim().split(" ").join("_");
+                }
                 if (scope.required === undefined) {
                     scope.required = false;
                 }
@@ -1516,11 +1516,14 @@ flowComponents
                 id: "@",
                 keyVar: "@",
                 fieldValue: "@",
-                parentId: "@"
+                parentId: "@",
+                name: "@"
             },
             link: function (scope, element) {
 
-
+                if (!scope.name) {
+                    scope.name = scope.label.trim().split(" ").join("_");
+                }
                 /*TODO: must return the object when model is a field value */
                 if (scope.id === undefined) {
                     var currentElement = $(element).get();
@@ -1689,10 +1692,13 @@ flowComponents
                 sourceUrl: "@",
                 disabled: "=",
                 required: "=",
-                change: "&"
+                change: "&",
+                name: "@"
             },
             link: function (scope, element, attr) {
-
+                if (!scope.name) {
+                    scope.name = scope.label.trim().split(" ").join("_");
+                }
                 if (!scope.id) {
                     scope.id = "fl_slt_" + scope.task.id;
                 }
@@ -1754,7 +1760,7 @@ flowComponents
 
                 c(element.contents())(scope);
             },
-            template: "<div class='form-group'><label class='col-sm-2 control-label'>{{label}}<span style='color: #ea520a' ng-show='required'>*</span></label><div class='col-sm-10'><select id='{{id}}_select' data-toggle='select' class='form-control' ng-required='required' ng-disabled='disabled'><option class='hidden-lg hidden-md' value='' disabled selected>Select {{label}}</option></select></div></div>",
+            templateUrl: "templates/fluid/fluidSelect.html",
             replace: true
         }
     }])
@@ -1973,12 +1979,8 @@ flowComponents
                 defaultImage: "@",
                 disabled: "="
             },
+            templateUrl: "templates/fluid/fluidImage.html",
             replace: true,
-            template: "<div class='form-group'><label class='control-label col-sm-2'>{{label}}<i ng-if='notDone' class='fa fa-spinner fa-spin'></i><span style='color: #ea520a' ng-show='required'>*</span></label>" +
-            "<div class='col-sm-10'><div class='flow-group-icon' accept='image/*' ng-model='preview' ng-file-drop drag-over-class=\"{accept:'flow-group-icon-accept', reject:'flow-group-icon-error', delay:100}\">" +
-            "<img class='thumbnail' style='border-radius: 5px' width='198px' height='173px' ng-src='{{preview[0].dataUrl}}'/></div>" +
-            "<div class='marginBottom5px' ng-show='!disabled'><span accept='image/*' class='btn btn-info' ng-show='!disabled' ng-file-change='onFileSelect(preview[0],$files)' ng-file-select ng-model='preview'>" +
-            "<span ' class='fa fa-image'  ng-show='!disabled'></span>&nbsp;&nbsp;{{preview[0].dataUrl != null ? 'Change' : 'Attach'}}</span></span></div></div></div>",
             link: function (scope) {
                 scope.fileReaderSupported = window.FileReader != null && (window.FileAPI == null || FileAPI.html5 != false);
                 scope.preview = [];
@@ -2164,7 +2166,9 @@ flowComponents
             replace: true,
             templateUrl: "templates/fluid/fluidRadio.html",
             link: function (scope, element) {
-
+                if (!scope.name) {
+                    scope.name = scope.label.trim().split(" ").join("_");
+                }
                 if (scope.group === undefined) {
                     scope.group = "optRadio";
                 }
@@ -2237,6 +2241,24 @@ flowComponents
             templateUrl: "templates/fluid/fluidUploader.html"
         }
     }])
+    .directive("column", function () {
+        return {
+            restrict: "A",
+            link: function (scope, element, attr) {
+                if (attr.column) {
+                    scope.column = attr.column;
+                }
+
+                if (scope.column) {
+                    element.addClass("col-lg-" + scope.column)
+                        .addClass("col-md-12")
+                        .addClass("col-sm-12")
+                        .addClass("col-xs-12")
+                }
+            }
+        }
+    });
+
 ;
 
 

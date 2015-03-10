@@ -1,22 +1,19 @@
-<div>
-<div class='hidden-lg hidden-md form-group'>
-<div class='input-group col-sm-12 col-xs-12'>
-<input id='ctnr_{{id}}' href='#' title='{{label}}' placeholder='{{label}}' readonly class='form-control' ng-required='required' ng-click='look()' style='color:#000000;background: #ffffff' ng-disabled='disabled'/>
-<span ng-if='isNotModeled()' class='input-group-btn'>
-<button type='button' ng-disabled='disabled' class='btn btn-info' ng-click='look()'>
-<span class='text-danger fa fa-search'></span>
-</button></span>
-<span ng-if='isModeled()' class='input-group-btn'>
-<button type='button' title='clear' class='btn btn-info' ng-disabled='disabled' ng-click='clear()'>
-<span class='text-danger fa fa-eraser'></span></button></span></div></div>
-<div class='hidden-sm hidden-xs form-group'>
-<div ng-transclude></div>
-<span class='col-lg-2 col-md-2 control-label'>{{label}}
-<span style='color: #ea520a' ng-show='required'>*</span></span>
-<div class='col-lg-10 col-md-10'><div class='input-group'>
-<input ng-disabled='disabled' id='ctnr_{{id}}' href='#' title='{{label}}' readonly class='form-control' ng-required='required' ng-click='look()' style='color:#000000;background: #ffffff' /><span ng-if='isNotModeled()' class='input-group-btn'>
-<button type='button' ng-disabled='disabled' class='btn btn-info' ng-click='look()'>
-<span class='fa fa-search'></span></button></span>
-<span ng-if='isModeled()' class='input-group-btn'>
-<button type='button' title='clear' class='btn btn-info' ng-disabled='disabled' ng-click='clear()'><span class='fa fa-eraser'></span></button></span></div></span></div></div></div>
+<div class="form-group flow-form">
+    <div ng-transclude></div>
+    <label column="12" class='control-label' for="{{name}}">{{label}}
+        <span class="text-danger" ng-show='required'>*</span>
+
+        <div class='input-group' name="{{name}}">
+            <input ng-disabled='disabled' id='ctnr_{{id}}' href='#' title='{{label}}' readonly class='form-control'
+                   ng-required='required' ng-click='look()' style='color:#000000;background: #ffffff'/><span
+                ng-if='isNotModeled()' class='input-group-btn'>
+            <button type='button' ng-disabled='disabled' class='btn btn-info' ng-click='look()'>
+                <span class='fa fa-search'></span></button></span>
+            <span ng-if='isModeled()' class='input-group-btn'>
+            <button type='button' title='clear' class='btn btn-info' ng-disabled='disabled' ng-click='clear()'>
+                <span class='fa fa-eraser'></span></button></span></div>
+        </span>
+    </label>
+
+</div>
           

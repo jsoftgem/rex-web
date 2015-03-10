@@ -647,24 +647,6 @@ directives.directive("offset", [function () {
 }]);
 
 
-directives.directive("column", function () {
-    return {
-        restrict: "A",
-        link: function (scope, element, attr) {
-            if (attr.column) {
-                scope.column = attr.column;
-            }
-
-            if (scope.column) {
-                element.addClass("col-lg-" + scope.column)
-                    .addClass("col-md-12")
-                    .addClass("col-sm-12")
-                    .addClass("col-xs-12")
-            }
-        }
-    }
-});
-
 
 directives.directive("button", [function () {
     return {
