@@ -1,16 +1,17 @@
 <div class="form-group flow-form">
     <label column="12" class="control-label" for="{{name}}">
-        {{label}}
-    <span
-            class="text-danger"
-            ng-show='required'> *</span>
+
         <input style="position: absolute; left: -9999px; width: 1px; height: 1px;" name="{{name}}"
                ng-model="model"
                ng-disabled="disabled"
                ng-required="required"/>
+
         <button ng-disabled="disabled" class="fluid-checkbox" ng-click="model=!model" type="button">
             <i ng-if="model" class="text-success fa fa-check"></i>
             <i ng-if="!model" class="text-danger"></i>
         </button>
+
+        {{label}}
+        <span class="text-danger" ng-show='required'> *</span>
     </label>
 </div>

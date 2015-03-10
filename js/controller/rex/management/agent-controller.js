@@ -183,13 +183,13 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
         s.editCustomer = function (customerId) {
             s.task.agent = s.agent;
             s.flow.openTask("customer_task", "customer_edit", customerId, false);
-        }
+        };
 
 
         s.editActivity = function (activityId) {
             s.task.agent = s.agent;
             s.flow.openTask("daily_task", "daily_edit", activityId, false);
-        }
+        };
 
         s.task.preLoad = function () {
 
@@ -224,16 +224,24 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
                         });
                 }
 
-            }
+            };
 
             s.flow.onRefreshed = function () {
+                s.task.refresh();
+            };
+
+            s.task.refresh = function () {
                 if (s.task.page.name === s.task.homePage) {
                     s.http.post(s.task.homeUrl)
                         .success(function (data) {
                             s.task.summary.result = data;
                         });
+
+                    if (s.selectedCustomer) {
+                        s.flow.action("post", undefined, s.buildQuery());
+                    }
                 }
-            }
+            };
 
             s.task.change = function () {
                 s.task.report.start = 0;
@@ -355,7 +363,7 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
             s.$on(s.flow.event.getSuccessEventId(), function (event, data, method) {
                 if (s.task.page.name === s.task.homePage) {
                     if (method === "post") {
-                        s.task.agent.activity = data;
+                        s.agent.activity = data;
                     }
                 }
             });
@@ -408,6 +416,8 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
             s.agent.schoolYear = undefined;
             s.agent.month = undefined;
             s.agent.week = undefined;
+            s.agent.activity = {};
+            s.flow.onRefreshed();
         }
 
         s.buildQuery = function () {

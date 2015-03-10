@@ -44,18 +44,22 @@
                                 <thead>
                                 <th class="bg-info">Activity Date</th>
                                 <th class="bg-info">Visited</th>
-                                <th class="bg-info">Reason for non-coverage</th>
+                                <th class="bg-info">Notes</th>
                                 </thead>
                                 <tbody>
-                                <tr class="text-center" ng-repeat="activity in task.agent.activity.activities">
+                                <tr class="text-center" ng-repeat="activity in agent.activity.activities">
                                     <td><a href="#" ng-click="editActivity(activity.id)"> {{activity.startDt | date:
                                         'dd/MM/yyyy'}}</a></td>
                                     <td>
                                         <i class="{{activity.actual ? 'fa fa-check text-success' : 'fa fa-close text-danger'}}"></i>
                                     </td>
-                                    <td>
+                                    <td ng-if="activity.actual">
+                                        <textarea disabled="disabled" ng-model="activity.customerSpecificActivity"
+                                                  rows="1"/>
+                                    </td>
+                                    <td ng-if="!activity.actual">
                                         <textarea disabled="disabled" ng-model="activity.reasonForNonCoverage"
-                                                  rows="2"/>
+                                                  rows="1"/>
                                     </td>
                                 </tr>
 

@@ -7,12 +7,14 @@
 
         <div>
             <div ng-if="task.origin" class="form-group">
-                <div class="btn-group btn-group-md">
+                <div class="btn-group btn-group-md pull-right">
                     <button button info="submit">Save</button>
+                    <button button info="button" ng-click="task.close();flow.navToTask(task.origin);">Cancel</button>
                 </div>
             </div>
             <div class="col-lg-6">
-                <flow-field model="task.customerEdit.customerCode" label="Customer code" required="true"
+                <flow-field disabled="task.origin && task.origin.agent" model="task.customerEdit.customerCode"
+                            label="Customer code" required="true"
                             type="text"></flow-field>
 
                 <flow-select disabled="task.origin && task.origin.agent"

@@ -4,15 +4,18 @@
 
         <input id="{{flow.getElementFlowId('daily_submit')}}" type="submit"
                style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+
+        <div ng-if="task.origin" class="form-group">
+            <div class="btn-group btn-group-md pull-right">
+                <button button info="submit">Save</button>
+                <button button info="button" ng-click="task.close();flow.navToTask(task.origin);">Cancel</button>
+            </div>
+        </div>
+
         <flow-field label="Date" disabled="true" model="task.modelEdit.startDt | date: 'MM/dd/yyyy'"></flow-field>
         <flow-field model="task.modelEdit.description" label="Customer" disabled="true"></flow-field>
         <div class="form-group" style="margin:auto">
             <div class="col-lg-6">
-                <div class="form-group">
-                    <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check label="Actual" model="task.modelEdit.actual"></flow-check>
-                    </div>
-                </div>
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
                         <flow-check label="Exam Copies Distribution" model="task.modelEdit.ecd"></flow-check>

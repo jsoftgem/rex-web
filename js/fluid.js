@@ -90,8 +90,9 @@ flowComponents
                         scope.flow.message.duration = 3000;
                         scope.http = {};
                         scope.currentPageIndex = 0;
-                        scope.flow.pageCallBack = function (page, data) {
-                        };
+                        /*   scope.flow.pageCallBack = function (page, data) {
+                         console.info("generic callBack", page);
+                         };*/
                         scope.flow.onPageChanging = function (page, param) {
                             return true;
                         }
@@ -132,7 +133,7 @@ flowComponents
                             if (newTask) {
                                 url += "&newTask=" + newTask;
                             }
-
+                            console.info("openTask", url);
                             f.addTask(url, scope.task, true);
                         }
                         var parent = element.parent();
@@ -241,6 +242,9 @@ flowComponents
                         /* Action */
                         scope.loadGet = function () {
                             //adds control for page
+                            if (!rs.$$phase) {
+                                scope.$apply();
+                            }
                             if (scope.flow.controls) {
                                 angular.forEach(scope.flow.controls, function (control) {
                                     if (control.pages) {
@@ -263,11 +267,36 @@ flowComponents
                                     resolve({page: scope.task.page.name});
                                 }
                             }).then(function (data) {
-                                if (scope.task.pinned) {
-                                    scope.flow.onOpenPinned(scope.task.page, scope.task.pageParam);
-                                } else {
-                                    t(scope.flow.pageCallBack(data.page, data.value), 400);
-                                }
+
+                                var pagePanel = element.find(".flow-panel-page");
+                                console.info("page-panel", pagePanel);
+                                console.info("page-panel-task", scope.task);
+                                scope.task.loaded = false;
+                                pagePanel.ready(function () {
+                                    t(function () {
+
+                                        if (scope.task.pinned) {
+                                            scope.task.loaded = true;
+                                            scope.flow.onOpenPinned(scope.task.page, scope.task.pageParam);
+                                        } else {
+                                            if (scope.flow.pageCallBack) {
+                                                scope.flow.pageCallBack(data.page, data.value);
+                                                if (!rs.$$phase) {
+                                                    scope.$apply();
+                                                }
+                                                scope.task.loaded = true;
+                                            } else {
+                                                scope.task.preLoad();
+                                                scope.flow.pageCallBack(data.page, data.value);
+                                                if (!rs.$$phase) {
+                                                    scope.$apply();
+                                                }
+                                                scope.task.loaded = true;
+                                            }
+
+                                        }
+                                    }, 400);
+                                });
                             });
                         };
 
@@ -872,7 +901,9 @@ flowComponents
                                                                 if (scope.flowFrameService.fullScreen) {
                                                                     scope.task.fluidScreen();
                                                                 }
-                                                                scope.$apply();
+                                                                if (!rs.$$phase) {
+                                                                    scope.$apply();
+                                                                }
                                                             }
                                                         })
                                                         .error(function (data) {
@@ -906,11 +937,15 @@ flowComponents
                                     };
                                     scope.task.fullScreen = function () {
                                         f.toggleFullscreen(scope.task);
-                                        scope.$apply();
+                                        if (!rs.$$phase) {
+                                            scope.$apply();
+                                        }
                                     };
                                     scope.task.fluidScreen = function () {
                                         f.toggleFluidscreen();
-                                        scope.$apply();
+                                        if (!rs.$$phase) {
+                                            scope.$apply();
+                                        }
                                     };
                                     if (scope.task && !scope.flowFrameService.fullscreen) {
                                         if (scope.task.size) {
@@ -1107,12 +1142,12 @@ flowComponents
             link: function (scope, element, attr) {
 
 
-                if (scope.size) {
-                    if (scope.size === "small") {
+                if (attr.size) {
+                    if (attr.size === "small") {
                         scope.size = "btn-group-xs";
-                    } else if (scope.size === "medium") {
+                    } else if (attr.size === "medium") {
                         scope.size = "btn-group-sm";
-                    } else if (scope.size === "large") {
+                    } else if (attr.size === "large") {
                         scope.size = "btn-group-md";
                     }
                 } else {

@@ -576,7 +576,12 @@ directives.directive("flowBarTooltip", ["$timeout", "flowFrameService", "flowHtt
                                                                     $(".frame-content").scrollTo($("div.box[task]:eq(" + scope.index + ") div.flow-panel"), 200);
                                                                 });
                                                             }
-                                                            scope.$apply();
+
+                                                            if (!scope.$$phase) {
+                                                                scope.$apply();
+                                                            }
+
+
 
                                                         }
                                                     }
