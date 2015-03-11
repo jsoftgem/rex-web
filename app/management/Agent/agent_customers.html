@@ -4,36 +4,39 @@
         <div class="form-group">
             <div class="panel panel-info activies-panel">
                 <div class="panel-heading">
-                    <div class="panel-title">{{agent.fullName}}
-                        <div ng-if="selectedCustomer" class="pull-right btn-group btn-group-sm">
-                            <button button warning="button" title="Clear filter" ng-if="agent.schoolYear"
+                    <div class="panel-title">{{task.agent.fullName}}
+                        <div ng-if="task.agent.selectedCustomer" class="pull-right btn-group btn-group-sm">
+                            <button button warning="button" title="Clear filter" ng-if="task.agent.schoolYear"
                                     ng-click="clearFilter()"><i fluid-icon-clear></i></button>
                             <button button info="button" title="Edit Info"
-                                    ng-click="editCustomer(selectedCustomer.id)"><i fluid-icon-edit></i></button>
-                            <button button info="button" title="View Summary" ng-click="goToSummary()"><i fluid-icon-search></i></button>
+                                    ng-click="editCustomer(task.agent.selectedCustomer.id)"><i fluid-icon-edit></i>
+                            </button>
+                            <button button info="button" title="View Summary" ng-click="goToSummary()"><i
+                                    fluid-icon-search></i></button>
                         </div>
                     </div>
                 </div>
                 <div>
-                    <div column="12" ng-if="selectedCustomer">
+                    <div column="12" ng-if="task.agent.selectedCustomer">
 
-                        <flow-field column="3" label="Customer" model="selectedCustomer.school.name"
+                        <flow-field column="3" label="Customer" model="task.agent.selectedCustomer.school.name"
                                     disabled="true"></flow-field>
                         <flow-select column="3" label="by School Year" task="task" field-label="description"
                                      source-url="services/war/school_year_query/list"
-                                     model="agent.schoolYear">
+                                     model="task.agent.schoolYear" change="filter()">
 
                         </flow-select>
-                        <flow-select column="3" ng-if="agent.schoolYear" model="agent.month" task="task"
+                        <flow-select column="3" ng-if="task.agent.schoolYear" model="task.agent.month" task="task"
                                      label="by Month"
-                                     source-url="factories/war/table_factories/months">
+                                     source-url="factories/war/table_factories/months" change="filter()">
                         </flow-select>
 
-                        <flow-select column="3" ng-if="agent.month" model="agent.week" task="task" label="by Week"
-                                     values="all, 1, 2, 3, 4, 5">
+                        <flow-select column="3" ng-if="task.agent.month" model="task.agent.week" task="task"
+                                     label="by Week"
+                                     values="all, 1, 2, 3, 4, 5" change="filter()">
                         </flow-select>
                     </div>
-                    <div column="12" ng-if="!selectedCustomer">
+                    <div column="12" ng-if="!task.agent.selectedCustomer">
                         <span>No customer selected.</span>
                     </div>
 
@@ -46,15 +49,16 @@
                                 <th class="bg-info">Visited</th>
                                 <th class="bg-info">Notes
                                     <div class="pull-right btn-group btn-group-sm">
-                                        <button ng-if="agent.activity.hasPrevious" button info="button"
+                                        <button ng-if="task.agent.activity.hasPrevious" button info="button"
                                                 ng-click="prev()"><i fluid-icon-back></i></button>
-                                        <button ng-if="agent.activity.hasNext" button info="button" ng-click="next()"><i
+                                        <button ng-if="task.agent.activity.hasNext" button info="button"
+                                                ng-click="next()"><i
                                                 fluid-icon-next></i></button>
                                     </div>
                                 </th>
                                 </thead>
                                 <tbody>
-                                <tr class="text-center" ng-repeat="activity in agent.activity.activities">
+                                <tr class="text-center" ng-repeat="activity in task.agent.activity.activities">
                                     <td><a href="#" ng-click="editActivity(activity.id)"> {{activity.startDt | date:
                                         'dd/MM/yyyy'}}</a></td>
                                     <td>
@@ -102,7 +106,7 @@
 
                                 <tbody>
                                 <tr ng-click="select(school)"
-                                    ng-repeat="school in task.summary.result | filter: customer">
+                                    ng-repeat="school in task.agent.summary.result | filter: customer">
                                     <td><a href="#"> <img ng-if="school.school.logoId" height="25" width="27"
                                                           class="school-emblem"
                                                           ng-src="{{imageService.getAvatar(school.school.logoId)}}"></img>

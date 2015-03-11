@@ -824,6 +824,94 @@ directives.directive("fluidIconRefresh", function () {
 });
 
 
+directives.directive("bgWeek1", function () {
+    return {
+        restrict: "A",
+        link: function (scope, element, attr) {
+            var bgSpan = element.find("div[bg-div]");
+            bgSpan.css("background", "rgba(109,182,255,0.5)");
+            bgSpan.height(25);
+            bgSpan.width(25);
+            bgSpan.css("float", "left");
+            element.css("float", "right");
+            element.width(70);
+            element.css("font-size", 9);
+            element.css("padding-top", -7);
+        },
+        template: "<div><div bg-div></div><span style='text-align:center'>Week 1</span></div>"
+    }
+});
+
+directives.directive("bgWeek2", function () {
+    return {
+        restrict: "A",
+        link: function (scope, element, attr) {
+            var bgSpan = element.find("div[bg-div]");
+            bgSpan.css("background", "rgba(109,219,73,0.5)");
+            bgSpan.height(25);
+            bgSpan.width(25);
+            bgSpan.css("float", "left");
+            element.css("float", "right");
+            element.width(70);
+            element.css("font-size", 9);
+            element.css("padding-top", -7);
+        },
+        template: "<div><div bg-div></div><span style='text-align:center'>Week 2</span></div>"
+    }
+});
+
+directives.directive("bgWeek3", function () {
+    return {
+        restrict: "A",
+        link: function (scope, element, attr) {
+            var bgSpan = element.find("div[bg-div]");
+            bgSpan.css("background", "rgba(59,89,152,0.5)");
+            bgSpan.height(25);
+            bgSpan.width(25);
+            bgSpan.css("float", "left");
+            element.css("float", "right");
+            element.width(70);
+            element.css("font-size", 9);
+            element.css("padding-top", -7);
+        },
+        template: "<div><div bg-div></div><span style='text-align:center'>Week 3</span></div>"
+    }
+});
+directives.directive("bgWeek4", function () {
+    return {
+        restrict: "A",
+        link: function (scope, element, attr) {
+            var bgSpan = element.find("div[bg-div]");
+            bgSpan.css("background", "rgba(99,85,74,0.5)");
+            bgSpan.height(25);
+            bgSpan.width(25);
+            bgSpan.css("float", "left");
+            element.css("float", "right");
+            element.width(70);
+            element.css("font-size", 9);
+            element.css("padding-top", -7);
+        },
+        template: "<div><div bg-div></div><span style='text-align:center'>Week 4</span></div>"
+    }
+});
+
+directives.directive("bgWeek5", function () {
+    return {
+        restrict: "A",
+        link: function (scope, element, attr) {
+            var bgSpan = element.find("div[bg-div]");
+            bgSpan.css("background", "rgba(255,167,0,0.5)");
+            bgSpan.height(25);
+            bgSpan.width(25);
+            bgSpan.css("float", "left");
+            element.css("float", "right");
+            element.width(70);
+            element.css("font-size", 9);
+            element.css("padding-top", -7);
+        },
+        template: "<div><div bg-div></div><span style='text-align:center'>Week 5</span></div>"
+    }
+});
 
 
 

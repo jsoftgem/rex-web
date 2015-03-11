@@ -147,6 +147,37 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
 
         };
 
+        s.task.page.load = function(data){
+            if (s.edit_name === this.name) {
+                if (!s.task.customerEdit.id || source === "refresh") {
+                    if (s.task.origin) {
+                        s.task.tempEdit = {};
+                    }
+                    s.task.customerEdit = data;
+                    angular.copy(s.task.customerEdit, s.task.tempEdit);
+                    if (s.task.customerEdit.evaluationTo) {
+                        s.task.isEditEvaluationTo = true;
+                    }
+
+                    if (s.task.customerEdit.orderingTo) {
+                        s.task.isEditOrderingTo = true;
+                    }
+
+                    if (s.task.customerEdit.deliveryTo) {
+                        s.task.isEditDeliveryTo = true;
+                    }
+
+                    if (s.task.customerEdit.collectionTo) {
+                        s.task.isEditCollectionTo = true;
+                    }
+
+
+                }
+
+
+            }
+        }
+
         s.deleteConfirm = function () {
             s.flow.action("delete", s.task.customerEdit, s.task.customerEdit.id);
             fm.hide(s.flow.getElementFlowId("customerDeleteModal"));

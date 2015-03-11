@@ -28,15 +28,9 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
 
                 s.task.hideAgentFilter = false;
 
-                s.flow.pageCallBack = function (page, data) {
-                    if (page === s.task.pageAgent) {
-                        s.task.query();
-                    }
-                }
-
                 s.$on(s.flow.event.getRefreshId(), function () {
                     s.task.query();
-                })
+                });
 
                 s.task.getCustomers = function (report) {
                     report.view = !report.view;
@@ -116,8 +110,6 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                     })
                 }
             }
-
-
             s.task.load = function () {
 
                 s.task.newReport = function () {
@@ -321,6 +313,12 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                     }
                 })
             }
+
+            s.task.page.load = function () {
+                if (this.name === s.task.pageAgent) {
+                    s.task.query();
+                }
+            };
         }
     ])
     .controller("reportsMCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", "HOST", "$timeout", "flowFrameService", "hasProfile", "userProfile",
@@ -341,14 +339,6 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                     report.isRegion = false;
 
                     return report;
-                }
-
-
-                s.flow.pageCallBack = function (page, data) {
-                    if (page === s.task.pageCustomer) {
-                        s.task.report = s.task.newReport();
-                        s.task.query();
-                    }
                 }
 
                 s.$on(s.flow.event.getRefreshId(), function () {
@@ -560,5 +550,10 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                 })
             }
 
-
+            s.task.page.load = function () {
+                if (this.name === s.task.pageAgent) {
+                    s.task.report = s.task.newReport();
+                    s.task.query();
+                }
+            };
         }]);

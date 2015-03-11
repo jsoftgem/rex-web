@@ -116,7 +116,7 @@ Chart.defaults.global = {
     tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",
 
     // String - Template string for multiple tooltips
-    multiTooltipTemplate: "<%= value %>",
+    multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>",
 
     // Function - Will fire on animation progression.
     onAnimationProgress: function () {

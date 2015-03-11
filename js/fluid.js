@@ -252,6 +252,13 @@ flowComponents
                                     }
                                 });
                             }
+
+                            if (scope.task.prevPage) {
+                                if (scope.task.prevPage.destroy) {
+                                    scope.task.prevPage.destroy();
+                                }
+                            }
+
                             console.info("autoget-page", scope.task.page);
                             return q(function (resolve, reject) {
                                 if ((scope.task.page !== undefined && scope.task.page !== null) && (scope.task.page.autoGet !== null && scope.task.page.autoGet === true)) {
@@ -279,6 +286,7 @@ flowComponents
                                             scope.task.loaded = true;
                                             scope.flow.onOpenPinned(scope.task.page, scope.task.pageParam);
                                         } else {
+
                                             if (scope.flow.pageCallBack) {
                                                 scope.flow.pageCallBack(data.page, data.value);
                                                 if (!rs.$$phase) {
@@ -286,8 +294,7 @@ flowComponents
                                                 }
                                                 scope.task.loaded = true;
                                             } else {
-                                                scope.task.preLoad();
-                                                scope.flow.pageCallBack(data.page, data.value);
+                                                /* TODO: remove task life cycle*/
                                                 if (!rs.$$phase) {
                                                     scope.$apply();
                                                 }
@@ -295,6 +302,11 @@ flowComponents
                                             }
 
                                         }
+
+                                        if (scope.task.page.load) {
+                                            scope.task.page.load(data.value);
+                                        }
+
                                     }, 400);
                                 });
                             });
@@ -1237,7 +1249,7 @@ flowComponents
             templateUrl: "templates/fluid/fluidField.html",
             replace: true,
             link: function (scope, elem, attr) {
-                if (!scope.name) {
+                if (!scope.name && scope.label) {
                     scope.name = scope.label.trim().split(" ").join("_");
                 }
                 if (scope.type === undefined) {
@@ -1261,7 +1273,7 @@ flowComponents
             templateUrl: "templates/fluid/fluidTextArea.html",
             replace: true,
             link: function (scope, elem, attr) {
-                if (!scope.name) {
+                if (!scope.name && scope.label) {
                     scope.name = scope.label.trim().split(" ").join("_");
                 }
             }
@@ -1273,7 +1285,7 @@ flowComponents
             scope: {model: "=", label: "@", required: "=", disabled: "=", name: "@"},
             templateUrl: "templates/fluid/fluidCheckbox.html",
             link: function (scope, element) {
-                if (!scope.name) {
+                if (!scope.name && scope.label) {
                     scope.name = scope.label.trim().split(" ").join("_");
                 }
                 if (scope.required === undefined) {
@@ -1556,7 +1568,7 @@ flowComponents
             },
             link: function (scope, element) {
 
-                if (!scope.name) {
+                if (!scope.name && scope.label) {
                     scope.name = scope.label.trim().split(" ").join("_");
                 }
                 /*TODO: must return the object when model is a field value */
@@ -1731,7 +1743,7 @@ flowComponents
                 name: "@"
             },
             link: function (scope, element, attr) {
-                if (!scope.name) {
+                if (!scope.name && scope.label) {
                     scope.name = scope.label.trim().split(" ").join("_");
                 }
 
@@ -2191,7 +2203,7 @@ flowComponents
                     language: "en"
                 });
 
-                if (!scope.name) {
+                if (!scope.name && scope.label) {
                     scope.name = scope.label.trim();
                 }
 
@@ -2221,7 +2233,7 @@ flowComponents
             replace: true,
             templateUrl: "templates/fluid/fluidRadio.html",
             link: function (scope, element) {
-                if (!scope.name) {
+                if (!scope.name && scope.label) {
                     scope.name = scope.label.trim().split(" ").join("_");
                 }
                 if (scope.group === undefined) {

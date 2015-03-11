@@ -7,17 +7,6 @@ angular.module("regionManager", ["fluid", "ngResource", "datatables", "ngCookies
                 s.task.view_top_url = "services/war/customer_tag_query/by_assigned_agents?agentId=";
                 s.task.rsm = {};
                 s.imageService = is;
-
-                s.flow.pageCallBack = function (page, data) {
-                    console.info("pageCallBack page - region-manager", page);
-                    if (page === s.task.home_page) {
-                        s.http.get(s.task.home_url, up.agent.id)
-                            .success(function (rsm) {
-                                s.task.rsm = rsm;
-                            });
-                    }
-                }
-
                 s.flow.onRefreshed = function () {
                     if (s.task.page.name === s.task.home_page) {
                         s.http.get(s.task.home_url, up.agent.id)
@@ -26,7 +15,7 @@ angular.module("regionManager", ["fluid", "ngResource", "datatables", "ngCookies
                             });
                     }
                 }
-            }
+            };
 
 
             s.openTagEditor = function (agent) {
@@ -146,5 +135,13 @@ angular.module("regionManager", ["fluid", "ngResource", "datatables", "ngCookies
 
             });
 
+            s.task.page.load = function () {
+                if (this.name === s.task.home_page) {
+                    s.http.get(s.task.home_url, up.agent.id)
+                        .success(function (rsm) {
+                            s.task.rsm = rsm;
+                        });
+                }
+            }
 
         }]);

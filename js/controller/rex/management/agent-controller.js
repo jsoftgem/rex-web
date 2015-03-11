@@ -171,309 +171,175 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
     }])
     .controller("customerSummaryCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", "hasProfile", "userProfile", "imageService", function (s, dto, dtc, ms, fm, c, f, ss, hp, up, is) {
 
-
-        s.agent = up.agent;
-
-        s.agent.week = "all";
-
         s.imageService = is;
-
         s.flow.openTaskBaseUrl = "services/flow_task_service/getTask?showToolBar=false&size=100&";
 
         s.editCustomer = function (customerId) {
-            s.task.agent = s.agent;
             s.flow.openTask("customer_task", "customer_edit", customerId, false);
         };
-
         s.editActivity = function (activityId) {
-            s.task.agent = s.agent;
             s.flow.openTask("daily_task", "daily_edit", activityId, false);
         };
 
         s.task.preLoad = function () {
-
-
-            s.task.homePage = "customer_agent_home";
-            s.task.summaryPage = "customer_agent_summary";
-            s.task.homeUrl = "services/war/customer_light_query/find_by_assigned_agent";
-
-            s.task.summaryUrl = "services/war/agent_customer_summary_query/customer_summary";
-
-            s.task.chartId = s.flow.getElementFlowId("agentMonthlyBarChart");
-
-            hp.check("agent", s.task)
-                .success(function (valid) {
-                    s.task.hideAgentFilter = valid;
-                    s.task.agent = up.agent;
-                });
-
-            s.task.newSummary = function () {
-                var summary = {};
-                summary.isSchoolYear = false;
-                summary.schoolYear = undefined;
-
-                return summary;
-            }
-
-            s.task.summary = s.task.newSummary();
-
-            s.flow.createChart = function () {
-                var ctx = document.getElementById(s.task.chartId);
-                var chart = new Chart(ctx).Bar(s.agent.summary.chart);
-            }
-
-            s.flow.pageCallBack = function (page, data) {
-                console.info(page, data);
-                if (page === s.task.homePage) {
-                    s.http.post(s.task.homeUrl)
+            this.homePage = "customer_agent_home";
+            this.homeUrl = "services/war/customer_light_query/find_by_assigned_agent";
+            this.refresh = function () {
+                if (this.page.name === this.homePage) {
+                    s.http.post(this.homeUrl)
                         .success(function (data) {
-                            s.task.summary.result = data;
-                        });
-                } else if (s.task.summaryPage === page) {
-                    s.agent.summary = data;
-                    s.flow.createChart();
-                }
-
-            };
-
-            s.flow.onRefreshed = function () {
-                s.task.refresh();
-            };
-
-            s.task.refresh = function () {
-                if (s.task.page.name === s.task.homePage) {
-                    s.http.post(s.task.homeUrl)
-                        .success(function (data) {
-                            s.task.summary.result = data;
+                            this.page.agent = {};
+                            this.page.agent.summary = {};
+                            this.page.agent.summary.result = data;
                         });
 
-                    if (s.selectedCustomer) {
+                    if (s.task.page.selectedCustomer) {
                         s.flow.action("post", undefined, s.buildQuery());
                     }
                 }
             };
+        };
 
-            s.task.change = function () {
-                s.task.report.start = 0;
-                s.task.report.size = 25;
-
-                if (!s.task.report.isYear) {
-                    s.task.report.schoolYear = undefined;
-                }
-
-                if (!s.task.report.isCustomer) {
-                    s.task.customer = undefined;
+        s.$on(s.flow.event.getSuccessEventId(), function (event, data, method) {
+            if (s.task.page.name === s.task.homePage) {
+                if (method === "post") {
+                    s.task.agent.activity = data;
                 }
             }
+        });
 
-            s.task.query = function () {
-                var url = "services/war/report_monthly_service/customers?";
+        s.flow.onRefreshed = function () {
+            s.task.refresh();
+        };
 
-                var count = 0;
+        s.task.page.load = function () {
 
-                if (s.task.report.isYear) {
-                    url += "isYear=true&schoolYear=" + s.task.report.schoolYear;
-                    count++;
-                }
+            s.task.agent = up.agent;
+            s.task.agent.schoolYear = undefined;
+            s.task.agent.month = undefined;
+            s.task.agent.week = "all";
+            s.task.agent.activity = {};
 
-                if (s.task.report.isAgent) {
-                    if (count > 0) {
-                        url += "&"
-                    } else {
-                        count++;
-                    }
-                    url += "isAgent=true&agentId=" + s.task.agent.id;
-                }
-
-                if (s.task.report.isCustomer) {
-                    if (count > 0) {
-                        url += "&";
-                    } else {
-                        count++;
-                    }
-                    url += "isCustomer=true&customerId=" + s.task.customer.id;
-                }
-
-
-                if (s.task.valid()) {
-                    if (count > 0) {
-                        url += "&"
-                    }
-                    url += "size=" + s.task.report.size;
-                    url += "&tag=" + s.task.report.tag;
-                    url += "&start=" + s.task.report.start;
-                    s.http.get(url).success(function (data) {
-                        s.task.report = data;
-                    })
-                }
+            if (this.name === s.task.homePage) {
+                s.http.post(s.task.homeUrl)
+                    .success(function (data) {
+                        s.task.agent = up.agent
+                        s.task.agent.week = "all";
+                        s.task.agent.summary = {};
+                        s.task.agent.summary.result = data;
+                    });
             }
-
-            s.task.valid = function () {
-                var valid = true;
-
-                if (s.task.report.isYear) {
-                    if (s.task.report.schoolYear === undefined) {
-                        s.flow.message.danger("Please select a year.");
-                        valid = false;
-                    }
-                }
+        };
 
 
-                if (s.task.report.isMonth) {
-                    if (s.task.report.month === undefined) {
-                        s.flow.message.danger("Please select a month.");
-                        valid = false;
-                    }
-                }
-
-                if (s.task.report.isAgent) {
-                    if (s.task.agent === undefined) {
-                        s.flow.message.danger("Please select an agent.");
-                        valid = false;
-                    }
-                }
-
-                if (s.task.report.isRegion) {
-                    if (s.task.report.region === undefined) {
-                        s.flow.message.danger("Please select a region.");
-                        valid = false;
-                    }
-                }
-
-                if (s.task.report.isCustomer) {
-                    if (s.task.customer === undefined) {
-                        s.flow.message.danger("Please select a customer");
-                        valid = false;
-                    }
-                }
-
-                return valid;
-
-            }
-
-            s.$on(s.flow.event.getSuccessEventId(), function (event, data, method) {
-                if (s.task.page.name === s.task.homePage) {
-                    if (method === "post") {
-                        s.agent.activity = data;
-                    }
-                }
-                else if (s.task.page.name === s.task.summaryPage) {
-                    if (method === "get") {
-                        s.agent.summary = data;
-                        s.flow.createChart();
-                    }
-                }
-            });
-
-
-        }
-
-        s.select = function (school) {
-            s.selectedCustomer = school;
-        }
-
-        s.clearFilter = function () {
-            s.agent.schoolYear = undefined;
-            s.agent.month = undefined;
-            s.agent.week = undefined;
-            s.agent.activity = {};
-            s.flow.onRefreshed();
-        }
+        s.filter = function () {
+            s.flow.action("post", undefined, s.buildQuery());
+        };
 
         s.buildQuery = function () {
             var url = "";
-            if (s.selectedCustomer) {
+            if (s.task.agent.selectedCustomer) {
 
-                url += "?customerId=" + s.selectedCustomer.id
+                url += "?customerId=" + s.task.agent.selectedCustomer.id
 
-                if (s.agent.schoolYear) {
-                    url += "&schoolYearId=" + s.agent.schoolYear.id;
+                if (s.task.agent.schoolYear) {
+                    url += "&schoolYearId=" + s.task.agent.schoolYear.id;
                 }
 
-                if (s.agent.month) {
-                    url += "&month=" + s.agent.month;
+                if (s.task.agent.month) {
+                    url += "&month=" + s.task.agent.month;
                 }
 
-                if (s.agent.week) {
-                    url += "&week=" + s.agent.week;
+                if (s.task.agent.week) {
+                    url += "&week=" + s.task.agent.week;
                 }
             }
             return url;
-        }
+        };
+
+        s.clearFilter = function () {
+            s.task.agent.schoolYear = undefined;
+            s.task.agent.month = undefined;
+            s.task.agent.week = "all";
+            s.task.agent.activity = {};
+            s.task.refresh();
+        };
+
+        s.select = function (school) {
+            s.task.agent.selectedCustomer = school;
+        };
 
         s.prev = function () {
-            if (s.agent.activity.hasPrevious) {
-                var url = s.buildQuery() + "&start=" + s.agent.activity.previous;
+            if (s.task.agent.activity.hasPrevious) {
+                var url = s.buildQuery() + "&start=" + s.task.agent.activity.previous;
                 s.flow.action("post", undefined, url);
             }
 
-        }
+        };
 
         s.next = function () {
-            if (s.agent.activity.hasNext) {
-                var url = s.buildQuery() + "&start=" + s.agent.activity.next;
+            if (s.task.agent.activity.hasNext) {
+                var url = s.buildQuery() + "&start=" + s.task.agent.activity.next;
                 s.flow.action("post", undefined, url);
             }
 
-        }
+        };
 
         s.goToSummary = function () {
-            var param = s.selectedCustomer.id;
+            var param = s.task.agent.selectedCustomer.id;
 
-            if (s.agent.schoolYear) {
-                param += "?schoolYear=" + s.agent.schoolYear.id;
+            if (s.task.agent.schoolYear) {
+                param += "?schoolYear=" + s.task.agent.schoolYear.id;
             }
 
 
-            s.flow.goTo(s.task.summaryPage, param);
-        }
+            s.flow.goTo("customer_agent_summary", param);
+        };
+
+
+    }])
+    .controller("customerInfoCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", "hasProfile", "userProfile", "imageService", function (s, dto, dtc, ms, fm, c, f, ss, hp, up, is) {
+
+        s.task.page.load = function (data) {
+            s.task.summaryPage = "customer_agent_summary";
+            s.task.summaryUrl = "services/war/agent_customer_summary_query/customer_summary";
+            s.task.chartId = s.flow.getElementFlowId("agentMonthlyBarChart");
+            console.info(this.name, data);
+            if (this.name === s.task.summaryPage) {
+                s.task.summary = data;
+                s.task.agent.schoolYear = data.schoolYear;
+                s.task.title = s.task.summary.customer.school.name;
+                s.task.createChart();
+            }
+        };
+
+        s.task.refresh = function () {
+            s.querySummary();
+        };
+
+        s.flow.onRefreshed = function () {
+            s.task.refresh();
+        };
 
         s.querySummary = function () {
-            var param = s.agent.summary.customer.id;
-            if (s.agent.summary.schoolYear) {
-                param += "?schoolYear=" + s.agent.summary.schoolYear.id;
+            var param = s.task.summary.customer.id;
+            if (s.task.agent.schoolYear) {
+                param += "?schoolYear=" + s.task.agent.schoolYear.id;
             }
             s.flow.action("get", undefined, param);
-        }
+        };
 
+        s.task.createChart = function () {
+            var ctx = document.getElementById(s.task.chartId).getContext("2d");
+            new Chart(ctx).Bar(s.task.summary.chart);
+        };
 
-        s.$watch(function (scope) {
-            return scope.selectedCustomer;
-        }, function (newValue) {
-            console.info("agent-watcher", newValue);
-            if (newValue) {
-                s.flow.action("post", undefined, s.buildQuery());
-            }
-        });
-        s.$watch(function (scope) {
-            return scope.agent.schoolYear;
-        }, function (newValue) {
-            console.info("agent-watcher", newValue);
-            if (newValue) {
-                s.flow.action("post", undefined, s.buildQuery());
-            }
-        });
-        s.$watch(function (scope) {
-            return scope.agent.month;
-        }, function (newValue) {
-            console.info("agent-watcher", newValue);
-            if (newValue) {
-                s.flow.action("post", undefined, s.buildQuery());
-            }
-        });
-        s.$watch(function (scope) {
-            return scope.agent.week;
-        }, function (newValue) {
-            console.info("agent-watcher", newValue);
-            if (newValue) {
-                s.flow.action("post", undefined, s.buildQuery());
-            }
-        });
-        s.$watch(function (scope) {
-            return scope.agent.summary.schoolYear
-        }, function (value) {
-            if (value) {
-                s.querySummary();
+        s.$on(s.flow.event.getSuccessEventId(), function (event, data, method) {
+            if (s.task.page.name === s.task.summaryPage) {
+                if (method === "get") {
+                    s.task.summary = data;
+                    s.task.createChart();
+                }
             }
         });
 

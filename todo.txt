@@ -5,8 +5,12 @@ Fluid Core
  - fluid panel ui (toolbar must be on header when fullscreen).
  - use $resource in flowHttpService (fluid version 2.0).
  - full screen issues (done).
- - fix flowUserAppSettings. (done)
-
+ - page lifecycle (done)
+        s.task.page.load = function () {
+        };
+        s.task.page.destroy = function () {
+        }
+ - change pageCallBack to task.page.load(data)
 
 Rex
 - Agent Customer > pagination next/prev > customer summary - table / chart.js

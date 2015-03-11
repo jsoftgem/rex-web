@@ -1,10 +1,34 @@
-<div ng-controller="customerSummaryCtrl" class="container-fluid">
+<div ng-controller="customerInfoCtrl" class="container-fluid">
 
-    <flow-select label="School year" field-label="description" model="agent.JERKsummary.schoolYear"
-                 task="task" source-url="services/war/school_year_query/list"></flow-select>
 
-    <canvas id="{{flow.getElementFlowId('agentMonthlyBarChart')}}" column="12" height="450" class="form-group">
+    <div class="btn-group btn-group-sm">
+        <button button info="button" ng-if="!task.origin" ng-click="flow.navTo('customer_agent_home')">Back</button>
+    </div>
 
-    </canvas>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <div class="panel-title">School Year Summary
+                <div class="pull-right">
+                    <div bg-week5></div>
+                    <div bg-week4></div>
+                    <div bg-week3></div>
+                    <div bg-week2></div>
+                    <div bg-week1></div>
+                    <div style="float:right;margin-right: 5px">
+                        Legends:
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <flow-select label="School year" field-label="description" model="task.agent.schoolYear"
+                         task="task" source-url="services/war/school_year_query/list"
+                         change="querySummary()"></flow-select>
+            <canvas id="{{flow.getElementFlowId('agentMonthlyBarChart')}}" column="12" height="70" class="form-group">
+
+            </canvas>
+        </div>
+    </div>
+
 
 </div>
