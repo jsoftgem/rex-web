@@ -169,7 +169,6 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
 
 
     }])
-
     .controller("customerSummaryCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", "hasProfile", "userProfile", "imageService", function (s, dto, dtc, ms, fm, c, f, ss, hp, up, is) {
 
 
@@ -178,13 +177,13 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
         s.agent.week = "all";
 
         s.imageService = is;
+
         s.flow.openTaskBaseUrl = "services/flow_task_service/getTask?showToolBar=false&size=100&";
 
         s.editCustomer = function (customerId) {
             s.task.agent = s.agent;
             s.flow.openTask("customer_task", "customer_edit", customerId, false);
         };
-
 
         s.editActivity = function (activityId) {
             s.task.agent = s.agent;
@@ -195,8 +194,12 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
 
 
             s.task.homePage = "customer_agent_home";
+            s.task.summaryPage = "customer_agent_summary";
+            s.task.homeUrl = "services/war/customer_light_query/find_by_assigned_agent";
 
-            s.task.homeUrl = "services/war/customer_light_query/find_by_assigned_agent"
+            s.task.summaryUrl = "services/war/agent_customer_summary_query/customer_summary";
+
+            s.task.chartId = s.flow.getElementFlowId("agentMonthlyBarChart");
 
             hp.check("agent", s.task)
                 .success(function (valid) {
@@ -208,12 +211,16 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
                 var summary = {};
                 summary.isSchoolYear = false;
                 summary.schoolYear = undefined;
-                summary.isAgent = false;
 
                 return summary;
             }
 
             s.task.summary = s.task.newSummary();
+
+            s.flow.createChart = function () {
+                var ctx = document.getElementById(s.task.chartId);
+                var chart = new Chart(ctx).Bar(s.agent.summary.chart);
+            }
 
             s.flow.pageCallBack = function (page, data) {
                 console.info(page, data);
@@ -222,6 +229,9 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
                         .success(function (data) {
                             s.task.summary.result = data;
                         });
+                } else if (s.task.summaryPage === page) {
+                    s.agent.summary = data;
+                    s.flow.createChart();
                 }
 
             };
@@ -266,15 +276,6 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
                     count++;
                 }
 
-                if (s.task.report.isMonth) {
-                    if (count > 0) {
-                        url += "&";
-                    } else {
-                        count++;
-                    }
-                    url += "isMonth=true&month=" + s.task.report.month;
-                }
-
                 if (s.task.report.isAgent) {
                     if (count > 0) {
                         url += "&"
@@ -282,15 +283,6 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
                         count++;
                     }
                     url += "isAgent=true&agentId=" + s.task.agent.id;
-                }
-
-                if (s.task.report.isRegion) {
-                    if (count > 0) {
-                        url += "&"
-                    } else {
-                        count++;
-                    }
-                    url += "isRegion=true&region=" + s.task.report.region;
                 }
 
                 if (s.task.report.isCustomer) {
@@ -359,54 +351,22 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
 
             }
 
-
             s.$on(s.flow.event.getSuccessEventId(), function (event, data, method) {
                 if (s.task.page.name === s.task.homePage) {
                     if (method === "post") {
                         s.agent.activity = data;
                     }
                 }
-            });
-
-
-            s.$watch(function (scope) {
-                return scope.selectedCustomer;
-            }, function (newValue) {
-                console.info("agent-watcher", newValue);
-                if (newValue) {
-                    s.flow.action("post", undefined, s.buildQuery());
+                else if (s.task.page.name === s.task.summaryPage) {
+                    if (method === "get") {
+                        s.agent.summary = data;
+                        s.flow.createChart();
+                    }
                 }
             });
 
-            s.$watch(function (scope) {
-                return scope.agent.schoolYear;
-            }, function (newValue) {
-                console.info("agent-watcher", newValue);
-                if (newValue) {
-                    s.flow.action("post", undefined, s.buildQuery());
-                }
-            });
-
-            s.$watch(function (scope) {
-                return scope.agent.month;
-            }, function (newValue) {
-                console.info("agent-watcher", newValue);
-                if (newValue) {
-                    s.flow.action("post", undefined, s.buildQuery());
-                }
-            });
-
-            s.$watch(function (scope) {
-                return scope.agent.week;
-            }, function (newValue) {
-                console.info("agent-watcher", newValue);
-                if (newValue) {
-                    s.flow.action("post", undefined, s.buildQuery());
-                }
-            });
 
         }
-
 
         s.select = function (school) {
             s.selectedCustomer = school;
@@ -438,10 +398,84 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
                     url += "&week=" + s.agent.week;
                 }
             }
-
-
             return url;
         }
+
+        s.prev = function () {
+            if (s.agent.activity.hasPrevious) {
+                var url = s.buildQuery() + "&start=" + s.agent.activity.previous;
+                s.flow.action("post", undefined, url);
+            }
+
+        }
+
+        s.next = function () {
+            if (s.agent.activity.hasNext) {
+                var url = s.buildQuery() + "&start=" + s.agent.activity.next;
+                s.flow.action("post", undefined, url);
+            }
+
+        }
+
+        s.goToSummary = function () {
+            var param = s.selectedCustomer.id;
+
+            if (s.agent.schoolYear) {
+                param += "?schoolYear=" + s.agent.schoolYear.id;
+            }
+
+
+            s.flow.goTo(s.task.summaryPage, param);
+        }
+
+        s.querySummary = function () {
+            var param = s.agent.summary.customer.id;
+            if (s.agent.summary.schoolYear) {
+                param += "?schoolYear=" + s.agent.summary.schoolYear.id;
+            }
+            s.flow.action("get", undefined, param);
+        }
+
+
+        s.$watch(function (scope) {
+            return scope.selectedCustomer;
+        }, function (newValue) {
+            console.info("agent-watcher", newValue);
+            if (newValue) {
+                s.flow.action("post", undefined, s.buildQuery());
+            }
+        });
+        s.$watch(function (scope) {
+            return scope.agent.schoolYear;
+        }, function (newValue) {
+            console.info("agent-watcher", newValue);
+            if (newValue) {
+                s.flow.action("post", undefined, s.buildQuery());
+            }
+        });
+        s.$watch(function (scope) {
+            return scope.agent.month;
+        }, function (newValue) {
+            console.info("agent-watcher", newValue);
+            if (newValue) {
+                s.flow.action("post", undefined, s.buildQuery());
+            }
+        });
+        s.$watch(function (scope) {
+            return scope.agent.week;
+        }, function (newValue) {
+            console.info("agent-watcher", newValue);
+            if (newValue) {
+                s.flow.action("post", undefined, s.buildQuery());
+            }
+        });
+        s.$watch(function (scope) {
+            return scope.agent.summary.schoolYear
+        }, function (value) {
+            if (value) {
+                s.querySummary();
+            }
+        });
 
 
     }]);

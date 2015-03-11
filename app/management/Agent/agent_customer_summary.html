@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+<div ng-controller="customerSummaryCtrl" class="container-fluid">
 
-</body>
-</html>
+    <flow-select label="School year" field-label="description" model="agent.JERKsummary.schoolYear"
+                 task="task" source-url="services/war/school_year_query/list"></flow-select>
+
+    <canvas id="{{flow.getElementFlowId('agentMonthlyBarChart')}}" column="12" height="450" class="form-group">
+
+    </canvas>
+
+</div>

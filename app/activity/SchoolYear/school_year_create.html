@@ -1,4 +1,3 @@
-ho
 <div class="container-fluid" ng-controller="schoolYearCreateCtrl">
     <form id="{{flow.getElementFlowId('school_year_create_form')}}" class="form-horizontal" role="form"
           ng-submit="save()"
@@ -82,16 +81,16 @@ ho
                 <div class="panel-body">
 
                     <div class="form-horizontal">
-                    
+
                         <flow-look-up ng-hide="task.create.customerManaged"
-                                task="task"
-                                id="{{flow.getElementFlowId('customerLookUp')}}"
-                                parent-id="{{flow.getElementFlowId('school_year_create_form')}}"
-                                model="task.create.customerLookUp"
-                                label="Customer"
-                                source-url="services/war/customer_light_query/list"
-                                title="Customer" field-label="customerCode"
-                                key-var="customer">
+                                      task="task"
+                                      id="{{flow.getElementFlowId('customerLookUp')}}"
+                                      parent-id="{{flow.getElementFlowId('school_year_create_form')}}"
+                                      model="task.create.customerLookUp"
+                                      label="Customer"
+                                      source-url="services/war/customer_light_query/list"
+                                      title="Customer" field-label="customerCode"
+                                      key-var="customer">
                             <flow-sub-column title="Customer Code" model="customer.customerCode"></flow-sub-column>
                             <flow-sub-column title="Customer Name" model="customer.school.name"></flow-sub-column>
                         </flow-look-up>

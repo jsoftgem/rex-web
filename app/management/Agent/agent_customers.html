@@ -10,7 +10,7 @@
                                     ng-click="clearFilter()"><i fluid-icon-clear></i></button>
                             <button button info="button" title="Edit Info"
                                     ng-click="editCustomer(selectedCustomer.id)"><i fluid-icon-edit></i></button>
-                            <button button info="button" title="View Summary"><i fluid-icon-search></i></button>
+                            <button button info="button" title="View Summary" ng-click="goToSummary()"><i fluid-icon-search></i></button>
                         </div>
                     </div>
                 </div>
@@ -44,7 +44,14 @@
                                 <thead>
                                 <th class="bg-info">Activity Date</th>
                                 <th class="bg-info">Visited</th>
-                                <th class="bg-info">Notes</th>
+                                <th class="bg-info">Notes
+                                    <div class="pull-right btn-group btn-group-sm">
+                                        <button ng-if="agent.activity.hasPrevious" button info="button"
+                                                ng-click="prev()"><i fluid-icon-back></i></button>
+                                        <button ng-if="agent.activity.hasNext" button info="button" ng-click="next()"><i
+                                                fluid-icon-next></i></button>
+                                    </div>
+                                </th>
                                 </thead>
                                 <tbody>
                                 <tr class="text-center" ng-repeat="activity in agent.activity.activities">

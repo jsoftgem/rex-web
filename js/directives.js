@@ -582,7 +582,6 @@ directives.directive("flowBarTooltip", ["$timeout", "flowFrameService", "flowHtt
                                                             }
 
 
-
                                                         }
                                                     }
                                                 } else if (current.text() === "Minimize") {
@@ -763,13 +762,40 @@ directives.directive("fluidIconPrint", function () {
             element.addClass("fa fa-print");
         }
     }
-})
+});
 
 directives.directive("fluidIconClear", function () {
     return {
         restrict: "A",
         link: function (scope, element) {
             element.addClass("fa fa-eraser");
+        }
+    }
+});
+
+directives.directive("fluidIconNext", function () {
+    return {
+        restrict: "A",
+        link: function (scope, element) {
+            element.addClass("fa fa-step-forward");
+        }
+    }
+});
+
+directives.directive("fluidIconBack", function () {
+    return {
+        restrict: "A",
+        link: function (scope, element) {
+            element.addClass("fa fa-step-backward");
+        }
+    }
+});
+
+directives.directive("fluidIconNext", function () {
+    return {
+        restrict: "A",
+        link: function (scope, element) {
+            element.addClass("fa fa-forward");
         }
     }
 })
