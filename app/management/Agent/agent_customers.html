@@ -60,11 +60,11 @@
                                 <tbody>
                                 <tr class="text-center" ng-repeat="activity in task.agent.activity.activities">
                                     <td><a href="#" ng-click="editActivity(activity.id)"> {{activity.startDt | date:
-                                        'dd/MM/yyyy'}}</a></td>
+                                        'EEEE MM/dd/yyyy'}}</a></td>
                                     <td>
                                         <i class="{{activity.actual ? 'fa fa-check text-success' : 'fa fa-close text-danger'}}"></i>
                                     </td>
-                                    <td ng-if="activity.actual">
+                                    <td ng-if="activity.act ual">
                                         <textarea disabled="disabled" ng-model="activity.customerSpecificActivity"
                                                   rows="1"/>
                                     </td>

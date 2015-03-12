@@ -107,7 +107,7 @@ flowComponents
                             var $index = {index: 0};
 
                             angular.forEach(f.taskList, function (tsk, index) {
-                                if (tsk.name === task.name) {
+                                if (tsk.id === task.id) {
                                     this.index = index;
                                 }
                             }, $index);

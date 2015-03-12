@@ -184,20 +184,21 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
         s.task.preLoad = function () {
             this.homePage = "customer_agent_home";
             this.homeUrl = "services/war/customer_light_query/find_by_assigned_agent";
-            this.refresh = function () {
-                if (this.page.name === this.homePage) {
-                    s.http.post(this.homeUrl)
-                        .success(function (data) {
-                            this.page.agent = {};
-                            this.page.agent.summary = {};
-                            this.page.agent.summary.result = data;
-                        });
 
-                    if (s.task.page.selectedCustomer) {
-                        s.flow.action("post", undefined, s.buildQuery());
-                    }
+        };
+
+
+        s.task.refresh = function () {
+            if (s.task.page.name === s.task.homePage) {
+                s.http.post(this.homeUrl)
+                    .success(function (data) {
+                        s.task.agent.summary.result = data;
+                    });
+
+                if (s.task.agent.selectedCustomer) {
+                    s.flow.action("post", undefined, s.buildQuery());
                 }
-            };
+            }
         };
 
         s.$on(s.flow.event.getSuccessEventId(), function (event, data, method) {
@@ -219,14 +220,14 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
             s.task.agent.month = undefined;
             s.task.agent.week = "all";
             s.task.agent.activity = {};
+            s.task.agent.summary = {};
 
             if (this.name === s.task.homePage) {
                 s.http.post(s.task.homeUrl)
                     .success(function (data) {
-                        s.task.agent = up.agent
-                        s.task.agent.week = "all";
-                        s.task.agent.summary = {};
                         s.task.agent.summary.result = data;
+                    }).then(function () {
+                        s.task.agent = up.agent;
                     });
             }
         };
@@ -267,6 +268,9 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
 
         s.select = function (school) {
             s.task.agent.selectedCustomer = school;
+            if (s.task.agent.schoolYear) {
+                s.filter();
+            }
         };
 
         s.prev = function () {

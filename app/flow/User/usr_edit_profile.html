@@ -11,6 +11,21 @@
 
         <flow-field label="Answer" model="task.flowUserDetail.secretAnswer" type="password"></flow-field>
 
+        <div column="12">
+            <div class="form-group">
+                <button button info="button" ng-click="updatePassword=!updatePassword">
+                    {{!updatePassword? 'Change password':'Cancel'}}
+                </button>
+            </div>
+
+            <div ng-if="updatePassword" class="form-group">
+                <flow-field type="password" label="Current password" model="password.current"></flow-field>
+                <flow-field type="password" label="New password" model="password.new"></flow-field>
+                <flow-field type="password" label="Confirm password" model="password.confirm"></flow-field>
+                <i ng-class="password.new == password.confirm ?' fa fa-check text-success':'fa fa-remove text-danger'"></i>
+            </div>
+        </div>
+
         <button type="submit" class="btn btn-info"><span class="fa fa-save"></span>&nbsp;&nbsp;Update</button>
     </form>
 </div>
