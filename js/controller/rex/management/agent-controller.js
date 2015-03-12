@@ -1,7 +1,7 @@
 /**
  * Created by Jerico on 1/11/2015.
  */
-angular.module("agentController", ["fluid", "ngResource", "datatables", "flowServices"])
+angular.module("agentController", ["fluid", "ngResource", "datatables", "flowServices", "angular.filter"])
     .controller("agentCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", function (s, dto, dtc, ms, fm, c, f, ss) {
         s.editPassword = false;
 
@@ -306,6 +306,7 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
             s.task.chartId = s.flow.getElementFlowId("agentMonthlyBarChart");
             console.info(this.name, data);
             if (this.name === s.task.summaryPage) {
+                s.task.agent = up.agent;
                 s.task.summary = data;
                 s.task.agent.schoolYear = data.schoolYear;
                 s.task.title = s.task.summary.customer.school.name;
@@ -322,11 +323,14 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
         };
 
         s.querySummary = function () {
-            var param = s.task.summary.customer.id;
-            if (s.task.agent.schoolYear) {
-                param += "?schoolYear=" + s.task.agent.schoolYear.id;
+            if (s.task.summary) {
+                var param = s.task.summary.customer.id;
+                if (s.task.agent.schoolYear) {
+                    param += "?schoolYear=" + s.task.agent.schoolYear.id;
+                }
+                s.flow.action("get", undefined, param);
             }
-            s.flow.action("get", undefined, param);
+
         };
 
         s.task.createChart = function () {

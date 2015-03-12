@@ -1,7 +1,7 @@
-<div ng-controller="customerInfoCtrl" class="container-fluid">
+<div ng-controller="customerInfoCtrl" class="container-fluid form-horizontal">
 
 
-    <div class="btn-group btn-group-sm">
+    <div class="btn-group btn-group-sm form-group">
         <button button info="button" ng-if="!task.origin" ng-click="flow.navTo('customer_agent_home')">Back</button>
     </div>
 
@@ -21,14 +21,150 @@
             </div>
         </div>
         <div class="panel-body">
-            <flow-select label="School year" field-label="description" model="task.agent.schoolYear"
-                         task="task" source-url="services/war/school_year_query/list"
-                         change="querySummary()"></flow-select>
-            <canvas id="{{flow.getElementFlowId('agentMonthlyBarChart')}}" column="12" height="70" class="form-group">
+            <div column="12">
+                <flow-select column="3" label="School year" field-label="description" model="task.agent.schoolYear"
+                             task="task" source-url="services/war/school_year_query/list"
+                             change="querySummary()"></flow-select>
+                <flow-field column="3" label="Market detail"
+                            ng-repeat="market in task.summary.customer.warCustomerMarketSchoolYears | filter: {schoolYear:task.agent.schoolYear.id}| orderBy : 'createdDt' : true | limitTo : 1"
+                            disabled="true"
+                            model="market.marketPotentialSegment +' - '+market.marketPotential"></flow-field>
+                <flow-field column="3" label="Customer Code"
+                            disabled="true"
+                            model="task.summary.customer.customerCode"></flow-field>
+            </div>
+
+            <canvas id="{{flow.getElementFlowId('agentMonthlyBarChart')}}" height="70" class="form-group">
 
             </canvas>
+            <table style="overflow: auto" class="table table-responsive table-bordered">
+
+                <thead>
+                <th class="bg-primary">Week</th>
+                <th class="bg-info" ng-repeat="label in task.summary.activitySummary.labels">
+                    {{label}}
+                </th>
+                </thead>
+
+                <tbody>
+                <tr ng-repeat="activitySummary in task.summary.activitySummary.activities | orderBy : activitySummary.week ">
+                    <td class="bg-warning">{{activitySummary.week}}</td>
+                    <td ng-class="!activitySummary.ecd ? 'bg-danger':'bg-success'">{{activitySummary.ecd ?
+                        activitySummary.ecd
+                        : 0}}
+                    </td>
+                    <td ng-class="!activitySummary.ite ?'bg-danger':'bg-success'">{{activitySummary.ite ?
+                        activitySummary.ite : 0}}
+                    </td>
+                    <td ng-class="!activitySummary.coe ? 'bg-danger':'bg-success'">{{activitySummary.coe ?
+                        activitySummary.coe : 0}}
+                    </td>
+                    <td ng-class="!activitySummary.gd?'bg-danger':'bg-success'">{{activitySummary.gd ?
+                        activitySummary.gd : 0}}
+                    </td>
+                    <td ng-class="!activitySummary.doi?'bg-danger':'bg-success'">{{activitySummary.doi ?
+                        activitySummary.doi : 0}}
+                    </td>
+                    <td ng-class="!activitySummary.po?'bg-danger':'bg-success'">{{activitySummary.po ?
+                        activitySummary.po : 0}}
+                    </td>
+                    <td ng-class="!activitySummary.fp?'bg-danger':'bg-success'">{{activitySummary.fp ?
+                        activitySummary.fp : 0}}
+                    </td>
+                    <td ng-class="!activitySummary.daotrc?'bg-danger':'bg-success'">{{activitySummary.daotrc ?
+                        activitySummary.daotrc :0}}
+                    </td>
+                    <td ng-class="!activitySummary.bookList?'bg-danger':'bg-success'">{{activitySummary.bookList ?
+                        activitySummary.bookList : 0}}
+                    </td>
+                    <td ng-class="!activitySummary.ucis?'bg-danger':'bg-success'">{{activitySummary.ucis ?
+                        activitySummary.ucis :0}}
+                    </td>
+                    <td ng-class="!activitySummary.ies ?'bg-danger':'bg-success'">{{activitySummary.ies ?
+                        activitySummary.ies :0}}
+                    </td>
+                </tr>
+                </tbody>
+
+            </table>
         </div>
     </div>
+    <div column="12">
+        <div column="6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        Contact Information
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-responsive table-bordered">
+                        <thead class="bg-info">
+                        <th>Name</th>
+                        <th>Position</th>
+                        <th>Decision Maker</th>
+                        <th>Contact No.</th>
+                        <th>Relationship</th>
+                        <th>Birthday</th>
+                        <th>Type</th>
+                        </thead>
+                        <tbody ng-repeat="(lvl,contacts) in task.summary.customer.contactDetails | groupBy: 'level'">
+                        <tr class="bg-warning">
+                            <td colspan="7">{{lvl}}</td>
+                        </tr>
+                        <tr ng-repeat="contact in contacts">
+                            <td>{{contact.description}}</td>
+                            <td>{{contact.positionDesc}}</td>
+                            <td>
+                                <i ng-class="contact.decisionMaker ? 'fa fa-check text-success' : 'fa fa-remove text-danger'"></i>
+                            </td>
+                            <td>{{contact.detail}}</td>
+                            <td>{{contact.relationshipType}}</td>
+                            <td>{{contact.birthDate | date : 'mm/dd/yyyy'}}</td>
+                            <td><i ng-class="contact.type.icon"></i>{{contact.type.label}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div column="6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        Education Levels Offered & Tuition Fee
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-responsive table-bordered">
+                        <thead class="bg-info">
+                        <th>Course</th>
+                        <th>Population</th>
+                        <th>Tuition Fee from</th>
+                        <th>Tuition Fee to</th>
+                        </thead>
+                        <tbody ng-repeat="(educationLevel,levels) in task.summary.customer.customerLevels | groupBy: 'educationLevel'">
+                        <tr>
+                            <td colspan="4" class="bg-warning">{{educationLevel}}</td>
+                        </tr>
+                        <tr ng-repeat="customerLevel in levels">
+                            <td>{{customerLevel.levelCourse}}</td>
+                            <td>{{customerLevel.population}}</td>
+                            <td>{{customerLevel.tuitionFeeFrom}}</td>
+                            <td>{{customerLevel.tuitionFeeTo}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div column="12">
+    </div>
+
+    <div></div>
+
+</div>
 
 
 </div>

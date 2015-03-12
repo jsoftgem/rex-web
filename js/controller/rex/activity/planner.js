@@ -1044,7 +1044,12 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                 s.customer.size = size;
                 s.refetchCustomer();
             }
-
+            s.opentCustomerSummary = function (customerId) {
+                if (s.task.schoolYear) {
+                    var param = customerId + "?schoolYear=" + s.task.schoolYear.id;
+                    s.flow.openTask("customer_agent_task", "customer_agent_summary", param, false);
+                }
+            }
 
         }]
 );

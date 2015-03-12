@@ -77,7 +77,7 @@
                     <tr class="event-customer enabled-day"
                         ng-repeat="cus in customer.customers | filter : task.search">
                         <td ng-if="customer.tag != 'All'">{{cus.index}}</td>
-                        <td><a customer="{{cus}}" href="#">{{cus.name}}</a></td>
+                        <td><a ng-click="opentCustomerSummary(cus.id)"customer="{{cus}}" href="#">{{cus.name}}</a></td>
                         <td>{{cus.marketSegment}}</td>
                         <td>{{cus.frequency}}</td>
                     </tr>
