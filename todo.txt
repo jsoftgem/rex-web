@@ -1,8 +1,12 @@
 Fluid Core
+
  - Profile add change password field.
  - persist task state.
  - fix fluid task bar for fullscreen. (done)
  - fluid panel ui (toolbar must be on header when fullscreen).
+
+  fluid version 2.0
+ - use angular + webpack ( fluid version 2.0)
  - use $resource in flowHttpService (fluid version 2.0).
  - full screen issues (done).
  - page lifecycle (done)
@@ -10,9 +14,11 @@ Fluid Core
         };
         s.task.page.destroy = function () {
         }
- - change pageCallBack to task.page.load(data)
+ - change pageCallBack to task.page.load (data)
 
 Rex
+- seminar activity tagging add schools and notes.
+- customer contacts specific fields for email,workphone,homephone
 - Agent Customer > pagination next/prev > customer summary - table / chart.js
 - Reports print, export (csv, pdf), activity productivity up to 125% - use Jasper Reports.
 - Agent > customer summary view in planner > editable customer info e.g. Name, Address, Contacts etc. except Customer Code
@@ -23,5 +29,6 @@ Rex
 
 Rex UI
 - ui enhancement for mobile.
+- reports ui/color enhancment readable
 - Full calendar rendering. (done)
 
