@@ -1,31 +1,54 @@
 <div class="container-fluid" ng-controller="editProfileCtrl">
-    <form class="form-horizontal" novalidate role="form" ng-submit="update()" method="post">
+    <form class="form-horizontal" novalidate role="form" ng-submit="task.update()" method="post">
 
-        <flow-image file-changed="fileChanged()" task="task" label="Avatar" model="task.flowUserDetail.avatar"
-                    source-url="services/download_service/getContent/"
-                    url="services/upload_service/upload_file?folder=group.user&type=avatar" method="post"></flow-image>
+        <button info="submit" button ng-if="!task.updatePassword ||
+            (task.updatePassword && task.showChangePasswordField && (task.password.new!= null && (task.password.new==task.password.confirm)))">
+            <i fluid-icon-save></i>&nbsp;Update
+        </button>
+        <div>
+            <flow-image column="7" file-changed="fileChanged()" task="task" label="Avatar"
+                        model="task.flowUserDetail.avatar"
+                        source-url="services/download_service/getContent/"
+                        url="services/upload_service/upload_file?folder=group.user&type=avatar"
+                        method="post"></flow-image>
 
-        <flow-field label="Full name" model="task.flowUserDetail.fullName"></flow-field>
+            <div column="5">
+                <flow-field label="Full name" model="task.flowUserDetail.fullName"></flow-field>
 
-        <flow-field label="Question" model="task.flowUserDetail.secretQuestion"></flow-field>
+                <flow-field label="Question" model="task.flowUserDetail.secretQuestion"></flow-field>
 
-        <flow-field label="Answer" model="task.flowUserDetail.secretAnswer" type="password"></flow-field>
+                <flow-field label="Answer" model="task.flowUserDetail.secretAnswer" type="password"></flow-field>
+            </div>
 
+        </div>
         <div column="12">
             <div class="form-group">
-                <button button info="button" ng-click="updatePassword=!updatePassword">
-                    {{!updatePassword? 'Change password':'Cancel'}}
+                <button button info="button" ng-click="task.changePassword()">
+                    {{!task.updatePassword? 'Change password':'Cancel'}}
                 </button>
             </div>
 
-            <div ng-if="updatePassword" class="form-group">
-                <flow-field type="password" label="Current password" model="password.current"></flow-field>
-                <flow-field type="password" label="New password" model="password.new"></flow-field>
-                <flow-field type="password" label="Confirm password" model="password.confirm"></flow-field>
-                <i ng-class="password.new == password.confirm ?' fa fa-check text-success':'fa fa-remove text-danger'"></i>
+            <div ng-if="task.updatePassword" class="form-group">
+                <div ng-if="!task.showChangePasswordField">
+                    <flow-field name="current" type="password" label="Current password"
+                                model="task.password.current">
+                    </flow-field>
+                    <button button info="button" ng-click="task.validatePassword()">Validate</button>
+                </div>
+
+                <flow-field ng-if="task.showChangePasswordField" name="new" type="password" label="New password"
+                            model="task.password.new"></flow-field>
+                <flow-field ng-if="task.showChangePasswordField" name="retype" type="password" label="Confirm password"
+                            model="task.password.confirm"></flow-field>
+
+                <span ng-if="task.showChangePasswordField && (task.password.new!= null && (task.password.new==task.password.confirm))"><i
+                        fluid-icon-check>
+                </i> Password matched. </span>
+
+
             </div>
         </div>
 
-        <button type="submit" class="btn btn-info"><span class="fa fa-save"></span>&nbsp;&nbsp;Update</button>
+
     </form>
 </div>

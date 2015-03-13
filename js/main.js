@@ -1,7 +1,7 @@
 "use strict";
 var App = angular.module('MAdmin', ['ui.bootstrap', 'fluid', 'flowServices']);
 
-App.controller('AppController', function ($scope, $rootScope, $location, userAppSetting, sessionService) {
+App.controller('AppController', function ($scope, $rootScope, $location, userAppSetting, sessionService, userProfile) {
 
     $scope.data = {};
     $scope.effect = '';
@@ -19,7 +19,6 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
         menu_style: userAppSetting.menu,
         menu_collapse: (userAppSetting.hideMenu ? 'sidebar-collapsed' : ''),
         layout_horizontal_menu: '',
-
         toggle: function (k) {
             switch (k) {
                 case 'chat':
@@ -39,7 +38,6 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
                     break;
             }
         },
-
         collapse: function (c) {
             if (c === 'change') {
                 $scope.header.menu_collapse = '';
@@ -62,6 +60,7 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
 
         }
     };
+    $rootScope.userProfile = userProfile;
 
     $scope.$watch(function (scope) {
         return sessionService.isSessionOpened();

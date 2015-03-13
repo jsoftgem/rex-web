@@ -18,7 +18,7 @@ flowComponents.run(["$templateCache", function (tc) {
 }]);
 flowComponents
     .directive("flowPanel", ["flowFrameService", "flowHttpService", "$templateCache", "$compile", "flowMessageService", "$rootScope", "$q", "$timeout", "$ocLazyLoad",
-        function (f, f2, tc, c, ms, rs, q, t, oc) {
+        function (f, f2, tc, c, ms, rs, q, t, oc,up) {
             return {
                 scope: {task: '='},
                 restrict: "E",
@@ -1244,11 +1244,13 @@ flowComponents
                 label: "@",
                 type: "@",
                 required: "=",
-                disabled: "="
+                disabled: "=",
+                blur: "&",
             },
             templateUrl: "templates/fluid/fluidField.html",
             replace: true,
             link: function (scope, elem, attr) {
+
                 if (!scope.name && scope.label) {
                     scope.name = scope.label.trim().split(" ").join("_");
                 }

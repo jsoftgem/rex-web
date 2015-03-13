@@ -26,10 +26,16 @@ angular.module("regionController", ["fluid", "ngResource", "datatables"])
             fm.show(s.flow.getElementFlowId(s.deleleModalId));
         }
         s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, ss);
-        s.dtColumns = FlowColumns(dtc);
+        s.dtColumns = FlowColumns(dtc, undefined, undefined, "task.view");
         s.dtColumns.push(dtc.newColumn("regionCode").withTitle("Region code").withOption("searchable", true));
         s.dtColumns.push(dtc.newColumn("regionName").withTitle("Region name").withOption("searchable", true));
 
+
+        s.task.view = function (region) {
+            s.task.region = region;
+            s.flow.openTaskBaseUrl = "services/flow_task_service/getTask?showToolBar=false&size=100&";
+            s.flow.openTask("region_manager_task", "region_manager_home", undefined, false);
+        }
 
         s.edit = function (id) {
             s.task.regionEdit = {};

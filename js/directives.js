@@ -800,12 +800,43 @@ directives.directive("fluidIconNext", function () {
     }
 })
 
+directives.directive("fluidIconCheck", function () {
+    return {
+        restrict: "A",
+        link: function (scope, element) {
+            element.addClass("fa fa-check text-success");
+        }
+    }
+})
+
 
 directives.directive("fluidIconRefresh", function () {
     return {
         restrict: "A",
         link: function (scope, element, attr) {
             element.addClass("fa fa-refresh");
+
+            scope.$watch(function () {
+                return attr.loading;
+            }, function (loading) {
+                if (loading) {
+                    if (loading === 'true') {
+                        element.addClass("fa-spin");
+                    } else {
+                        element.removeClass("fa-spin");
+                    }
+                }
+            })
+
+        }
+    }
+});
+
+directives.directive("fluidIconSpinner", function () {
+    return {
+        restrict: "A",
+        link: function (scope, element, attr) {
+            element.addClass("fa fa-spinner");
 
             scope.$watch(function () {
                 return attr.loading;

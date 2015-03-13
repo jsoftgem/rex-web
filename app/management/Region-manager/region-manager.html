@@ -1,7 +1,8 @@
 <div class="container-fluid" ng-controller="regionManagerCtrl">
 
     <form class="form-horizontal" novalidate id="{{flow.getElementFlowId('regionForm')}}">
-        <fieldset>
+        <div ng-if="task.origin && task.loading">Loading... <i fluid-icon-spinner loading="{{task.loading}}"></i></div>
+        <fieldset ng-if="task.rsm.manager">
             <legend>{{task.rsm.region.regionName}}</legend>
             <div column="4">
 
@@ -108,6 +109,7 @@
                 </table>
             </div>
         </fieldset>
+        <div ng-if="!task.rsm.manager && !s.task.loading">No assignment yet.</div>
     </form>
     <flow-modal id="{{flow.getElementFlowId('tagEditorModal')}}">
 

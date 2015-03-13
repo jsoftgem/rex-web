@@ -9,10 +9,7 @@ angular.module("regionManager", ["fluid", "ngResource", "datatables", "ngCookies
                 s.imageService = is;
                 s.flow.onRefreshed = function () {
                     if (s.task.page.name === s.task.home_page) {
-                        s.http.get(s.task.home_url, up.agent.id)
-                            .success(function (rsm) {
-                                s.task.rsm = rsm;
-                            });
+                        s.task.refresh();
                     }
                 }
             };
@@ -44,15 +41,20 @@ angular.module("regionManager", ["fluid", "ngResource", "datatables", "ngCookies
             s.swap = function ($index, $next) {
                 console.info("swap", $index + " - " + $next);
                 var t = s.task.tagEditorAgent.topCustomers[$index];
+
                 var nextIndex = $index + 1;
+
                 var sourceIndex = $next + 1;
+
                 s.task.tagEditorAgent.topCustomers[$next].index = nextIndex;
+
                 t.index = sourceIndex;
 
                 s.task.tagEditorAgent.topCustomers[$index] = s.task.tagEditorAgent.topCustomers[$next];
+                s.task.tagEditorAgent.topCustomers[$index].toBeUpdated = true;
 
                 s.task.tagEditorAgent.topCustomers[$next] = t;
-
+                s.task.tagEditorAgent.topCustomers[$next].toBeUpdated = true;
             }
 
             s.saveTopSchool = function (agent) {
@@ -70,10 +72,13 @@ angular.module("regionManager", ["fluid", "ngResource", "datatables", "ngCookies
                     agent.topCustomers.splice($index, 1);
                 }
 
-                for (var i = 1; i <= agent.topCustomers.length; i++) {
-                    agent.topCustomers[(i - 1)].index = i;
+                if ($index < agent.topCustomers.length) {
+                    angular.forEach(agent.topCustomers, function ($agent, $index) {
+                        $agent.index = ($index + 1);
+                        $agent.toBeUpdated = true;
+                        console.info("cascading changes", $agent);
+                    });
                 }
-
             }
 
             s.viewTopSchools = function (agent) {
@@ -111,7 +116,14 @@ angular.module("regionManager", ["fluid", "ngResource", "datatables", "ngCookies
                     customerTag.customerName = customer.school.name;
                     s.task.tagEditorAgent.topCustomers.push(customerTag);
                     customerTag.index = s.task.tagEditorAgent.topCustomers.length;
+                    angular.forEach(s.task.tagEditorAgent.topCustomers, function ($agent, $index) {
+                        $agent.index = ($index + 1);
+                        $agent.toBeUpdated = true;
+                        console.info("cascading changes", $agent);
+                    });
                 }
+
+
 
 
             }
@@ -135,12 +147,38 @@ angular.module("regionManager", ["fluid", "ngResource", "datatables", "ngCookies
 
             });
 
-            s.task.page.load = function () {
-                if (this.name === s.task.home_page) {
+            s.task.refresh = function () {
+                if (s.task.origin) {
+                    if (s.task.origin.region) {
+                        s.task.loading = true;
+                        s.http.post("services/war/agent_query/find_manager_by_region/", undefined, s.task.origin.region.regionCode).
+                            success(function (manager) {
+                                s.http.get(s.task.home_url, manager.id)
+                                    .success(function (rsm) {
+                                        s.task.rsm = rsm;
+                                        s.task.title = s.task.rsm.region.regionName;
+                                        s.task.page.title = s.task.rsm.manager.fullName;
+
+                                    }).then(function () {
+                                        s.task.loading = false;
+                                    });
+                            }).then(function () {
+                                s.task.loading = false;
+                            });
+                    }
+                } else {
                     s.http.get(s.task.home_url, up.agent.id)
                         .success(function (rsm) {
                             s.task.rsm = rsm;
+                            s.task.title = s.task.rsm.region.regionName;
+                            s.task.page.title = s.task.rsm.manager.fullName;
                         });
+                }
+            }
+            s.task.page.load = function () {
+                if (this.name === s.task.home_page) {
+                    console.info("load-region-manager", s.task.origin.region);
+                    s.task.refresh();
                 }
             }
 

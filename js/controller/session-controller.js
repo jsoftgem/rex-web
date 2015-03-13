@@ -4,46 +4,81 @@
 angular.module("sessionControllers", ["fluid", "ngResource", "datatables", "flowServices", "truncate",
     "ngCookies"])
     .controller("editProfileCtrl", ["$scope", "userProfile", function (s, u) {
-
-
-        s.flow.pageCallBack = function (page, data) {
+        s.task.page.load = function (data) {
+            this.title = u.fullName;
+            s.task.password = {};
             s.task.flowUserDetail = data;
             s.task.tempData = {};
+            s.task.updatePassword = false;
             angular.copy(data, s.task.tempData);
+        }
+
+
+        s.task.validatePassword = function () {
+            if (s.task.password.current) {
+                s.http.post("session/password_service/validate/", s.task.password.current, u.username)
+                    .success(function (valid) {
+                        s.task.showChangePasswordField = valid;
+                        s.task.showInvalidPassword = !valid;
+                    }).error(function () {
+                        s.task.showInvalidPassword = true;
+                    });
+            }
         };
 
+        s.task.changePassword = function () {
+            s.task.updatePassword = !s.task.updatePassword;
+            s.task.showChangePasswordField = false;
+            s.task.password = {};
+        }
 
-        s.update = function () {
+        s.task.update = function () {
+            console.info("update", s.task.updatePassword);
+            if (s.task.updatePassword) {
+                if (s.task.password.new) {
+                    s.http.post("session/password_service/change_password/", s.task.password.new, u.username).
+                        success(function (data) {
+                            s.flow.message.success("Password has been changed.");
+                            s.task.changePassword();
+                        })
+                        .error(function (msg) {
+                            //TODO: add error
+                        });
+                }
+            }
+
             if (!angular.equals(s.task.flowUserDetail, s.task.tempData)) {
                 s.flow.action("put", s.task.flowUserDetail, s.task.flowUserDetail.id);
             } else {
-                s.flow.message.info(UI_MESSAGE_NO_CHANGE);
+                if (!s.task.updatePassword) {
+                    s.flow.message.info(UI_MESSAGE_NO_CHANGE);
+                }
             }
+
+
         };
 
         s.$on(s.flow.event.getSuccessEventId(), function (event, data, method) {
             if (method === "put") {
                 u.updateProfile(s.task.flowUserDetail);
                 s.task.tempData = {};
-                window.location = "/home.html";
             }
+
+
         });
 
-        s.fileChanged = function () {
-
-        }
 
     }])
-    .controller("notificationCtrl", ["$scope", "userProfile","fnService","$rootScope", function (s, u, fs,rs) {
+    .controller("notificationCtrl", ["$scope", "userProfile", "fnService", "$rootScope", function (s, u, fs, rs) {
         s.fs = fs;
 
 
-        s.back = function (){
+        s.back = function () {
             rs.$broadcast(s.flow.getEventId('back'));
         }
 
-        s.open = function(alert){
-            s.flow.goTo("notification_view",alert.id);
+        s.open = function (alert) {
+            s.flow.goTo("notification_view", alert.id);
         }
 
         s.getMessageTypeGlyph = function (alert) {

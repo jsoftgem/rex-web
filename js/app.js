@@ -10,10 +10,7 @@ angular.module("app", ["MAdmin", "flowServices", "flowFactories", "home", "fluid
         function (f, fhp, up, re, fns, uas, h, hp, rs, ss) {
 
             fhp.host = h;
-
             fhp.permissionUrl = "services/flow_permission/has_permission";
-
-
             rs.$watch(function (scope) {
                 return ss.isSessionOpened();
             }, function (session) {
@@ -37,12 +34,8 @@ angular.module("app", ["MAdmin", "flowServices", "flowFactories", "home", "fluid
                     window.location = "signin.html";
                 }
             })
-
-
             re.addResponse(undefined, 401, true, "signin.html");
-
             re.addResponse("NOT_AUTHENTICATED", 401);
-
             fns.url = "session/notification/alerts";
             fns.topUrl = "session/notification/top?limit=5";
             hp.url = "services/flow_permission/has_profile";
