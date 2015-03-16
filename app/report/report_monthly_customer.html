@@ -1,8 +1,7 @@
-<div ng-controller="reportsMCtrl" class="container-fluid">
+<div ng-controller="reportCustomerSummary" class="container-fluid">
 
     <form id="{{flow.getElementFlowId('reportFrame')}}" class="form-horizontal">
-
-        <div class="col-lg-4">
+        <!-- <div class="col-lg-4">
             <fieldset>
                 <legend>Options</legend>
                 <div>
@@ -81,7 +80,6 @@
 
             </fieldset>
         </div>
-
         <div class="col-lg-8">
             <fieldset>
                 <legend>Toggle Rows</legend>
@@ -152,8 +150,6 @@
                 </div>
             </fieldset>
         </div>
-
-
         <div class="form-group">
             <table id="{{flow.getElementFlowId('reportTable')}}" class="table table-condensed table-striped"
                    ng-init="rep = []">
@@ -270,6 +266,81 @@
                 </tr>
 
                 </tbody>
+            </table>
+
+        </div>
+            -->
+
+        <flow-select column="3" id="{{flow.getElementFlowId('viewSelect')}}" task="task" label="View"
+                     model="task.view"
+                     values="Month, Bar Chart">
+        </flow-select>
+        <flow-select column="3" id="{{flow.getElementFlowId('schoolYearSelect')}}" task="task" label="School Year"
+                     source-url="services/war/school_year_query/list" model="task.schoolYear"
+                     field-label="description" change="task.selectSchoolYear(item)">
+        </flow-select>
+        <flow-select ng-if="task.schoolYear" column="3" id="{{flow.getElementFlowId('regionSelect')}}" task="task"
+                     label="Region"
+                     source-url="services/war/region_query/list" model="task.region"
+                     field-label="regionCode" change="task.selectRegion(item)">
+        </flow-select>
+        <flow-select ng-if="task.region" column="3" id="{{flow.getElementById('agentSelect')}}"
+                     task="task" field-label="initials" model="task.agent" label="Agent"
+                     source-url="services/war/agent_query/find_by_region/{{task.region.regionCode}}"
+                     change="task.selectAgent(item)"></flow-select>
+        <div column="12" class="form-group">
+            <div class="btn-group btn-group-sm">
+
+                <button button info="button" title="Clear filters" ng-click="task.clearFilters()"><i
+                        fluid-icon-clear></i> Clear filters
+                </button>
+
+                <button button info="button" title="Show all" ng-click="task.tag('all')"><i
+                        fluid-icon-tag></i> All
+                </button>
+
+                <button button info="button" title="Show top 20" ng-click="task.tag('20')"><i
+                        fluid-icon-tag></i> 20
+                </button>
+
+                <button button info="button" title="Show top 50" ng-click="task.tag('50')"><i
+                        fluid-icon-tag></i> 50
+                </button>
+
+            </div>
+        </div>
+        <div>
+            <table class="table table-responsive table-bordered report-table">
+                <colgroup>
+                    <col span="4">
+                    <col span="12" class="months-header">
+                    <col span="11" class="activity-header">
+                </colgroup>
+                <thead>
+                <th style="font-size: 9px">Top</th>
+                <th style="font-size: 9px">Accounts</th>
+                <th style="font-size: 9px" ng-repeat="label in task.report.data.labels">{{label}}</th>
+                </thead>
+
+
+                </tbody>
+
+                <tbody ng-repeat="region in task.report.data.regions">
+
+
+                <tr>
+                    <td align="center" colspan="27" class="bg-warning">{{region.region}}
+                    <td>
+                </tr>
+                <div ng-repeat="reportAgent in region.agents">
+                    <tr>{{reportAgent.materialsAdvisor}}</tr>
+                    <tr ng-repeat="customer in reportAgent.customers">
+                        <td>{{customer}}</td>
+                    </tr>
+                </div>
+
+                </tbody>
+
             </table>
 
         </div>

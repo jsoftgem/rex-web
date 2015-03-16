@@ -18,7 +18,7 @@ flowComponents.run(["$templateCache", function (tc) {
 }]);
 flowComponents
     .directive("flowPanel", ["flowFrameService", "flowHttpService", "$templateCache", "$compile", "flowMessageService", "$rootScope", "$q", "$timeout", "$ocLazyLoad",
-        function (f, f2, tc, c, ms, rs, q, t, oc,up) {
+        function (f, f2, tc, c, ms, rs, q, t, oc, up) {
             return {
                 scope: {task: '='},
                 restrict: "E",
@@ -28,7 +28,19 @@ flowComponents
                     pre: function (scope, element) {
                         /* Initialize variables*/
 
-
+                        scope.pathRegexPattern = /{[\w|\d]*}/;
+                        scope.generateUrl = function (url, param) {
+                            if (isJson(param)) {
+                                param = JSON.parse(param);
+                            }
+                            for (var key in param) {
+                                if (param.hasOwnProperty(key)) {
+                                    var reg = new RegExp("{" + key + "}", "g");
+                                    url = url.replace(reg, param[key]);
+                                }
+                            }
+                            return url;
+                        }
                         scope.flowFrameService = f;
 
                         console.info("fullScreen", scope.flowFrameService.fullScreen);
@@ -214,25 +226,42 @@ flowComponents
                         /* HTTP API */
                         scope.http.get = function (url, param) {
                             if (param) {
-                                url = url + param;
+                                if (url.search(scope.pathRegexPattern) > 0) {
+                                    url = scope.generateUrl(url, param);
+                                } else {
+                                    url = url + param;
+                                }
+
                             }
                             return f2.get(url, scope.task);
                         };
                         scope.http.delete = function (url, param) {
                             if (param) {
-                                url = url + param;
+                                if (url.search(scope.pathRegexPattern) > 0) {
+                                    url = scope.generateUrl(url, param);
+                                } else {
+                                    url = url + param;
+                                }
                             }
                             return f2.delete(url, scope.task);
                         };
                         scope.http.post = function (url, data, param) {
                             if (param) {
-                                url = url + param;
+                                if (url.search(scope.pathRegexPattern) > 0) {
+                                    url = scope.generateUrl(url, param);
+                                } else {
+                                    url = url + param;
+                                }
                             }
                             return f2.post(url, data, scope.task);
                         };
                         scope.http.put = function (url, data, param) {
                             if (param) {
-                                url = url + param;
+                                if (url.search(scope.pathRegexPattern) > 0) {
+                                    url = scope.generateUrl(url, param);
+                                } else {
+                                    url = url + param;
+                                }
                             }
                             return f2.put(url, data, scope.task);
                         };
@@ -263,7 +292,15 @@ flowComponents
                             return q(function (resolve, reject) {
                                 if ((scope.task.page !== undefined && scope.task.page !== null) && (scope.task.page.autoGet !== null && scope.task.page.autoGet === true)) {
                                     scope.task.currentPage = scope.task.page.name;
-                                    f2.get(scope.homeUrl, scope.task)
+                                    var url = scope.homeUrl;
+                                    if(scope.task.page.getParam){
+                                        if (scope.homeUrl.search(scope.pathRegexPattern) > 0) {
+                                            url = scope.generateUrl(scope.homeUrl, scope.task.page.getParam);
+                                        } else {
+                                            url = scope.homeUrl + scope.task.page.getParam;
+                                        }
+                                    }
+                                    f2.get(url, scope.task)
                                         .success(function (data) {
                                             console.info("autoget", data);
                                             resolve({page: scope.task.page.name, value: data});
@@ -366,7 +403,11 @@ flowComponents
                                         var uri = page.get;
 
                                         if (scope.task.page.param !== undefined && scope.task.page.param != null) {
-                                            uri = uri + scope.task.page.param;
+                                            if (uri.search(scope.pathRegexPattern) > 0) {
+                                                uri = scope.generateUrl(uri, param);
+                                            } else {
+                                                uri = uri + param;
+                                            }
                                         }
 
                                         scope.homeUrl = uri;
@@ -423,9 +464,17 @@ flowComponents
                                             if (param !== undefined && param !== "null") {
 
                                                 page.param = param;
-                                                uri = uri + param;
+                                                if (uri.search(scope.pathRegexPattern) > 0) {
+                                                    uri = scope.generateUrl(uri, param);
+                                                } else {
+                                                    uri = uri + param;
+                                                }
                                             } else if (page.param) {
-                                                uri = uri + page.param;
+                                                if (uri.search(scope.pathRegexPattern) > 0) {
+                                                    uri = scope.generateUrl(uri, param);
+                                                } else {
+                                                    uri = uri + param;
+                                                }
                                             }
 
 
@@ -497,7 +546,11 @@ flowComponents
                                 if (method.toLowerCase() === "put") {
                                     uri = scope.task.page.put;
                                     if (param !== undefined && param !== "null") {
-                                        uri = uri + param;
+                                        if (uri.search(scope.pathRegexPattern) > 0) {
+                                            uri = scope.generateUrl(uri, param);
+                                        } else {
+                                            uri = uri + param;
+                                        }
                                     }
                                     f2.put(uri, data, scope.task)
                                         .success(function (rv) {
@@ -516,7 +569,11 @@ flowComponents
                                 } else if (method.toLowerCase() === "get") {
                                     uri = scope.task.page.get;
                                     if (param !== undefined && param !== "null") {
-                                        uri = uri + param;
+                                        if (uri.search(scope.pathRegexPattern) > 0) {
+                                            uri = scope.generateUrl(uri, param);
+                                        } else {
+                                            uri = uri + param;
+                                        }
                                     }
                                     f2.get(uri, scope.task)
                                         .success(function (rv) {
@@ -537,7 +594,11 @@ flowComponents
                                 } else if (method.toLowerCase() === "delete") {
                                     uri = scope.task.page.delURL;
                                     if (param !== undefined && param !== "null") {
-                                        uri = uri + param;
+                                        if (uri.search(scope.pathRegexPattern) > 0) {
+                                            uri = scope.generateUrl(uri, param);
+                                        } else {
+                                            uri = uri + param;
+                                        }
                                     }
                                     f2.delete(uri, scope.task)
                                         .success(function (rv) {
@@ -560,7 +621,11 @@ flowComponents
                                     uri = scope.task.page.post;
 
                                     if (param !== undefined && param !== "null") {
-                                        uri = uri + param;
+                                        if (uri.search(scope.pathRegexPattern) > 0) {
+                                            uri = scope.generateUrl(uri, param);
+                                        } else {
+                                            uri = uri + param;
+                                        }
                                     }
 
                                     f2.post(uri, data, scope.task)
@@ -1783,13 +1848,6 @@ flowComponents
 
                 var select = element.find("select").attr("ng-options", options).attr("ng-model", "model").get();
 
-                /*      if (!scope.sourceList) {
-                 f.get(scope.sourceUrl, scope.task).success(function (sourceList) {
-                 scope.sourceList = sourceList;
-                 });
-                 }*/
-
-
                 scope.$watch(function (scope) {
                     return scope.sourceUrl;
                 }, function (value, old) {
@@ -2497,7 +2555,6 @@ flowComponents
 
     }])
     .service("flowHttpService", ["$rootScope", "$http", "flowLoaderService", "$resource", function (rs, h, fl, r) {
-
         this.post = function (url, data, task) {
             var promise = null;
             if (this.host) {
@@ -2505,13 +2562,10 @@ flowComponents
             }
 
             var headers = {"flow-container-id": "_id_fpb_" + task.id, "Content-type": "application/json"};
-
             if (task.currentPage) {
                 headers.method = "post";
                 headers.flowPage = task.currentPage;
             }
-
-
             if (data === undefined) {
                 promise = h({
                     method: "post",
@@ -2536,18 +2590,15 @@ flowComponents
 
                 return promise;
             }
-
             promise = h({
                 method: "post",
                 url: url,
                 data: data,
                 headers: headers
             });
-
             promise.success(function (config) {
                 $("#_id_fpb_" + task.id).loadingOverlay("remove");
             });
-
             promise.error(function (data, status, headers, config) {
                 $("#_id_fpb_" + task.id).loadingOverlay("remove");
                 if (status === 401) {
@@ -2556,8 +2607,6 @@ flowComponents
                     rs.$broadcast("NOT_ALLOWED");
                 }
             });
-
-
             return promise;
         };
 
@@ -3230,4 +3279,12 @@ function generateTask(scope, t, f2) {
 
 
     t(loadGetFn, 500);
+}
+function isJson(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
 }

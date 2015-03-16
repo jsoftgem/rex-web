@@ -4,25 +4,32 @@
         <input id="{{flow.getElementFlowId('page_submit')}}" type="submit"
                style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
 
-        <div class="form-group col-lg-5 col-md-5  col-sm-12 col-xs-12 col-xs-offset-1">
-            <flow-field model="task.pageCreate.name" label="Name" type="text" required="true"></flow-field>
-            <flow-field model="task.pageCreate.title" label="Title" type="text" required="true"></flow-field>
-            <flow-field model="task.pageCreate.home" label="Url" type="text" required="true"></flow-field>
-            <flow-field model="task.pageCreate.get" label="GET URI" type="text"></flow-field>
-            <flow-field model="task.pageCreate.post" label="POST URI" type="text"></flow-field>
-        </div>
+        <flow-field column="12" model="task.pageCreate.home" label="Url" type="text" required="true"></flow-field>
 
-        <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12"></div>
-        <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12 col-xs-offset-1">
-            <flow-field model="task.pageCreate.put" label="PUT URI" type="text"></flow-field>
-            <flow-field model="task.pageCreate.delURL" label="DELETE URI" type="text"></flow-field>
-            <flow-check class="col-lg-offset-2 col-md-offset-2" model="task.pageCreate.autoGet"
-                        label="Auto GET"></flow-check>
-            <flow-check class="col-lg-offset-2 col-md-offset-2" model="task.pageCreate.isHome"
-                        label="Home"></flow-check>
-            <flow-check class="col-lg-offset-2 col-md-offset-2" model="task.pageCreate.pageLinkEnabled"
-                        label="Page link"></flow-check>
-        </div>
+        <flow-check column="4" class="col-lg-offset-2 col-md-offset-2" model="task.pageCreate.autoGet"
+                    label="Auto GET"></flow-check>
+        <flow-check column="4" class="col-lg-offset-2 col-md-offset-2" model="task.pageCreate.isHome"
+                    label="Home"></flow-check>
+        <flow-check column="4" class="col-lg-offset-2 col-md-offset-2" model="task.pageCreate.pageLinkEnabled"
+                    label="Page link"></flow-check>
+
+        <flow-field column="6" model="task.pageCreate.name" label="Name" type="text" required="true"></flow-field>
+
+        <flow-field column="6" model="task.pageCreate.title" label="Title" type="text" required="true"></flow-field>
+
+        <flow-field column="6" model="task.pageCreate.get" label="GET URI" type="text"></flow-field>
+
+        <flow-text-area column="6" model="task.pageCreate.getParam" label="GET Param (JSON)"></flow-text-area>
+
+        <flow-field column="6" model="task.pageCreate.post" label="POST URI" type="text"></flow-field>
+        <flow-text-area column="6" model="task.pageCreate.postParam" label="POST Param (JSON)"></flow-text-area>
+
+        <flow-field column="6" model="task.pageCreate.put" label="PUT URI" type="text"></flow-field>
+        <flow-text-area column="6" model="task.pageCreate.putParam" label="PUT Param (JSON)"></flow-text-area>
+
+        <flow-field column="6" model="task.pageCreate.delURL" label="DELETE URI" type="text"></flow-field>
+        <flow-text-area column="6" model="task.pageCreate.delParam" label="DELETE Param (JSON)"></flow-text-area>
+
 
     </form>
 </div>

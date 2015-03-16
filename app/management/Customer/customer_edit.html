@@ -17,14 +17,15 @@
                             label="Customer code" required="true"
                             type="text"></flow-field>
 
-                <flow-select disabled="task.origin && task.origin.agent"
+                <flow-select disabled="true"
                              task="task"
                              id="{{flow.getElementFlowId('ownershipAgentSelect')}}"
                              label="Materials Advisor"
                              field-value="id"
                              field-label="user.flowUserDetail.fullName"
                              model="task.customerEdit.ownerAgentId"
-                             source-url="services/war/agent_query/list">
+                             source-url="services/war/agent_query/list"
+                             change="selectAgent(item)" diabled="true">
                 </flow-select>
 
                 <flow-field model="task.customerEdit.regionCode" label="Region" disabled="true"></flow-field>

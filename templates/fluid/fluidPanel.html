@@ -44,39 +44,38 @@
                 <button ng-hide='flowFrameService.fullScreen' ng-disabled='task.pinned' title="Maximize - 50"
                         class="btn btn-info"
                         ng-click='task.max50()'>
-                    <i><span class='fa fa-arrows-h' style="transform: scaleX(0.9)"></span></i>
+                    <i class='element-center fa fa-arrows-h' style="transform: scaleX(0.9)"></i>
                 </button>
-               <!-- <button ng-hide='flowFrameService.fullScreen' ng-disabled='task.pinned' ng-click='task.max75()'
-                        class="btn btn-info">
-                    <i title="Maximize - 75"
-                            ><span class='fa fa-arrows-h' style="transform: scaleX(1.1)"></span></i>-->
+                <!-- <button ng-hide='flowFrameService.fullScreen' ng-disabled='task.pinned' ng-click='task.max75()'
+                         class="btn btn-info">
+                     <i title="Maximize - 75"
+                             ><span class='fa fa-arrows-h' style="transform: scaleX(1.1)"></span></i>-->
                 </button>
                 <button ng-hide='flowFrameService.fullScreen' ng-disabled='task.pinned' ng-click='task.max100()'
                         class="btn btn-info">
-                    <i title="Maximize - 100"
-                            ><span class='fa fa-arrows-h' style="transform: scaleX(1.3)"></span></i>
+                    <i title="Maximize - 100" class='element-center fa fa-arrows-h' style="transform: scaleX(1.3)"></i>
                 </button>
                 <button ng-disabled='task.pinned' title="Minimize" ng-click='task.hide(task)'
                         class="btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}">
                     <i title='minimize'
-                       class=' fa fa-angle-down'></i>
+                       class='element-center fa fa-angle-down'></i>
                 </button>
                 <button ng-if="!flowFrameService.fullScreen" class="btn btn-info" ng-click='task.fullScreen()'>
-                    <i title="Full screen"><span class='fa fa-expand'></span></i>
+                    <i title="Full screen" class="element-center glyphicon glyphicon-fullscreen"></i>
                 </button>
                 <button ng-if='flowFrameService.fullScreen'
                         class="btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}"
                         ng-click="task.fluidScreen()">
-                    <i title="Fluid screen"><span class='fa fa-th'></span></i>
+                    <i title="Fluid screen" class='element-center fa fa-th'></i>
                 </button>
                 <button class="btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}"
                         ng-click='task.refresh()'>
-                    <i title="Refresh"><span class="fa"
-                                             ng-class="task.loaded ? 'fa-refresh' : 'fa-spin fa-refresh'"></span></i>
+                    <i title="Refresh" class="element-center fa "
+                       ng-class="task.loaded ? 'fa-refresh' : 'fa-spin fa-refresh'"></i>
                 </button>
                 <button class="btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-danger'}}"
                         ng-disabled='task.pinned||task.locked' ng-click='task.close()'>
-                    <i class='fa fa-close' title="Close"
+                    <i class='element-center fa fa-close' title="Close"
                        title='close'></i>
                 </button>
 

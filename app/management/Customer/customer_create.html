@@ -17,7 +17,8 @@
                         label="Materials Advisor"
                         field-label="user.flowUserDetail.fullName"
                         model="task.create.agent"
-                        source-url="services/war/agent_query/list">
+                        source-url="services/war/agent_query/list"
+                        change="selectAgent(item)">
                 </flow-select>
 
                 <flow-field disabled="true" model="task.customerCreate.regionCode" label="Region"></flow-field>

@@ -4,25 +4,31 @@
         <input id="{{flow.getElementFlowId('page_submit')}}" type="submit"
                style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
 
-        <div class="form-group col-lg-5 col-md-5  col-sm-12 col-xs-12 col-xs-offset-1">
-            <flow-field model="task.pageEdit.name" label="Name" type="text" required="true"></flow-field>
-            <flow-field model="task.pageEdit.title" label="Title" type="text" required="true"></flow-field>
-            <flow-field model="task.pageEdit.home" label="Url" type="text" required="true"></flow-field>
-            <flow-field model="task.pageEdit.get" label="GET URI" type="text"></flow-field>
-            <flow-field model="task.pageEdit.post" label="POST URI" type="text"></flow-field>
-        </div>
+        <flow-field column="12" model="task.pageEdit.home" label="Url" type="text" required="true"></flow-field>
 
-        <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12"></div>
-        <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12 col-xs-offset-1">
-            <flow-field model="task.pageEdit.put" label="PUT URI" type="text"></flow-field>
-            <flow-field model="task.pageEdit.delURL" label="DELETE URI" type="text"></flow-field>
-            <flow-check class="col-lg-offset-2 col-md-offset-2" model="task.pageEdit.autoGet"
-                        label="Auto GET"></flow-check>
-            <flow-check class="col-lg-offset-2 col-md-offset-2" model="task.pageEdit.isHome"
-                        label="Home"></flow-check>
-            <flow-check class="col-lg-offset-2 col-md-offset-2" model="task.pageEdit.pageLinkEnabled"
-                        label="Page link"></flow-check>
-        </div>
+        <flow-check column="4" class="col-lg-offset-2 col-md-offset-2" model="task.pageEdit.autoGet"
+                    label="Auto GET"></flow-check>
+        <flow-check column="4" class="col-lg-offset-2 col-md-offset-2" model="task.pageEdit.isHome"
+                    label="Home"></flow-check>
+        <flow-check column="4" class="col-lg-offset-2 col-md-offset-2" model="task.pageEdit.pageLinkEnabled"
+                    label="Page link"></flow-check>
+
+        <flow-field column="6" model="task.pageEdit.name" label="Name" type="text" required="true"></flow-field>
+
+        <flow-field column="6" model="task.pageEdit.title" label="Title" type="text" required="true"></flow-field>
+
+        <flow-field column="6" model="task.pageEdit.get" label="GET URI" type="text"></flow-field>
+
+        <flow-text-area column="6" model="task.pageEdit.getParam" label="GET Param (JSON)"></flow-text-area>
+
+        <flow-field column="6" model="task.pageEdit.post" label="POST URI" type="text"></flow-field>
+        <flow-text-area column="6" model="task.pageEdit.postParam" label="POST Param (JSON)"></flow-text-area>
+
+        <flow-field column="6" model="task.pageEdit.put" label="PUT URI" type="text"></flow-field>
+        <flow-text-area column="6" model="task.pageEdit.putParam" label="PUT Param (JSON)"></flow-text-area>
+
+        <flow-field column="6" model="task.pageEdit.delURL" label="DELETE URI" type="text"></flow-field>
+        <flow-text-area column="6" model="task.pageEdit.delParam" label="DELETE Param (JSON)"></flow-text-area>
 
 
         <flow-modal id="{{flow.getElementFlowId('pageDeleteModal')}}">

@@ -147,7 +147,7 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
 
         };
 
-        s.task.page.load = function(data){
+        s.task.page.load = function (data) {
             if (s.edit_name === this.name) {
                 if (!s.task.customerEdit.id || source === "refresh") {
                     if (s.task.origin) {
@@ -558,26 +558,37 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
         s.ownershipOptions = [{label: "Public", value: "PUBLIC"}, {label: "Private", value: "PRIVATE"}];
 
 
-        s.$watch(function (scope) {
-            if (!scope.task.edit) return;
-            return scope.task.edit.agent;
-        }, function (newValue, oldValue) {
-            if (newValue) {
-                s.task.customerEdit.ownerAgentId = newValue.id;
-                s.task.customerEdit.regionCode = newValue.region;
+        s.selectAgent = function (item) {
+            if (s.task.page.name === s.create_name) {
+                s.task.customerCreate.ownerAgentId = s.task.create.agent.id;
+                s.task.customerCreate.regionCode = s.task.create.agent.region;
+            } else if (s.task.page.name === s.edit_name) {
+                s.task.customerEdit.ownerAgentId = s.task.edit.agent.id;
+                s.task.customerEdit.regionCode = s.task.edit.agent.region;
             }
-        });
+        }
 
 
-        s.$watch(function (scope) {
-            if (!scope.task.create)return;
-            return scope.task.create.agent;
-        }, function (newValue, oldValue) {
-            if (newValue) {
-                s.task.customerCreate.ownerAgentId = newValue.id;
-                s.task.customerCreate.regionCode = newValue.region;
-            }
-        });
+        /*s.$watch(function (scope) {
+         if (!scope.task.edit) return;
+         return scope.task.edit.agent;
+         }, function (newValue, oldValue) {
+         if (newValue) {
+         s.task.customerEdit.ownerAgentId = newValue.id;
+         s.task.customerEdit.regionCode = newValue.region;
+         }
+         });
+
+
+         s.$watch(function (scope) {
+         if (!scope.task.create)return;
+         return scope.task.create.agent;
+         }, function (newValue, oldValue) {
+         if (newValue) {
+         s.task.customerCreate.ownerAgentId = newValue.id;
+         s.task.customerCreate.regionCode = newValue.region;
+         }
+         });*/
 
 
         s.validPotential = function (warCustomerMarketSchoolYear) {

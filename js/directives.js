@@ -855,6 +855,18 @@ directives.directive("fluidIconSpinner", function () {
 });
 
 
+directives.directive("fluidIconTag", function () {
+    return {
+        restrict: "A",
+        link: function (scope, element) {
+            element.addClass("fa fa-tag");
+        }
+    }
+})
+
+
+
+
 directives.directive("bgWeek1", function () {
     return {
         restrict: "A",

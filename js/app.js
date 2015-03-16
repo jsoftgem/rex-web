@@ -59,6 +59,17 @@ angular.module("app", ["MAdmin", "flowServices", "flowFactories", "home", "fluid
             }
             return week;
         }
+    })
+    .filter("totalFrequency", function () {
+        return function (items, userAccessLevel) {
+            var filtered = [];
+            var $totalFrequency = {value: 0};
+            angular.forEach(items, function (item) {
+                this.value += item.customerFrequency;
+            }, $totalFrequency);
+            filtered.push({frequency: $totalFrequency.value});
+            return filtered;
+        }
     });
 ;
  

@@ -6,6 +6,7 @@ Fluid Core
  - fluid panel ui (toolbar must be on header when fullscreen).
 
   fluid version 2.0
+ - support default param for all actions.
  - use angular + webpack ( fluid version 2.0)
  - use $resource in flowHttpService (fluid version 2.0).
  - full screen issues (done).
@@ -17,10 +18,13 @@ Fluid Core
  - change pageCallBack to task.page.load (data)
 
 Rex
+- reports
 - seminar activity tagging add schools and notes.
-- customer contacts specific fields for email,workphone,homephone
-- Agent Customer > pagination next/prev > customer summary - table / chart.js
+- Activity Field worked with
+- school year month required
 - Reports print, export (csv, pdf), activity productivity up to 125% - use Jasper Reports.
+- customer contacts specific fields for email,workphone,homephone
+- Agent Customer > pagination next/prev > customer summary - table / chart.js (done)
 - Agent > customer summary view in planner > editable customer info e.g. Name, Address, Contacts etc. except Customer Code
 - Fix customer tagging in planner. Add daily notes in planner. Activity actual is true when updated. (done)
 - SchoolYear > historical sales uploadable/viewable in planner. (done)
