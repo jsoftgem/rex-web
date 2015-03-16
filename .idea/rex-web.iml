@@ -1,36 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="WEB_MODULE" version="4">
   <component name="NewModuleRootManager">
-    <content url="file://$MODULE_DIR$">
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/angular-animate" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/angular-aside" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/angular-bootstrap" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/angular-cookies" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/angular-datatables" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/angular-dragdrop" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/angular-filter" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/angular-local-storage" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/angular-motion" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/angular-notify" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/angular-resource" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/angular-strap" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/angular-truncate" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/bootstrap-hover-dropdown" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/components-font-awesome" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/datatables" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/jQuery.print" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/jquery-ui" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/moment" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/ng-file-upload" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/ngAnimate" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/ngInfiniteScroll" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/nsPopover" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/oclazyload" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/octicons" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/semantic-ui-dimmer" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/semantic-ui-sticky" />
-      <excludeFolder url="file://$MODULE_DIR$/vendors" />
-    </content>
+    <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
