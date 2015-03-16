@@ -958,6 +958,18 @@ directives.directive("bgWeek5", function () {
 
 
 
+directives.directive("barChart",function(){
+    return {
+        restrict: "A",
+
+        link: function (scope, element, attr) {
+
+
+
+
+        }
+    }
+})
 
 
 

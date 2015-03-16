@@ -561,7 +561,7 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
         function (s, dto, dtc, ms, fm, c, f, ss, h, t, ffs, hp, up) {
 
             s.task.home = "report_monthly_customer";
-
+            s.task.view = "Table";
 
             s.task.refresh = function () {
                 s.task.query();

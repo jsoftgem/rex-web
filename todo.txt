@@ -18,7 +18,7 @@ Fluid Core
  - change pageCallBack to task.page.load (data)
 
 Rex
-- reports
+- reports > bar chart
 - seminar activity tagging add schools and notes.
 - Activity Field worked with
 - school year month required

@@ -192,6 +192,7 @@ and open the template in the editor.
 
 .flow-panel {
     background: rgb(170, 208, 160);
+    overflow-x: auto;
 }
 
 .flow-panel-heading-title {
