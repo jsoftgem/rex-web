@@ -4,10 +4,10 @@
  * and open the template in the editor.
  */
 
-var HOST = "http://war.rexpublishing.com.ph:8080/rex-services/";
+var HOST = "http://war.rexpublishing.com.ph:8080/rex-war/";
 
 angular.module("flowFactories", [])
-    .constant("HOST", "")
+    .constant("HOST", HOST)
     .constant("VIEWER", "vendors/ViewerJS/#"
 );
 
