@@ -49,6 +49,7 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
         s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, ss);
         s.dtColumns = FlowColumns(dtc);
         s.dtColumns.push(dtc.newColumn("user.flowUserDetail.fullName").withTitle("Name").withOption("searchable", true));
+        s.dtColumns.push(dtc.newColumn("region").withTitle("Region").withOption("searchable", true));
         s.dtColumns.push(dtc.newColumn("active").withTitle("Active").renderWith(function (data) {
             return renderCheckbox(data)
         }));
