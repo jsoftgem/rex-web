@@ -93,10 +93,15 @@
     width: 268px;
 }
 
-.viewer-frame{
-   padding: 0;
+.viewer-frame {
+    padding: 0;
 }
 
 .viewer-body {
     padding: 0;
+}
+
+.customer-tag-table {
+    height: 350px;
+    overflow: scroll;
 }

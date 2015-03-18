@@ -106,8 +106,50 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
             }
             return true;
         }
-        s.flow.pageCallBack = function (page, data, source) {
-            if (s.edit_name === page) {
+        /*  s.flow.pageCallBack = function (page, data, source) {
+         if (s.edit_name === page) {
+         if (!s.task.customerEdit.id || source === "refresh") {
+         if (s.task.origin) {
+         s.task.tempEdit = {};
+         }
+         s.task.customerEdit = data;
+         angular.copy(s.task.customerEdit, s.task.tempEdit);
+         if (s.task.customerEdit.evaluationTo) {
+         s.task.isEditEvaluationTo = true;
+         }
+
+         if (s.task.customerEdit.orderingTo) {
+         s.task.isEditOrderingTo = true;
+         }
+
+         if (s.task.customerEdit.deliveryTo) {
+         s.task.isEditDeliveryTo = true;
+         }
+
+         if (s.task.customerEdit.collectionTo) {
+         s.task.isEditCollectionTo = true;
+         }
+
+
+         }
+
+
+         } else if (s.home === page) {
+         s.dtOptions.reloadData();
+         } else if (page === s.create_name) {
+         if (s.task.currentPage === s.create_name) {
+         s.task.customerCreate = {};
+         s.task.school = {};
+         }
+
+         }
+
+
+         };*/
+
+        s.task.page.load = function (data) {
+
+            if (this.name === s.edit_name) {
                 if (!s.task.customerEdit.id || source === "refresh") {
                     if (s.task.origin) {
                         s.task.tempEdit = {};
@@ -133,47 +175,13 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
 
                 }
 
-
-            } else if (s.home === page) {
+            } else if (this.name === s.home) {
                 s.dtOptions.reloadData();
-            } else if (page === s.create_name) {
+            } else if (this.name === s.create_name) {
                 if (s.task.currentPage === s.create_name) {
                     s.task.customerCreate = {};
                     s.task.school = {};
                 }
-
-            }
-
-
-        };
-
-        s.task.page.load = function (data) {
-            if (s.edit_name === this.name) {
-                if (!s.task.customerEdit.id || source === "refresh") {
-                    if (s.task.origin) {
-                        s.task.tempEdit = {};
-                    }
-                    s.task.customerEdit = data;
-                    angular.copy(s.task.customerEdit, s.task.tempEdit);
-                    if (s.task.customerEdit.evaluationTo) {
-                        s.task.isEditEvaluationTo = true;
-                    }
-
-                    if (s.task.customerEdit.orderingTo) {
-                        s.task.isEditOrderingTo = true;
-                    }
-
-                    if (s.task.customerEdit.deliveryTo) {
-                        s.task.isEditDeliveryTo = true;
-                    }
-
-                    if (s.task.customerEdit.collectionTo) {
-                        s.task.isEditCollectionTo = true;
-                    }
-
-
-                }
-
 
             }
         }
