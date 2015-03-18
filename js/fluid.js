@@ -844,7 +844,12 @@ flowComponents
                                             scope.task.loaded = false;
                                             f2.get(scope.homeUrl, scope.task)
                                                 .success(function (data) {
-                                                    scope.flow.pageCallBack(scope.task.page.name, data, "refresh");
+                                                    if(scope.task.page.load){
+                                                        scope.task.page.load(data,"refresh");
+                                                    }
+                                                    if(scope.flow.pageCallBack){
+                                                        scope.flow.pageCallBack(scope.task.page.name, data, "refresh");
+                                                    }
                                                     scope.task.loaded = true;
                                                 })
                                                 .error(function (data) {

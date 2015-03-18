@@ -104,6 +104,12 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
                 s.task.customerEdit = {};
                 s.task.tempEdit = {};
             }
+            else if (s.home === page) {
+                s.task.tempEdit = {};
+                s.task.customerCreate = {};
+                s.task.school = {};
+                s.task.customerEdit = {};
+            }
             return true;
         }
         /*  s.flow.pageCallBack = function (page, data, source) {
@@ -147,10 +153,11 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
 
          };*/
 
-        s.task.page.load = function (data) {
+
+        s.task.page.load = function (data, source) {
 
             if (this.name === s.edit_name) {
-                if (!s.task.customerEdit.id || source === "refresh") {
+                if (!s.task.customerEdit.id || (source && source === "refresh")) {
                     if (s.task.origin) {
                         s.task.tempEdit = {};
                     }
@@ -171,8 +178,6 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
                     if (s.task.customerEdit.collectionTo) {
                         s.task.isEditCollectionTo = true;
                     }
-
-
                 }
 
             } else if (this.name === s.home) {
