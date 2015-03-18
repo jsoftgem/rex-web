@@ -844,10 +844,10 @@ flowComponents
                                             scope.task.loaded = false;
                                             f2.get(scope.homeUrl, scope.task)
                                                 .success(function (data) {
-                                                    if(scope.task.page.load){
-                                                        scope.task.page.load(data,"refresh");
+                                                    if (scope.task.page.load) {
+                                                        scope.task.page.load(data, "refresh");
                                                     }
-                                                    if(scope.flow.pageCallBack){
+                                                    if (scope.flow.pageCallBack) {
                                                         scope.flow.pageCallBack(scope.task.page.name, data, "refresh");
                                                     }
                                                     scope.task.loaded = true;
@@ -990,6 +990,9 @@ flowComponents
                                                         })
                                                         .error(function (data) {
 
+                                                        })
+                                                        .then(function (data) {
+                                                            scope.$destroy();
                                                         });
 
                                                 }
@@ -2705,7 +2708,7 @@ flowComponents
                 }
             });
 
-            promise.then(function(){
+            promise.then(function () {
                 $("#_id_fpb_" + task.id).loadingOverlay("remove");
             });
 
@@ -2826,7 +2829,7 @@ flowComponents
                 }
             });
 
-            promise.then(function(){
+            promise.then(function () {
                 $("#_id_fpb_" + task.id).loadingOverlay("remove");
             });
 
@@ -2864,7 +2867,7 @@ flowComponents
                 }
             });
 
-            promise.then(function(){
+            promise.then(function () {
                 $("#_id_fpb_" + task.id).loadingOverlay("remove");
             });
 
@@ -2956,7 +2959,7 @@ flowComponents
             });
 
 
-            promise.then(function(){
+            promise.then(function () {
                 $("#_id_fpb_" + task.id).loadingOverlay("remove");
             });
 
