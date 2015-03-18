@@ -162,6 +162,9 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
                         s.task.tempEdit = {};
                     }
                     s.task.customerEdit = data;
+
+                    this.title = s.task.customerEdit.school.name;
+
                     angular.copy(s.task.customerEdit, s.task.tempEdit);
                     if (s.task.customerEdit.evaluationTo) {
                         s.task.isEditEvaluationTo = true;

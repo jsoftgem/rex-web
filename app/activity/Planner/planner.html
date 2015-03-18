@@ -2,10 +2,6 @@
 
     <form id="{{flow.getElementFlowId('planner')}}" class="form-horizontal" role="form"
           novalidate>
-        <div class="btn-toolbar">
-            <p class="pull-right lead">{{task.hideAgentFilter? task.agent.fullName:'Agent'}}'s Planner</p>
-        </div>
-
         <div class="form-group">
             <div class="col-lg-3 col-md-5 col-sm-5">
                 <flow-select id="{{flow.getElementFlowId('schoolYearSelect')}}" task="task" label="School Year"
@@ -29,7 +25,7 @@
                 <flow-field label="Weekly Planned Target" ng-if="task.agent != undefined && task.view == 'basicWeek'"
                             type="number" disabled="true" model="calendar.plannedCount"></flow-field>
                 <table class="table table-condensed">
-                    <thead class="bg-primary">
+                    <thead class="bg-primary" style="display:inline-block">
                     <th ng-if="customer.tag != 'All'">Top</th>
                     <th>
                         <div class="input-icon right"><i class="fa fa-search"></i>
@@ -42,10 +38,9 @@
                         <div>Frequency</div>
                     </th>
                     </thead>
-                    <tbody class="customer-tag-table" id="{{flow.getElementFlowId('event_body')}}">
                     <tr>
                         <td colspan="3">
-                            <div class="btn-group btn-group-md" role="group" aria-label="...">
+                            <div class="btn-group btn-group-sm" role="group" aria-label="...">
                                 <button ng-class="customer.tag == 'All'?'active':'' " class="btn btn-info" type="button"
                                         ng-click="changeTag('All')">All
                                 </button>
@@ -74,10 +69,12 @@
                             </div>
                         </td>
                     </tr>
+                    <tbody class="customer-tag-table"id="{{flow.getElementFlowId('event_body')}}">
+
                     <tr class="event-customer enabled-day"
                         ng-repeat="cus in customer.customers | filter : task.search">
                         <td ng-if="customer.tag != 'All'">{{cus.index}}</td>
-                        <td><a ng-click="opentCustomerSummary(cus.id)"customer="{{cus}}" href="#">{{cus.name}}</a></td>
+                        <td><a ng-click="opentCustomerSummary(cus.id)" customer="{{cus}}" href="#">{{cus.name}}</a></td>
                         <td>{{cus.marketSegment}}</td>
                         <td>{{cus.frequency}}</td>
                     </tr>

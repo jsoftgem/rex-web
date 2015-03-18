@@ -28,7 +28,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                 customer.schoolYear = 0;
                 customer.page = 1;
                 return customer;
-            }
+            };
 
             s.customer = s.newCustomer();
             s.task.preLoad = function () {
@@ -36,6 +36,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                     .success(function (valid) {
                         s.task.hideAgentFilter = valid;
                         s.task.agent = up.agent;
+                        s.task.page.title = s.task.agent.fullName;
                     });
                 s.task.schoolYear = undefined;
                 s.task.agent = undefined;
@@ -59,432 +60,6 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                 s.task.showAttach = false;
                 s.flow.onOpenPinned = function (page, param) {
                     alert(page);
-                }
-                s.flow.pageCallBack = function (page) {
-                    if (NAME_HOME === page) {
-                        s.task.calendar = {
-                            header: {
-                                left: "title",
-                                center: "",
-                                right: "month basicWeek today prev,next prevYear,nextYear nextMonth,prevMonth"
-                            },
-                            events: {
-                                eventDataTransform: function (eventData) {
-                                    var event = {};
-                                    event.title = eventData.description;
-
-                                    if (eventData.type === SCHOOL) {
-                                        event.id = "event_id_" + s.flow.getElementFlowId(eventData.customerMarketId) + "_" + new Date(eventData.startDt).getTime();
-                                    } else {
-                                        event.id = "event_id_" + eventData.type + "_" + new Date(eventData.startDt).getTime();
-                                        event.title = eventData.type;
-                                    }
-                                    event.start = eventData.startDt;
-                                    event.activity = eventData
-
-                                    if (eventData.endDt) {
-                                        event.end = eventData.endDt;
-                                    }
-                                    event.editable = eventData.editable;
-                                    return event;
-                                },
-                                url: s.flow.getHomeUrl(),
-                                type: "GET",
-                                dataFilter: function (data, type) {
-                                    if (type === "json") {
-
-                                        var activities = JSON.parse(data);
-
-                                        s.task.activities = [];
-
-                                        s.task.plannedActivities = [];
-                                        s.task.unplannedActivities = [];
-
-                                        angular.forEach(activities, function (activity) {
-                                            if (activity.planned) {
-                                                s.task.plannedActivities.push(activity);
-                                            } else {
-                                                s.task.unplannedActivities.push(activity);
-                                            }
-
-                                        })
-
-                                        s.calendar.plannedCount = s.task.plannedActivities.length;
-                                        s.calendar.unPlannedCount = s.task.unplannedActivities.length;
-                                    }
-
-                                    return data;
-                                },
-                                data: function () {
-                                    return {
-                                        schoolYear: s.task.schoolYear !== undefined ? s.task.schoolYear.id : undefined,
-                                        agent: s.task.agent !== undefined ? s.task.agent.id : undefined
-                                    };
-                                }
-                            },
-                            hiddenDays: [0],
-                            firstDay: 1,
-                            weekNumbers: true,
-                            weekNumberCalculation: function (moment) {
-                                var date = moment.toDate();
-                                return getWeekOfMonth(date);
-                            },
-                            editable: s.task.planner.enabled,
-                            fixedWeekCount: false,
-                            height: 500,
-                            droppable: true,
-                            viewRender: function (view) {
-
-                                if (s.task.agent !== undefined) {
-
-                                    s.getPlanner(view);
-                                    s.customer.previous = undefined;
-                                    s.customer.start = 0;
-                                    s.refetchCustomer();
-
-
-                                    $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
-
-                                        $(this).data("eventObject", {
-                                            title: $.trim($(this).html()),
-                                            activityType: $(this).attr("activity-type")
-                                        });
-
-                                        $(this).draggable({
-                                            zIndex: 99999,
-                                            revert: true,
-                                            revertDuration: 0
-                                        });
-
-                                    });
-
-
-                                } else {
-                                    $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
-
-                                        if ($(this).draggable()) {
-                                            $(this).draggable("destroy");
-                                        }
-                                    });
-                                }
-
-
-                                s.task.plannerCalendar.fullCalendar("refetchEvents");
-
-
-                                t(function () {
-                                    s.task.view = s.task.plannerCalendar.fullCalendar("getView").name;
-                                })
-
-
-                            },
-                            dayRender: function (date, cell) {
-
-                                var currentDate = s.task.plannerCalendar.fullCalendar("getDate").toDate();
-
-                                var dayDate = date.toDate();
-
-                                var dataDate = cell.attr("data-date");
-
-                                var cellValueElement = $("table").find(".fc-day-number[data-date='" + dataDate + "']");
-
-                                if (isDayEnabled(dayDate, currentDate)) {
-                                    cell.addClass("enabled-day");
-                                    cellValueElement.addClass("enabled-day");
-                                    cell.addClass("cursor-pointer");
-                                    cell.click(function () {
-                                        t(function () {
-                                            s.task.selectedDate = dayDate;
-                                        });
-                                    })
-                                } else {
-                                    cell.addClass("disabled-day");
-                                    cellValueElement.addClass("disabled-day");
-                                }
-
-
-                            },
-                            eventDrop: function (event, delta, revertFunc) {
-
-                                var currentDate = s.task.plannerCalendar.fullCalendar("getDate");
-
-                                var evt = s.task.plannerCalendar.fullCalendar("clientEvents", event.id);
-
-                                if (evt.length === 0) {
-                                    if (isDayEnabled(event.start.toDate(), currentDate.toDate())) {
-                                        if (type === SCHOOL) {
-                                            s.task.plannerCalendar.fullCalendar("renderEvent", event, true);
-                                        } else {
-                                            t(function () {
-                                                s.otherActivity.hangingEventObject = event;
-                                                fm.show(s.flow.getElementFlowId("other_activity"));
-                                            });
-
-                                        }
-                                    }
-
-                                } else {
-                                    if (event) {
-                                        s.flow.message.danger("Customer " + event.title + " is already set for " + event.start.toDate());
-                                        revertFunc();
-                                    }
-                                }
-                            },
-                            drop: function (date) {
-
-                                var currentDate = s.task.plannerCalendar.fullCalendar("getDate");
-
-                                var originalEventObject = $(this).data("eventObject");
-
-                                var copiedEventObject = $.extend({}, originalEventObject);
-
-                                var customer = undefined;
-
-                                var activity = {};
-
-                                activity.startDt = date.toDate().getTime();
-
-                                activity.type = copiedEventObject.activityType;
-
-                                var type = activity.type;
-
-                                if (SCHOOL === type) {
-                                    customer = JSON.parse($(this).attr("customer"));
-                                    copiedEventObject.title = customer.name + " - " + customer.marketSegment;
-                                    console.info("customer-drop", customer);
-                                    activity.customerMarketId = customer.id;
-                                    activity.description = customer.name + " - " + customer.marketSegment;
-                                    copiedEventObject.id = "event_id_" + s.flow.getElementFlowId(activity.customerMarketId) + "_" + date.toDate().getTime();
-                                } else {
-                                    activity.customerMarketId = 0;
-                                    copiedEventObject.id = "event_id_" + s.flow.getElementFlowId(type) + "_" + date.toDate().getTime();
-                                }
-
-                                activity.schoolYear = s.task.schoolYear.id;
-
-                                copiedEventObject.start = date;
-
-                                copiedEventObject.editable = true;
-
-                                copiedEventObject.activity = activity;
-
-                                copiedEventObject.durationEditable = false;
-
-                                copiedEventObject.startEditable = false;
-
-                                var evt = s.task.plannerCalendar.fullCalendar("clientEvents", copiedEventObject.id);
-
-                                if (evt.length === 0) {
-                                    if (isDayEnabled(date.toDate(), currentDate.toDate())) {
-                                        if (type === SCHOOL) {
-                                            s.task.plannerCalendar.fullCalendar("renderEvent", copiedEventObject, true);
-                                        } else {
-                                            t(function () {
-                                                s.otherActivity.hangingEventObject = copiedEventObject;
-                                                fm.show(s.flow.getElementFlowId("other_activity"));
-                                            });
-
-                                        }
-                                    }
-
-                                } else {
-                                    if (customer) {
-                                        s.flow.message.danger("Customer " + customer.customerName + " is already set for " + date.toDate());
-                                    }
-                                }
-                            },
-                            eventRender: function (event, element) {
-                                var currentDate = s.task.plannerCalendar.fullCalendar("getDate").toDate();
-                                var eventDate = event.start.toDate();
-
-                                if (isDayEnabled(eventDate, currentDate)) {
-                                    element.addClass("event-customer");
-                                    if (event.activity.planned === false) {
-                                        element.addClass("unplanned");
-                                    } else if (event.activity.planned === true) {
-                                        element.addClass("planned");
-                                    }
-                                    if (true === event.editable) {
-                                        element.qtip({
-                                            id: "qtip_evt_" + event.id + "_" + event.start.toDate().getTime(),
-                                            content: {
-                                                title: event.start,
-                                                text: event.title
-                                            }, hide: {
-                                                inactive: 500
-                                            }
-                                        });
-
-                                        element.dblclick(function () {
-                                            s.task.plannerCalendar.fullCalendar("removeEvents", event.id);
-                                        });
-                                    }
-                                    else {
-                                        if (event.activity.type === SCHOOL) {
-                                            element.click(function () {
-                                                var buttonId = "edit_button" + "_" + event.id;
-                                                var tooltip = element.qtip({
-                                                    style: 'qtip-light',
-                                                    show: false,
-                                                    id: "qtip_evt#" + event.id,
-                                                    position: {
-                                                        at: "center",
-                                                        my: "center",
-                                                        adjust: {
-                                                            method: "none shift"
-                                                        }
-                                                    },
-                                                    content: {
-                                                        title: {
-                                                            text: event.title,
-                                                            button: true
-                                                        },
-                                                        text: "<div><ul><li><b>Marterial Adviser: " + event.activity.materialAdviser + "</b></li>" +
-                                                        "<li>Actual: " + (event.activity.actual === true ? " Yes" : "No") + "</li>" +
-                                                        "<li>Exam Copies Distribution: " + (event.activity.ecd === true ? " Yes" : "No") + "</li>" +
-                                                        "<li>Invitation to Events: " + (event.activity.ite === true ? " Yes" : "No") + "</li>" +
-                                                        "<li>Confirmation of Events: " + (event.activity.coe === true ? " Yes" : "No") + "</li>" +
-                                                        "<li>Follow up Payment: " + (event.activity.fp === true ? " Yes" : "No") + "</li>" +
-                                                        "<li>Giveaways Distribution: " + (event.activity.gd === true ? " Yes" : "No") + "</li>" +
-                                                        "<li>Delivery of Incentive/Donation: " + (event.activity.doi === true ? " Yes" : "No") + "</li>" +
-                                                        "<li>Purchase Order: " + (event.activity.po === true ? " Yes" : "No") + "</li>" +
-                                                        "<li>Delivery of Add'l Order / TRM / Compli...: " + (event.activity.daotrc === true ? " Yes" : "No") + "</li>" +
-                                                        "<li>Booklist: " + (event.activity.bookList === true ? " Yes" : "No") + "</li>" +
-                                                        "</ul></div>" +
-                                                        "<div class='btn-group btn-group-xs'>" +
-                                                        "<button style='display:" + (s.task.agent !== undefined ? "block" : "none") + "' id='" + buttonId + "' type='button' class='btn btn-info'>Update</button></div>"
-                                                    },
-                                                    hide: {
-                                                        event: 'click',
-                                                        inactive: 1500
-                                                    },
-                                                    events: {
-                                                        show: function (evt, api) {
-                                                            api.elements.tooltip.find("#" + buttonId).click(function () {
-                                                                api.toggle(false);
-                                                                t(function () {
-                                                                    s.hangingActivity.activity = event.activity;
-                                                                    angular.copy(s.hangingActivity.activity, s.tempActivity);
-                                                                    fm.show(s.flow.getElementFlowId('activity_modal'))
-                                                                });
-                                                            });
-
-                                                        }
-                                                    }
-                                                });
-                                                var api = tooltip.qtip("api");
-                                                api.toggle(true);
-                                            });
-                                        }
-                                        else if (event.activity.type === LEAVE) {
-                                            element.click(function () {
-                                                var buttonId = "edit_button" + "_" + event.id;
-                                                var tooltip = element.qtip({
-                                                    style: 'qtip-light',
-                                                    show: false,
-                                                    id: "qtip_evt#" + event.id,
-                                                    position: {
-                                                        at: "center",
-                                                        my: "center",
-                                                        adjust: {
-                                                            method: "none shift"
-                                                        }
-                                                    },
-                                                    content: {
-                                                        title: {
-                                                            text: event.title,
-                                                            button: true
-                                                        },
-                                                        text: "<div><ul><li><b>Agent: " + event.activity.materialAdviser + "</b></li>" +
-                                                        "<li>Reason for leave: " + (event.activity.description != undefined || event.activity.description != null ? event.activity.description : 'N/A' ) + "</li>" +
-                                                        "</ul></div>" +
-                                                        "<div class='btn-group btn-group-xs'>" +
-                                                        "<button style='display:" + (s.task.agent !== undefined ? "block" : "none") + "' id='" + buttonId + "' type='button' class='btn btn-info'>Update</button></div>"
-                                                    },
-                                                    hide: {
-                                                        event: 'click',
-                                                        inactive: 1500
-                                                    },
-                                                    events: {
-                                                        show: function (evt, api) {
-                                                            api.elements.tooltip.find("#" + buttonId).click(function () {
-                                                                api.toggle(false);
-                                                                t(function () {
-                                                                    s.hangingActivity.activity = event.activity;
-                                                                    angular.copy(s.hangingActivity, s.task.tempActivity);
-                                                                    fm.show(s.flow.getElementFlowId('activity_modal'))
-
-                                                                });
-                                                            });
-
-                                                        }
-                                                    }
-                                                });
-
-                                                var api = tooltip.qtip("api");
-                                                api.toggle(true);
-
-                                            });
-                                        } else {
-                                            element.click(function () {
-                                                var buttonId = "edit_button" + "_" + event.id;
-                                                var tooltip = element.qtip({
-                                                    style: 'qtip-light',
-                                                    show: false,
-                                                    id: "qtip_evt#" + event.id,
-                                                    position: {
-                                                        at: "center",
-                                                        my: "center",
-                                                        adjust: {
-                                                            method: "none shift"
-                                                        }
-                                                    },
-                                                    content: {
-                                                        title: {
-                                                            text: event.title,
-                                                            button: true
-                                                        },
-                                                        text: "<div><ul><li><b>Agent: " + event.activity.materialAdviser + "</b></li>" +
-                                                        "<li>Description: " + (event.activity.description != undefined || event.activity.description != null ? event.activity.description : 'N/A' ) + "</li>" +
-                                                        "</ul></div>" +
-                                                        "<div class='btn-group btn-group-xs'>" +
-                                                        "<button style='display:" + (s.task.agent !== undefined ? "block" : "none") + "' id='" + buttonId + "' type='button' class='btn btn-info'>Update</button></div>"
-                                                    },
-                                                    hide: {
-                                                        event: 'click',
-                                                        inactive: 1500
-                                                    },
-                                                    events: {
-                                                        show: function (evt, api) {
-                                                            api.elements.tooltip.find("#" + buttonId).click(function () {
-                                                                api.toggle(false);
-                                                                t(function () {
-                                                                    s.hangingActivity.activity = event.activity;
-                                                                    angular.copy(s.hangingActivity, s.task.tempActivity);
-                                                                    fm.show(s.flow.getElementFlowId('activity_modal'))
-
-                                                                });
-                                                            });
-
-                                                        }
-                                                    }
-                                                });
-
-                                                var api = tooltip.qtip("api");
-                                                api.toggle(true);
-
-                                            });
-                                        }
-                                    }
-                                }
-                                else {
-                                    element.addClass("hide-event");
-                                }
-                            }
-                        }
-                        s.task.plannerCalendar.fullCalendar(s.task.calendar);
-                        s.task.plannerCalendar.fullCalendar("render");
-                    }
                 }
                 s.task.onWindowOpened = function () {
                     s.task.schoolYear = undefined;
@@ -591,7 +166,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                         url: fh.host + url,
                         headers: {
                             "Authorization": ss.getSessionProperty(AUTHORIZATION),
-                            "flowPage": s.task.currentPage,
+                            "flowPage": s.task.currentPage
                         },
                         data: {file: file}
                     }).progress(function (event) {
@@ -790,7 +365,433 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                     }
                 });
             };
+            s.task.page.load = function () {
+                var page = this.name;
+                if (NAME_HOME === page) {
+                    s.task.calendar = {
+                        header: {
+                            left: "title",
+                            center: "",
+                            right: "month basicWeek today prev,next prevYear,nextYear nextMonth,prevMonth"
+                        },
+                        events: {
+                            eventDataTransform: function (eventData) {
+                                var event = {};
+                                event.title = eventData.description;
 
+                                if (eventData.type === SCHOOL) {
+                                    event.id = "event_id_" + s.flow.getElementFlowId(eventData.customerMarketId) + "_" + new Date(eventData.startDt).getTime();
+                                } else {
+                                    event.id = "event_id_" + eventData.type + "_" + new Date(eventData.startDt).getTime();
+                                    event.title = eventData.type;
+                                }
+                                event.start = eventData.startDt;
+                                event.activity = eventData
+
+                                if (eventData.endDt) {
+                                    event.end = eventData.endDt;
+                                }
+                                event.editable = eventData.editable;
+                                return event;
+                            },
+                            url: s.flow.getHomeUrl(),
+                            type: "GET",
+                            dataFilter: function (data, type) {
+                                if (type === "json") {
+
+                                    var activities = JSON.parse(data);
+
+                                    s.task.activities = [];
+
+                                    s.task.plannedActivities = [];
+                                    s.task.unplannedActivities = [];
+
+                                    angular.forEach(activities, function (activity) {
+                                        if (activity.planned) {
+                                            s.task.plannedActivities.push(activity);
+                                        } else {
+                                            s.task.unplannedActivities.push(activity);
+                                        }
+
+                                    })
+
+                                    s.calendar.plannedCount = s.task.plannedActivities.length;
+                                    s.calendar.unPlannedCount = s.task.unplannedActivities.length;
+                                }
+
+                                return data;
+                            },
+                            data: function () {
+                                return {
+                                    schoolYear: s.task.schoolYear !== undefined ? s.task.schoolYear.id : undefined,
+                                    agent: s.task.agent !== undefined ? s.task.agent.id : undefined
+                                };
+                            }
+                        },
+                        hiddenDays: [0],
+                        firstDay: 1,
+                        weekNumbers: true,
+                        weekNumberCalculation: function (moment) {
+                            var date = moment.toDate();
+                            return getWeekOfMonth(date);
+                        },
+                        editable: s.task.planner.enabled,
+                        fixedWeekCount: false,
+                        height: 500,
+                        droppable: true,
+                        viewRender: function (view) {
+
+                            if (s.task.agent !== undefined) {
+
+                                s.getPlanner(view);
+                                s.customer.previous = undefined;
+                                s.customer.start = 0;
+                                s.refetchCustomer();
+
+
+                                $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
+
+                                    $(this).data("eventObject", {
+                                        title: $.trim($(this).html()),
+                                        activityType: $(this).attr("activity-type")
+                                    });
+
+                                    $(this).draggable({
+                                        zIndex: 99999,
+                                        revert: true,
+                                        revertDuration: 0
+                                    });
+
+                                });
+
+
+                            } else {
+                                $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
+
+                                    if ($(this).draggable()) {
+                                        $(this).draggable("destroy");
+                                    }
+                                });
+                            }
+
+
+                            s.task.plannerCalendar.fullCalendar("refetchEvents");
+
+
+                            t(function () {
+                                s.task.view = s.task.plannerCalendar.fullCalendar("getView").name;
+                            })
+
+
+                        },
+                        dayRender: function (date, cell) {
+
+                            var currentDate = s.task.plannerCalendar.fullCalendar("getDate").toDate();
+
+                            var dayDate = date.toDate();
+
+                            var dataDate = cell.attr("data-date");
+
+                            var cellValueElement = $("table").find(".fc-day-number[data-date='" + dataDate + "']");
+
+                            if (isDayEnabled(dayDate, currentDate)) {
+                                cell.addClass("enabled-day");
+                                cellValueElement.addClass("enabled-day");
+                                cell.addClass("cursor-pointer");
+                                cell.click(function () {
+                                    t(function () {
+                                        s.task.selectedDate = dayDate;
+                                    });
+                                })
+                            } else {
+                                cell.addClass("disabled-day");
+                                cellValueElement.addClass("disabled-day");
+                            }
+
+
+                        },
+                        eventDrop: function (event, delta, revertFunc) {
+
+                            var currentDate = s.task.plannerCalendar.fullCalendar("getDate");
+
+                            var evt = s.task.plannerCalendar.fullCalendar("clientEvents", event.id);
+
+                            if (evt.length === 0) {
+                                if (isDayEnabled(event.start.toDate(), currentDate.toDate())) {
+                                    if (type === SCHOOL) {
+                                        s.task.plannerCalendar.fullCalendar("renderEvent", event, true);
+                                    } else {
+                                        t(function () {
+                                            s.otherActivity.hangingEventObject = event;
+                                            fm.show(s.flow.getElementFlowId("other_activity"));
+                                        });
+
+                                    }
+                                }
+
+                            } else {
+                                if (event) {
+                                    s.flow.message.danger("Customer " + event.title + " is already set for " + event.start.toDate());
+                                    revertFunc();
+                                }
+                            }
+                        },
+                        drop: function (date) {
+
+                            var currentDate = s.task.plannerCalendar.fullCalendar("getDate");
+
+                            var originalEventObject = $(this).data("eventObject");
+
+                            var copiedEventObject = $.extend({}, originalEventObject);
+
+                            var customer = undefined;
+
+                            var activity = {};
+
+                            activity.startDt = date.toDate().getTime();
+
+                            activity.type = copiedEventObject.activityType;
+
+                            var type = activity.type;
+
+                            if (SCHOOL === type) {
+                                customer = JSON.parse($(this).attr("customer"));
+                                copiedEventObject.title = customer.name + " - " + customer.marketSegment;
+                                console.info("customer-drop", customer);
+                                activity.customerMarketId = customer.id;
+                                activity.description = customer.name + " - " + customer.marketSegment;
+                                copiedEventObject.id = "event_id_" + s.flow.getElementFlowId(activity.customerMarketId) + "_" + date.toDate().getTime();
+                            } else {
+                                activity.customerMarketId = 0;
+                                copiedEventObject.id = "event_id_" + s.flow.getElementFlowId(type) + "_" + date.toDate().getTime();
+                            }
+
+                            activity.schoolYear = s.task.schoolYear.id;
+
+                            copiedEventObject.start = date;
+
+                            copiedEventObject.editable = true;
+
+                            copiedEventObject.activity = activity;
+
+                            copiedEventObject.durationEditable = false;
+
+                            copiedEventObject.startEditable = false;
+
+                            var evt = s.task.plannerCalendar.fullCalendar("clientEvents", copiedEventObject.id);
+
+                            if (evt.length === 0) {
+                                if (isDayEnabled(date.toDate(), currentDate.toDate())) {
+                                    if (type === SCHOOL) {
+                                        s.task.plannerCalendar.fullCalendar("renderEvent", copiedEventObject, true);
+                                    } else {
+                                        t(function () {
+                                            s.otherActivity.hangingEventObject = copiedEventObject;
+                                            fm.show(s.flow.getElementFlowId("other_activity"));
+                                        });
+
+                                    }
+                                }
+
+                            } else {
+                                if (customer) {
+                                    s.flow.message.danger("Customer " + customer.customerName + " is already set for " + date.toDate());
+                                }
+                            }
+                        },
+                        eventRender: function (event, element) {
+                            var currentDate = s.task.plannerCalendar.fullCalendar("getDate").toDate();
+                            var eventDate = event.start.toDate();
+
+                            if (isDayEnabled(eventDate, currentDate)) {
+                                element.addClass("event-customer");
+                                if (event.activity.planned === false) {
+                                    element.addClass("unplanned");
+                                } else if (event.activity.planned === true) {
+                                    element.addClass("planned");
+                                }
+                                if (true === event.editable) {
+                                    element.qtip({
+                                        id: "qtip_evt_" + event.id + "_" + event.start.toDate().getTime(),
+                                        content: {
+                                            title: event.start,
+                                            text: event.title
+                                        }, hide: {
+                                            inactive: 500
+                                        }
+                                    });
+
+                                    element.dblclick(function () {
+                                        s.task.plannerCalendar.fullCalendar("removeEvents", event.id);
+                                    });
+                                }
+                                else {
+                                    if (event.activity.type === SCHOOL) {
+                                        element.click(function () {
+                                            var buttonId = "edit_button" + "_" + event.id;
+                                            var tooltip = element.qtip({
+                                                style: 'qtip-light',
+                                                show: false,
+                                                id: "qtip_evt#" + event.id,
+                                                position: {
+                                                    at: "center",
+                                                    my: "center",
+                                                    adjust: {
+                                                        method: "none shift"
+                                                    }
+                                                },
+                                                content: {
+                                                    title: {
+                                                        text: event.title,
+                                                        button: true
+                                                    },
+                                                    text: "<div><ul><li><b>Marterial Adviser: " + event.activity.materialAdviser + "</b></li>" +
+                                                    "<li>Actual: " + (event.activity.actual === true ? " Yes" : "No") + "</li>" +
+                                                    "<li>Exam Copies Distribution: " + (event.activity.ecd === true ? " Yes" : "No") + "</li>" +
+                                                    "<li>Invitation to Events: " + (event.activity.ite === true ? " Yes" : "No") + "</li>" +
+                                                    "<li>Confirmation of Events: " + (event.activity.coe === true ? " Yes" : "No") + "</li>" +
+                                                    "<li>Follow up Payment: " + (event.activity.fp === true ? " Yes" : "No") + "</li>" +
+                                                    "<li>Giveaways Distribution: " + (event.activity.gd === true ? " Yes" : "No") + "</li>" +
+                                                    "<li>Delivery of Incentive/Donation: " + (event.activity.doi === true ? " Yes" : "No") + "</li>" +
+                                                    "<li>Purchase Order: " + (event.activity.po === true ? " Yes" : "No") + "</li>" +
+                                                    "<li>Delivery of Add'l Order / TRM / Compli...: " + (event.activity.daotrc === true ? " Yes" : "No") + "</li>" +
+                                                    "<li>Booklist: " + (event.activity.bookList === true ? " Yes" : "No") + "</li>" +
+                                                    "</ul></div>" +
+                                                    "<div class='btn-group btn-group-xs'>" +
+                                                    "<button style='display:" + (s.task.agent !== undefined ? "block" : "none") + "' id='" + buttonId + "' type='button' class='btn btn-info'>Update</button></div>"
+                                                },
+                                                hide: {
+                                                    event: 'click',
+                                                    inactive: 1500
+                                                },
+                                                events: {
+                                                    show: function (evt, api) {
+                                                        api.elements.tooltip.find("#" + buttonId).click(function () {
+                                                            api.toggle(false);
+                                                            t(function () {
+                                                                s.hangingActivity.activity = event.activity;
+                                                                angular.copy(s.hangingActivity.activity, s.tempActivity);
+                                                                fm.show(s.flow.getElementFlowId('activity_modal'))
+                                                            });
+                                                        });
+
+                                                    }
+                                                }
+                                            });
+                                            var api = tooltip.qtip("api");
+                                            api.toggle(true);
+                                        });
+                                    }
+                                    else if (event.activity.type === LEAVE) {
+                                        element.click(function () {
+                                            var buttonId = "edit_button" + "_" + event.id;
+                                            var tooltip = element.qtip({
+                                                style: 'qtip-light',
+                                                show: false,
+                                                id: "qtip_evt#" + event.id,
+                                                position: {
+                                                    at: "center",
+                                                    my: "center",
+                                                    adjust: {
+                                                        method: "none shift"
+                                                    }
+                                                },
+                                                content: {
+                                                    title: {
+                                                        text: event.title,
+                                                        button: true
+                                                    },
+                                                    text: "<div><ul><li><b>Agent: " + event.activity.materialAdviser + "</b></li>" +
+                                                    "<li>Reason for leave: " + (event.activity.description != undefined || event.activity.description != null ? event.activity.description : 'N/A' ) + "</li>" +
+                                                    "</ul></div>" +
+                                                    "<div class='btn-group btn-group-xs'>" +
+                                                    "<button style='display:" + (s.task.agent !== undefined ? "block" : "none") + "' id='" + buttonId + "' type='button' class='btn btn-info'>Update</button></div>"
+                                                },
+                                                hide: {
+                                                    event: 'click',
+                                                    inactive: 1500
+                                                },
+                                                events: {
+                                                    show: function (evt, api) {
+                                                        api.elements.tooltip.find("#" + buttonId).click(function () {
+                                                            api.toggle(false);
+                                                            t(function () {
+                                                                s.hangingActivity.activity = event.activity;
+                                                                angular.copy(s.hangingActivity, s.task.tempActivity);
+                                                                fm.show(s.flow.getElementFlowId('activity_modal'))
+
+                                                            });
+                                                        });
+
+                                                    }
+                                                }
+                                            });
+
+                                            var api = tooltip.qtip("api");
+                                            api.toggle(true);
+
+                                        });
+                                    } else {
+                                        element.click(function () {
+                                            var buttonId = "edit_button" + "_" + event.id;
+                                            var tooltip = element.qtip({
+                                                style: 'qtip-light',
+                                                show: false,
+                                                id: "qtip_evt#" + event.id,
+                                                position: {
+                                                    at: "center",
+                                                    my: "center",
+                                                    adjust: {
+                                                        method: "none shift"
+                                                    }
+                                                },
+                                                content: {
+                                                    title: {
+                                                        text: event.title,
+                                                        button: true
+                                                    },
+                                                    text: "<div><ul><li><b>Agent: " + event.activity.materialAdviser + "</b></li>" +
+                                                    "<li>Description: " + (event.activity.description != undefined || event.activity.description != null ? event.activity.description : 'N/A' ) + "</li>" +
+                                                    "</ul></div>" +
+                                                    "<div class='btn-group btn-group-xs'>" +
+                                                    "<button style='display:" + (s.task.agent !== undefined ? "block" : "none") + "' id='" + buttonId + "' type='button' class='btn btn-info'>Update</button></div>"
+                                                },
+                                                hide: {
+                                                    event: 'click',
+                                                    inactive: 1500
+                                                },
+                                                events: {
+                                                    show: function (evt, api) {
+                                                        api.elements.tooltip.find("#" + buttonId).click(function () {
+                                                            api.toggle(false);
+                                                            t(function () {
+                                                                s.hangingActivity.activity = event.activity;
+                                                                angular.copy(s.hangingActivity, s.task.tempActivity);
+                                                                fm.show(s.flow.getElementFlowId('activity_modal'))
+
+                                                            });
+                                                        });
+
+                                                    }
+                                                }
+                                            });
+
+                                            var api = tooltip.qtip("api");
+                                            api.toggle(true);
+
+                                        });
+                                    }
+                                }
+                            }
+                            else {
+                                element.addClass("hide-event");
+                            }
+                        }
+                    }
+                    s.task.plannerCalendar.fullCalendar(s.task.calendar);
+                    s.task.plannerCalendar.fullCalendar("render");
+                }
+            }
             s.calendar.getCurrentDate = function () {
                 return s.task.plannerCalendar.fullCalendar("getDate").toDate();
             }

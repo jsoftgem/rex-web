@@ -102,6 +102,8 @@
 }
 
 .customer-tag-table {
-    height: 350px;
-    overflow: scroll;
+    display: block;
+    height: 400px; /* Just for the demo          */
+    overflow-y: auto; /* Trigger vertical scroll    */
+    overflow-x: hidden; /* Hide the horizontal scroll */
 }

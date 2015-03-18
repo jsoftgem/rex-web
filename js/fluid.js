@@ -324,7 +324,7 @@ flowComponents
                                             scope.flow.onOpenPinned(scope.task.page, scope.task.pageParam);
                                         } else {
 
-                                            if (scope.flow.pageCallBack) {
+                                            if (!scope.task.page.load && scope.flow.pageCallBack) {
                                                 scope.flow.pageCallBack(data.page, data.value);
                                                 if (!rs.$$phase) {
                                                     scope.$apply();
@@ -332,17 +332,21 @@ flowComponents
                                                 scope.task.loaded = true;
                                             } else {
                                                 /* TODO: remove task life cycle*/
+                                                if (scope.task.page.load) {
+                                                    scope.task.page.load(data.value);
+                                                }
                                                 if (!rs.$$phase) {
                                                     scope.$apply();
                                                 }
+
                                                 scope.task.loaded = true;
                                             }
 
                                         }
 
-                                        if (scope.task.page.load) {
+                                        /*if (scope.task.page.load) {
                                             scope.task.page.load(data.value);
-                                        }
+                                        }*/
 
                                     }, 400);
                                 });
@@ -1318,7 +1322,7 @@ flowComponents
                 type: "@",
                 required: "=",
                 disabled: "=",
-                blur: "&",
+                blur: "&"
             },
             templateUrl: "templates/fluid/fluidField.html",
             replace: true,
@@ -2564,6 +2568,7 @@ flowComponents
     }])
     .service("flowHttpService", ["$rootScope", "$http", "flowLoaderService", "$resource", function (rs, h, fl, r) {
         this.post = function (url, data, task) {
+            task.loaded = false;
             var promise = null;
             if (this.host) {
                 url = this.host + url;
@@ -2583,11 +2588,11 @@ flowComponents
 
 
                 promise.success(function (config) {
-                    $("#_id_fpb_" + task.id).loadingOverlay("remove");
+                    //   $("#_id_fpb_" + task.id).loadingOverlay("remove");
                 });
 
                 promise.error(function (data, status, headers, config) {
-                    $("#_id_fpb_" + task.id).loadingOverlay("remove");
+                    //$("#_id_fpb_" + task.id).loadingOverlay("remove");
                     if (status === 401) {
                         rs.$broadcast("NOT_AUTHENTICATED", data.msg);
                     } else if (status === 403) {
@@ -2597,7 +2602,8 @@ flowComponents
 
 
                 promise.then(function () {
-                    $("#_id_fpb_" + task.id).loadingOverlay("remove");
+                    task.loaded = true;
+                    // $("#_id_fpb_" + task.id).loadingOverlay("remove");
                 });
 
                 return promise;
@@ -2609,10 +2615,10 @@ flowComponents
                 headers: headers
             });
             promise.success(function (config) {
-                $("#_id_fpb_" + task.id).loadingOverlay("remove");
+                //  $("#_id_fpb_" + task.id).loadingOverlay("remove");
             });
             promise.error(function (data, status, headers, config) {
-                $("#_id_fpb_" + task.id).loadingOverlay("remove");
+                //  $("#_id_fpb_" + task.id).loadingOverlay("remove");
                 if (status === 401) {
                     rs.$broadcast("NOT_AUTHENTICATED");
                 } else if (status === 403) {
@@ -2621,7 +2627,8 @@ flowComponents
             });
 
             promise.then(function () {
-                $("#_id_fpb_" + task.id).loadingOverlay("remove");
+                task.loaded = true;
+                //  $("#_id_fpb_" + task.id).loadingOverlay("remove");
             });
 
             return promise;
@@ -2629,6 +2636,7 @@ flowComponents
 
 
         this.postGlobal = function (url, data) {
+
             var promise = null;
             if (this.host) {
                 url = this.host + url;
@@ -2654,6 +2662,7 @@ flowComponents
 
 
         this.put = function (url, data, task) {
+            task.loaded = false;
             var promise = null;
             if (this.host) {
                 url = this.host + url;
@@ -2696,11 +2705,11 @@ flowComponents
             });
 
             promise.success(function (config) {
-                $("#_id_fpb_" + task.id).loadingOverlay("remove");
+                // $("#_id_fpb_" + task.id).loadingOverlay("remove");
             });
 
             promise.error(function (data, status, headers, config) {
-                $("#_id_fpb_" + task.id).loadingOverlay("remove");
+                // $("#_id_fpb_" + task.id).loadingOverlay("remove");
                 if (status === 401) {
                     rs.$broadcast("NOT_AUTHENTICATED");
                 } else if (status === 403) {
@@ -2709,7 +2718,8 @@ flowComponents
             });
 
             promise.then(function () {
-                $("#_id_fpb_" + task.id).loadingOverlay("remove");
+                task.loaded = true;
+                // $("#_id_fpb_" + task.id).loadingOverlay("remove");
             });
 
 
@@ -2797,7 +2807,7 @@ flowComponents
             return promise;
         };
         this.get = function (url, task) {
-
+            task.loaded = false;
             if (this.host) {
                 url = this.host + url;
             }
@@ -2817,11 +2827,11 @@ flowComponents
             });
 
             promise.success(function (config) {
-                $("#_id_fpb_" + task.id).loadingOverlay("remove");
+                //$("#_id_fpb_" + task.id).loadingOverlay("remove");
             });
 
             promise.error(function (data, status, headers, config) {
-                $("#_id_fpb_" + task.id).loadingOverlay("remove");
+                //$("#_id_fpb_" + task.id).loadingOverlay("remove");
                 if (status === 401) {
                     rs.$broadcast("NOT_AUTHENTICATED", data.msg);
                 } else if (status === 403) {
@@ -2830,13 +2840,14 @@ flowComponents
             });
 
             promise.then(function () {
-                $("#_id_fpb_" + task.id).loadingOverlay("remove");
+                //$("#_id_fpb_" + task.id).loadingOverlay("remove");
+                task.loaded = true;
             });
 
             return promise;
         };
         this.delete = function (url, task) {
-
+            task.loaded = false;
             if (this.host) {
                 url = this.host + url;
             }
@@ -2855,11 +2866,11 @@ flowComponents
             });
 
             promise.success(function (config) {
-                $("#_id_fpb_" + task.id).loadingOverlay("remove");
+                //   $("#_id_fpb_" + task.id).loadingOverlay("remove");
             });
 
             promise.error(function (data, status, headers, config) {
-                $("#_id_fpb_" + task.id).loadingOverlay("remove");
+                //  $("#_id_fpb_" + task.id).loadingOverlay("remove");
                 if (status === 401) {
                     rs.$broadcast("NOT_AUTHENTICATED", data.msg);
                 } else if (status === 403) {
@@ -2868,7 +2879,8 @@ flowComponents
             });
 
             promise.then(function () {
-                $("#_id_fpb_" + task.id).loadingOverlay("remove");
+                task.loaded = true;
+                //$("#_id_fpb_" + task.id).loadingOverlay("remove");
             });
 
             return promise;
@@ -3131,8 +3143,7 @@ flowComponents
                 config.headers["Access-Control-Allow-Origin"] = "*";
 
                 if (config.headers['flow-container-id'] !== undefined) {
-                    $('#' + config.headers['flow-container-id']).loadingOverlay();
-
+                    // $('#' + config.headers['flow-container-id']).loadingOverlay();
                 }
                 if (ss.isSessionOpened()) {
                     config.headers['Authorization'] = ss.getSessionProperty(AUTHORIZATION);

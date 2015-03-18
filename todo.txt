@@ -30,6 +30,8 @@ Rex
 - SchoolYear > historical sales uploadable/viewable in planner. (done)
 - RSM > customer tag configuration per agent. (done)
 
+Rex Optimisation Patch 1
+- Utilize page load callback
 
 Rex UI
 - ui enhancement for mobile.
