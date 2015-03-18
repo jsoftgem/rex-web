@@ -1,6 +1,10 @@
-.customer-table {
+div.customer-table table{
     cursor: pointer;
+}
 
+.customer-table table{
+    max-height: 200;
+    overflow: auto;
 }
 
 .activies-panel {

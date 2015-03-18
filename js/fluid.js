@@ -293,7 +293,7 @@ flowComponents
                                 if ((scope.task.page !== undefined && scope.task.page !== null) && (scope.task.page.autoGet !== null && scope.task.page.autoGet === true)) {
                                     scope.task.currentPage = scope.task.page.name;
                                     var url = scope.homeUrl;
-                                    if(scope.task.page.getParam){
+                                    if (scope.task.page.getParam) {
                                         if (scope.homeUrl.search(scope.pathRegexPattern) > 0) {
                                             url = scope.generateUrl(scope.homeUrl, scope.task.page.getParam);
                                         } else {
@@ -2588,6 +2588,10 @@ flowComponents
                 });
 
 
+                promise.then(function () {
+                    $("#_id_fpb_" + task.id).loadingOverlay("remove");
+                });
+
                 return promise;
             }
             promise = h({
@@ -2607,6 +2611,11 @@ flowComponents
                     rs.$broadcast("NOT_ALLOWED");
                 }
             });
+
+            promise.then(function () {
+                $("#_id_fpb_" + task.id).loadingOverlay("remove");
+            });
+
             return promise;
         };
 
@@ -2632,7 +2641,6 @@ flowComponents
                 url: url,
                 data: data
             });
-
             return promise;
         };
 
@@ -2691,6 +2699,11 @@ flowComponents
                     rs.$broadcast(EVENT_NOT_ALLOWED + task.id, data.msg);
                 }
             });
+
+            promise.then(function(){
+                $("#_id_fpb_" + task.id).loadingOverlay("remove");
+            });
+
 
             return promise;
         };
@@ -2808,9 +2821,14 @@ flowComponents
                 }
             });
 
+            promise.then(function(){
+                $("#_id_fpb_" + task.id).loadingOverlay("remove");
+            });
+
             return promise;
         };
         this.delete = function (url, task) {
+
             if (this.host) {
                 url = this.host + url;
             }
@@ -2839,6 +2857,10 @@ flowComponents
                 } else if (status === 403) {
                     rs.$broadcast(EVENT_NOT_ALLOWED + task.id, data.msg);
                 }
+            });
+
+            promise.then(function(){
+                $("#_id_fpb_" + task.id).loadingOverlay("remove");
             });
 
             return promise;
@@ -2926,6 +2948,11 @@ flowComponents
                 } else if (status === 403) {
                     rs.$broadcast(EVENT_NOT_ALLOWED + task.id, data.msg);
                 }
+            });
+
+
+            promise.then(function(){
+                $("#_id_fpb_" + task.id).loadingOverlay("remove");
             });
 
             return promise;

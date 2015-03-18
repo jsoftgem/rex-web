@@ -64,7 +64,7 @@
                                     <td>
                                         <i class="{{activity.actual ? 'fa fa-check text-success' : 'fa fa-close text-danger'}}"></i>
                                     </td>
-                                    <td ng-if="activity.act ual">
+                                    <td ng-if="activity.actual">
                                         <textarea disabled="disabled" ng-model="activity.customerSpecificActivity"
                                                   rows="1"/>
                                     </td>
@@ -78,11 +78,11 @@
                             </table>
                         </div>
 
-                        <div column="8">
+                        <div column="8" class="customer-table">
 
-                            <table class="table table-hover table-striped table-responsive table-bordered table-condensed  customer-table">
+                            <table class="table table-hover table-striped table-responsive table-bordered table-condensed">
 
-                                <thead>
+                                <thead class="bg-warning">
                                 <th>
                                     <div class="input-icon right"><i fluid-icon-search></i>
                                         <input type="text" placeholder="Customer" class="form-control"

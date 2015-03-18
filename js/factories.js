@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-var HOST = "http://war.rexpublishing.com.ph:8080/rex-war/";
+var HOST = "http://192.168.102.29:8080/rex-services/";
 
 angular.module("flowFactories", [])
     .constant("HOST", HOST)
