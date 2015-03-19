@@ -263,7 +263,6 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                 s.$watch(function (scope) {
                     return scope.task.report.isAgent
                 }, function (newValue, oldValue) {
-                    i
                     if (newValue !== oldValue) {
                         s.task.change();
                     }
@@ -572,6 +571,14 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
             }
 
             s.task.page.load = function (data) {
+                if (up.agent) {
+                    s.task.report = {};
+                    s.task.report.filter = {};
+                    this.title = up.agent.fullName + "'s Customer";
+                    s.task.report.filter.regionCode = up.agent.region;
+                    s.task.report.filter.agent = up.agent.id;
+                    s.task.isAgent = true;
+                }
                 s.task.report = {};
                 s.task.order = "materialsAdvisor";
                 if (this.name === s.task.home) {
@@ -582,21 +589,21 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
 
 
             s.task.selectSchoolYear = function (item) {
-                if (s.task.report.filter) {
+                if (s.task.report.filter && item) {
                     s.task.report.filter.schoolYear = item.id;
                     s.task.query();
                 }
             }
 
             s.task.selectRegion = function (item) {
-                if (s.task.report.filter) {
+                if (s.task.report.filter && item) {
                     s.task.report.filter.regionCode = item.regionCode;
                     s.task.query();
                 }
             }
 
             s.task.selectAgent = function (item) {
-                if (s.task.report.filter) {
+                if (s.task.report.filter && item) {
                     s.task.report.filter.agent = item.id;
                     s.task.query();
                 }
@@ -623,6 +630,7 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
 
 
             s.task.tag = function (tag) {
+
                 s.task.report.filter.tag = tag;
                 if (tag === '20') {
                     s.task.order = "index";
