@@ -315,7 +315,6 @@ flowComponents
                                 var pagePanel = element.find(".flow-panel-page");
                                 console.info("page-panel", pagePanel);
                                 console.info("page-panel-task", scope.task);
-                                scope.task.loaded = false;
                                 pagePanel.ready(function () {
                                     t(function () {
 
@@ -345,8 +344,8 @@ flowComponents
                                         }
 
                                         /*if (scope.task.page.load) {
-                                            scope.task.page.load(data.value);
-                                        }*/
+                                         scope.task.page.load(data.value);
+                                         }*/
 
                                     }, 400);
                                 });
@@ -734,33 +733,6 @@ flowComponents
 
                         var parent = element.parent();
 
-                        /*events*/
-
-                        /* scope.$on(scope.flow.getEventId('home'), function () {
-                         scope.flow.goToHome();
-                         });*/
-
-                        /*  scope.$on(scope.flow.getEventId('back'), function () {
-
-                         if (scope.task.navPages.length > 0 && scope.task.navPages.length > scope.currentPageIndex) {
-                         var i = --scope.currentPageIndex;
-                         var count = scope.task.navPages.length - (i + 1);
-                         var page = scope.task.navPages[i];
-                         scope.task.navPages.splice((i + 1), count);
-                         scope.flow.navTo(page.name);
-
-                         }
-                         });*/
-
-                        /*   scope.$on(scope.flow.getEventId('forward'), function () {
-                         if (scope.task.navPages.length - 1 > scope.currentPageIndex) {
-                         var page = scope.navPages.pages[++scope.currentPageIndex];
-                         scope.flow.navTo(page.name);
-                         }
-
-                         });*/
-
-
                         scope.$on(scope.flow.getEventId("navTo"), function (event, name) {
                             scope.flow.navTo(name);
                         });
@@ -965,7 +937,6 @@ flowComponents
                                                 }
 
                                             }
-
                                         }
 
                                     };
@@ -1125,6 +1096,33 @@ flowComponents
                             }
                         });
 
+
+                        element.ajaxStart(function () {
+                            t(function () {
+                                scope.task.loaded = false;
+                                console.info("ajax-" + scope.task.name + "started:", scope.task);
+                            });
+                        });
+
+                        element.ajaxStop(function () {
+                            t(function () {
+                                scope.task.loaded = true;
+                                console.info("ajax-" + scope.task.name + "stopped:", scope.task);
+                            });
+                        })
+
+
+                        scope.$watch(function(scope){
+                            return scope.$$phase;
+                        },function(newValue){
+                            if(newValue){
+                                scope.task.loaded = false;
+                                console.info("ajax-" + scope.task.name + " digest in progress:", scope.task);
+                            }else{
+                                scope.task.loaded = true;
+                                console.info("ajax-" + scope.task.name + " digest in stopped:", scope.task);
+                            }
+                        });
 
                         /********************/
                     }
