@@ -132,25 +132,7 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
             s.dtOptions.reloadData();
         });
 
-      /*  s.flow.pageCallBack = function (page, data, source) {
-            if ("agent_edit" === page) {
-                if (!s.task.agentEdit.id || source === "refresh") {
-                    s.task.agentEdit = data;
-                    s.reTypePassword = s.task.agentEdit.user.password;
-                    s.oldPassword = "";
-                    angular.copy(s.task.agentEdit.user.password, s.oldPassword);
-                }
-
-            } else if ("agent_home" === page) {
-                s.dtOptions.reloadData();
-
-            }
-            s.flow.addControl(save, ["agent_edit", "agent_create"]);
-            s.flow.addControl(deleteCtl, "agent_edit");
-            s.flow.addControl(create, "agent_home");
-        };*/
-
-        s.task.page.load = function (data) {
+        s.task.page.load = function (data, source) {
             var page = this.name;
             if ("agent_edit" === page) {
                 if (!s.task.agentEdit.id || source === "refresh") {
@@ -241,8 +223,9 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
             s.task.agent.week = "all";
             s.task.agent.activity = {};
             s.task.agent.summary = {};
-
             if (this.name === s.task.homePage) {
+
+                this.title = "assigned to " + s.task.agent.fullName;
                 s.http.post(s.task.homeUrl)
                     .success(function (data) {
                         s.task.agent.summary.result = data;

@@ -1,15 +1,18 @@
-Fluid Core
+Fluid Core V 1.0
 
- - Profile add change password field.
- - persist task state.
+ - Profile add change password field. (done)
+ - full screen issues (done).
  - fix fluid task bar for fullscreen. (done)
  - fluid panel ui (toolbar must be on header when fullscreen).
 
-  fluid version 2.0
+
+Fluid Core V 2.0
+
+ fluid version 2.0
+ - persist task state
  - support default param for all actions.
  - use angular + webpack ( fluid version 2.0)
  - use $resource in flowHttpService (fluid version 2.0).
- - full screen issues (done).
  - page lifecycle (done)
         s.task.page.load = function () {
         };
@@ -17,24 +20,34 @@ Fluid Core
         }
  - change pageCallBack to task.page.load (data)
 
-Rex
-- reports > bar chart
-- seminar activity tagging add schools and notes.
-- Activity Field worked with
-- school year month required
-- Reports print, export (csv, pdf), activity productivity up to 125% - use Jasper Reports.
-- customer contacts specific fields for email,workphone,homephone
+
+Rex V 1.0
+
 - Agent Customer > pagination next/prev > customer summary - table / chart.js (done)
-- Agent > customer summary view in planner > editable customer info e.g. Name, Address, Contacts etc. except Customer Code
 - Fix customer tagging in planner. Add daily notes in planner. Activity actual is true when updated. (done)
 - SchoolYear > historical sales uploadable/viewable in planner. (done)
 - RSM > customer tag configuration per agent. (done)
 
-Rex Optimisation Patch 1
-- Utilize page load callback
 
-Rex UI
+Rex backlogs
+- agent assigned customer view. Tagged Cutstomer.
+- reports > bar chart
+- seminar activity tagging add schools and notes.
+- Activity Field worked with
+- school year month required
+- customer contacts specific fields for email,workphone,homephone
+
+Rex Patch 1
+- Utilize page load callback
+- Reports print, export (csv, pdf), activity productivity up to 125% - use Jasper Reports.
+- Agent > customer summary view in planner > editable customer info e.g. Name, Address, Contacts etc. except Customer Code
+
+Rex UI Backlogs
 - ui enhancement for mobile.
 - reports ui/color enhancment readable
 - Full calendar rendering. (done)
+
+
+Migration Phase 1
+- Add Agent Managers
 
