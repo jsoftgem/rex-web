@@ -342,10 +342,11 @@ div.flow-form label {
 }
 
 .fluid-checkbox {
-    height: 30px;
-    width: 30px;
+    height: 24px;
+    width: 24px;
     background: none;
     border: 1px solid #888888;
+    text-align: center;
 }
 
 .fluid-checkbox i {

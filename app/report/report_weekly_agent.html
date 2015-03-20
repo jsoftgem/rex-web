@@ -68,76 +68,82 @@
             <fieldset>
                 <legend>Toggle Rows</legend>
                 <div class="col-lg-12">
+
                     <div class="col-lg-2" ng-init="task.table.isMaterialsAdvisor = true">
                         <flow-check label="Materials Advisor" model="task.table.isMaterialsAdvisor"></flow-check>
                     </div>
-                    <div class="col-lg-3" ng-init="task.table.isTotalCallProd = true">
-                        <flow-check label="Call Productivity" model="task.table.isTotalCallProd"></flow-check>
-                    </div>
-                    <div class="col-lg-3" ng-init="task.table.isDoi = true">
-                        <flow-check label="Delivery of Incentive/Donation" model="task.table.isDoi"></flow-check>
-                    </div>
-                </div>
-                <div class="col-lg-12">
                     <div class="col-lg-2" ng-init="task.table.isWeek = true">
                         <flow-check label="Week" model="task.table.isWeek"></flow-check>
                     </div>
-                    <div class="col-lg-3" ng-init="task.table.isEcd = true">
-                        <flow-check label="Exam Copies Distribution" model="task.table.isEcd"></flow-check>
-                    </div>
-                    <div class="col-lg-3" ng-init="task.table.isPo = true">
-                        <flow-check label="Purchase Order" model="task.table.isPo"></flow-check>
-                    </div>
-                </div>
-                <div class="col-lg-12">
+
                     <div class="col-lg-2" ng-init="task.table.isYear = true">
                         <flow-check label="Year" model="task.table.isYear"></flow-check>
+                    </div>
+
+                    <div class="col-lg-2" ng-init="task.table.isPlannedTarget = true">
+                        <flow-check label="Target" model="task.table.isPlannedTarget"></flow-check>
+                    </div>
+
+                    <div class="col-lg-2" ng-init="task.table.isPlannedActual = true">
+                        <flow-check label="Actual" model="task.table.isPlannedActual"></flow-check>
+                    </div>
+
+                    <div class="col-lg-2" ng-init="task.table.isUnplannedActual = true">
+                        <flow-check label="Unplanned" model="task.table.isUnplannedActual"></flow-check>
+                    </div>
+
+                </div>
+                <div class="col-lg-12">
+                    <div class="col-lg-3" ng-init="task.table.isTotalCallProd = true">
+                        <flow-check label="Call Productivity" model="task.table.isTotalCallProd"></flow-check>
+                    </div>
+
+                    <div class="col-lg-3" ng-init="task.table.isEcd = true">
+                        <flow-check label="Exam Copies Distribution" model="task.table.isEcd"></flow-check>
                     </div>
 
                     <div class="col-lg-3" ng-init="task.table.isIte = true">
                         <flow-check label="Invitation to Events" model="task.table.isIte"></flow-check>
                     </div>
 
-                    <div class="col-lg-3" ng-init="task.table.isDaotrc = true">
-                        <flow-check label="Delivery of Additional Order / TRM / Compli"
-                                    model="task.table.isDaotrc"></flow-check>
-                    </div>
-                </div>
-                <div class="col-lg-12">
-                    <div class="col-lg-2" ng-init="task.table.isPlannedTarget = true">
-                        <flow-check label="Target" model="task.table.isPlannedTarget"></flow-check>
-                    </div>
-
                     <div class="col-lg-3" ng-init="task.table.isCoe = true">
                         <flow-check label="Confirmation of Events" model="task.table.isCoe"></flow-check>
                     </div>
 
+
+                </div>
+                <div class="col-lg-12">
+
+                    <div class="col-lg-3" ng-init="task.table.isFp = true">
+                        <flow-check label="Follow up Payment" model="task.table.isFp"></flow-check>
+                    </div>
+
+                    <div class="col-lg-3" ng-init="task.table.isGd = true">
+                        <flow-check label="Giveaways Distribution" model="task.table.isGd"></flow-check>
+                    </div>
+
+
+                    <div class="col-lg-3" ng-init="task.table.isDoi = true">
+                        <flow-check label="Delivery of Incentive/Donation" model="task.table.isDoi"></flow-check>
+                    </div>
+
+                    <div class="col-lg-3" ng-init="task.table.isPo = true">
+                        <flow-check label="Purchase Order" model="task.table.isPo"></flow-check>
+                    </div>
+
+                </div>
+                <div class="col-lg-12">
+                    <div class="col-lg-3" ng-init="task.table.isDaotrc = true">
+                        <flow-check label="Delivery of Additional Order / TRM / Compli"
+                                    model="task.table.isDaotrc"></flow-check>
+                    </div>
                     <div class="col-lg-3" ng-init="task.table.isBooklist = true">
                         <flow-check label="Booklist" model="task.table.isBooklist"></flow-check>
                     </div>
 
 
-                </div>
-                <div class="col-lg-12">
-                    <div class="col-lg-2" ng-init="task.table.isPlannedActual = true">
-                        <flow-check label="Actual" model="task.table.isPlannedActual"></flow-check>
-                    </div>
-                    <div class="col-lg-3" ng-init="task.table.isFp = true">
-                        <flow-check label="Follow up Payment" model="task.table.isFp"></flow-check>
-                    </div>
-
                     <div class="col-lg-3" ng-init="task.table.isUcis = true">
                         <flow-check label="Updated Customer Info Sheet" model="task.table.isUcis"></flow-check>
-                    </div>
-
-
-                </div>
-                <div class="col-lg-12">
-                    <div class="col-lg-2" ng-init="task.table.isUnplannedActual = true">
-                        <flow-check label="Unplanned" model="task.table.isUnplannedActual"></flow-check>
-                    </div>
-                    <div class="col-lg-3" ng-init="task.table.isGd = true">
-                        <flow-check label="Giveaways Distribution" model="task.table.isGd"></flow-check>
                     </div>
                     <div class="col-lg-3" ng-init="task.table.isIes = true">
                         <flow-check label="Implemented Ex-Sem" model="task.table.isIes"></flow-check>

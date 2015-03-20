@@ -6,9 +6,9 @@
                ng-disabled="disabled"
                ng-required="required"/>
 
-        <button ng-disabled="disabled" class="fluid-checkbox" ng-click="model=!model" type="button">
-            <i ng-if="model" class="text-success fa fa-check"></i>
-            <i ng-if="!model" class="text-danger"></i>
+        <button ng-disabled="disabled" class="fluid-checkbox" ng-class="model ? 'text-success fa fa-check' : 'text-danger'" ng-click="model=!model" type="button">
+            <!--<i ng-if="model" class="text-success fa fa-check"></i>
+            <i ng-if="!model" class="text-danger"></i>-->
         </button>
 
         {{label}}
