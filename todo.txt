@@ -39,7 +39,7 @@ Rex backlogs
 
 Rex Patch 1
 - Utilize page load callback
-- Reports print, export (csv, pdf), activity productivity up to 125% - use Jasper Reports.
+- Reports print, export (csv, pdf), activity productivity up to 125%
 - Agent > customer summary view in planner > editable customer info e.g. Name, Address, Contacts etc. except Customer Code
 
 Rex UI Backlogs

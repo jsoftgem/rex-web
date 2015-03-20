@@ -571,19 +571,28 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
             }
 
             s.task.page.load = function (data) {
-                if (up.agent) {
-                    s.task.report = {};
-                    s.task.report.filter = {};
-                    this.title = up.agent.fullName + "'s Customer";
-                    s.task.report.filter.regionCode = up.agent.region;
-                    s.task.report.filter.agent = up.agent.id;
-                    s.task.isAgent = true;
-                }
+
+
                 s.task.report = {};
+
                 s.task.order = "materialsAdvisor";
+
                 if (this.name === s.task.home) {
                     s.task.report.data = data;
                     s.task.report.filter = JSON.parse(this.getParam);
+
+                    if (up.agent) {
+
+                        this.title = up.agent.fullName + "'s Customer";
+
+                        s.task.report.filter.regionCode = up.agent.region;
+
+                        s.task.report.filter.agent = up.agent.id;
+
+                        s.task.isAgent = true;
+                    }
+
+
                 }
             }
 
@@ -612,6 +621,7 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
 
             s.task.query = function () {
                 if (s.task.report.filter) {
+                    console.info("agent-query", s.task.report);
                     var filter = JSON.stringify(s.task.report.filter);
                     s.flow.action("get", undefined, filter);
                 }

@@ -32,12 +32,11 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
 
             s.customer = s.newCustomer();
             s.task.preLoad = function () {
-                hp.check("agent", s.task)
-                    .success(function (valid) {
-                        s.task.hideAgentFilter = valid;
-                        s.task.agent = up.agent;
-                        s.task.page.title = s.task.agent.fullName;
-                    });
+                if (up.agent) {
+                    s.task.hideAgentFilter = true;
+                    s.task.agent = up.agent;
+                    s.task.page.title = up.agent.fullName;
+                }
                 s.task.schoolYear = undefined;
                 s.task.agent = undefined;
                 s.task.activities = [];
@@ -646,7 +645,6 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                                                         button: true
                                                     },
                                                     text: "<div><ul><li><b>Marterial Adviser: " + event.activity.materialAdviser + "</b></li>" +
-                                                    "<li>Actual: " + (event.activity.actual === true ? " Yes" : "No") + "</li>" +
                                                     "<li>Exam Copies Distribution: " + (event.activity.ecd === true ? " Yes" : "No") + "</li>" +
                                                     "<li>Invitation to Events: " + (event.activity.ite === true ? " Yes" : "No") + "</li>" +
                                                     "<li>Confirmation of Events: " + (event.activity.coe === true ? " Yes" : "No") + "</li>" +

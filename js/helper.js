@@ -60,7 +60,19 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
         .withOption("ajax", {
             url: url,
             type: "GET",
-            headers: headers
+            headers: headers,
+            crossDomain: true,
+            global: false,
+            beforeSend: function (jqXHR, settings) {
+                if (scope.task) {
+                    scope.task.loaded = false;
+                }
+            },
+            complete: function (jqXHR, settings) {
+                if (scope.task) {
+                    scope.task.loaded = true;
+                }
+            }
         })
         .withDataProp('data')
         .withOption("createdRow", function (row, data, dataIndex) {

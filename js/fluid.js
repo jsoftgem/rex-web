@@ -1112,13 +1112,13 @@ flowComponents
                         })
 
 
-                        scope.$watch(function(scope){
+                        scope.$watch(function (scope) {
                             return scope.$$phase;
-                        },function(newValue){
-                            if(newValue){
+                        }, function (newValue) {
+                            if (newValue) {
                                 scope.task.loaded = false;
                                 console.info("ajax-" + scope.task.name + " digest in progress:", scope.task);
-                            }else{
+                            } else {
                                 scope.task.loaded = true;
                                 console.info("ajax-" + scope.task.name + " digest in stopped:", scope.task);
                             }
@@ -2622,6 +2622,7 @@ flowComponents
                 } else if (status === 403) {
                     rs.$broadcast("NOT_ALLOWED");
                 }
+                task.loaded = true;
             });
 
             promise.then(function () {
@@ -2713,6 +2714,7 @@ flowComponents
                 } else if (status === 403) {
                     rs.$broadcast(EVENT_NOT_ALLOWED + task.id, data.msg);
                 }
+                task.loaded = true;
             });
 
             promise.then(function () {
@@ -2759,6 +2761,7 @@ flowComponents
                 if (status === 401) {
                     rs.$broadcast("NOT_AUTHENTICATED");
                 }
+                task.loaded = true;
             });
 
             return promise;
@@ -2835,6 +2838,7 @@ flowComponents
                 } else if (status === 403) {
                     rs.$broadcast(EVENT_NOT_ALLOWED + task.id, data.msg);
                 }
+                task.loaded = true;
             });
 
             promise.then(function () {
@@ -2874,6 +2878,7 @@ flowComponents
                 } else if (status === 403) {
                     rs.$broadcast(EVENT_NOT_ALLOWED + task.id, data.msg);
                 }
+                task.loaded = true;
             });
 
             promise.then(function () {
@@ -2956,11 +2961,11 @@ flowComponents
             });
 
             promise.success(function (config) {
-                $("#_id_fpb_" + task.id).loadingOverlay("remove");
+                task.loaded = true;
             });
 
             promise.error(function (data, status, headers, config) {
-                $("#_id_fpb_" + task.id).loadingOverlay("remove");
+                task.loaded = true;
                 if (status === 401) {
                     rs.$broadcast("NOT_AUTHENTICATED");
                 } else if (status === 403) {
@@ -2970,7 +2975,7 @@ flowComponents
 
 
             promise.then(function () {
-                $("#_id_fpb_" + task.id).loadingOverlay("remove");
+                task.loaded = true;
             });
 
             return promise;

@@ -57,12 +57,15 @@
 }
 
 .months-header {
-   background-color: antiquewhite;
-}
-.activity-header{
-    background-color: #e9e9e9;
+    background-color: antiquewhite;
+    border-color: antiquewhite;
 }
 
-.report-table{
+.activity-header {
+    background-color: #e9e9e9;
+    border-color: #e9e9e9;
+}
+
+.report-table {
     font-size: 15px;
 }

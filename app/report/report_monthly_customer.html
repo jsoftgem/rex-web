@@ -40,6 +40,10 @@
                         fluid-icon-tag></i> 50
                 </button>
 
+                <button button info="button" title="Print" fluid-print-report print-data="task.report.data"><i
+                        fluid-icon-print></i> Print
+                </button>
+
             </div>
         </div>
 
@@ -75,9 +79,9 @@
                                 <td colspan="27" class="bg-warning">{{reportAgent.materialsAdvisor}}
                                 <td>
                             </tr>
-                            <tr style="font-size: 10px"
+                            <tr style="font-size: 12px;font-family: sans-serif"
                                 ng-repeat="customer in reportAgent.customers">
-                                <td class="text-center">{{customer.top}}</td>
+                                <td class="text-center">{{customer.top ? customer.top : 'Untagged'}}</td>
                                 <td class="text-center">{{customer.label}}</td>
                                 <td class="text-center" ng-repeat="cusData in customer.data track by $index">
                                     {{cusData}}
