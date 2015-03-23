@@ -183,13 +183,6 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
             s.flow.openTask("daily_task", "daily_edit", activityId, false);
         };
 
-        s.task.preLoad = function () {
-            this.homePage = "customer_agent_home";
-            this.homeUrl = "services/war/customer_light_query/find_by_assigned_agent";
-
-        };
-
-
         s.task.refresh = function () {
             if (s.task.page.name === s.task.homePage) {
                 s.http.post(this.homeUrl)
@@ -216,17 +209,16 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
         };
 
         s.task.page.load = function () {
-
             s.task.agent = up.agent;
             s.task.agent.schoolYear = undefined;
             s.task.agent.month = undefined;
             s.task.agent.week = "all";
             s.task.agent.activity = {};
             s.task.agent.summary = {};
-            if (this.name === s.task.homePage) {
-
+            console.info("customerSummaryCtrl", this.name);
+            if (this.name === "customer_agent_home") {
                 this.title = "assigned to " + s.task.agent.fullName;
-                s.http.post(s.task.homeUrl)
+                s.http.post("services/war/customer_light_query/find_by_assigned_agent")
                     .success(function (data) {
                         s.task.agent.summary.result = data;
                     }).then(function () {
@@ -316,14 +308,16 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
                 if (s.task.origin) {
                     console.info("origin", s.task.origin);
                     s.task.agent = s.task.origin.agent;
+                    s.task.agent.schoolYear = s.task.origin.schoolYear;
+                } else {
+                    s.task.agent.schoolYear = data.schoolYear;
                 }
                 if (up.agent) {
                     s.task.agent = up.agent;
                 }
-
                 s.task.summary = data;
-                s.task.agent.schoolYear = data.schoolYear;
                 s.task.title = s.task.summary.customer.school.name;
+                this.title = s.task.agent.fullName;
                 s.task.createChart();
             }
         };
@@ -337,6 +331,7 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
         };
 
         s.task.querySummary = function () {
+            console.info("query_summary", s.task.summary);
             if (s.task.summary) {
                 var param = s.task.summary.customer.id;
                 if (s.task.agent.schoolYear) {

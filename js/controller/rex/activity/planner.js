@@ -13,7 +13,84 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
             s.hangingActivity = {};
             s.calendar = {};
             s.task.hideAgentFilter = false;
+            s.task.schoolYear = undefined;
+            s.task.agent = undefined;
+            s.task.activities = [];
+            s.task.eventSources = [];
+            s.task.customers = [];
+            s.task.activityModalId = s.flow.getElementFlowId('activity_modal');
+            s.task.selectedDate = {};
+            s.task.planner = {};
+            s.task.plannedActivities = [];
+            s.task.unplannedActivities = [];
+            s.task.tempActivity = {};
+            s.task.view = "month";
+            s.task.tag = "20";
+            s.task.customer = {};
+            s.task.customer.size = 25;
+            s.task.plannerCalendar = $("#" + s.flow.getElementFlowId("plannerCal"));
+            s.task.noteQuery = "services/war/activity_note_query/get_activity_day?";
+            s.task.showNotes = false;
+            s.task.showAttach = false;
+            s.flow.onOpenPinned = function (page, param) {
+                alert(page);
+            }
+            s.task.onWindowOpened = function () {
+                s.task.schoolYear = undefined;
+                s.task.agent = undefined;
+                s.task.plannerCalendar.fullCalendar("destroy");
+                s.task.plannerCalendar.fullCalendar("render");
+                s.task.plannerCalendar.fullCalendar(s.task.calendar);
+            }
+            s.$on(s.flow.event.getSuccessEventId(), function (event, rv, method) {
+                if (method === "put") {
+                    s.task.activities = [];
+                    s.task.plannerCalendar.fullCalendar("removeEvents");
+                    s.task.plannerCalendar.fullCalendar("refetchEvents");
+                    s.task.planner.id = rv.plannedId;
+                }
+            });
+            s.flow.onRefreshed = function () {
 
+
+                s.getPlanner();
+
+                s.refetchCustomer();
+
+                s.task.plannerCalendar.fullCalendar("refetchEvents");
+
+            }
+            s.task.viewNotes = function () {
+                s.task.showNotes = !s.task.showNotes;
+                if (s.task.showNotes === false) {
+                    s.task.editNote = false;
+                }
+            }
+            s.task.saveNotes = function (note) {
+                var promise = {};
+                if (note.id === undefined) {
+                    var year = s.task.selectedDate.getFullYear();
+                    var month = monthNames[s.task.selectedDate.getMonth()].toUpperCase();
+                    var day = s.task.selectedDate.getDate();
+                    note.agentId = s.task.agent.id;
+                    note.year = year;
+                    note.month = month;
+                    note.day = day;
+                    promise = s.http.put("services/war/activity_note_crud", note);
+                } else {
+                    promise = s.http.put("services/war/activity_note_crud/", note, note.id);
+                }
+
+                promise.then(function () {
+                        s.task.editNote = false
+                    }
+                );
+
+            }
+            s.task.uploadAttachmentUrl = "services/upload_service/upload_file?folder=";
+            s.task.attachmentQuery = "services/war/planner_attachment_query/attachment_by_school_year?school_year="
+            s.task.attachmentCrud = "services/war/planner_attachment_crud/";
+            s.task.uploadedFiles = [];
 
             s.newCustomer = function () {
                 var customer = {};
@@ -29,199 +106,13 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                 customer.page = 1;
                 return customer;
             };
-
             s.customer = s.newCustomer();
-            s.task.preLoad = function () {
+            s.task.page.load = function () {
                 if (up.agent) {
                     s.task.hideAgentFilter = true;
                     s.task.agent = up.agent;
                     s.task.page.title = up.agent.fullName;
                 }
-                s.task.schoolYear = undefined;
-                s.task.agent = undefined;
-                s.task.activities = [];
-                s.task.eventSources = [];
-                s.task.customers = [];
-                s.task.activityModalId = s.flow.getElementFlowId('activity_modal');
-                s.task.selectedDate = {};
-                s.task.planner = {};
-                s.task.plannedActivities = [];
-                s.task.unplannedActivities = [];
-                s.task.tempActivity = {};
-                s.task.view = "month";
-                s.task.tag = "20";
-                s.task.customer = {};
-                s.task.customer.size = 25;
-                s.task.plannerCalendar = $("#" + s.flow.getElementFlowId("plannerCal"));
-                s.task.noteQuery = "services/war/activity_note_query/get_activity_day?";
-                s.task.showNotes = false;
-                s.task.showAttach = false;
-                s.flow.onOpenPinned = function (page, param) {
-                    alert(page);
-                }
-                s.task.onWindowOpened = function () {
-                    s.task.schoolYear = undefined;
-                    s.task.agent = undefined;
-                    s.task.plannerCalendar.fullCalendar("destroy");
-                    s.task.plannerCalendar.fullCalendar("render");
-                    s.task.plannerCalendar.fullCalendar(s.task.calendar);
-                }
-                s.$on(s.flow.event.getSuccessEventId(), function (event, rv, method) {
-                    if (method === "put") {
-                        s.task.activities = [];
-                        s.task.plannerCalendar.fullCalendar("removeEvents");
-                        s.task.plannerCalendar.fullCalendar("refetchEvents");
-                        s.task.planner.id = rv.plannedId;
-                    }
-                });
-                s.flow.onRefreshed = function () {
-
-
-                    s.getPlanner();
-
-                    s.refetchCustomer();
-
-                    s.task.plannerCalendar.fullCalendar("refetchEvents");
-
-                }
-                s.task.viewNotes = function () {
-                    s.task.showNotes = !s.task.showNotes;
-                    if (s.task.showNotes === false) {
-                        s.task.editNote = false;
-                    }
-                }
-                s.task.saveNotes = function (note) {
-                    var promise = {};
-                    if (note.id === undefined) {
-                        var year = s.task.selectedDate.getFullYear();
-                        var month = monthNames[s.task.selectedDate.getMonth()].toUpperCase();
-                        var day = s.task.selectedDate.getDate();
-                        note.agentId = s.task.agent.id;
-                        note.year = year;
-                        note.month = month;
-                        note.day = day;
-                        promise = s.http.put("services/war/activity_note_crud", note);
-                    } else {
-                        promise = s.http.put("services/war/activity_note_crud/", note, note.id);
-                    }
-
-                    promise.then(function () {
-                            s.task.editNote = false
-                        }
-                    );
-
-                }
-                s.task.uploadAttachmentUrl = "services/upload_service/upload_file?folder=";
-                s.task.attachmentQuery = "services/war/planner_attachment_query/attachment_by_school_year?school_year="
-                s.task.attachmentCrud = "services/war/planner_attachment_crud/";
-                s.task.uploadedFiles = [];
-                s.task.viewAttach = function () {
-                    s.task.showAttach = !s.task.showAttach;
-
-                    if (s.task.showAttach) {
-                        s.http.post(s.task.attachmentQuery, undefined, s.task.schoolYear.id)
-                            .success(function (attachments) {
-                                s.task.uploadedFiles = attachments;
-                            }).then(function () {
-                                if (!s.task.uploadedFiles) {
-                                    s.task.uploadedFiles = [];
-                                }
-                            });
-                    }
-
-                    if (s.task.attachPrompt) {
-                        s.task.deleteAttachCancel();
-                    }
-                }
-                s.task.refreshAttach = function () {
-                    s.task.attachRefresh = true;
-                    if (s.task.showAttach) {
-                        s.http.post(s.task.attachmentQuery, undefined, s.task.schoolYear.id)
-                            .success(function (attachments) {
-                                s.task.uploadedFiles = attachments;
-                            }).then(function () {
-                                s.task.attachRefresh = false;
-                            });
-                    }
-                }
-                s.task.addToFileList = function (fileModel) {
-                    if (s.task.attachPrompt) {
-                        s.task.attachPrompt = false;
-                        s.task.deleteAttachId = undefined;
-                    }
-                    console.info("file", fileModel);
-                    var file = fileModel[0];
-                    var folder = "group.school_year." + s.task.schoolYear.id;
-                    var url = s.task.uploadAttachmentUrl + folder + "&file-name=" + file.name;
-
-                    var attachment = {};
-                    attachment.done = false;
-                    attachment.fileName = file.name;
-                    attachment.fileType = file.type;
-                    attachment.schoolYear = s.task.schoolYear.id;
-                    s.task.uploadedFiles.push(attachment);
-                    u.upload({
-                        url: fh.host + url,
-                        headers: {
-                            "Authorization": ss.getSessionProperty(AUTHORIZATION),
-                            "flowPage": s.task.currentPage
-                        },
-                        data: {file: file}
-                    }).progress(function (event) {
-                        console.info("progress", event);
-                        attachment.total = event.total;
-                        attachment.progress = event.loaded;
-                    }).success(function (flowUploadedFile) {
-                        attachment.done = true;
-                        attachment.progress = undefined;
-                        attachment.total = undefined;
-                        attachment.uploadedFileId = flowUploadedFile.id;
-                        console.info("success-upload", flowUploadedFile);
-                        s.http.put(s.task.attachmentCrud, attachment).success(function () {
-                            s.task.refreshAttach();
-                        });
-                    });
-                }
-                s.task.download = function (uploadFieldId) {
-                    return fh.host + "services/download_service/getContent/" + uploadFieldId;
-                }
-                s.task.downloadInfo = function (uploadFieldId) {
-                    return s.http.get("services/download_service/getInfo/", uploadFieldId)
-                }
-                s.task.deleteAttach = function (attachment) {
-                    s.task.deleteAttachId = attachment.id;
-                    s.task.attachPrompt = true;
-                }
-                s.task.deleteAttachCancel = function () {
-                    s.task.attachPrompt = false;
-                    s.task.deleteAttachId = undefined;
-                    s.task.refreshAttach();
-                }
-                s.task.deleteAttachConfirmed = function () {
-                    s.http.delete(s.task.attachmentCrud, s.task.deleteAttachId)
-                        .then(function () {
-                            s.task.attachPrompt = false;
-                            s.task.deleteAttachId = undefined;
-                            s.task.refreshAttach();
-                        });
-
-                }
-                s.task.closeViewer = function () {
-                    s.task.attachmentView = undefined;
-                    s.task.viewerFile = undefined;
-                    fm.hide(s.flow.getElementFlowId("attachment_viewer"));
-                    s.task.refreshAttach();
-                }
-
-                s.task.openViewer = function (attachment) {
-                    s.task.attachmentView = attachment;
-                    s.task.viewerFile = v + h + "services/download_service/getContent/" + attachment.uploadedFileId;
-                    fm.show(s.flow.getElementFlowId("attachment_viewer"));
-                }
-
-
-            };
-            s.task.page.load = function () {
                 var page = this.name;
                 if (NAME_HOME === page) {
                     s.task.plannerCalendar = $("#" + s.flow.getElementFlowId("plannerCal"));
@@ -647,6 +538,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                     s.task.plannerCalendar.fullCalendar("render");
                 }
             }
+
             s.calendar.getCurrentDate = function () {
                 return s.task.plannerCalendar.fullCalendar("getDate").toDate();
             }
@@ -902,9 +794,119 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
             s.opentCustomerSummary = function (customerId) {
                 if (s.task.schoolYear && s.task.agent) {
                     var param = customerId + "?schoolYear=" + s.task.schoolYear.id;
-                    s.flow.openTask("customer_agent_task", "customer_agent_summary", param, false, {agent: s.task.agent});
+                    s.flow.openTask("customer_agent_task", "customer_agent_summary", param, false, {
+                        source:"planner",
+                        agent: s.task.agent,
+                        schoolYear: s.task.schoolYear
+                    });
                 }
             }
+
+
+            s.task.viewAttach = function () {
+                s.task.showAttach = !s.task.showAttach;
+
+                if (s.task.showAttach) {
+                    s.http.post(s.task.attachmentQuery, undefined, s.task.schoolYear.id)
+                        .success(function (attachments) {
+                            s.task.uploadedFiles = attachments;
+                        }).then(function () {
+                            if (!s.task.uploadedFiles) {
+                                s.task.uploadedFiles = [];
+                            }
+                        });
+                }
+
+                if (s.task.attachPrompt) {
+                    s.task.deleteAttachCancel();
+                }
+            }
+            s.task.refreshAttach = function () {
+                s.task.attachRefresh = true;
+                if (s.task.showAttach) {
+                    s.http.post(s.task.attachmentQuery, undefined, s.task.schoolYear.id)
+                        .success(function (attachments) {
+                            s.task.uploadedFiles = attachments;
+                        }).then(function () {
+                            s.task.attachRefresh = false;
+                        });
+                }
+            }
+            s.task.addToFileList = function (fileModel) {
+                if (s.task.attachPrompt) {
+                    s.task.attachPrompt = false;
+                    s.task.deleteAttachId = undefined;
+                }
+                console.info("file", fileModel);
+                var file = fileModel[0];
+                var folder = "group.school_year." + s.task.schoolYear.id;
+                var url = s.task.uploadAttachmentUrl + folder + "&file-name=" + file.name;
+
+                var attachment = {};
+                attachment.done = false;
+                attachment.fileName = file.name;
+                attachment.fileType = file.type;
+                attachment.schoolYear = s.task.schoolYear.id;
+                s.task.uploadedFiles.push(attachment);
+                u.upload({
+                    url: fh.host + url,
+                    headers: {
+                        "Authorization": ss.getSessionProperty(AUTHORIZATION),
+                        "flowPage": s.task.currentPage
+                    },
+                    data: {file: file}
+                }).progress(function (event) {
+                    console.info("progress", event);
+                    attachment.total = event.total;
+                    attachment.progress = event.loaded;
+                }).success(function (flowUploadedFile) {
+                    attachment.done = true;
+                    attachment.progress = undefined;
+                    attachment.total = undefined;
+                    attachment.uploadedFileId = flowUploadedFile.id;
+                    console.info("success-upload", flowUploadedFile);
+                    s.http.put(s.task.attachmentCrud, attachment).success(function () {
+                        s.task.refreshAttach();
+                    });
+                });
+            }
+            s.task.download = function (uploadFieldId) {
+                return fh.host + "services/download_service/getContent/" + uploadFieldId;
+            }
+            s.task.downloadInfo = function (uploadFieldId) {
+                return s.http.get("services/download_service/getInfo/", uploadFieldId)
+            }
+            s.task.deleteAttach = function (attachment) {
+                s.task.deleteAttachId = attachment.id;
+                s.task.attachPrompt = true;
+            }
+            s.task.deleteAttachCancel = function () {
+                s.task.attachPrompt = false;
+                s.task.deleteAttachId = undefined;
+                s.task.refreshAttach();
+            }
+            s.task.deleteAttachConfirmed = function () {
+                s.http.delete(s.task.attachmentCrud, s.task.deleteAttachId)
+                    .then(function () {
+                        s.task.attachPrompt = false;
+                        s.task.deleteAttachId = undefined;
+                        s.task.refreshAttach();
+                    });
+
+            }
+            s.task.closeViewer = function () {
+                s.task.attachmentView = undefined;
+                s.task.viewerFile = undefined;
+                fm.hide(s.flow.getElementFlowId("attachment_viewer"));
+                s.task.refreshAttach();
+            }
+            s.task.openViewer = function (attachment) {
+                s.task.attachmentView = attachment;
+                s.task.viewerFile = v + h + "services/download_service/getContent/" + attachment.uploadedFileId;
+                fm.show(s.flow.getElementFlowId("attachment_viewer"));
+            }
+
+
             s.$watch(function (scope) {
                 return scope.refreshCustomer;
             }, function (newValue) {

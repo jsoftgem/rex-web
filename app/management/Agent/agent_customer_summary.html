@@ -22,9 +22,13 @@
         </div>
         <div class="panel-body">
             <div column="12">
-                <flow-select column="3" label="School year" field-label="description" model="task.agent.schoolYear"
+                <flow-field column="3" label="School Year" model="task.agent.schoolYear.description" disabled="true"
+                            ng-if="task.origin == 'planner'"></flow-field>
+                <flow-select ng-if="task.origin.source != 'planner'" column="3" label="School year"
+                             field-label="description"
+                             model="task.agent.schoolYear"
                              task="task" source-url="services/war/school_year_query/list"
-                             change="querySummary()"></flow-select>
+                             change="task.querySummary()"></flow-select>
                 <flow-field column="3" label="Market detail"
                             ng-repeat="market in task.summary.customer.warCustomerMarketSchoolYears | filter: {schoolYear:task.agent.schoolYear.id}| orderBy : 'createdDt' : true | limitTo : 1"
                             disabled="true"
@@ -160,9 +164,54 @@
         </div>
     </div>
     <div column="12">
+        <div column="6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        Support Given
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-responsive table-bordered">
+                        <thead class="bg-info">
+                        <th>Description</th>
+                        <th>Amount</th>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="support in task.summary.customer.supportGivens">
+                            <td>{{support.description}}</td>
+                            <td>{{support.amount}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div column="6">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        Other Publishers
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-responsive table-bordered">
+                        <thead class="bg-info">
+                        <th>Description</th>
+                        <th>Date Created</th>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="support in task.summary.customer.publisher">
+                            <td>{{support.description}}</td>
+                            <td>{{support.createdDt | date : 'medium'}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div></div>
 
 </div>
 

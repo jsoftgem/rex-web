@@ -47,6 +47,18 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
             s.flow.goTo(s.edit_name, id);
         }
 
+        s.view = function (customer) {
+            console.info("customer", customer);
+            if (customer) {
+                var param = customer.id;
+                s.flow.openTask("customer_agent_task", "customer_agent_summary", param, false, {
+                    source: "customer",
+                    agent: {id: customer.ownerAgentId, fullName: customer.ownerName}
+                });
+            }
+        }
+
+
         s.delete = function (id) {
             fm.show(s.flow.getElementFlowId(s.deleleModalId));
             s.http.get("services/war/customer_query/getInstance/", id).success(function (data) {
