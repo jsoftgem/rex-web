@@ -130,7 +130,7 @@ flowComponents
                         }
                         scope.flow.openTaskBaseUrl = "services/flow_task_service/getTask?";
 
-                        scope.flow.openTask = function (name, page, param, newTask) {
+                        scope.flow.openTask = function (name, page, param, newTask, origin) {
 
                             var url = scope.flow.openTaskBaseUrl;
                             url += "active=true&name=" + name;
@@ -146,7 +146,8 @@ flowComponents
                                 url += "&newTask=" + newTask;
                             }
                             console.info("openTask", url);
-                            f.addTask(url, scope.task, true);
+
+                            f.addTask(url, origin ? origin : scope.task, true);
                         }
                         var parent = element.parent();
                         /***********/
@@ -274,6 +275,7 @@ flowComponents
                             if (!rs.$$phase) {
                                 scope.$apply();
                             }
+
                             if (scope.flow.controls) {
                                 angular.forEach(scope.flow.controls, function (control) {
                                     if (control.pages) {
@@ -311,7 +313,7 @@ flowComponents
                                     resolve({page: scope.task.page.name});
                                 }
                             }).then(function (data) {
-
+                                scope.task.pageLoaded = true;
                                 var pagePanel = element.find(".flow-panel-page");
                                 console.info("page-panel", pagePanel);
                                 console.info("page-panel-task", scope.task);
@@ -760,9 +762,9 @@ flowComponents
 
                         });
 
-                        scope.$on(scope.flow.event.getPageCallBackEventId, function (event, page, data) {
-                            scope.flow.pageCallBack(page, data);
-                        });
+                        /*scope.$on(scope.flow.event.getPageCallBackEventId, function (event, page, data) {
+                         scope.flow.pageCallBack(page, data);
+                         });*/
 
                         scope.$on(EVENT_NOT_ALLOWED + scope.task.id, function (event, msg) {
                             scope.flow.message.danger(msg);
@@ -791,10 +793,11 @@ flowComponents
                             if (task) {
                                 console.info("post-task-watcher", task);
                                 if (task.generic === false) {
-                                    if (scope.task.lazyLoad === true) {
+
+                                    if (task.lazyLoad === true) {
                                         var pathArr = undefined;
-                                        if (scope.task.moduleFiles.indexOf(",") > 0) {
-                                            pathArr = scope.task.moduleFiles.split(",");
+                                        if (task.moduleFiles.indexOf(",") > 0) {
+                                            pathArr = task.moduleFiles.split(",");
                                         }
 
                                         var files = [];
@@ -803,17 +806,23 @@ flowComponents
                                                 files.push(pathArr[i]);
                                             }
                                         } else {
-                                            files.push(scope.task.moduleFiles);
+                                            files.push(task.moduleFiles);
                                         }
+
                                         oc.load({
-                                            name: scope.task.moduleJS,
+                                            name: task.moduleJS,
                                             files: files
                                         }).then(function () {
-                                            generateTask(scope, t, f2);
+                                            t(function () {
+                                                generateTask(scope, t, f2);
+                                            });
                                         });
                                     } else {
-                                        generateTask(scope, t, f2);
+                                        t(function () {
+                                            generateTask(scope, t, f2);
+                                        });
                                     }
+
 
                                     scope.task.refresh = function () {
                                         if (scope.task.page.autoGet) {
@@ -1112,18 +1121,6 @@ flowComponents
                         })
 
 
-                        scope.$watch(function (scope) {
-                            return scope.$$phase;
-                        }, function (newValue) {
-                            if (newValue) {
-                                scope.task.loaded = false;
-                                console.info("ajax-" + scope.task.name + " digest in progress:", scope.task);
-                            } else {
-                                scope.task.loaded = true;
-                                console.info("ajax-" + scope.task.name + " digest in stopped:", scope.task);
-                            }
-                        });
-
                         /********************/
                     }
 
@@ -1206,7 +1203,7 @@ flowComponents
                             return task.active;
                         }, function (newValue, oldValue) {
                             if (true === newValue) {
-                                if (task.onWindowOpening()) {
+                                if (task.onWindowOpening) {
                                     task.onWindowOpened();
                                 } else {
                                     task.active = false;
@@ -1655,16 +1652,9 @@ flowComponents
                     scope.id = "lookUp_modal_" + index + "_" + scope.task.id;
 
                 }
-
-
                 t(function () {
-
-
                     scope.sourceList = [];
-
                     var parent = $(element[0]).parent().get();
-
-
                     if (scope.parentId) {
 
                         while ($(parent).attr("id") !== scope.parentId) {
@@ -1765,37 +1755,27 @@ flowComponents
                     };
 
                 });
-
-
                 scope.close = function () {
                     fm.hide(scope.id + "_add_tbl_mdl", scope.id);
                 };
-
-
                 scope.select = function (item, label) {
                     scope.model = item;
                     scope.modelLabel = label;
                     scope.close();
                 };
-
                 scope.reset = function (event) {
                     var value = $(event.target).attr("value");
                     $(event.target).attr("value", value);
                 };
-
-
                 scope.isModeled = function () {
                     return scope.model !== undefined;
                 };
-
                 scope.isNotModeled = function () {
                     return scope.model === undefined;
                 };
-
                 scope.clear = function () {
                     scope.model = undefined;
                 };
-
 
             },
             templateUrl: "templates/fluid/fluidLookup.html",
@@ -2438,6 +2418,7 @@ flowComponents
 
         this.addTask = function (url, origin, newTask) {
             //TODO: remove newTask
+
             var genericTask = this.createGenericTask();
 
             genericTask.origin = origin;
@@ -2465,8 +2446,6 @@ flowComponents
                 this.searchTask = "";
             }
         };
-
-
         this.toggleFullscreen = function (task) {
             this.fullScreen = true;
             this.fullScreenTask = task;
@@ -2474,12 +2453,10 @@ flowComponents
                 $(".frame-content").scrollTop(0);
             });
         };
-
         this.toggleFluidscreen = function () {
             this.fullScreen = false;
             this.fullScreenTask = undefined;
         };
-
         this.getFullTask = function (task) {
             console.info("getFullTask", task);
             var fullScreenTask = undefined;
@@ -2494,7 +2471,6 @@ flowComponents
 
             return fullScreenTask;
         };
-
         this.createGenericTask = function () {
 
             var genericTask = Task();
@@ -2525,8 +2501,6 @@ flowComponents
 
             return genericTask;
         };
-
-
         this.getFrame = function () {
             return $("div.frame-content.frame-fullscreen");
         }
@@ -3253,6 +3227,7 @@ function estimateHeight(height) {
 
 function generateTask(scope, t, f2) {
     console.info("generateTask > scope.task.page", scope.task.page);
+    scope.task.pageLoaded = false;
     if (scope.task.page === undefined || scope.task.page === null) {
         if (scope.task.pages) {
             var $page = getHomePageFromTaskPages(scope.task);
@@ -3301,18 +3276,8 @@ function generateTask(scope, t, f2) {
 
     scope.userTask.flowId = scope.task.flowId;
     console.info("new_task", scope.task);
-    /* if (scope.task.newTask) {
-     scope.userTask.flowTaskId = scope.task.id.split("_")[0];
-     scope.userTask.flowId = scope.task.flowId;
-     f2.post("services/flow_user_task_crud/save_task_state?newTask=true", scope.userTask, scope.task);
-     scope.task.newTask = false;
-     }*/
-
     var loadGetFn = function () {
-
         /*pre-load*/
-
-
         if (scope.task.preLoaded === undefined || scope.task.preLoaded === false) {
             scope.task.preLoad();
             scope.task.preLoaded = true;

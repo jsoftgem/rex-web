@@ -313,7 +313,14 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
             s.task.chartId = s.flow.getElementFlowId("agentMonthlyBarChart");
             console.info(this.name, data);
             if (this.name === s.task.summaryPage) {
-                s.task.agent = up.agent;
+                if (s.task.origin) {
+                    console.info("origin", s.task.origin);
+                    s.task.agent = s.task.origin.agent;
+                }
+                if (up.agent) {
+                    s.task.agent = up.agent;
+                }
+
                 s.task.summary = data;
                 s.task.agent.schoolYear = data.schoolYear;
                 s.task.title = s.task.summary.customer.school.name;
@@ -322,14 +329,14 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
         };
 
         s.task.refresh = function () {
-            s.querySummary();
+            s.task.querySummary();
         };
 
         s.flow.onRefreshed = function () {
             s.task.refresh();
         };
 
-        s.querySummary = function () {
+        s.task.querySummary = function () {
             if (s.task.summary) {
                 var param = s.task.summary.customer.id;
                 if (s.task.agent.schoolYear) {

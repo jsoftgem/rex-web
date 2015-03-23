@@ -45,7 +45,6 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                 s.task.activityModalId = s.flow.getElementFlowId('activity_modal');
                 s.task.selectedDate = {};
                 s.task.planner = {};
-                s.task.planner.enabled = true;
                 s.task.plannedActivities = [];
                 s.task.unplannedActivities = [];
                 s.task.tempActivity = {};
@@ -221,152 +220,11 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                 }
 
 
-                s.$watch(function (scope) {
-                    return scope.refreshCustomer;
-                }, function (newValue) {
-                    if (newValue === true) {
-                        if (s.customer.previous != undefined) {
-                            s.customer.start = s.customer.previous;
-                        }
-                        console.info("refreshCustomer", newValue);
-                        var promise = s.getCustomerMarket();
-                        if (promise) {
-                            promise.success(function () {
-                                t(function () {
-                                    $("#" + s.flow.getElementFlowId("event_body") + " .event-customer td a").each(function () {
-                                        $(this).data("eventObject", {
-                                            title: $.trim($(this).text()),
-                                            activityType: "SCHOOL"
-                                        });
-
-                                        $(this).removeClass("non-draggable").addClass("draggable");
-
-                                        $(this).draggable({
-                                            helper: function () {
-                                                return $("<div>").addClass("event-customer-draggable").html($(this).text()).clone();
-                                            },
-                                            zIndex: 99999,
-                                            revert: true,
-                                            revertDuration: 0
-                                        });
-
-                                    });
-                                    $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
-
-                                        $(this).data("eventObject", {
-                                            title: $.trim($(this).html()),
-                                            activityType: $(this).attr("activity-type")
-                                        });
-
-                                        $(this).draggable({
-                                            zIndex: 99999,
-                                            revert: true,
-                                            revertDuration: 0
-                                        });
-
-                                    });
-                                });
-                            });
-                        }
-                        s.refreshCustomer = false;
-                    }
-
-                });
-                s.$watch(function (scope) {
-                    return scope.customer.size;
-                }, function (size) {
-                    s.selectSize(size);
-                })
-                s.$watch(function (scope) {
-                    return scope.task.schoolYear
-                }, function (schoolYear) {
-                    if (schoolYear !== undefined) {
-                        var date = new Date(schoolYear.date);
-                        s.task.plannerCalendar.fullCalendar("gotoDate", date);
-                        s.task.plannerCalendar.fullCalendar("refetchEvents");
-                        s.refetchCustomer();
-                        if (s.task.showAttach) {
-                            s.http.post(s.task.attachmentQuery, undefined, s.task.schoolYear.id)
-                                .success(function (attachments) {
-                                    s.task.uploadedFiles = attachments;
-                                }).then(function () {
-                                    if (!s.task.uploadedFiles) {
-                                        s.task.uploadedFiles = [];
-                                    }
-                                });
-                        }
-                    }
-                });
-                s.$watch(function (scope) {
-                    return scope.task.agent;
-                }, function (agent) {
-                    if (agent) {
-                        s.customer.start = 0;
-                        s.getCustomerMarket()
-                            .success(function () {
-                                t(function () {
-                                    $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
-
-                                        $(this).data("eventObject", {
-                                            title: $.trim($(this).html()),
-                                            activityType: $(this).attr("activity-type")
-                                        });
-
-                                        $(this).draggable({
-                                            zIndex: 99999,
-                                            revert: true,
-                                            revertDuration: 0
-                                        });
-
-                                    });
-                                });
-                            });
-
-                    } else {
-                        s.customer = s.newCustomer();
-                        $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
-
-                            if ($(this).draggable()) {
-                                $(this).draggable("destroy");
-                            }
-                        });
-                    }
-                    if (s.task.plannerCalendar) {
-                        s.task.plannerCalendar.fullCalendar("refetchEvents");
-                    }
-                });
-                s.$watch(function (scope) {
-                    return scope.task.selectedDate;
-                }, function (newValue) {
-                    if (newValue) {
-                        if (s.task.agent) {
-
-                            s.task.dailyNote = {};
-
-                            var year = s.task.selectedDate.getFullYear();
-
-                            var month = monthNames[s.task.selectedDate.getMonth()].toUpperCase();
-
-                            var day = s.task.selectedDate.getDate();
-
-                            var url = s.task.noteQuery;
-
-                            url += "agentId=" + s.task.agent.id;
-                            url += "&year=" + year;
-                            url += "&month=" + month;
-                            url += "&day=" + day;
-
-                            s.http.post(url)
-                                .success(function (note) {
-                                    s.task.dailyNote = note;
-                                });
-                        }
-                    }
-                });
             };
             s.task.page.load = function () {
                 var page = this.name;
                 if (NAME_HOME === page) {
+                    s.task.plannerCalendar = $("#" + s.flow.getElementFlowId("plannerCal"));
                     s.task.calendar = {
                         header: {
                             left: "title",
@@ -434,7 +292,6 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                             var date = moment.toDate();
                             return getWeekOfMonth(date);
                         },
-                        editable: s.task.planner.enabled,
                         fixedWeekCount: false,
                         height: 500,
                         droppable: true,
@@ -935,7 +792,6 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
             s.hangingActivity.cancel = function () {
                 fm.hide(s.task.activityModalId);
             }
-
             s.buildCustomerQuery = function () {
 
                 var date = s.task.plannerCalendar.fullCalendar("getDate").toDate();
@@ -1044,11 +900,152 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                 s.refetchCustomer();
             }
             s.opentCustomerSummary = function (customerId) {
-                if (s.task.schoolYear) {
+                if (s.task.schoolYear && s.task.agent) {
                     var param = customerId + "?schoolYear=" + s.task.schoolYear.id;
-                    s.flow.openTask("customer_agent_task", "customer_agent_summary", param, false);
+                    s.flow.openTask("customer_agent_task", "customer_agent_summary", param, false, {agent: s.task.agent});
                 }
             }
+            s.$watch(function (scope) {
+                return scope.refreshCustomer;
+            }, function (newValue) {
+                if (newValue === true) {
+                    if (s.customer.previous != undefined) {
+                        s.customer.start = s.customer.previous;
+                    }
+                    console.info("refreshCustomer", newValue);
+                    var promise = s.getCustomerMarket();
+                    if (promise) {
+                        promise.success(function () {
+                            t(function () {
+                                $("#" + s.flow.getElementFlowId("event_body") + " .event-customer td a").each(function () {
+                                    $(this).data("eventObject", {
+                                        title: $.trim($(this).text()),
+                                        activityType: "SCHOOL"
+                                    });
 
+                                    $(this).removeClass("non-draggable").addClass("draggable");
+
+                                    $(this).draggable({
+                                        helper: function () {
+                                            return $("<div>").addClass("event-customer-draggable").html($(this).text()).clone();
+                                        },
+                                        zIndex: 99999,
+                                        revert: true,
+                                        revertDuration: 0
+                                    });
+
+                                });
+                                $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
+
+                                    $(this).data("eventObject", {
+                                        title: $.trim($(this).html()),
+                                        activityType: $(this).attr("activity-type")
+                                    });
+
+                                    $(this).draggable({
+                                        zIndex: 99999,
+                                        revert: true,
+                                        revertDuration: 0
+                                    });
+
+                                });
+                            });
+                        });
+                    }
+                    s.refreshCustomer = false;
+                }
+
+            });
+            s.$watch(function (scope) {
+                return scope.customer.size;
+            }, function (size) {
+                s.selectSize(size);
+            })
+            s.$watch(function (scope) {
+                return scope.task.schoolYear
+            }, function (schoolYear) {
+                if (schoolYear !== undefined) {
+                    var date = new Date(schoolYear.date);
+                    s.task.plannerCalendar.fullCalendar("gotoDate", date);
+                    s.task.plannerCalendar.fullCalendar("refetchEvents");
+                    s.refetchCustomer();
+                    if (s.task.showAttach) {
+                        s.http.post(s.task.attachmentQuery, undefined, s.task.schoolYear.id)
+                            .success(function (attachments) {
+                                s.task.uploadedFiles = attachments;
+                            }).then(function () {
+                                if (!s.task.uploadedFiles) {
+                                    s.task.uploadedFiles = [];
+                                }
+                            });
+                    }
+                }
+            });
+            s.$watch(function (scope) {
+                return scope.task.agent;
+            }, function (agent) {
+                if (agent) {
+                    s.customer.start = 0;
+                    s.getCustomerMarket()
+                        .success(function () {
+                            t(function () {
+                                $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
+
+                                    $(this).data("eventObject", {
+                                        title: $.trim($(this).html()),
+                                        activityType: $(this).attr("activity-type")
+                                    });
+
+                                    $(this).draggable({
+                                        zIndex: 99999,
+                                        revert: true,
+                                        revertDuration: 0
+                                    });
+
+                                });
+                            });
+                        });
+
+                } else {
+                    s.customer = s.newCustomer();
+                    $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
+
+                        if ($(this).draggable()) {
+                            $(this).draggable("destroy");
+                        }
+                    });
+                }
+                if (s.task.plannerCalendar) {
+                    s.task.plannerCalendar.fullCalendar("refetchEvents");
+                }
+            });
+            s.$watch(function (scope) {
+                return scope.task.selectedDate;
+            }, function (newValue) {
+                if (newValue) {
+                    if (s.task.agent) {
+
+                        s.task.dailyNote = {};
+
+                        var year = s.task.selectedDate.getFullYear();
+
+                        var month = monthNames[s.task.selectedDate.getMonth()].toUpperCase();
+
+                        var day = s.task.selectedDate.getDate();
+
+                        var url = s.task.noteQuery;
+
+                        url += "agentId=" + s.task.agent.id;
+                        url += "&year=" + year;
+                        url += "&month=" + month;
+                        url += "&day=" + day;
+
+                        s.http.post(url)
+                            .success(function (note) {
+                                s.task.dailyNote = note;
+                            });
+                    }
+                }
+            });
         }]
 );

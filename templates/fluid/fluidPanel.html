@@ -94,7 +94,7 @@
             <flow-tool size="large" flow="flow" id="{{flow.getElementFlowId('flw_tl')}}"
                        ng-if='task.showToolBar' controls='toolbars'
                        task='task' pages='task.navPages'></flow-tool>
-            <div id='page_div_{{task.id}}' class='flow-panel-page'
+            <div ng-if='task.pageLoaded' id='page_div_{{task.id}}' class='flow-panel-page'
                  ng-style="!flowFrameService.fullScreen?{overflow:auto}:{}"
                  ng-include='task.page.home'></div>
         </div>
