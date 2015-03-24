@@ -130,9 +130,14 @@ flowComponents
                         }
                         scope.flow.openTaskBaseUrl = "services/flow_task_service/getTask?";
 
-                        scope.flow.openTask = function (name, page, param, newTask, origin) {
+                        scope.flow.openTask = function (name, page, param, newTask, origin, size) {
 
                             var url = scope.flow.openTaskBaseUrl;
+                            if (size) {
+                                url += "size=" + size + "&"
+                            } else {
+                                url += "size=100&"
+                            }
                             url += "active=true&name=" + name;
                             if (page) {
 
