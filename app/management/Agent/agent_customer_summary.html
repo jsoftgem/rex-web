@@ -1,10 +1,7 @@
 <div ng-controller="customerInfoCtrl" class="container-fluid form-horizontal">
-
-
     <div class="btn-group btn-group-sm form-group">
         <button button info="button" ng-if="!task.origin" ng-click="flow.navTo('customer_agent_home')">Back</button>
     </div>
-
     <div class="panel panel-info">
         <div class="panel-heading">
             <div class="panel-title">School Year Summary
@@ -93,127 +90,241 @@
             </table>
         </div>
     </div>
-    <div column="12">
-        <div column="6">
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <div class="panel-title">
-                        Contact Information
-                    </div>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <span class="panel-title">Customer Details</span>
+        </div>
+        <div class="panel-body">
+            <div column="12">
+                <div column="6">
+                    <fieldset>
+                        <legend>Contact Information</legend>
+                        <table class="table table-responsive table-bordered">
+                            <thead>
+                            <th>Name</th>
+                            <th>Position</th>
+                            <th>Decision Maker</th>
+                            <th>Contact No.</th>
+                            <th>Relationship</th>
+                            <th>Birthday</th>
+                            <th>Type</th>
+                            </thead>
+                            <tbody ng-repeat="(lvl,contacts) in task.summary.customer.contactDetails | groupBy: 'level'">
+                            <tr class="bg-warning">
+                                <td colspan="7">{{lvl}}</td>
+                            </tr>
+                            <tr ng-repeat="contact in contacts">
+                                <td>{{contact.description}}</td>
+                                <td>{{contact.positionDesc}}</td>
+                                <td>
+                                    <i ng-class="contact.decisionMaker ? 'fa fa-check text-success' : 'fa fa-remove text-danger'"></i>
+                                </td>
+                                <td>{{contact.detail}}</td>
+                                <td>{{contact.relationshipType}}</td>
+                                <td>{{contact.birthDate | date : 'mm/dd/yyyy'}}</td>
+                                <td><i ng-class="contact.type.icon"></i>{{contact.type.label}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </fieldset>
+
                 </div>
-                <div class="panel-body">
-                    <table class="table table-responsive table-bordered">
-                        <thead class="bg-info">
-                        <th>Name</th>
-                        <th>Position</th>
-                        <th>Decision Maker</th>
-                        <th>Contact No.</th>
-                        <th>Relationship</th>
-                        <th>Birthday</th>
-                        <th>Type</th>
-                        </thead>
-                        <tbody ng-repeat="(lvl,contacts) in task.summary.customer.contactDetails | groupBy: 'level'">
-                        <tr class="bg-warning">
-                            <td colspan="7">{{lvl}}</td>
-                        </tr>
-                        <tr ng-repeat="contact in contacts">
-                            <td>{{contact.description}}</td>
-                            <td>{{contact.positionDesc}}</td>
-                            <td>
-                                <i ng-class="contact.decisionMaker ? 'fa fa-check text-success' : 'fa fa-remove text-danger'"></i>
-                            </td>
-                            <td>{{contact.detail}}</td>
-                            <td>{{contact.relationshipType}}</td>
-                            <td>{{contact.birthDate | date : 'mm/dd/yyyy'}}</td>
-                            <td><i ng-class="contact.type.icon"></i>{{contact.type.label}}</td>
-                        </tr>
-                        </tbody>
-                    </table>
+                <div column="6">
+                    <fieldset>
+                        <legend>Education Levels Offered & Tuition Fee</legend>
+                        <table class="table table-responsive table-bordered">
+                            <thead>
+                            <th>Course</th>
+                            <th>Population</th>
+                            <th>Tuition Fee from</th>
+                            <th>Tuition Fee to</th>
+                            </thead>
+                            <tbody ng-repeat="(educationLevel,levels) in task.summary.customer.customerLevels | groupBy: 'educationLevel'">
+                            <tr>
+                                <td colspan="4" class="bg-warning">{{educationLevel}}</td>
+                            </tr>
+                            <tr ng-repeat="customerLevel in levels">
+                                <td>{{customerLevel.levelCourse}}</td>
+                                <td>{{customerLevel.population}}</td>
+                                <td>{{customerLevel.tuitionFeeFrom}}</td>
+                                <td>{{customerLevel.tuitionFeeTo}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </fieldset>
                 </div>
             </div>
-        </div>
-        <div column="6">
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <div class="panel-title">
-                        Education Levels Offered & Tuition Fee
-                    </div>
+            <div column="12">
+                <div column="6">
+                    <fieldset>
+                        <legend>Support Given</legend>
+                        <table class="table table-responsive table-bordered">
+                            <thead>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="support in task.summary.customer.supportGivens">
+                                <td>{{support.description}}</td>
+                                <td>{{support.amount}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </fieldset>
                 </div>
-                <div class="panel-body">
-                    <table class="table table-responsive table-bordered">
-                        <thead class="bg-info">
-                        <th>Course</th>
-                        <th>Population</th>
-                        <th>Tuition Fee from</th>
-                        <th>Tuition Fee to</th>
-                        </thead>
-                        <tbody ng-repeat="(educationLevel,levels) in task.summary.customer.customerLevels | groupBy: 'educationLevel'">
+                <div column="6">
+                    <fieldset>
+                        <legend>
+                            Other Publishers
+                        </legend>
+                        <table class="table table-responsive table-bordered">
+                            <thead>
+                            <th>Description</th>
+                            <th>Date Created</th>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="support in task.summary.customer.publisher">
+                                <td>{{support.description}}</td>
+                                <td>{{support.createdDt | date : 'medium'}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </fieldset>
+                </div>
+            </div>
+            <div column="12">
+                <div column="6">
+                    <fieldset>
+                        <legend>Enrollment Information</legend>
+                        <p>{{task.summary.customer.informationOnEnrollment}}</p>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Other Pertinent Information</legend>
+                        <table class="table table-condensed">
+                            <tr>
+                                <td><b>Diocese</b></td>
+                                <td align="center"> {{task.summary.customer.diocese ? task.summary.customer.diocese :
+                                    'N/A'}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Congregation</b></td>
+                                <td align="center">{{task.summary.customer.congregation ?
+                                    task.summary.customer.congregation:'N/A'}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Association</b></td>
+                                <td align="center">{{task.summary.customer.association ?
+                                    task.summary.customer.association : 'N/A'}}
+                                </td>
+                            </tr>
+                        </table>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Business Terms</legend>
+                        <table class="table table-condensed">
+                            <tr>
+                                <td><b>Standard/Outright Discount</b></td>
+                                <td align="center"> {{task.summary.customer.standardOutrightDiscount ?
+                                    task.summary.customer.standardOutrightDiscount :
+                                    "N/A"}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Additional Discount</b></td>
+                                <td align="center">{{task.summary.customer.additionalDiscount ?
+                                    task.summary.customer.additionalDiscount:'N/A'}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Incentives</b></td>
+                                <td align="center">{{task.summary.customer.incentives ?
+                                    task.summary.customer.incentives : 'N/A'}}
+                                </td>
+                            </tr>
+                        </table>
+                    </fieldset>
+
+                </div>
+                <div column="6">
+                    <fieldset>
+                        <legend>Buying Cycle</legend>
+                        <table class="table table-condensed">
+                            <tr>
+                                <td><b>Evaluation</b></td>
+                                <td align="center">{{task.summary.customer.evaluation.label}}
+                                    {{task.summary.customer.evaluationTo ? "to "
+                                    +task.summary.customer.evaluationTo.label: ""}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Ordering</b></td>
+                                <td align="center">{{task.summary.customer.ordering.label}}
+                                    {{task.summary.customer.orderingTo ? "to "
+                                    +task.summary.customer.orderingTo.label: ""}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Delivery</b></td>
+                                <td align="center">{{task.summary.customer.delivery.label}}
+                                    {{task.summary.customer.deliveryTo ? "to "
+                                    +task.summary.customer.deliveryTo.label: ""}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Collection</b></td>
+                                <td align="center">{{task.summary.customer.collection.label}}
+                                    {{task.summary.customer.collectionTo ? "to "
+                                    +task.summary.customer.collectionTo.label: ""}}
+                                </td>
+                            </tr>
+                        </table>
+                    </fieldset>
+                    <table class="table table-condensed">
                         <tr>
-                            <td colspan="4" class="bg-warning">{{educationLevel}}</td>
+                            <td><b>Using journals</b></td>
+                            <td align="center">{{task.summary.customer.usingJournals ? "Yes" : "No"}}
+                            </td>
                         </tr>
-                        <tr ng-repeat="customerLevel in levels">
-                            <td>{{customerLevel.levelCourse}}</td>
-                            <td>{{customerLevel.population}}</td>
-                            <td>{{customerLevel.tuitionFeeFrom}}</td>
-                            <td>{{customerLevel.tuitionFeeTo}}</td>
+                        <tr ng-if="task.summary.customer.usingJournals">
+                            <td><b>Publisher of journals used</b></td>
+                            <td align="center">{{task.summary.customer.journalPublisher}}
+                            </td>
                         </tr>
-                        </tbody>
+                        <tr>
+                            <td><b>Using SRA</b></td>
+                            <td align="center">{{task.summary.customer.usingSRA ? "Yes" : "No"}}
+                            </td>
+                        </tr>
+                    </table>
+                    <table class="table table-condensed">
+                        <tr>
+                            <td><b>Buying Process</b></td>
+                            <td align="center"> {{task.summary.customer.buyingProcess ?
+                                task.summary.customer.buyingProcess :
+                                'N/A'}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>Nature of Purchase</b></td>
+                            <td align="center">{{task.summary.customer.natureOfPurchase ?
+                                task.summary.customer.natureOfPurchase:'N/A'}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><b>Ownership</b></td>
+                            <td align="center">{{task.summary.customer.ownership ?
+                                task.summary.customer.ownership : 'N/A'}}
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>
+
         </div>
     </div>
-    <div column="12">
-        <div column="6">
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <div class="panel-title">
-                        Support Given
-                    </div>
-                </div>
-                <div class="panel-body">
-                    <table class="table table-responsive table-bordered">
-                        <thead class="bg-info">
-                        <th>Description</th>
-                        <th>Amount</th>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="support in task.summary.customer.supportGivens">
-                            <td>{{support.description}}</td>
-                            <td>{{support.amount}}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div column="6">
-            <div class="panel panel-info">
-                <div class="panel-heading">
-                    <div class="panel-title">
-                        Other Publishers
-                    </div>
-                </div>
-                <div class="panel-body">
-                    <table class="table table-responsive table-bordered">
-                        <thead class="bg-info">
-                        <th>Description</th>
-                        <th>Date Created</th>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="support in task.summary.customer.publisher">
-                            <td>{{support.description}}</td>
-                            <td>{{support.createdDt | date : 'medium'}}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
 </div>
-
 
 </div>
