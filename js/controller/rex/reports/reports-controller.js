@@ -18,97 +18,94 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                 return total;
             }
 
-            s.task.preLoad = function () {
+            s.task.pageAgent = "report_weekly_agent";
 
-                s.task.pageAgent = "report_weekly_agent";
+            s.task.service = "services/war/report_weekly_service"
 
-                s.task.service = "services/war/report_weekly_service"
+            s.task.serviceCustomer = s.task.service + "/agent_customer";
 
-                s.task.serviceCustomer = s.task.service + "/agent_customer";
+            s.task.hideAgentFilter = false;
 
-                s.task.hideAgentFilter = false;
+            s.$on(s.flow.event.getRefreshId(), function () {
+                s.task.query();
+            });
 
-                s.$on(s.flow.event.getRefreshId(), function () {
-                    s.task.query();
-                });
+            s.task.getCustomers = function (report) {
+                report.view = !report.view;
+                if (report.view) {
+                    report.loaded = false;
+                    var url = s.task.serviceCustomer;
 
-                s.task.getCustomers = function (report) {
-                    report.view = !report.view;
-                    if (report.view) {
-                        report.loaded = false;
-                        var url = s.task.serviceCustomer;
-
-                        var count = 0;
+                    var count = 0;
 
 
-                        if (report.year) {
-                            url += "?year=" + report.year;
+                    if (report.year) {
+                        url += "?year=" + report.year;
+                        count++;
+                    }
+
+                    if (report.reportMonth) {
+                        if (count > 0) {
+                            url += "&"
+                        } else {
                             count++;
                         }
 
-                        if (report.reportMonth) {
-                            if (count > 0) {
-                                url += "&"
-                            } else {
-                                count++;
-                            }
-
-                            url += "month=" + report.reportMonth.label.toUpperCase();
-                        }
-
-
-                        if (report.week) {
-                            if (count > 0) {
-                                url += "&";
-                            } else {
-                                count++;
-                            }
-
-                            url += "week=" + report.week;
-                        }
-
-
-                        if (report.agentId) {
-                            if (count > 0) {
-                                url += "&";
-                            }
-                            url += "agent=" + report.agentId;
-                        }
-
-                        if (report.region) {
-                            if (count > 0) {
-                                url += "&";
-                            }
-                            url += "region=" + report.region;
-                        }
-
-
-                        s.http.get(url).success(function (data) {
-                            report.customers = data;
-                            report.loaded = true;
-                        });
-
+                        url += "month=" + report.reportMonth.label.toUpperCase();
                     }
 
+
+                    if (report.week) {
+                        if (count > 0) {
+                            url += "&";
+                        } else {
+                            count++;
+                        }
+
+                        url += "week=" + report.week;
+                    }
+
+
+                    if (report.agentId) {
+                        if (count > 0) {
+                            url += "&";
+                        }
+                        url += "agent=" + report.agentId;
+                    }
+
+                    if (report.region) {
+                        if (count > 0) {
+                            url += "&";
+                        }
+                        url += "region=" + report.region;
+                    }
+
+
+                    s.http.get(url).success(function (data) {
+                        report.customers = data;
+                        report.loaded = true;
+                    });
+
                 }
 
-                s.task.getDayName = function (dayOfWeek) {
-                    return getDayName(dayOfWeek);
-                }
+            }
 
-                s.task.reportTable = $("#" + s.flow.getElementFlowId('reportTable'));
+            s.task.getDayName = function (dayOfWeek) {
+                return getDayName(dayOfWeek);
+            }
 
-                s.task.print = {};
+            s.task.reportTable = $("#" + s.flow.getElementFlowId('reportTable'));
 
-                s.task.print.current = function () {
-                    s.task.reportTable.print({
-                        globalStyles: true,
-                        iframe: true,
-                        noPrintSelector: ".no-print",
-                        manuallyCopyFormValues: true,
-                        deferred: $.Deferred()
-                    })
-                }
+            s.task.print = {};
+
+            s.task.print.current = function () {
+                s.task.reportTable.print({
+                    globalStyles: true,
+                    iframe: true,
+                    noPrintSelector: ".no-print",
+                    manuallyCopyFormValues: true,
+                    deferred: $.Deferred()
+                })
             }
             s.task.load = function () {
 
@@ -324,26 +321,24 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
         function (s, dto, dtc, ms, fm, c, f, ss, h, t, ffs, hp, up) {
 
             s.task.hideAgentFilter = false;
-            s.task.preLoad = function () {
-                s.task.pageCustomer = "report_monthly_customer";
+            s.task.pageCustomer = "report_monthly_customer";
 
-                s.task.newReport = function () {
-                    var report = {};
-                    report.tag = "all";
-                    report.size = 25;
-                    report.start = 0;
-                    report.isAgent = false;
-                    report.isYear = false;
-                    report.isMonth = false;
-                    report.isRegion = false;
+            s.task.newReport = function () {
+                var report = {};
+                report.tag = "all";
+                report.size = 25;
+                report.start = 0;
+                report.isAgent = false;
+                report.isYear = false;
+                report.isMonth = false;
+                report.isRegion = false;
 
-                    return report;
-                }
-
-                s.$on(s.flow.event.getRefreshId(), function () {
-                    s.task.query();
-                })
+                return report;
             }
+
+            s.$on(s.flow.event.getRefreshId(), function () {
+                s.task.query();
+            })
 
             s.task.load = function () {
 

@@ -2443,7 +2443,7 @@ flowComponents
             }
 
             t(function () {
-                $(".frame-content").scrollTo($("div.box[task]:eq(" + index + ") div"), 200);
+                $(".frame-content").scrollTo($("div.box[task]:eq(" + index + ")"), 200);
             });
         };
 

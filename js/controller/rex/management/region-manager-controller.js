@@ -1,19 +1,18 @@
 angular.module("regionManager", ["fluid", "ngResource", "datatables", "ngCookies", "flowServices"])
     .controller('regionManagerCtrl', ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService",
         "flowModalService", "$compile", "$filter", "$cookies", "userProfile", "imageService", function (s, dto, dtc, ms, fm, c, f, co, up, is) {
-            s.task.preLoad = function () {
-                s.task.home_page = "region_manager_home";
-                s.task.home_url = "services/war/agent_light_query/find_managed_agents?manager=";
-                s.task.view_top_url = "services/war/customer_tag_query/by_assigned_agents?agentId=";
-                s.task.rsm = {};
-                s.imageService = is;
-                s.flow.onRefreshed = function () {
-                    if (s.task.page.name === s.task.home_page) {
-                        s.task.refresh();
-                    }
-                }
-            };
 
+            s.task.home_page = "region_manager_home";
+            s.task.home_url = "services/war/agent_light_query/find_managed_agents?manager=";
+            s.task.view_top_url = "services/war/customer_tag_query/by_assigned_agents?agentId=";
+            s.task.rsm = {};
+            s.imageService = is;
+
+            s.flow.onRefreshed = function () {
+                if (s.task.page.name === s.task.home_page) {
+                    s.task.refresh();
+                }
+            }
 
             s.openTagEditor = function (agent) {
                 agent.viewTop = false;
@@ -122,8 +121,6 @@ angular.module("regionManager", ["fluid", "ngResource", "datatables", "ngCookies
                         console.info("cascading changes", $agent);
                     });
                 }
-
-
 
 
             }
