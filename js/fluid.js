@@ -132,12 +132,14 @@ flowComponents
 
                         scope.flow.openTask = function (name, page, param, newTask, origin, size) {
 
-                            var url = scope.flow.openTaskBaseUrl;
+                            var url = scope.flow.openTaskBaseUrl; 
+
                             if (size) {
                                 url += "size=" + size + "&"
                             } else {
                                 url += "size=100&"
                             }
+
                             url += "active=true&name=" + name;
                             if (page) {
 
@@ -2441,7 +2443,7 @@ flowComponents
             }
 
             t(function () {
-                $(".frame-content").scrollTo($("div.box[task]:eq(" + index + ") div"), 200);
+                $(".frame-content").scrollTo($("div.box[task]:eq(" + index + ")"), 200);
             });
         };
 
