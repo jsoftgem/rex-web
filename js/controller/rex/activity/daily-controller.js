@@ -7,14 +7,14 @@ angular.module("dailyController", ["fluid", "ngResource", "datatables"])
             s.task.edit_name = "daily_edit";
             s.task.home = "daily";
             s.task.submit_button = "daily_submit";
-            s.task.create_ctl_id = "daily_create_ctl";
-            s.task.save_ctl_id = "daily_save_ctl";
-            s.task.del_ctl_id = "daily_del_ctl";
-            s.task.getInstanceQuery = "services/war/activity_query/getInstance/";
-            s.task.tempEdit = {};
-            s.flow.controls = [new SaveControl(), new DeleteControl()];
-            s.flow.controls[0].id = s.task.save_ctl_id;
-            s.flow.controls[0].action = function () {
+                s.task.create_ctl_id = "daily_create_ctl";
+                s.task.save_ctl_id = "daily_save_ctl";
+                s.task.del_ctl_id = "daily_del_ctl";
+                s.task.getInstanceQuery = "services/war/activity_query/getInstance/";
+                s.task.tempEdit = {};
+                s.flow.controls = [new SaveControl(), new DeleteControl()];
+                s.flow.controls[0].id = s.task.save_ctl_id;
+                s.flow.controls[0].action = function () {
                 $("#" + s.flow.getElementFlowId(s.task.submit_button)).trigger("click");
             };
             s.flow.controls[0].pages = [s.task.create_name, s.task.edit_name];

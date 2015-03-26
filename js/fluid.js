@@ -132,7 +132,7 @@ flowComponents
 
                         scope.flow.openTask = function (name, page, param, newTask, origin, size) {
 
-                            var url = scope.flow.openTaskBaseUrl; 
+                            var url = scope.flow.openTaskBaseUrl;
 
                             if (size) {
                                 url += "size=" + size + "&"
@@ -1159,8 +1159,10 @@ flowComponents
                         height = estimateHeight(height);
                         if (scope.flowFrameService.isSearch) {
                             frameDiv.attr("style", "height:" + height + "px;overflow:auto");
+
                         } else {
                             element.attr("style", "height:" + height + "px;overflow:auto");
+
                         }
                         $("body").attr("style", "height: " + height + "px;overflow:hidden");
                     } else {
@@ -2410,19 +2412,14 @@ function setChildIndexIds(element, taskId, suffix, depth) {
 flowComponents
     .service("flowFrameService", ["flowHttpService", "$timeout", function (f, t) {
         this.isSearch = false;
-
         this.searchTask = "";
-
-        this.taskUrl = "services/flow_task_service/getTask?name="
-
+        this.taskUrl = "services/flow_task_service/getTask?name=";
         if (this.taskList === undefined) {
             this.taskList = [];
         }
-
         this.pushTask = function (task) {
             this.taskList.push(task);
         };
-
         this.addTask = function (url, origin, newTask) {
             //TODO: remove newTask
 
@@ -2443,10 +2440,9 @@ flowComponents
             }
 
             t(function () {
-                $(".frame-content").scrollTo($("div.box[task]:eq(" + index + ")"), 200);
+                $(".frame-content").scrollTo($(".frame-content div.box[task]:eq(" + index + ")"), 200);
             });
         };
-
         this.toggleSearch = function () {
             this.isSearch = !this.isSearch;
             if (this.isSearch === false) {
@@ -2511,8 +2507,6 @@ flowComponents
         this.getFrame = function () {
             return $("div.frame-content.frame-fullscreen");
         }
-
-
         this.buildTask = function (task) {
 
             /* Task event */
@@ -2541,7 +2535,14 @@ flowComponents
 
             return task;
         }
-
+        this.showActionBar = function () {
+            this.actionBarClass = "animated slideInUp";
+            this.actionBarShowing = true;
+        };
+        this.hideActionBar = function () {
+            this.actionBarClass = "animated slideOutDown";
+            this.actionBarShowing = false;
+        };
         return this;
 
     }])
