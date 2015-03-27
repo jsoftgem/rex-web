@@ -34,14 +34,14 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
             s.task.showAttach = false;
             s.flow.onOpenPinned = function (page, param) {
                 alert(page);
-            }
+            };
             s.task.onWindowOpened = function () {
                 s.task.schoolYear = undefined;
                 s.task.agent = undefined;
                 s.task.plannerCalendar.fullCalendar("destroy");
                 s.task.plannerCalendar.fullCalendar("render");
                 s.task.plannerCalendar.fullCalendar(s.task.calendar);
-            }
+            };
             s.$on(s.flow.event.getSuccessEventId(), function (event, rv, method) {
                 if (method === "put") {
                     s.task.activities = [];
@@ -59,13 +59,13 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
 
                 s.task.plannerCalendar.fullCalendar("refetchEvents");
 
-            }
+            };
             s.task.viewNotes = function () {
                 s.task.showNotes = !s.task.showNotes;
                 if (s.task.showNotes === false) {
                     s.task.editNote = false;
                 }
-            }
+            };
             s.task.saveNotes = function (note) {
                 var promise = {};
                 if (note.id === undefined) {
@@ -86,7 +86,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                     }
                 );
 
-            }
+            };
             s.task.uploadAttachmentUrl = "services/upload_service/upload_file?folder=";
             s.task.attachmentQuery = "services/war/planner_attachment_query/attachment_by_school_year?school_year="
             s.task.attachmentCrud = "services/war/planner_attachment_crud/";

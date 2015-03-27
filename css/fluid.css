@@ -342,12 +342,12 @@ div.flow-form label {
     border: none;
     text-align: center;
     color: #f5f5f5;
-    cursor: pointer;
+    cursor: hand;
 
 }
 
-.fluid-checkbox disabled {
-    color: darkgray !important;
+.fluid-checkbox.disabled {
+    color: darkgray !important; cursor: pointer;
 }
 
 .fluid-checkbox i {

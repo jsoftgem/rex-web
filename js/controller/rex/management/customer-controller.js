@@ -42,8 +42,9 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
 
         s.dtColumns.push(dtc.newColumn("customerCode").withTitle("Customer code").withOption("searchable", true));
         s.dtColumns.push(dtc.newColumn("school.name").withTitle("Name").withOption("searchable", true));
-        s.dtColumns.push(dtc.newColumn("regionCode").withTitle("Region").withOption("searchable", true));
         s.dtColumns.push(dtc.newColumn("ownerName").withTitle("Material Advisor").withOption("searchable", true));
+        s.dtColumns.push(dtc.newColumn("regionCode").withTitle("Region").withOption("searchable", true));
+
 
         s.edit = function (id) {
             s.flow.goTo(s.edit_name, id);
