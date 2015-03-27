@@ -174,7 +174,6 @@ angular.module("regionManager", ["fluid", "ngResource", "datatables", "ngCookies
             }
             s.task.page.load = function () {
                 if (this.name === s.task.home_page) {
-                    console.info("load-region-manager", s.task.origin.region);
                     s.task.refresh();
                 }
             }
