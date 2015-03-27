@@ -79,7 +79,10 @@ angular.module("home", ["flowServices", "fluid", "flowFactories"])
         }
 
     })
-    .controller("signinCtrl", function ($scope, $http, sessionService, flowMessageService, userSessionService, HOST) {
+    .controller("signinCtrl", function ($scope, $http, sessionService, flowMessageService, userSessionService, HOST, REX_VERSION) {
+
+        $scope.ver = REX_VERSION;
+
         $scope.login = function (user) {
 
             var request = $http({

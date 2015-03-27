@@ -13,12 +13,13 @@
                               id="{{flow.getElementFlowId('agentLookUp')}}"
                               field-label="user.flowUserDetail.fullName"
                               parent-id="{{flow.getElementFlowId('planner')}}"
-                              label="Agent" model="task.agent" source-url="services/war/agent_query/list"
+                              label="Agent" model="task.agent"
+                              source-url="services/war/agent_query/find_agent_by_current_user_level"
                               key-var="agent">
 
                     <flow-sub-column title="Agent" model="agent.user.flowUserDetail.fullName"></flow-sub-column>
                 </flow-look-up>
-                <flow-field label="Monthly Planned Target" ng-if="task.agent != undefined && task.view == 'month'"
+                <flow-field label="Monthly Planned Target" ng-if="task.agent != undefined&& task.view == 'month'"
                             type="number"
                             disabled="true" model="calendar.plannedCount"></flow-field>
 

@@ -10,8 +10,11 @@ and open the template in the editor.
 
 body {
     /*background-color: #95a5a6;*/
-    /*font-family: "Arial Black", arial-black;*/
-    /*  font-size: 18px;*/
+    font-family: "Tahoma";
+    font-weight: 400;
+    font-style: normal;
+    line-height: 20px;
+    font-size: 16px;
     /* background-color: #ecf0f1;*/
     /* background: url(../img/fancy_deboss.png);*/
     /* -webkit-background-size: cover;
@@ -600,7 +603,6 @@ li.fluid-task-item-xs a {
 }
 
 .header-login {
-    background: #d49768;
     opacity: 0.9;
 }
 
@@ -621,6 +623,17 @@ li.fluid-task-item-xs a {
 }
 
 .panel-login {
-    background: #d49768;
-    opacity: 0.9;
+    background: rgba(205, 10, 10, 0.2);
+}
+
+.header-about {
+    font-size: 12px;
+    font-style: italic;
+    margin-right: 5;
+    margin-left: 5;
+    color: mintcream;
+    background: rgba(205, 10, 10, 0.2);
+}
+
+.header-about div {
 }

@@ -313,7 +313,7 @@ div.flow-form label {
 .frame-content {
     margin: 0 auto;
     clear: both;
-    background: url(../images/bg/notebook.png) repeat;
+    background: url(../images/bg/school.png) repeat;
 }
 
 .frame-content-div {
@@ -339,15 +339,19 @@ div.flow-form label {
 }
 
 .fluid-checkbox {
-    height: 24px;
-    width: 24px;
-    background: none;
-    border: 1px solid #888888;
+    border: none;
     text-align: center;
+    color: #f5f5f5;
+    cursor: pointer;
+
+}
+
+.fluid-checkbox disabled {
+    color: darkgray !important;
 }
 
 .fluid-checkbox i {
-    font-size: 17px;
+    font-size: 30px !important;
 }
 
 .flow-footer {

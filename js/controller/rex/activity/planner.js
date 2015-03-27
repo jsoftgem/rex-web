@@ -109,7 +109,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
             s.customer = s.newCustomer();
             s.task.page.load = function () {
                 if (up.agent) {
-                    s.task.hideAgentFilter = true;
+                    s.task.hideAgentFilter = !up.agent.isManager;
                     s.task.agent = up.agent;
                     s.task.page.title = up.agent.fullName;
                 }
@@ -695,8 +695,10 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                 s.customer.weekStart = date.getTime();
 
                 s.customer.isMonth = s.task.plannerCalendar.fullCalendar("getView").name === "month";
+                if (s.task.schoolYear) {
+                    s.customer.schoolYear = s.task.schoolYear.id;
+                }
 
-                s.customer.schoolYear = s.task.schoolYear.id;
 
                 s.customer.agentId = s.task.agent.id;
                 console.info("customer", s.customer);
@@ -751,19 +753,22 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                     date = view.intervalStart.toDate();
                 }
 
+
                 var month = monthNames[date.getMonth()].toUpperCase()
+                if (s.task.schoolYear) {
+                    var url = QUERY_PLANNER + "?schoolYear=" + s.task.schoolYear.id + "&agent=" + s.task.agent.id + "&year=" + date.getFullYear() + "&month=";
 
-                var url = QUERY_PLANNER + "?schoolYear=" + s.task.schoolYear.id + "&agent=" + s.task.agent.id + "&year=" + date.getFullYear() + "&month=";
+                    var promise = s.http.get(url, month);
 
-                var promise = s.http.get(url, month);
+                    promise.success(function (data) {
+                        s.task.planner = data;
+                    })
 
-                promise.success(function (data) {
-                    s.task.planner = data;
-                })
+                    promise.error(function () {
+                        s.task.planner = {};
+                    });
+                }
 
-                promise.error(function () {
-                    s.task.planner = {};
-                });
 
             }
             s.refetchCustomer = function () {
@@ -795,7 +800,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                 if (s.task.schoolYear && s.task.agent) {
                     var param = customerId + "?schoolYear=" + s.task.schoolYear.id;
                     s.flow.openTask("customer_agent_task", "customer_agent_summary", param, false, {
-                        source:"planner",
+                        source: "planner",
                         agent: s.task.agent,
                         schoolYear: s.task.schoolYear
                     });
