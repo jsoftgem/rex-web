@@ -301,7 +301,6 @@ div.flow-form label {
     font-size: 14px;
     font-style: inherit;
     font-variant: inherit;
-    font: bold;
     text-align: left !important;
 }
 
@@ -314,7 +313,7 @@ div.flow-form label {
 .frame-content {
     margin: 0 auto;
     clear: both;
-    background: #888888;
+    background: url(../images/bg/school.png) repeat;
 }
 
 .frame-content-div {
@@ -335,20 +334,32 @@ div.flow-form label {
     margin: auto;
 }
 
-
-
 .overflow-x {
     overflow-x: auto;
 }
 
 .fluid-checkbox {
-    height: 24px;
-    width: 24px;
-    background: none;
-    border: 1px solid #888888;
+    border: none;
     text-align: center;
+    color: #f5f5f5;
+    cursor: hand;
+
+}
+
+.fluid-checkbox.disabled {
+    color: darkgray !important; cursor: pointer;
 }
 
 .fluid-checkbox i {
-    font-size: 17px;
+    font-size: 30px !important;
+}
+
+.flow-footer {
+    margin: 0 auto;
+    bottom: 0;
+    opacity: 0.8;
+    max-height: 100px;
+    overflow: auto;
+    width: 30pc;
+    position: absolute;
 }

@@ -34,14 +34,14 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
             s.task.showAttach = false;
             s.flow.onOpenPinned = function (page, param) {
                 alert(page);
-            }
+            };
             s.task.onWindowOpened = function () {
                 s.task.schoolYear = undefined;
                 s.task.agent = undefined;
                 s.task.plannerCalendar.fullCalendar("destroy");
                 s.task.plannerCalendar.fullCalendar("render");
                 s.task.plannerCalendar.fullCalendar(s.task.calendar);
-            }
+            };
             s.$on(s.flow.event.getSuccessEventId(), function (event, rv, method) {
                 if (method === "put") {
                     s.task.activities = [];
@@ -59,13 +59,13 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
 
                 s.task.plannerCalendar.fullCalendar("refetchEvents");
 
-            }
+            };
             s.task.viewNotes = function () {
                 s.task.showNotes = !s.task.showNotes;
                 if (s.task.showNotes === false) {
                     s.task.editNote = false;
                 }
-            }
+            };
             s.task.saveNotes = function (note) {
                 var promise = {};
                 if (note.id === undefined) {
@@ -86,7 +86,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                     }
                 );
 
-            }
+            };
             s.task.uploadAttachmentUrl = "services/upload_service/upload_file?folder=";
             s.task.attachmentQuery = "services/war/planner_attachment_query/attachment_by_school_year?school_year="
             s.task.attachmentCrud = "services/war/planner_attachment_crud/";
@@ -109,7 +109,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
             s.customer = s.newCustomer();
             s.task.page.load = function () {
                 if (up.agent) {
-                    s.task.hideAgentFilter = true;
+                    s.task.hideAgentFilter = !up.agent.isManager;
                     s.task.agent = up.agent;
                     s.task.page.title = up.agent.fullName;
                 }
@@ -695,8 +695,10 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                 s.customer.weekStart = date.getTime();
 
                 s.customer.isMonth = s.task.plannerCalendar.fullCalendar("getView").name === "month";
+                if (s.task.schoolYear) {
+                    s.customer.schoolYear = s.task.schoolYear.id;
+                }
 
-                s.customer.schoolYear = s.task.schoolYear.id;
 
                 s.customer.agentId = s.task.agent.id;
                 console.info("customer", s.customer);
@@ -751,19 +753,22 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                     date = view.intervalStart.toDate();
                 }
 
+
                 var month = monthNames[date.getMonth()].toUpperCase()
+                if (s.task.schoolYear) {
+                    var url = QUERY_PLANNER + "?schoolYear=" + s.task.schoolYear.id + "&agent=" + s.task.agent.id + "&year=" + date.getFullYear() + "&month=";
 
-                var url = QUERY_PLANNER + "?schoolYear=" + s.task.schoolYear.id + "&agent=" + s.task.agent.id + "&year=" + date.getFullYear() + "&month=";
+                    var promise = s.http.get(url, month);
 
-                var promise = s.http.get(url, month);
+                    promise.success(function (data) {
+                        s.task.planner = data;
+                    })
 
-                promise.success(function (data) {
-                    s.task.planner = data;
-                })
+                    promise.error(function () {
+                        s.task.planner = {};
+                    });
+                }
 
-                promise.error(function () {
-                    s.task.planner = {};
-                });
 
             }
             s.refetchCustomer = function () {
@@ -795,7 +800,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                 if (s.task.schoolYear && s.task.agent) {
                     var param = customerId + "?schoolYear=" + s.task.schoolYear.id;
                     s.flow.openTask("customer_agent_task", "customer_agent_summary", param, false, {
-                        source:"planner",
+                        source: "planner",
                         agent: s.task.agent,
                         schoolYear: s.task.schoolYear
                     });

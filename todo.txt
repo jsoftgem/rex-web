@@ -38,13 +38,22 @@ Rex backlogs
 - customer contacts specific fields for email,workphone,homephone
 
 Rex Patch 1
-- Utilize page load callback
+- Utilize page load callback (done)
 - Reports print, export (csv, pdf), activity productivity up to 125%
-- Agent > customer summary view in planner > editable customer info e.g. Name, Address, Contacts etc. except Customer Code
+- Agent > customer summary view in planner > editable customer info e.g. Name, Address, Contacts etc. except Customer Code (done)
+
+
+Rex Patch 2
+- Palette settings
+- Display Group as column in User Manager
+- Report export (csv, pdf)
+- Activity Worked with Manager
+- Seminar Tagging
+
 
 Rex UI Backlogs
 - ui enhancement for mobile.
-- reports ui/color enhancment readable
+- reports ui/color enhancement readable
 - Full calendar rendering. (done)
 
 
