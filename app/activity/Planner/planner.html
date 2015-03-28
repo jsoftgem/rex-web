@@ -5,7 +5,8 @@
         <div class="form-group">
             <div class="col-lg-3 col-md-5 col-sm-5">
                 <flow-select id="{{flow.getElementFlowId('schoolYearSelect')}}" task="task" label="School Year"
-                             source-url="services/war/school_year_query/list" model="task.schoolYear"
+                             source-url="services/war/school_year_query/list" model="task.schoolYear" disabled="false"
+                             required="false"
                              field-label="description">
                 </flow-select>
 
@@ -249,43 +250,44 @@
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                                    <flow-check label="Exam Copies Distribution"
+                                    <flow-check disabled="false" required="false" label="Exam Copies Distribution"
                                                 model="hangingActivity.activity.ecd"></flow-check>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                                    <flow-check label="Invitation to Events"
+                                    <flow-check disabled="false" required="false" label="Invitation to Events"
                                                 model="hangingActivity.activity.ite"></flow-check>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                                    <flow-check label="Confirmation of Events"
+                                    <flow-check disabled="false" required="false" label="Confirmation of Events"
                                                 model="hangingActivity.activity.coe"></flow-check>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                                    <flow-check label="Follow up payment"
+                                    <flow-check disabled="false" required="false" label="Follow up payment"
                                                 model="hangingActivity.activity.fp"></flow-check>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                                    <flow-check label="Giveaways / Raffle Items Distribution"
+                                    <flow-check disabled="false" required="false"
+                                                label="Giveaways / Raffle Items Distribution"
                                                 model="hangingActivity.activity.gd"></flow-check>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                                    <flow-check label="Delivery of Incentive/Donation"
+                                    <flow-check disabled="false" required="false" label="Delivery of Incentive/Donation"
                                                 model="hangingActivity.activity.doi"></flow-check>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                                    <flow-check label="Follow-Up / Get PO"
+                                    <flow-check disabled="false" required="false" label="Follow-Up / Get PO"
                                                 model="hangingActivity.activity.po"></flow-check>
                                 </div>
                             </div>
@@ -293,24 +295,26 @@
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                                    <flow-check label="Delivery of Add'l Order / TRM / Compli..."
+                                    <flow-check disabled="false" required="false"
+                                                label="Delivery of Add'l Order / TRM / Compli..."
                                                 model="hangingActivity.activity.daotrc"></flow-check>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                                    <flow-check label="Booklist" model="hangingActivity.activity.bookList"></flow-check>
+                                    <flow-check disabled="false" required="false" label="Booklist"
+                                                model="hangingActivity.activity.bookList"></flow-check>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                                    <flow-check label="Updated Customer Info Sheet"
+                                    <flow-check disabled="false" required="false" label="Updated Customer Info Sheet"
                                                 model="hangingActivity.activity.ucis"></flow-check>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                                    <flow-check label="Implemented Ex-Sem"
+                                    <flow-check disabled="false" required="false" label="Implemented Ex-Sem"
                                                 model="hangingActivity.activity.ies"></flow-check>
                                 </div>
                             </div>

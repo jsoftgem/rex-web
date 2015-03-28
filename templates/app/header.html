@@ -41,11 +41,12 @@
                        flow-tooltip class="fa fa-search"
                        tooltip-title="Search tasks"></a>
                 </div>
-
             </li>
             <li class="dropdown topbar-user"><a data-hover="dropdown" href="javascript:void(0);"
-                                                class="dropdown-toggle"><img ng-src="{{userProfile.avatar}}" alt=""
-                                                                             class="img-responsive img-circle"/>&nbsp;<span
+                                                class="dropdown-toggle"><img
+                    ng-src="{{userProfile.avatar}}"
+                    alt=""
+                    class="img-responsive img-circle"/>&nbsp;<span
                     class="hidden-xs">{{userProfile.fullName}}</span>&nbsp;<span class="caret"></span></a>
                 <ul class="dropdown-menu dropdown-user">
                     <li><a href="#" ng-click="editProfile()"><i class="octicon octicon-file-media"></i>My Profile</a>
@@ -157,6 +158,7 @@
            task="task">
             <i class="fluid-bar-icon {{task.glyph}}"></i>
         </a>
+
         <div class="dropdown fluidTaskBarMore hidden-md hidden-sm hidden-xs">
             <a href="#" data-hover="dropdown" class="hiddex-xs dropdown-toggle"
                ng-show="flowFrameService.taskList.length > 10">

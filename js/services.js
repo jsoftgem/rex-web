@@ -26,7 +26,7 @@ angular.module("flowServices", ["fluid"])
             this.username = userDetail.username;
             this.email = userDetail.email;
             this.detailId = userDetail.detailId;
-            this.avatar = f.host + "services/download_service/getContent/" + userDetail.avatar;
+            this.avatar = userDetail.avatar ? f.host + "services/download_service/getContent/" + userDetail.avatar : '../images/gallery/profile_default.png';
             this.group = userDetail.group;
             this.groupEmblem = f.host + userDetail.groupEmblem;
             this.groupOwner = userDetail.groupOwner;

@@ -4,119 +4,129 @@
 
         <input id="{{flow.getElementFlowId('school_year_submit')}}" type="submit"
                style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
-  
-
-  
-      <flow-field label="Description" required="true" model="task.modelEdit.description"></flow-field>
-      <flow-field label="Created by" disabled="true" model="task.edit.createUserFullName"></flow-field>
-      <fieldset>
-        <legend>From</legend>
-        <div class="col-lg-6">  
-         <flow-select
-                  task="task"
-                  id="{{flow.getElementFlowId('monthSelect')}}"
-                  model="task.modelEdit.periodMonth"
-                  label="Month"
-                  source-url="factories/war/table_factories/months">
-         </flow-select></div>
-        <div class="col-lg-6">
-           <flow-select
-                  required="true"
-                  task="task"
-                  id="{{flow.getElementFlowId('yearSelect')}}"
-                  model="task.modelEdit.periodYear"
-                  label="Year"
-                  source-url="factories/war/table_factories/years">
-         </flow-select>
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend>To</legend>
-         <div class="col-lg-6">  
-         <flow-select
-                  task="task"
-                  id="{{flow.getElementFlowId('monthSelect2')}}"
-                  model="task.modelEdit.periodMonthTo"
-                  label="Month"
-                  source-url="factories/war/table_factories/months">
-         </flow-select></div>
-        <div class="col-lg-6">
-           <flow-select
-                  required="true"
-                  task="task"
-                  id="{{flow.getElementFlowId('yearSelect2')}}"
-                  model="task.modelEdit.periodYearTo"
-                  label="Year"
-                  source-url="factories/war/table_factories/years">
-         </flow-select>
-        </div>
-      </fieldset>
-
-  
-  <div class="col-lg-12">
-
-      <flow-sub-table flow="flow" task="task" key-var="customer" title="Customers"
-                        target-list="task.modelEdit.warCustomerMarkets"
-                        id="{{flow.getElementFlowId('customersSubTable')}}" id-field="id"
-                        create-event="createCustomerEvent" edit-event="editCustomerEvent" look-up="false">
-               <flow-sub-column title="Customer Code" model="customer.customerCode"></flow-sub-column>
-               <flow-sub-column title="School" model="customer.customerName"></flow-sub-column>
-               <flow-sub-column title="Market Potential Segment" model="customer.marketPotentialSegment"></flow-sub-column>
-               <flow-sub-column title="Market Potential" model="customer.marketPotential"></flow-sub-column>
-      </flow-sub-table>
-
-	</div>
 
 
-     <flow-modal id="{{flow.getElementFlowId('customerModal')}}">
-
-      <div class="panel panel-primary">
-        
-        <div class="panel-heading"><span class="heading-title">{{task.edit.customerManaged ? 'Edit ' : 'Add customer'}}</span></div>
-
-        <div class="panel-body">
-            
-          <div class="form-horizontal">
-                <flow-look-up ng-hide="task.edit.customerManaged"
-                task="task"
-                id="{{flow.getElementFlowId('customerLookUp')}}"
-                parent-id="{{flow.getElementFlowId('school_year_edit_form')}}"
-                model="task.edit.customerLookUp"
-                label="Customer"
-                source-url="services/war/customer_light_query/list" 
-                title="Customer" field-label="customerCode"
-                key-var="customer">
-                  <flow-sub-column title="Customer Code" model="customer.customerCode"></flow-sub-column>
-                  <flow-sub-column title="Customer Name" model="customer.school.name"></flow-sub-column>
-                </flow-look-up> 
-
-                
-          <flow-field label="Customer name" disabled="true" model="task.modelEdit.warCustomerMarkets[task.edit.customerIndex].customerName"></flow-field>
-
-          <flow-field label="Market Potential Segment" disabled="true" model="task.modelEdit.warCustomerMarkets[task.edit.customerIndex].marketPotentialSegment"></flow-field>
-
-          <flow-field label="Market Potential" type="number" model="task.modelEdit.warCustomerMarkets[task.edit.customerIndex].marketPotential"></flow-field>
-
-          </div>
-          </div>
-
-
-          <div class="panel-footer">
-            <div class="btn-group btn-group-md">
-              <button class="btn btn-success" ng-show="!task.edit.customerManaged" ng-click="add()" type="button">Add</button>
-              <button class="btn btn-info" ng-click="saveAndClose()" type="button">{{task.edit.customerManaged ? 'Update' : 'Save & close'}}</button>
-              <button class="btn btn-danger" ng-click="cancel()" type="button">Cancel</button>
+        <flow-field label="Description" required="true" model="task.modelEdit.description"></flow-field>
+        <flow-field label="Created by" disabled="true" model="task.edit.createUserFullName"></flow-field>
+        <fieldset>
+            <legend>From</legend>
+            <div class="col-lg-6">
+                <flow-select disabled="false" required="false"
+                             task="task"
+                             id="{{flow.getElementFlowId('monthSelect')}}"
+                             model="task.modelEdit.periodMonth"
+                             label="Month"
+                             source-url="factories/war/table_factories/months">
+                </flow-select>
             </div>
-          </div>
+            <div class="col-lg-6">
+                <flow-select disabled="false"
+                             required="true"
+                             task="task"
+                             id="{{flow.getElementFlowId('yearSelect')}}"
+                             model="task.modelEdit.periodYear"
+                             label="Year"
+                             source-url="factories/war/table_factories/years">
+                </flow-select>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>To</legend>
+            <div class="col-lg-6">
+                <flow-select disabled="false" required="false"
+                             task="task"
+                             id="{{flow.getElementFlowId('monthSelect2')}}"
+                             model="task.modelEdit.periodMonthTo"
+                             label="Month"
+                             source-url="factories/war/table_factories/months">
+                </flow-select>
+            </div>
+            <div class="col-lg-6">
+                <flow-select disabled="false"
+                             required="true"
+                             task="task"
+                             id="{{flow.getElementFlowId('yearSelect2')}}"
+                             model="task.modelEdit.periodYearTo"
+                             label="Year"
+                             source-url="factories/war/table_factories/years">
+                </flow-select>
+            </div>
+        </fieldset>
+
+
+        <div class="col-lg-12">
+
+            <flow-sub-table flow="flow" task="task" key-var="customer" title="Customers"
+                            target-list="task.modelEdit.warCustomerMarkets"
+                            id="{{flow.getElementFlowId('customersSubTable')}}" id-field="id"
+                            create-event="createCustomerEvent" edit-event="editCustomerEvent" look-up="false">
+                <flow-sub-column title="Customer Code" model="customer.customerCode"></flow-sub-column>
+                <flow-sub-column title="School" model="customer.customerName"></flow-sub-column>
+                <flow-sub-column title="Market Potential Segment"
+                                 model="customer.marketPotentialSegment"></flow-sub-column>
+                <flow-sub-column title="Market Potential" model="customer.marketPotential"></flow-sub-column>
+            </flow-sub-table>
+
         </div>
 
-       </flow-modal>
 
-  </form>
+        <flow-modal id="{{flow.getElementFlowId('customerModal')}}">
+
+            <div class="panel panel-primary">
+
+                <div class="panel-heading"><span class="heading-title">{{task.edit.customerManaged ? 'Edit ' : 'Add customer'}}</span>
+                </div>
+
+                <div class="panel-body">
+
+                    <div class="form-horizontal">
+                        <flow-look-up ng-hide="task.edit.customerManaged"
+                                      task="task"
+                                      id="{{flow.getElementFlowId('customerLookUp')}}"
+                                      parent-id="{{flow.getElementFlowId('school_year_edit_form')}}"
+                                      model="task.edit.customerLookUp"
+                                      label="Customer"
+                                      source-url="services/war/customer_light_query/list"
+                                      title="Customer" field-label="customerCode"
+                                      key-var="customer">
+                            <flow-sub-column title="Customer Code" model="customer.customerCode"></flow-sub-column>
+                            <flow-sub-column title="Customer Name" model="customer.school.name"></flow-sub-column>
+                        </flow-look-up>
 
 
-  <flow-modal id="{{flow.getElementFlowId('schoolYearDeleteModal')}}">
+                        <flow-field label="Customer name" disabled="true"
+                                    model="task.modelEdit.warCustomerMarkets[task.edit.customerIndex].customerName"></flow-field>
+
+                        <flow-field label="Market Potential Segment" disabled="true"
+                                    model="task.modelEdit.warCustomerMarkets[task.edit.customerIndex].marketPotentialSegment"></flow-field>
+
+                        <flow-field label="Market Potential" type="number"
+                                    model="task.modelEdit.warCustomerMarkets[task.edit.customerIndex].marketPotential"></flow-field>
+
+                    </div>
+                </div>
+
+
+                <div class="panel-footer">
+                    <div class="btn-group btn-group-md">
+                        <button class="btn btn-success" ng-show="!task.edit.customerManaged" ng-click="add()"
+                                type="button">Add
+                        </button>
+                        <button class="btn btn-info" ng-click="saveAndClose()" type="button">{{task.edit.customerManaged
+                            ? 'Update' : 'Save & close'}}
+                        </button>
+                        <button class="btn btn-danger" ng-click="cancel()" type="button">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+        </flow-modal>
+
+    </form>
+
+
+    <flow-modal id="{{flow.getElementFlowId('schoolYearDeleteModal')}}">
 
         <div class="panel panel-warning">
 
@@ -132,5 +142,5 @@
 
     </flow-modal>
 
- 
+
 </div>

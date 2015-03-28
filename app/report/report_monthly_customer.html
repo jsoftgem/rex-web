@@ -6,17 +6,20 @@
                       model="task.view"
                       values="Table, Bar Chart">
          </flow-select>-->
-        <flow-select column="3" id="{{flow.getElementFlowId('schoolYearSelect')}}" task="task" label="School Year"
+        <flow-select disabled="false" required="false"
+                     column="3" id="{{flow.getElementFlowId('schoolYearSelect')}}" task="task" label="School Year"
                      source-url="services/war/school_year_query/list" model="task.schoolYear"
                      field-label="description" change="task.selectSchoolYear(item)">
         </flow-select>
-        <flow-select ng-if="task.schoolYear && !task.isAgent" column="3" id="{{flow.getElementFlowId('regionSelect')}}"
+        <flow-select disabled="false" required="false"
+                     ng-if="task.schoolYear && !task.isAgent" column="3" id="{{flow.getElementFlowId('regionSelect')}}"
                      task="task"
                      label="Region"
                      source-url="services/war/region_query/list" model="task.region"
                      field-label="regionCode" change="task.selectRegion(item)">
         </flow-select>
-        <flow-select ng-if="task.region && !task.isAgent" column="3" id="{{flow.getElementById('agentSelect')}}"
+        <flow-select disabled="false" required="false"
+                     ng-if="task.region && !task.isAgent" column="3" id="{{flow.getElementById('agentSelect')}}"
                      task="task" field-label="initials" model="task.agent" label="Agent"
                      source-url="services/war/agent_query/find_by_region/{{task.region.regionCode}}"
                      change="task.selectAgent(item)"></flow-select>

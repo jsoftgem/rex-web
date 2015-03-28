@@ -6,18 +6,24 @@
 
         <flow-field column="12" model="task.pageCreate.home" label="Url" type="text" required="true"></flow-field>
 
-        <flow-check column="4" class="col-lg-offset-2 col-md-offset-2" model="task.pageCreate.autoGet"
+        <flow-check disabled="false" required="false" column="4" class="col-lg-offset-2 col-md-offset-2"
+                    model="task.pageCreate.autoGet"
                     label="Auto GET"></flow-check>
-        <flow-check column="4" class="col-lg-offset-2 col-md-offset-2" model="task.pageCreate.isHome"
+        <flow-check disabled="false" required="false" column="4" class="col-lg-offset-2 col-md-offset-2"
+                    model="task.pageCreate.isHome"
                     label="Home"></flow-check>
-        <flow-check column="4" class="col-lg-offset-2 col-md-offset-2" model="task.pageCreate.pageLinkEnabled"
+        <flow-check disabled="false" required="false" column="4" class="col-lg-offset-2 col-md-offset-2"
+                    model="task.pageCreate.pageLinkEnabled"
                     label="Page link"></flow-check>
 
-        <flow-field column="6" model="task.pageCreate.name" label="Name" type="text" required="true"></flow-field>
+        <flow-field disabled="false" column="6" model="task.pageCreate.name" label="Name" type="text"
+                    required="true"></flow-field>
 
-        <flow-field column="6" model="task.pageCreate.title" label="Title" type="text" required="true"></flow-field>
+        <flow-field disabled="false" column="6" model="task.pageCreate.title" label="Title" type="text"
+                    required="true"></flow-field>
 
-        <flow-field column="6" model="task.pageCreate.get" label="GET URI" type="text"></flow-field>
+        <flow-field column="6" model="task.pageCreate.get" label="GET URI"
+                    type="text"></flow-field>
 
         <flow-text-area column="6" model="task.pageCreate.getParam" label="GET Param (JSON)"></flow-text-area>
 

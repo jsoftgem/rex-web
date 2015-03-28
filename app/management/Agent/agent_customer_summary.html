@@ -22,7 +22,7 @@
                 <flow-field column="3" label="School Year" model="task.agent.schoolYear.description" disabled="true"
                             ng-if="task.origin == 'planner'"></flow-field>
                 <flow-select ng-if="task.origin.source != 'planner'" column="3" label="School year"
-                             field-label="description"
+                             field-label="description" disabled="false" required="false"
                              model="task.agent.schoolYear"
                              task="task" source-url="services/war/school_year_query/list"
                              change="task.querySummary()"></flow-select>

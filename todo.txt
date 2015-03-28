@@ -19,7 +19,7 @@ Fluid Core V 2.0
         s.task.page.destroy = function () {
         }
  - change pageCallBack to task.page.load (data)
-
+ - action panel right side bar
 
 Rex V 1.0
 

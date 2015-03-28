@@ -6,14 +6,14 @@
                style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
 
 
-        <flow-select
-                  task="task"
-                  id="{{flow.getElementFlowId('educationLevelSelect')}}"
-                  model="task.levelEdit.description"
-                  label="Education Level"
-                  source-url="factories/war/table_factories/education_levels"
-                  required="true">
-                </flow-select>
+        <flow-select disabled="false"
+                     task="task"
+                     id="{{flow.getElementFlowId('educationLevelSelect')}}"
+                     model="task.levelEdit.description"
+                     label="Education Level"
+                     source-url="factories/war/table_factories/education_levels"
+                     required="true">
+        </flow-select>
 
         <flow-field model="task.levelEdit.levelCourse" label="Level course" type="text" required="true"></flow-field>
 
