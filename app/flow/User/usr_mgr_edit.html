@@ -7,7 +7,8 @@
 
         <flow-field model="task.usrMgrEdit.flowInstance.flowUserDetail.fullName" label="Full name" type="text"
                     required="true"></flow-field>
-        <flow-field model="task.usrMgrEdit.flowInstance.username" label="Username" type="text" required="true"></flow-field>
+        <flow-field model="task.usrMgrEdit.flowInstance.username" label="Username" type="text"
+                    required="true"></flow-field>
         <flow-field model="task.usrMgrEdit.flowInstance.email" label="Email" type="email" required="true"></flow-field>
 
         <flow-look-up
@@ -23,7 +24,8 @@
         <div ng-if="task.page.name == 'usr_mgr_create' || task.page.name == 'group_usr_mgr_create' || task.editPassword">
             <flow-field model="task.usrMgrEdit.flowInstance.password" label="Password" type="password"
                         required="true"></flow-field>
-            <flow-field model="task.reTypePassword" label="Confirm password" type="password" required="true"></flow-field>
+            <flow-field model="task.reTypePassword" label="Confirm password" type="password"
+                        required="true"></flow-field>
         </div>
 
         <div class="form-group">
@@ -33,9 +35,11 @@
         </div>
         <h4>Password recovery setup</h4>
 
-        <flow-field model="task.usrMgrEdit.flowInstance.flowUserDetail.secretQuestion" label="Security question" type="text"
+        <flow-field model="task.usrMgrEdit.flowInstance.flowUserDetail.secretQuestion" label="Security question"
+                    type="text"
                     required="true"></flow-field>
-        <flow-field model="task.usrMgrEdit.flowInstance.flowUserDetail.secretAnswer" label="Secret answer" type="password"
+        <flow-field model="task.usrMgrEdit.flowInstance.flowUserDetail.secretAnswer" label="Secret answer"
+                    type="password"
                     required="true"></flow-field>
 
         <flow-sub-table flow="flow" task="task" title="Profiles"

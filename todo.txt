@@ -34,10 +34,6 @@ Rex backlogs
 - reports > bar chart
 - seminar activity tagging add schools and notes.
 - Activity Field worked with
-- school year month required
-- customer contacts specific fields for email,workphone,homephone
-- Admin > Users > Edit Password ERROR
-- Hide "admin - War Project" in Group for non-admin/non-dev users
 - Automatic Profile assignment per Group - user account creation
 - Display Group as column in User Manager
 - Wildcard on search button in User Manager (applicable to all search buttons)
@@ -51,7 +47,10 @@ Rex Patch 1
 - Utilize page load callback (done)
 - Reports print, export (csv, pdf), activity productivity up to 125%
 - Agent > customer summary view in planner > editable customer info e.g. Name, Address, Contacts etc. except Customer Code (done)
-
+- school year month required (done)
+- customer contacts specific fields for email,workphone,homephone (done)
+- Admin > Users > Edit Password ERROR (done)
+- Hide "admin - War Project" in Group for non-admin/non-dev users (done)
 
 Rex Patch 2
 - Palette settings
@@ -59,6 +58,7 @@ Rex Patch 2
 - Report export (csv, pdf)
 - Activity Worked with Manager
 - Seminar Tagging
+
 
 
 Rex UI Backlogs

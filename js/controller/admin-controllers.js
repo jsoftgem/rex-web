@@ -58,6 +58,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
 
         s.dtColumns.push(dtc.newColumn("username").withTitle("Username").withOption("searchable", true));
         s.dtColumns.push(dtc.newColumn("email").withTitle("Email").withOption("searchable", true));
+        s.dtColumns.push(dtc.newColumn("group").withTitle("Group").withOption("searchable", false).withOption("sortable", false));
 
 
         s.edit = function (id) {

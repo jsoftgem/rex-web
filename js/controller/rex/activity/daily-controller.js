@@ -78,7 +78,7 @@ angular.module("dailyController", ["fluid", "ngResource", "datatables"])
 
             s.dtColumns.push(dtc.newColumn("description").withTitle("Customer").withOption("searchable", true));
 
-            s.dtColumns.push(dtc.newColumn("materialAdviser").withTitle("Materials Adviser").withOption("searchable", true));
+            s.dtColumns.push(dtc.newColumn("materialAdviser").withTitle("Materials Advisor").withOption("searchable", true));
 
             s.dtColumns.push(dtc.newColumn("startDt").withTitle("Date").withOption("searchable", false).renderWith(function (data) {
                 return renderDateSmall(data, f);
