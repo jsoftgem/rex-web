@@ -54,7 +54,7 @@ Rex Patch 1
 
 
 Rex Patch 2
-- Pallete settings
+- Palette settings
 - Display Group as column in User Manager
 - Report export (csv, pdf)
 - Activity Worked with Manager
@@ -63,7 +63,7 @@ Rex Patch 2
 
 Rex UI Backlogs
 - ui enhancement for mobile.
-- reports ui/color enhancment readable
+- reports ui/color enhancement readable
 - Full calendar rendering. (done)
 
 

@@ -3,7 +3,7 @@
  */
 angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
     .controller("usrMgrCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", function (s, dto, dtc, ms, fm, c, f, ss) {
-        s.editPassword = false;
+        s.task.editPassword = false;
         var create = new CreateControl();
         create.id = "usr_mgr_create_ctl";
         create.action = function () {
@@ -11,7 +11,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
             s.task.usrMgrCreate.flowInstance = {};
             s.task.usrMgrCreate.flowInstance.flowUserDetail = {};
             s.task.usrMgrCreate.flowUserGroup = {};
-            s.reTypePassword = "";
+            s.task.reTypePassword = "";
             angular.copy(s.task.usrMgrModel, s.tempData);
             if (s.task.usrMgrCreate.flowInstance.flowUserProfileSet === undefined) {
                 s.task.usrMgrCreate.flowInstance.flowUserProfileSet = [];
@@ -28,10 +28,11 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
         s.save = function () {
             if (s.task.page.name === "usr_mgr_edit") {
                 if (!angular.equals(s.task.usrMgrEdit, s.task.editTemp)) {
-                    if (!s.editPassword) {
+                    console.info("retyped", s.task.reTypePassword);
+                    if (!s.task.editPassword) {
                         s.task.usrMgrEdit.flowInstance.password = null;
                     } else {
-                        if (s.reTypePassword !== s.task.usrMgrEdit.flowInstance.password) {
+                        if (s.task.reTypePassword !== s.task.usrMgrEdit.flowInstance.password) {
                             s.flow.message.warning("Password did not match.");
                             return;
                         }
@@ -41,7 +42,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
                     s.flow.message.info(UI_MESSAGE_NO_CHANGE);
                 }
             } else if (s.task.page.name === "usr_mgr_create") {
-                if (s.reTypePassword !== s.task.usrMgrCreate.flowInstance.password) {
+                if (s.task.reTypePassword !== s.task.usrMgrCreate.flowInstance.password) {
                     s.flow.message.warning("Password did not match.");
                     return;
                 }
@@ -115,7 +116,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
             if ("usr_mgr_edit" === page) {
                 if (!s.task.usrMgrEdit.flowInstance.id || source === "refresh") {
                     s.task.usrMgrEdit.flowInstance = data;
-                    s.reTypePassword = s.task.usrMgrEdit.flowInstance.password;
+                    s.task.reTypePassword = s.task.usrMgrEdit.flowInstance.password;
                     s.oldPassword = "";
                     angular.copy(s.task.usrMgrEdit.flowInstance.password, s.oldPassword);
                     if (s.task.usrMgrEdit.flowInstance.flowUserProfileSet === undefined) {
