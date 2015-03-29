@@ -241,13 +241,13 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables"])
             }
 
 
-            s.$watch(function (scope) {
+           /* s.$watch(function (scope) {
                 return scope.task.edit.customerLookUp
             }, function (newValue, oldValue) {
                 if (newValue === undefined) {
-                    /*s.task.modelCreate.warCustomerMarkets[s.task.create.customerIndex].customerId = undefined;
+                    *//*s.task.modelCreate.warCustomerMarkets[s.task.create.customerIndex].customerId = undefined;
                      s.task.modelCreate.warCustomerMarkets[s.task.create.customerIndex].customerCode = undefined;
-                     s.task.modelCreate.warCustomerMarkets[s.task.create.customerIndex].customerName = undefined;*/
+                     s.task.modelCreate.warCustomerMarkets[s.task.create.customerIndex].customerName = undefined;*//*
                 } else {
 
                     s.task.modelEdit.warCustomerMarkets[s.task.edit.customerIndex].customerId = newValue.id;
@@ -255,7 +255,7 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables"])
                     s.task.modelEdit.warCustomerMarkets[s.task.edit.customerIndex].customerName = newValue.school.name;
                 }
 
-            });
+            });*/
 
             s.$on(s.flow.getEventId("createCustomerEvent"), function (event) {
                 if (s.task.modelEdit.warCustomerMarkets === undefined) {
@@ -301,14 +301,7 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables"])
             });
 
 
-            s.$watch(function (scope) {
-                    return scope.task.modelEdit.warCustomerMarkets[s.task.edit.customerIndex].marketPotential
-                },
-                function (newMarketPotential, oldMarketPotential) {
-                    s.task.modelEdit.warCustomerMarkets[s.task.edit.customerIndex].marketPotentialSegment = getMarketSegment(newMarketPotential);
 
-                }
-            );
 
         }]);
 
