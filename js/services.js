@@ -121,7 +121,7 @@ angular.module("flowServices", ["fluid"])
         this.url = "services/download_service/getContent/";
 
         this.getAvatar = function (id) {
-            return f.host + this.url + id;
+            return id ? f.host + this.url + id : '../images/gallery/profile_default.png';
         }
 
         return this;
