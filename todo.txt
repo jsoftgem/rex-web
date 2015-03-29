@@ -36,6 +36,16 @@ Rex backlogs
 - Activity Field worked with
 - school year month required
 - customer contacts specific fields for email,workphone,homephone
+- Admin > Users > Edit Password ERROR
+- Hide "admin - War Project" in Group for non-admin/non-dev users
+- Automatic Profile assignment per Group - user account creation
+- Display Group as column in User Manager
+- Wildcard on search button in User Manager (applicable to all search buttons)
+- Search button not working in Agents
+- Search button not working in customers
+- Search button working only for region code in Region
+- Search button not working in Planner (search agent)
+- Display RSM/NSM as column in Region
 
 Rex Patch 1
 - Utilize page load callback (done)
