@@ -8020,3 +8020,6 @@ ul.nav.nav-tabs li a {
   -moz-border-radius: 3px !important;
   border-radius: 3px !important;
 }
+.frame-content {
+    background: url(../../../images/bg/palette/gb.png) repeat !important;
+}
