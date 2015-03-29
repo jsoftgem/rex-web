@@ -416,9 +416,9 @@ flowComponents
 
                                         if (scope.task.page.param !== undefined && scope.task.page.param != null) {
                                             if (uri.search(scope.pathRegexPattern) > 0) {
-                                                uri = scope.generateUrl(uri, param);
+                                                uri = scope.generateUrl(uri, scope.task.page.param);
                                             } else {
-                                                uri = uri + param;
+                                                uri = uri + scope.task.page.param;
                                             }
                                         }
 
@@ -1159,10 +1159,8 @@ flowComponents
                         height = estimateHeight(height);
                         if (scope.flowFrameService.isSearch) {
                             frameDiv.attr("style", "height:" + height + "px;overflow:auto");
-
                         } else {
                             element.attr("style", "height:" + height + "px;overflow:auto");
-
                         }
                         $("body").attr("style", "height: " + height + "px;overflow:hidden");
                     } else {
@@ -2440,9 +2438,10 @@ flowComponents
             }
 
             t(function () {
-                $(".frame-content").scrollTo($(".frame-content div.box[task]:eq(" + index + ")"), 200);
-            });
+                $(".frame-content").scrollTo($("div.box[task]:eq(" + index + ")"), 200);
+            }, 300);
         };
+
         this.toggleSearch = function () {
             this.isSearch = !this.isSearch;
             if (this.isSearch === false) {

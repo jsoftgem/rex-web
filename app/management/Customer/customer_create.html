@@ -11,14 +11,14 @@
                 <flow-field model="task.customerCreate.customerCode" label="Customer code" required="true"
                             type="text"></flow-field>
 
-                <flow-select
-                        task="task"
-                        id="{{flow.getElementFlowId('ownershipAgentSelect')}}"
-                        label="Materials Advisor"
-                        field-label="user.flowUserDetail.fullName"
-                        model="task.create.agent"
-                        source-url="services/war/agent_query/list"
-                        change="selectAgent(item)">
+                <flow-select disabled="false" required="false"
+                             task="task"
+                             id="{{flow.getElementFlowId('ownershipAgentSelect')}}"
+                             label="Materials Advisor"
+                             field-label="user.flowUserDetail.fullName"
+                             model="task.create.agent"
+                             source-url="services/war/agent_query/list"
+                             change="selectAgent(item)">
                 </flow-select>
 
                 <flow-field disabled="true" model="task.customerCreate.regionCode" label="Region"></flow-field>
@@ -76,10 +76,10 @@
                             create-event="createContactEvent" edit-event="editContactEvent" look-up="false">
                 <flow-sub-column title="Education level" model="contact.level"></flow-sub-column>
                 <flow-sub-column title="Contact person" model="contact.description"></flow-sub-column>
-                <flow-sub-column title="Details" model="contact.detail"></flow-sub-column>
-                <flow-sub-column title="Contact type" model="contact.type"></flow-sub-column>
+                <flow-sub-column title="Home phone" model="contact.homePhone"></flow-sub-column>
+                <flow-sub-column title="Work phone" model="contact.workPhone"></flow-sub-column>
+                <flow-sub-column title="Email" model="contact.email"></flow-sub-column>
                 <flow-sub-column title="Position" model="contact.positionDesc"></flow-sub-column>
-                <flow-sub-column title="Birth date" model="contact.birthdate | date : 'MM/dd/yyyy'"></flow-sub-column>
                 <flow-sub-column title="Decision maker or influencer"
                                  model="contact.decisionMaker | decision"></flow-sub-column>
                 <flow-sub-column title="Relationship type" model="contact.relationshipType"></flow-sub-column>
@@ -138,10 +138,11 @@
 
                             </div>
                             <div column="1">
-                                <flow-check model="task.isCreateEvaluationTo" label=" to"></flow-check>
+                                <flow-check disabled="false" required="false" model="task.isCreateEvaluationTo"
+                                            label=" to"></flow-check>
                             </div>
                             <div column="5">
-                                <flow-select ng-if="task.isCreateEvaluationTo"
+                                <flow-select disabled="false" required="false" ng-if="task.isCreateEvaluationTo"
                                              change="changeEval()"
                                              task="task"
                                              id="{{flow.getElementFlowId('evalSelect2')}}"
@@ -167,10 +168,11 @@
 
                             </div>
                             <div column="1">
-                                <flow-check model="task.isCreateOrderingTo" label=" to"></flow-check>
+                                <flow-check disabled="false" required="false" model="task.isCreateOrderingTo"
+                                            label=" to"></flow-check>
                             </div>
                             <div column="5">
-                                <flow-select ng-if="task.isCreateOrderingTo"
+                                <flow-select disabled="false" required="false" ng-if="task.isCreateOrderingTo"
                                              task="task"
                                              id="{{flow.getElementFlowId('orderSelect2')}}"
                                              model="task.customerCreate.orderingTo"
@@ -194,10 +196,11 @@
 
                             </div>
                             <div column="1">
-                                <flow-check model="task.isCreateDeliveryTo" label=" to"></flow-check>
+                                <flow-check disabled="false" required="false" model="task.isCreateDeliveryTo"
+                                            label=" to"></flow-check>
                             </div>
                             <div column="5">
-                                <flow-select ng-if="task.isCreateDeliveryTo"
+                                <flow-select disabled="false" required="false" ng-if="task.isCreateDeliveryTo"
                                              task="task"
                                              id="{{flow.getElementFlowId('deliverySelect2')}}"
                                              model="task.customerCreate.deliveryTo"
@@ -221,10 +224,11 @@
 
                             </div>
                             <div column="1">
-                                <flow-check model="task.isCreateCollectionTo" label=" to"></flow-check>
+                                <flow-check disabled="false" required="false" model="task.isCreateCollectionTo"
+                                            label=" to"></flow-check>
                             </div>
                             <div column="5">
-                                <flow-select ng-if="task.isCreateCollectionTo"
+                                <flow-select disabled="false" required="false" ng-if="task.isCreateCollectionTo"
                                              task="task"
                                              id="{{flow.getElementFlowId('collectionSelect2')}}"
                                              model="task.customerCreate.collectionTo"
@@ -257,7 +261,8 @@
 
             <div class="col-lg-6">
                 <div class="form-group flow-form">
-                    <flow-check model="task.customerCreate.usingJournals" label="Using journals"></flow-check>
+                    <flow-check disabled="false" required="false" model="task.customerCreate.usingJournals"
+                                label="Using journals"></flow-check>
                 </div>
 
                 <flow-field ng-if="task.customerCreate.usingJournals"
@@ -265,7 +270,8 @@
                             label="Publisher of journals used"></flow-field>
 
                 <div class="form-group flow-form">
-                    <flow-check model="task.customerCreate.usingSRA" label="Using SRA"></flow-check>
+                    <flow-check disabled="false" required="false" model="task.customerCreate.usingSRA"
+                                label="Using SRA"></flow-check>
                 </div>
             </div>
 
@@ -414,6 +420,7 @@
 
             <div class="panel-body">
                 <div class="form-horizontal">
+
                     <div class="col-lg-6">
                         <flow-select
                                 task="task"
@@ -427,22 +434,6 @@
                         <flow-field model="task.customerCreate.contactDetails[task.contactIndex].description"
                                     label="Contact person" required="true"></flow-field>
 
-                        <flow-field model="task.customerCreate.contactDetails[task.contactIndex].detail"
-                                    label="Details"></flow-field>
-
-                        <flow-select
-                                task="task"
-                                ng-if="task.customerCreate.contactDetails[task.contactIndex].detail != undefined"
-                                id="{{flow.getElementFlowId('typeSelect')}}"
-                                model="task.customerCreate.contactDetails[task.contactIndex].type"
-                                label="Contact type"
-                                source-url="factories/war/table_factories/contact_types"
-                                required="true">
-                        </flow-select>
-
-                    </div>
-                    <div class="col-lg-6">
-
                         <flow-select
                                 task="task"
                                 id="{{flow.getElementFlowId('positionSelect')}}"
@@ -453,6 +444,9 @@
                                 source-url="services/war/position_query/list"
                                 required="true">
                         </flow-select>
+                    </div>
+
+                    <div class="col-lg-6">
 
                         <flow-date-picker model="task.customerCreate.contactDetails[task.contactIndex].birthdate"
                                           label="Birth date"></flow-date-picker>
@@ -467,10 +461,36 @@
                         </flow-select>
 
                         <div class="form-group">
-                            <flow-check model="task.customerCreate.contactDetails[task.contactIndex].decisionMaker"
+                            <flow-check disabled="false" required="false"
+                                        model="task.customerCreate.contactDetails[task.contactIndex].decisionMaker"
                                         label="Decision maker or influencer"></flow-check>
                         </div>
+                    </div>
 
+                    <div column="12">
+                        <fieldset>
+                            <legend>Contact Details</legend>
+                            <div column="6">
+                                <flow-field model="task.customerCreate.contactDetails[task.contactIndex].homePhone"
+                                            label="Home"></flow-field>
+
+                                <flow-field model="task.customerCreate.contactDetails[task.contactIndex].homePhone"
+                                            label="Work"></flow-field>
+
+                                <flow-field model="task.customerCreate.contactDetails[task.contactIndex].mobile"
+                                            label="Mobile"></flow-field>
+                            </div>
+                            <div column="6">
+                                <flow-field model="task.customerCreate.contactDetails[task.contactIndex].email"
+                                            type="email" label="Email"></flow-field>
+
+                                <flow-field model="task.customerCreate.contactDetails[task.contactIndex].yahoo"
+                                            label="Yahoo"></flow-field>
+
+                                <flow-field model="task.customerCreate.contactDetails[task.contactIndex].skype"
+                                            label="Skype"></flow-field>
+                            </div>
+                        </fieldset>
                     </div>
 
                 </div>

@@ -89,7 +89,7 @@ angular.module("levelController", ["fluid", "ngResource", "datatables", "ngCooki
             s.dtOptions.reloadData();
         });
 
-        s.task.page.load = function (data, sources) {
+        s.task.page.load = function (data, source) {
             var page = this.name;
             if (s.edit_name === page) {
                 if (!s.task.levelEdit.id || source === "refresh") {

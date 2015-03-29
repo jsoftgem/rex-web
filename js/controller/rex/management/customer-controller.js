@@ -14,6 +14,10 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
         s.task.supportTemp = {};
         s.task.potentialTemp = {};
         s.task.tempSchoolYear = {};
+        s.task.edit = {};
+        s.task.edit.agent = {};
+        s.task.create = {};
+        s.task.create.agent = {};
         var create = new CreateControl();
         create.id = "customer_create_ctl";
 
@@ -107,66 +111,6 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
         s.$on(s.flow.event.getRefreshId(), function () {
             s.dtOptions.reloadData();
         });
-
-
-        s.flow.onPageChanging = function (page, param) {
-
-            if (s.task.create_name === page) {
-                s.task.customerCreate = {};
-                s.task.school = {};
-            }
-            else if (s.task.edit_name === page) {
-                s.task.customerEdit = {};
-                s.task.tempEdit = {};
-            }
-            else if (s.home === page) {
-                s.task.tempEdit = {};
-                s.task.customerCreate = {};
-                s.task.school = {};
-                s.task.customerEdit = {};
-            }
-            return true;
-        }
-        /*  s.flow.pageCallBack = function (page, data, source) {
-         if (s.edit_name === page) {
-         if (!s.task.customerEdit.id || source === "refresh") {
-         if (s.task.origin) {
-         s.task.tempEdit = {};
-         }
-         s.task.customerEdit = data;
-         angular.copy(s.task.customerEdit, s.task.tempEdit);
-         if (s.task.customerEdit.evaluationTo) {
-         s.task.isEditEvaluationTo = true;
-         }
-
-         if (s.task.customerEdit.orderingTo) {
-         s.task.isEditOrderingTo = true;
-         }
-
-         if (s.task.customerEdit.deliveryTo) {
-         s.task.isEditDeliveryTo = true;
-         }
-
-         if (s.task.customerEdit.collectionTo) {
-         s.task.isEditCollectionTo = true;
-         }
-
-
-         }
-
-
-         } else if (s.home === page) {
-         s.dtOptions.reloadData();
-         } else if (page === s.create_name) {
-         if (s.task.currentPage === s.create_name) {
-         s.task.customerCreate = {};
-         s.task.school = {};
-         }
-
-         }
-
-
-         };*/
 
 
         s.task.page.load = function (data, source) {

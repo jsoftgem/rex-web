@@ -13,13 +13,16 @@
             <flow-field model="task.agentEdit.initials" label="Initials" type="text"
                         required="true"></flow-field>
 
-            <flow-select label="Region" task="task" model="task.agentEdit.region"
+            <flow-select disabled="false" required="false"
+                         label="Region" task="task" model="task.agentEdit.region"
                          source-url="services/war/region_query/list" field-label="regionName"
                          field-value="regionCode"></flow-select>
             <div class="form-group">
                 <div offset="3">
-                     <flow-check model="task.agentEdit.isManager" label="Manager"></flow-check>
-                    <flow-check model="task.agentEdit.active" label="Active" required="true"></flow-check>
+                    <flow-check disabled="false" required="false" model="task.agentEdit.isManager"
+                                label="Manager"></flow-check>
+                    <flow-check disabled="false" required="false" model="task.agentEdit.active" label="Active"
+                                required="true"></flow-check>
                 </div>
             </div>
         </div>

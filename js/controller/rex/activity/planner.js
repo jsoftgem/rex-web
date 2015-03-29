@@ -107,7 +107,8 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                 return customer;
             };
             s.customer = s.newCustomer();
-            s.task.page.load = function () {
+            s.task.page.load = function (data, source) {
+                console.info("planner-page", this.name);
                 if (up.agent) {
                     s.task.hideAgentFilter = !up.agent.isManager;
                     s.task.agent = up.agent;

@@ -26,10 +26,6 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
 
             s.task.hideAgentFilter = false;
 
-            s.$on(s.flow.event.getRefreshId(), function () {
-                s.task.query();
-            });
-
             s.task.getCustomers = function (report) {
                 report.view = !report.view;
                 if (report.view) {
@@ -37,7 +33,6 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                     var url = s.task.serviceCustomer;
 
                     var count = 0;
-
 
                     if (report.year) {
                         url += "?year=" + report.year;
@@ -106,6 +101,10 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                     manuallyCopyFormValues: true,
                     deferred: $.Deferred()
                 })
+            }
+
+            s.flow.onRefreshed = function(){
+                s.task.query();
             }
             s.task.load = function () {
 
