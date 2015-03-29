@@ -8121,3 +8121,7 @@ ul.chats li.out .message {
   border-radius: 0px !important;
   border: 1px solid #e5e5e5;
 }
+
+.frame-content {
+    background: url(../../../images/bg/palette/yd.png) repeat !important;
+}
