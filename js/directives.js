@@ -205,47 +205,52 @@ directives.directive("fluidMenu", function ($parse, $compile, $timeout, flowHttp
                 }
             };
 
-            if (attributes.fluidMenu) {
-                var groupLength = 0;
-                flowHttpService.getLocal(attributes.fluidMenu).success(function (groups) {
+            $scope.$watch(function (scope) {
+                return attributes.fluidMenu;
+            }, function (newValue) {
+                if (newValue) {
+                    var groupLength = 0;
+                    flowHttpService.getLocal(attributes.fluidMenu).success(function (groups) {
 
-                    groupLength = groups.length - 1;
+                        groupLength = groups.length - 1;
 
-                    angular.forEach(groups, function (group, index) {
+                        angular.forEach(groups, function (group, index) {
 
-                        var groupLi = $("<li>").appendTo(element[0]).get();
+                            var groupLi = $("<li>").appendTo(element[0]).get();
 
-                        var groupA = $("<a>").attr("href", "#").appendTo(groupLi).get();
+                            var groupA = $("<a>").attr("href", "#").appendTo(groupLi).get();
 
-                        $("<i>").addClass(group.iconUri).appendTo(groupA).get();
+                            $("<i>").addClass(group.iconUri).appendTo(groupA).get();
 
-                        $("<span>").addClass("menu-title").html(group.title).appendTo(groupA).get();
+                            $("<span>").addClass("menu-title").html(group.title).appendTo(groupA).get();
 
-                        $("<span>").addClass("fa arrow").appendTo(groupA).get();
-                        if (group.flowModules && group.flowModules.length > 0) {
-                            var moduleLength = group.flowModules.length - 1;
-                            var subUl = $("<ul>").addClass("nav nav-second-level").appendTo(groupLi).get();
-                            angular.forEach(group.flowModules, function (module, index2) {
-                                $scope.dataMap.push({name: module.moduleName, data: module});
+                            $("<span>").addClass("fa arrow").appendTo(groupA).get();
+                            if (group.flowModules && group.flowModules.length > 0) {
+                                var moduleLength = group.flowModules.length - 1;
+                                var subUl = $("<ul>").addClass("nav nav-second-level").appendTo(groupLi).get();
+                                angular.forEach(group.flowModules, function (module, index2) {
+                                    $scope.dataMap.push({name: module.moduleName, data: module});
 
-                                var subLi = $("<li>").appendTo(subUl).get();
+                                    var subLi = $("<li>").appendTo(subUl).get();
 
-                                var subA = $("<a>").attr("href", "#").attr("module", module.moduleName).appendTo(subLi).get();
+                                    var subA = $("<a>").attr("href", "#").attr("module", module.moduleName).appendTo(subLi).get();
 
-                                $("<i>").addClass(module.moduleGlyph).appendTo(subA).get();
+                                    $("<i>").addClass(module.moduleGlyph).appendTo(subA).get();
 
-                                $("<span>").addClass("submenu-title").html(module.moduleTitle).appendTo(subA).get();
+                                    $("<span>").addClass("submenu-title").html(module.moduleTitle).appendTo(subA).get();
 
-                                if (groupLength === index && moduleLength === index2) {
-                                    $scope.loaded = true;
-                                }
-                            });
-                        }
-                    });
-                })
-            } else {
-                $scope.loaded = true;
-            }
+                                    if (groupLength === index && moduleLength === index2) {
+                                        $scope.loaded = true;
+                                    }
+                                });
+                            }
+                        });
+                    })
+                } else {
+                    $scope.loaded = true;
+                }
+            });
+
 
             $scope.openModule = function (moduleName) {
 
@@ -256,9 +261,6 @@ directives.directive("fluidMenu", function ($parse, $compile, $timeout, flowHttp
                 }, $scope.data);
 
                 if ($scope.data && $scope.data.task) {
-                    /*   if (flowFrameService.fullScreen) {
-                     flowFrameService.toggleFluidscreen();
-                     }*/
                     var task = flowFrameService.addTask($scope.data.task);
                 }
             };
@@ -1025,7 +1027,7 @@ directives.directive("fluidPrintReport", ["$compile", function (c) {
 
                             angular.forEach($agent.customers, function ($customer, $indexC) {
 
-                                var $ctr = $("<tr>").css("font-size","10px");
+                                var $ctr = $("<tr>").css("font-size", "10px");
 
                                 $ctr.append($("<td>").addClass("text-center").html($customer.top ? $customer.top : "Untagged"))
                                     .append($("<td>").addClass("text-center").html($customer.label));
@@ -1045,7 +1047,7 @@ directives.directive("fluidPrintReport", ["$compile", function (c) {
 
                         $printPanel.append($panelBody);
 
-                       // console.info("print-report", $printPanel.html());
+                        // console.info("print-report", $printPanel.html());
 
                         $printView.append($printPanel);
 
