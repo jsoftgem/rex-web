@@ -11,14 +11,10 @@ flowComponents.config(["$httpProvider", "localStorageServiceProvider", function 
     h.interceptors.push("flowInjector");
 }]);
 flowComponents.run(["$templateCache", function (tc) {
-    tc.put("flowBar.html", "<div><ul class='nav navbar-nav col-lg-7 task-glyph-size'><li  ng-class=\"task.active ? 'flow-bar-icon-active':''\" ng-repeat='task in taskList | limitTo:10' ><a class='flow-bar-icon' task='task' flow-bar-tooltip tooltip-title='{{task.title}}' href='#' ng-click='open(task)'><span class='flow-bar-icon-span hidden-xs' ng-class='task.glyph'></span><p  style='text-align: left' class='hidden-lg hidden-md hidden-sm'><span ng-class='task.glyph' class='task-glyph-size'></span> <span>{{task.title}}</span></p></a></li><li class='dropdown' ng-hide='taskList.length < 11'><a href='#' class='dropdown-toggle' data-toggle='dropdown'><span class='fui-triangle-down'></span></a><ul  class='dropdown-menu flow-bar-task-collapse' style='overflow: auto'><li ng-show='$index >= 10' class='border' ng-class=\"tsk.active ? 'active':''\" ng-repeat='tsk in taskList'><a href='#' class='flow-bar-task' title='{{tsk.title}}' ng-click='open(tsk)'<p> <span ng-class='tsk.glyph' class='task-glyph-size'></span> <span>{{tsk.title}}</span></p></a></ul></li></ul></div></div>")
-    tc.put("flowPanel.html", "<div id='_id_fp_{{task.id}}' class=\"panel panel-primary {{task.freeze ? 'freeze' :''}}\" ><div class='panel-heading'><a data-toggle='collapse' data-target='#_{{task.id}}' href='#' class='flow-panel-heading-title text-inverse'><span  ng-class='task.glyph'class='flow-panel-icon-control hidden-sm hidden-md hidden-xs'></span>&nbsp;{{task.title}}</a><div class='pull-right btn-group hidden-lg'><a href='#' class='dropdown-toggle' data-toggle='dropdown'><span ng-class='task.glyph'class='flow-panel-icon-control text-primary'/></a><ul class='dropdown-menu dropdown-menu-right dropdown-menu-inverse'><li><a href='#' ng-click='refresh()'>Refresh</a></li><li class='divider hidden-lg hidden-sm hidden-xs'></li><li class='hidden-lg hidden-sm hidden-xs'><a href='#' ng-click='max25()'>Maximize - 25</a> </li><li class='hidden-lg hidden-sm hidden-xs'><a href='#' ng-click='max50()'>Maximize - 50</a> </li><li class='hidden-lg hidden-sm hidden-xs'><a href='#' ng-click='max75()'>Maximize - 75</a></li><li class='hidden-lg hidden-sm hidden-xs'><a href='#' ng-click='max100()'>Maximize - 100</a> </li><li ng-class=\"task.locked ? 'hidden-sm hidden-md hidden-xs' : ''\" class='divider'></li><li><a ng-class=\"task.locked ? 'hidden-sm hidden-md hidden-xs' : ''\" href='#' ng-click='close()'>Close</a></li></ul></div><div class='hidden-md hidden-xs hidden-sm btn-group btn-group-xs pull-right panel-control'><!-- ToDo: Allow panel to freeze. <button class='btn btn-info fa fa-paperclip' ng-click='freeze(task)'ng-class=\"task.freeze ? 'active' :''\" title='Clip'></button>--><button type='button' class='btn btn-info octicon octicon-pin' ng-click='pin()'ng-class=\"task.pinned ? 'active' :''\" title='Pin'></button><button type='button' ng-disabled='task.pinned' class='btn btn-info fa fa-arrows-h size25pc' ng-click='max25()'></button><button type='button' ng-disabled='task.pinned' class='btn btn-info fa fa-arrows-h size50pc' ng-click='max50()'></button><button type='button' ng-disabled='task.pinned' class='btn btn-info fa fa-arrows-h size75pc'  ng-click='max75()'></button><button type='button' ng-disabled='task.pinned' class='btn btn-info fa fa-arrows-h size100pc' ng-click='max100()'></button><button type='button' title='minimize' ng-disabled='task.pinned' class='btn btn-info fui-triangle-down-small' ng-click='hide(task)'></button><button type='button' id='rfh_btn_{{task.id}}' title='refresh' ng-click='refresh()' class='btn btn-info'><span class='fa fa-spin fa-refresh'></span></button><button type='button' ng-disabled='task.pinned||task.locked' class='btn btn-danger fa fa-close' title='close' ng-click='close()'></button></div></div><div id='_{{task.id}}'class='panel-collapse collapse in'><div id='_id_fpb_{{task.id}}'  class='panel-body minHeight flow-panel'><flow-message id=\"{{flow.getElementFlowId('pnl_msg')}}\"></flow-message><flow-tool id=\"{{flow.getElementFlowId('flw_tl')}}\" ng-show='showToolBar' controls='toolbars' task='task' pages='pages'></flow-tool><div id='page_div_{{task.id}}' class=' flow-panel-page' style='overflow: auto;' ng-include='page.home'></div></div></div></div>");
-    tc.put("flowFrame.html", "<div><div><div ng-repeat='task in flowFrameService.taskList | filter:{active:true}'><fluid-panel task='task'></fluid-panel></div></div></div>");
-    tc.put("flowCheck.html", "<label class='checkbox' ng-class=\"'checked':model\"><input class='custom-checkbox' type='checkbox' ng-model='model' ng-required='required' ng-disabled='disabled' name='{{name}}' data-toggle='checkbox'><span class='icons marginBottom5px'><span class='text-info icon-checked'></span><span class='text-info icon-unchecked'></span></span>{{label}}</label>");
 }]);
 flowComponents
-    .directive("flowPanel", ["flowFrameService", "flowHttpService", "$templateCache", "$compile", "flowMessageService", "$rootScope", "$q", "$timeout", "$ocLazyLoad",
-        function (f, f2, tc, c, ms, rs, q, t, oc, up) {
+    .directive("flowPanel", ["flowFrameService", "flowHttpService", "$templateCache", "$compile", "flowMessageService", "$rootScope", "$q", "$timeout", "$ocLazyLoad", "userProfile","sessionService",
+        function (f, f2, tc, c, ms, rs, q, t, oc, up, ss) {
             return {
                 scope: {task: '='},
                 restrict: "E",
@@ -27,7 +23,6 @@ flowComponents
                 link: {
                     pre: function (scope, element) {
                         /* Initialize variables*/
-
                         scope.pathRegexPattern = /{[\w|\d]*}/;
                         scope.generateUrl = function (url, param) {
                             if (isJson(param)) {
@@ -698,12 +693,16 @@ flowComponents
                             if (task) {
                                 if (task.generic) {
                                     scope.task.page = undefined;
-                                    f2.get(scope.task.url, scope.task).success(function (d) {
+                                    console.info("flow-panel-session",ss);
+                                    scope.baseTask = ss.getSessionProperty(scope.task.url);
+
+                                    if (scope.baseTask) {
+                                        console.info("flow-panel-base-task-cache", scope.baseTask);
                                         var newTask = scope.task.newTask;
                                         var $task = {};
                                         scope.copy = {};
                                         angular.copy(scope.task, scope.copy);
-                                        console.info("generated-taskp", d);
+                                        console.info("flow-panel-cache-task", scope.baseTask);
                                         if (!f.fullScreen) {
 
                                             angular.forEach(f.taskList, function (task, key) {
@@ -715,21 +714,53 @@ flowComponents
 
                                             }, $task);
 
-                                            f.taskList[$task.index] = f.buildTask(d);
+                                            f.taskList[$task.index] = f.buildTask(scope.baseTask);
                                             f.taskList[$task.index].id = f.taskList[$task.index].id + "_" + $task.index;
                                             f.taskList[$task.index].origin = scope.task.origin;
                                             scope.task = f.taskList[$task.index];
                                         } else {
-                                            scope.task = f.buildTask(d);
-                                            scope.task.id = "fullscreen_" + d.id;
+                                            scope.task = f.buildTask(scope.baseTask);
+                                            scope.task.id = "fullscreen_" + scope.baseTask.id;
                                         }
-
-
                                         scope.task.generic = false;
                                         scope.task.newTask = newTask;
-                                        console.info("task-initialization-finished", scope.task);
-                                        console.info("generated-task-pages", scope.task.pages);
-                                    });
+
+                                    } else {
+                                        console.info("flow-panel-base-task-new", scope.baseTask);
+                                        f2.get(scope.task.url, scope.task).success(function (d) {
+                                            ss.addSessionProperty(scope.task.url, d);
+                                            var newTask = scope.task.newTask;
+                                            var $task = {};
+                                            scope.copy = {};
+                                            angular.copy(scope.task, scope.copy);
+                                            console.info("generated-taskp", d);
+                                            if (!f.fullScreen) {
+
+                                                angular.forEach(f.taskList, function (task, key) {
+
+                                                    if (task.id === scope.task.id) {
+                                                        this.task = task;
+                                                        this.index = key;
+                                                    }
+
+                                                }, $task);
+
+                                                f.taskList[$task.index] = f.buildTask(d);
+                                                f.taskList[$task.index].id = f.taskList[$task.index].id + "_" + $task.index;
+                                                f.taskList[$task.index].origin = scope.task.origin;
+                                                scope.task = f.taskList[$task.index];
+                                            } else {
+                                                scope.task = f.buildTask(d);
+                                                scope.task.id = "fullscreen_" + d.id;
+                                            }
+
+
+                                            scope.task.generic = false;
+                                            scope.task.newTask = newTask;
+                                            console.info("task-initialization-finished", scope.task);
+                                            console.info("generated-task-pages", scope.task.pages);
+                                        });
+                                    }
                                 }
                             }
 
@@ -1888,92 +1919,91 @@ flowComponents
             replace: true
         }
     }])
-    .directive("flowPermissionEnabled", ["flowHttpService", "$compile", function (f, c) {
+    .directive("flowPermissionEnabled", ["flowHttpService", "$compile", "sessionService", function (f, c, ss) {
         return {
             restrict: "A",
             scope: {task: "=", page: "="},
             link: function (scope, element, attr) {
 
-                if (!scope.task.permssionCache) {
-                    scope.task.permssionCache = [];
-                }
+
                 if (attr.method) {
                     scope.method = attr.method;
                 }
+                console.info("permissionEnabled-url", f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method);
 
-                var contains = false;
+                var url = f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method;
 
-                for (var i = 0; i < scope.task.permssionCache.length; i++) {
-                    var perm = scope.task.permssionCache[i];
+                var enabled = ss.getSessionProperty(url);
 
-                    if (perm.key === scope.page.name + "_" + scope.method) {
-                        contains = true;
-                        if (!perm.value) {
-                            element.attr("disabled", "");
-                        }
-                        break;
+                console.info("permissionEnabled", enabled);
+
+                if (enabled !== null) {
+                    console.info("permissionEnabled-old", enabled);
+                    if (enabled === 'false') {
+                        element.attr("disabled", "");
                     }
-
+                } else {
+                    element.attr("disabled", "");
                 }
-                if (!contains) {
-                    f.get(f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method, scope.task)
+
+                if (enabled === null) {
+                    f.get(url, scope.task)
                         .success(function (data) {
                             if (!data) {
-                                scope.task.permssionCache.push({
-                                    key: scope.page.name + "_" + scope.method,
-                                    value: data
-                                });
                                 element.attr("disabled", "");
-
                             }
+                            ss.addSessionProperty(url, data);
                         });
-
+                    console.info("permissionEnabled-new");
                 }
             }
 
         }
     }])
-    .directive("flowPermissionVisible", ["flowHttpService", "$compile", function (f, c) {
+    .directive("flowPermissionVisible", ["flowHttpService", "$compile", "sessionService", function (f, c, ss) {
         return {
             restrict: "A",
             scope: {task: "=", page: "="},
             link: function (scope, element, attr) {
 
-                if (!scope.task.permssionCache) {
-                    scope.task.permssionCache = [];
-                }
                 if (attr.method) {
                     scope.method = attr.method;
                 }
+                console.info("permissionVisible-url", f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method);
 
+                var url = f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method;
 
-                var contains = false;
+                var visible = ss.getSessionProperty(url);
 
-                for (var i = 0; i < scope.task.permssionCache.length; i++) {
-                    var perm = scope.task.permssionCache[i];
+                console.info("permissionVisible", visible);
 
-                    if (perm.key === scope.page.name + "_" + scope.method) {
-                        contains = true;
-                        if (!perm.value) {
-                            element.addClass("hidden");
-                        }
-                        break;
+                if (visible !== null) {
+                    console.info("permissionVisible-old", visible);
+
+                    if (visible === 'false') {
+                        element.addClass("hidden");
+                        console.info("permissionVisible-hidden");
+                    } else {
+                        console.info("permissionVisible-visible");
+                        element.removeClass("hidden");
                     }
 
+                } else {
+                    element.addClass("hidden")
                 }
-                if (!contains) {
-                    f.get(f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method, scope.task)
+
+
+                if (visible === null) {
+                    f.get(url, scope.task)
                         .success(function (data) {
                             if (!data) {
-                                scope.task.permssionCache.push({
-                                    key: scope.page.name + "_" + scope.method,
-                                    value: data
-                                });
                                 element.addClass("hidden");
                             }
+                            ss.addSessionProperty(url, data);
                         });
 
                 }
+
             }
 
         }

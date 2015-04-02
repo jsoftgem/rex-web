@@ -56,6 +56,8 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
         method: "get",
         flowPage: scope.task.page.name
     };
+    console.info("datatables-url", url);
+    console.info("datatables-header", headers);
     return dto.fromFnPromise()
         .withOption("ajax", {
             url: url,
@@ -136,9 +138,9 @@ function renderActions(data, editMethod, deleteMethod, viewMethod) {
 
 
     return "<div class='btn-group btn-group-xs'>" +
-        "<button ng-if=" + view + " flow-permission-enabled title='View' task='task' page='task.page' method='put'  type='button' class='btn btn-warning glyphicon glyphicon-search field-margin' ng-click='" + view + "(" + JSON.stringify(data) + ")'></button>" +
-        "<button flow-permission-enabled title='Edit' task='task' page='task.page' method='put'  type='button' class='btn btn-info glyphicon glyphicon-edit field-margin' ng-click='" + edit + "(" + data.id + ")'></button>" +
-        "<button flow-permission-enabled title='Delete' task='task' page='task.page' method='delete' type='button' class='btn btn-danger glyphicon glyphicon-trash field-margin' ng-click='" + del + "(" + data.id + ")'> </button></div>";
+        "<button ng-if=" + view + " flow-permission-visible title='View' task='task' page='task.page' method='put'  type='button' class='btn btn-warning glyphicon glyphicon-search field-margin' ng-click='" + view + "(" + JSON.stringify(data) + ")'></button>" +
+        "<button flow-permission-visible title='Edit' task='task' page='task.page' method='put'  type='button' class='btn btn-info glyphicon glyphicon-edit field-margin' ng-click='" + edit + "(" + data.id + ")'></button>" +
+        "<button flow-permission-visible title='Delete' task='task' page='task.page' method='delete' type='button' class='btn btn-danger glyphicon glyphicon-trash field-margin' ng-click='" + del + "(" + data.id + ")'> </button></div>";
 }
 
 
