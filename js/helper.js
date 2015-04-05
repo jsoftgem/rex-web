@@ -63,6 +63,7 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
             url: url,
             type: "GET",
             headers: headers,
+            cache: true,
             crossDomain: true,
             global: false,
             beforeSend: function (jqXHR, settings) {
@@ -85,14 +86,14 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
         .withOption("autoWidth", true)
         .withOption("info", true)
         .withOption("processing", true)
-        .withOption("responsive", true)
+        .withOption('responsive', true)
         .withOption("sDom", "<'top'iflp<'clear'>>rt<'bottom'iflp<'clear'>>")
         .withOption("stateSave", true)
         .withOption("serverSide", true)
         .withTableTools("swf/copy_csv_xls_pdf.swf")
         .withTableToolsOption("sRowSelect", "os")
         .withTableToolsButtons([
-            "copy", "print", {
+            "copy", {
                 "sExtends": "collection",
                 "sButtonText": "Edit",
                 "aButtons": ["select_all", "select_none"]
@@ -101,7 +102,29 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
                 "sButtonText": "Save",
                 "aButtons": ["csv", "xls", "pdf"]
             }
+            , {
+                "sExtends": "collection",
+                "sButtonText": "Print",
+                "aButtons": [{
+                    "sExtends": "text",
+                    "bShowAll": true,
+                    "sButtonText": "All",
+                    "fnClick": function (nButton, oConfig, oFlash) {
+                        console.info("print-all-nButton", nButton);
+                        console.info("print-all-oConfig", oConfig);
+                        console.info("print-all-oFlash", oFlash);
+                        scope.task.loaded = false;
+                        scope.task.flowHttpService.getLocal(url + "/list").sucess(function (data) {
+                            console.info("print-all-data", data);
+                            scope.task.loaded = true;
+                        })
+                    }
+                }]
+            }
         ])
+        .withColVis()
+        .withColVisOption('aiExclude', [0])
+        .withColVisOption("buttonText", "Columns")
         .withPaginationType('simple_numbers')
 }
 

@@ -33,7 +33,7 @@ Rex backlogs
 - agent assigned customer view. Tagged Cutstomer.
 - reports > bar chart
 - seminar activity tagging add schools and notes.
-- Activity Field worked with
+- Activity Field worked with - (done)
 - Automatic Profile assignment per Group - user account creation
 - Display Group as column in User Manager
 - Wildcard on search button in User Manager (applicable to all search buttons)

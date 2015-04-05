@@ -344,14 +344,49 @@ li.fluid-task-item-xs a {
 
 /* TABLE TOOLS */
 /* CPES */
+
+
 .form-horizontal .DTTT_container {
-    float: none;
+    float: left;
     margin-bottom: 0;
-    border: solid 1px #ccc;
+    border-top: solid 1px #ccc;
+}
+
+.ColVis {
+    border-top: solid 1px #ccc;
+    border-left: solid 1px #ccc;
+    float: left !important;
+    margin-bottom: 0 !important;
+}
+
+.ColVis_MasterButton {
+    background-image: none !important;
+    background: none !important;
+    border: none !important;
+}
+
+button.ColVis_Button {
+    background: none !important;
+    position: relative;
+    float: left;
+    margin-right: 0;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    -ms-box-shadow: none;
+    -o-box-shadow: none;
+    background-image: none !important;
+    background: none !important;
+    border: none !important;
+    padding: 10px;
+    height: 39px !important;
 }
 
 .form-horizontal .DTTT_container .DTTT_button {
     background-image: none;
+    background: none;
     border: none;
     padding: 10px;
 }
@@ -369,7 +404,9 @@ li.fluid-task-item-xs a {
 }
 
 .form-horizontal .top {
-    border-bottom: solid 1px #ccc;
+    border-top: solid 1px #ccc;
+    border-right: solid 1px #ccc;
+
 }
 
 .form-horizontal .top .dataTables_info {
@@ -384,7 +421,7 @@ li.fluid-task-item-xs a {
 /* ENTRY */
 .form-horizontal .top .dataTables_length {
     padding: 8px 10px 7px;
-    border-right: solid 1px #ccc;
+    /*  border-right: solid 1px #ccc;*/
     float: right;
 }
 
@@ -493,7 +530,7 @@ li.fluid-task-item-xs a {
 .form-horizontal .bottom .dataTables_paginate .paginate_button {
     padding: 5px 10px;
     margin: 0px;
-    border-right: solid 1px #ccc;
+    /*  border-right: solid 1px #ccc;*/
     border-top: none;
     border-left: none;
     border-bottom: solid 1px #ccc;
@@ -520,7 +557,7 @@ li.fluid-task-item-xs a {
 .form-horizontal .bottom .dataTables_paginate .paginate_button:hover {
     background-color: #3498db;
     background-image: none;
-    border-right: solid 1px #ccc;
+    /*  border-right: solid 1px #ccc;*/
     border-top: none;
     border-left: none;
     border-bottom: solid 1px #ccc;

@@ -394,6 +394,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                                                         button: true
                                                     },
                                                     text: "<div><ul><li><b>Marterial Adviser: " + event.activity.materialAdviser + "</b></li>" +
+                                                    "<li>Worked with the manager: " + (event.activity.workedWith === true ? " Yes" : "No") + "</li>" +
                                                     "<li>Exam Copies Distribution: " + (event.activity.ecd === true ? " Yes" : "No") + "</li>" +
                                                     "<li>Invitation to Events: " + (event.activity.ite === true ? " Yes" : "No") + "</li>" +
                                                     "<li>Confirmation of Events: " + (event.activity.coe === true ? " Yes" : "No") + "</li>" +

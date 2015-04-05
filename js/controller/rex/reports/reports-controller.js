@@ -592,7 +592,7 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
 
 
             s.task.selectSchoolYear = function (item) {
-                if (s.task.report.filter && item) {
+                if (s.task.report && s.task.report.filter && item) {
                     s.task.report.filter.schoolYear = item.id;
                     s.task.query();
                 }

@@ -13,7 +13,7 @@ flowComponents.config(["$httpProvider", "localStorageServiceProvider", function 
 flowComponents.run(["$templateCache", function (tc) {
 }]);
 flowComponents
-    .directive("flowPanel", ["flowFrameService", "flowHttpService", "$templateCache", "$compile", "flowMessageService", "$rootScope", "$q", "$timeout", "$ocLazyLoad", "userProfile","sessionService",
+    .directive("flowPanel", ["flowFrameService", "flowHttpService", "$templateCache", "$compile", "flowMessageService", "$rootScope", "$q", "$timeout", "$ocLazyLoad", "userProfile", "sessionService",
         function (f, f2, tc, c, ms, rs, q, t, oc, up, ss) {
             return {
                 scope: {task: '='},
@@ -693,7 +693,7 @@ flowComponents
                             if (task) {
                                 if (task.generic) {
                                     scope.task.page = undefined;
-                                    console.info("flow-panel-session",ss);
+                                    console.info("flow-panel-session", ss);
                                     scope.baseTask = ss.getSessionProperty(scope.task.url);
 
                                     if (scope.baseTask) {
@@ -753,10 +753,9 @@ flowComponents
                                                 scope.task = f.buildTask(d);
                                                 scope.task.id = "fullscreen_" + d.id;
                                             }
-
-
                                             scope.task.generic = false;
                                             scope.task.newTask = newTask;
+                                            scope.task.flowHttpService = f2;
                                             console.info("task-initialization-finished", scope.task);
                                             console.info("generated-task-pages", scope.task.pages);
                                         });
@@ -831,7 +830,6 @@ flowComponents
                             if (task) {
                                 console.info("post-task-watcher", task);
                                 if (task.generic === false) {
-
                                     if (task.lazyLoad === true) {
                                         var pathArr = undefined;
                                         if (task.moduleFiles.indexOf(",") > 0) {
@@ -849,7 +847,8 @@ flowComponents
 
                                         oc.load({
                                             name: task.moduleJS,
-                                            files: files
+                                            files: files,
+                                            cache: true
                                         }).then(function () {
                                             t(function () {
                                                 generateTask(scope, t, f2);
@@ -898,7 +897,12 @@ flowComponents
                                                 if (scope.task.id.indexOf("gen") === -1) {
                                                     scope.userTask.flowTaskId = scope.task.id.split("_")[0];
                                                     scope.userTask.flowId = scope.task.flowId;
-                                                    f2.post("services/flow_user_task_crud/save_task_state?field=size", scope.userTask, scope.task);
+                                                    f2.post("services/flow_user_task_crud/save_task_state?field=size", scope.userTask, scope.task)
+                                                        .then(function () {
+                                                            t(function () {
+                                                                generateTask(scope, t, f2);
+                                                            });
+                                                        });
                                                 }
                                             }
                                         }
@@ -919,8 +923,12 @@ flowComponents
                                                 if (scope.task.id.indexOf("gen") === -1) {
                                                     scope.userTask.flowTaskId = scope.task.id.split("_")[0];
                                                     scope.userTask.flowId = scope.task.flowId;
-                                                    f2.post("services/flow_user_task_crud/save_task_state?field=size", scope.userTask, scope.task);
-
+                                                    f2.post("services/flow_user_task_crud/save_task_state?field=size", scope.userTask, scope.task)
+                                                        .then(function () {
+                                                            t(function () {
+                                                                generateTask(scope, t, f2);
+                                                            });
+                                                        });
                                                 }
                                             }
                                         }
@@ -962,7 +970,12 @@ flowComponents
                                                 if (scope.task.id.indexOf("gen") === -1) {
                                                     scope.userTask.flowTaskId = scope.task.id.split("_")[0];
                                                     scope.userTask.flowId = scope.task.flowId;
-                                                    f2.post("services/flow_user_task_crud/save_task_state?field=size", scope.userTask, scope.task);
+                                                    f2.post("services/flow_user_task_crud/save_task_state?field=size", scope.userTask, scope.task)
+                                                        .then(function () {
+                                                            t(function () {
+                                                                generateTask(scope, t, f2);
+                                                            });
+                                                        });
 
                                                 }
                                             }
@@ -1410,6 +1423,12 @@ flowComponents
 
                 if (scope.model === undefined) {
                     scope.model = false;
+                }
+
+                scope.update = function () {
+                    if (scope.disabled === undefined || scope.disabled === false || scope.disabled === null) {
+                        scope.model = !scope.model;
+                    }
                 }
 
             },
@@ -2413,9 +2432,6 @@ flowComponents
         }
     });
 
-;
-
-
 function setChildIndexIds(element, taskId, suffix, depth) {
     var children = $(element).children();
     var id = $(element).attr("id");
@@ -2575,14 +2591,14 @@ flowComponents
         return this;
 
     }])
-    .service("flowHttpService", ["$rootScope", "$http", "flowLoaderService", "$resource", function (rs, h, fl, r) {
+    .service("flowHttpService", ["$rootScope", "$http", "flowLoaderService", "$resource", "sessionService", "$q", "$timeout", function (rs, h, fl, r, ss, q, t) {
+        this.httpSerialKey = new Date().getTime();
         this.post = function (url, data, task) {
             task.loaded = false;
             var promise = null;
             if (this.host) {
                 url = this.host + url;
             }
-
             var headers = {"flow-container-id": "_id_fpb_" + task.id, "Content-type": "application/json"};
             if (task.currentPage) {
                 headers.method = "post";
@@ -2624,7 +2640,7 @@ flowComponents
                 headers: headers
             });
             promise.success(function (config) {
-                //  $("#_id_fpb_" + task.id).loadingOverlay("remove");
+                this.httpSerialKey = new Date().getTime();
             });
             promise.error(function (data, status, headers, config) {
                 //  $("#_id_fpb_" + task.id).loadingOverlay("remove");
@@ -2638,13 +2654,10 @@ flowComponents
 
             promise.then(function () {
                 task.loaded = true;
-                //  $("#_id_fpb_" + task.id).loadingOverlay("remove");
             });
 
             return promise;
         };
-
-
         this.postGlobal = function (url, data) {
 
             var promise = null;
@@ -2667,10 +2680,9 @@ flowComponents
                 url: url,
                 data: data
             });
+
             return promise;
         };
-
-
         this.put = function (url, data, task) {
             task.loaded = false;
             var promise = null;
@@ -2715,11 +2727,10 @@ flowComponents
             });
 
             promise.success(function (config) {
-                // $("#_id_fpb_" + task.id).loadingOverlay("remove");
+                this.httpSerialKey = new Date().getTime();
             });
 
             promise.error(function (data, status, headers, config) {
-                // $("#_id_fpb_" + task.id).loadingOverlay("remove");
                 if (status === 401) {
                     rs.$broadcast("NOT_AUTHENTICATED");
                 } else if (status === 403) {
@@ -2795,7 +2806,7 @@ flowComponents
 
             return promise;
         };
-        this.getGlobal = function (url, progress) {
+        this.getGlobal = function (url, progress, cache) {
 
             fl.enabled = progress;
 
@@ -2819,7 +2830,9 @@ flowComponents
             return promise;
         };
         this.get = function (url, task) {
+
             task.loaded = false;
+
             if (this.host) {
                 url = this.host + url;
             }
@@ -2832,32 +2845,48 @@ flowComponents
                 headers.method = "get";
                 headers.flowPage = task.currentPage;
             }
+
+
+            var key = url + this.httpSerialKey;
+
+            var sessionValue = ss.getSessionProperty(key);
+
+            console.info("flow-http-server-cache-session-value", sessionValue);
+
             var promise = h({
                 method: "get",
                 url: url,
                 headers: headers
             });
 
-            promise.success(function (config) {
-                //$("#_id_fpb_" + task.id).loadingOverlay("remove");
-            });
-
             promise.error(function (data, status, headers, config) {
-                //$("#_id_fpb_" + task.id).loadingOverlay("remove");
                 if (status === 401) {
                     rs.$broadcast("NOT_AUTHENTICATED", data.msg);
                 } else if (status === 403) {
                     rs.$broadcast(EVENT_NOT_ALLOWED + task.id, data.msg);
                 }
-                task.loaded = true;
+                c
             });
 
             promise.then(function () {
-                //$("#_id_fpb_" + task.id).loadingOverlay("remove");
                 task.loaded = true;
             });
 
+            promise.success(function (data, status, headers, config, statusText) {
+                var response = {};
+                response.data = data;
+                response.status = status;
+                response.headers = headers;
+                response.config = config;
+                response.statusText = statusText;
+                ss.addSessionProperty(key, response);
+                console.info("flow-http-server-new-session-key", key);
+                console.info("flow-http-server-new-session-value", data);
+            });
+
             return promise;
+
+
         };
         this.delete = function (url, task) {
             task.loaded = false;
@@ -2899,7 +2928,6 @@ flowComponents
 
             return promise;
         };
-
         this.getResource = function (url, task) {
 
             /*   var headers = {
