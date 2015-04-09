@@ -24,6 +24,7 @@ flowComponents
                     pre: function (scope, element) {
                         /* Initialize variables*/
                         scope.pathRegexPattern = /{[\w|\d]*}/;
+
                         scope.generateUrl = function (url, param) {
                             if (isJson(param)) {
                                 param = JSON.parse(param);
@@ -93,7 +94,9 @@ flowComponents
 
                         /* Page Event */
                         scope.flow.event = {};
+
                         scope.flow.message = {};
+
                         scope.flow.message.duration = 3000;
                         scope.http = {};
                         scope.currentPageIndex = 0;
@@ -238,6 +241,7 @@ flowComponents
                             }
                             return f2.get(url, scope.task);
                         };
+
                         scope.http.delete = function (url, param) {
                             if (param) {
                                 if (url.search(scope.pathRegexPattern) > 0) {
@@ -248,6 +252,7 @@ flowComponents
                             }
                             return f2.delete(url, scope.task);
                         };
+
                         scope.http.post = function (url, data, param) {
                             if (param) {
                                 if (url.search(scope.pathRegexPattern) > 0) {
@@ -258,6 +263,7 @@ flowComponents
                             }
                             return f2.post(url, data, scope.task);
                         };
+
                         scope.http.put = function (url, data, param) {
                             if (param) {
                                 if (url.search(scope.pathRegexPattern) > 0) {
@@ -655,6 +661,7 @@ flowComponents
                             }
 
                         };
+
                         scope.flow.goToHome = function () {
                             angular.forEach(scope.task.pages, function (page) {
                                 if (page.isHome) {
@@ -724,7 +731,7 @@ flowComponents
                                         }
                                         scope.task.generic = false;
                                         scope.task.newTask = newTask;
-
+                                        scope.task.flowHttpService = f2;
                                     } else {
                                         console.info("flow-panel-base-task-new", scope.baseTask);
                                         f2.get(scope.task.url, scope.task).success(function (d) {
@@ -1961,8 +1968,6 @@ flowComponents
                     if (enabled === 'false') {
                         element.attr("disabled", "");
                     }
-                } else {
-                    element.attr("disabled", "");
                 }
 
                 if (enabled === null) {
@@ -2007,10 +2012,7 @@ flowComponents
                         element.removeClass("hidden");
                     }
 
-                } else {
-                    element.addClass("hidden")
                 }
-
 
                 if (visible === null) {
                     f.get(url, scope.task)
@@ -3019,6 +3021,40 @@ flowComponents
 
             return promise;
         }
+        this.headers = function (task) {
+            return {"flow-container-id": "_id_fpb_" + task.id, "Content-type": "application/json"};
+        }
+
+        this.query = function (query, task) {
+
+            if (task) {
+                task.loaded = false;
+            }
+
+            var promise = h(query);
+
+            promise.error(function (data, status, headers, config) {
+                if (task) {
+                    task.loaded = true;
+                }
+                if (status === 401) {
+                    rs.$broadcast("NOT_AUTHENTICATED");
+                } else if (status === 403) {
+                    rs.$broadcast(EVENT_NOT_ALLOWED + task.id, data.msg);
+                }
+            });
+
+
+            promise.then(function () {
+                if (task) {
+                    task.loaded = true;
+                }
+            });
+
+
+            return promise;
+        }
+
         return this;
 
     }])

@@ -93,15 +93,15 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
         .withTableTools("swf/copy_csv_xls_pdf.swf")
         .withTableToolsOption("sRowSelect", "os")
         .withTableToolsButtons([
-            "copy", {
-                "sExtends": "collection",
-                "sButtonText": "Edit",
-                "aButtons": ["select_all", "select_none"]
-            }, {
-                "sExtends": "collection",
-                "sButtonText": "Save",
-                "aButtons": ["csv", "xls", "pdf"]
-            }
+            "copy" /*,{
+             "sExtends": "collection",
+             "sButtonText": "Edit",
+             "aButtons": ["select_all", "select_none"]
+             } TODO: report-api flow-service{
+             "sExtends": "collection",
+             "sButtonText": "Save",
+             "aButtons": ["csv", "xls", "pdf"]
+             }*/
             , {
                 "sExtends": "collection",
                 "sButtonText": "Print",
@@ -110,14 +110,16 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
                     "bShowAll": true,
                     "sButtonText": "All",
                     "fnClick": function (nButton, oConfig, oFlash) {
-                        console.info("print-all-nButton", nButton);
-                        console.info("print-all-oConfig", oConfig);
-                        console.info("print-all-oFlash", oFlash);
-                        scope.task.loaded = false;
-                        scope.task.flowHttpService.getLocal(url + "/list").sucess(function (data) {
-                            console.info("print-all-data", data);
-                            scope.task.loaded = true;
-                        })
+                        scope.task.flowHttpService.query({
+                            method: "get",
+                            data: "",
+                            url: url + "/report_list",
+                            transformResponse: []
+                        }, scope.task)
+                            .success(function (data) {
+                                console.info("print-data", data);
+                                $(data).print({globalStyles: true});
+                            });
                     }
                 }]
             }
