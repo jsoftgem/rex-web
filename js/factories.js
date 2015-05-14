@@ -3,14 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-<<<<<<< HEAD
 var HOST = "http://war.rexpublishing.com.ph:8080/rex-services/";
-
-=======
-var HOST = "http://war.rexpublishing.com.ph/:8080/rex-services";
-/*var HOST = "http://localhost:9080/rex-services/";*/
->>>>>>> 31ddc0089f76afc75c79ba336fe692127fde2d22
 angular.module("flowFactories", [])
     .constant("HOST", HOST)
     .constant("VIEWER", "vendors/ViewerJS/#")
