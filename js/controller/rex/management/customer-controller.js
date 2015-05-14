@@ -1,5 +1,5 @@
 angular.module("customerController", ["fluid", "ngResource", "datatables"])
-    .controller("customerCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", "userProfile", function (s, dto, dtc, ms, fm, c, f, ss, up) {
+    .controller("customerCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService","userProfile", function (s, dto, dtc, ms, fm, c, f, ss, up) {
         s.userProfile = up;
         s.deleleModalId = "customerDeleteModal";
         s.create_name = "customer_create";
