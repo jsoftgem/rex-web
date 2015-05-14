@@ -17,7 +17,7 @@
                             label="Customer code" required="true"
                             type="text"></flow-field>
 
-                <flow-select disabled="true" required="false"
+                <flow-select disabled="userProfile.group != 'General Manager'" required="false"
                              task="task"
                              id="{{flow.getElementFlowId('ownershipAgentSelect')}}"
                              label="Materials Advisor"
