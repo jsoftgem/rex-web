@@ -1,20 +1,20 @@
 angular.module("dailyController", ["fluid", "ngResource", "datatables"])
-    .controller("dailyCtl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService",
-        function (s, dto, dtc, ms, fm, c, f, ss) {
-
+    .controller("dailyCtl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", "$http",
+        function (s, dto, dtc, ms, fm, c, f, ss, h) {
+            s.dtInstance = {};
             s.task.deleleModalId = "dailyDeleteModal";
             s.task.create_name = "daily_create";
             s.task.edit_name = "daily_edit";
             s.task.home = "daily";
             s.task.submit_button = "daily_submit";
-                s.task.create_ctl_id = "daily_create_ctl";
-                s.task.save_ctl_id = "daily_save_ctl";
-                s.task.del_ctl_id = "daily_del_ctl";
-                s.task.getInstanceQuery = "services/war/activity_query/getInstance/";
-                s.task.tempEdit = {};
-                s.flow.controls = [new SaveControl(), new DeleteControl()];
-                s.flow.controls[0].id = s.task.save_ctl_id;
-                s.flow.controls[0].action = function () {
+            s.task.create_ctl_id = "daily_create_ctl";
+            s.task.save_ctl_id = "daily_save_ctl";
+            s.task.del_ctl_id = "daily_del_ctl";
+            s.task.getInstanceQuery = "services/war/activity_query/getInstance/";
+            s.task.tempEdit = {};
+            s.flow.controls = [new SaveControl(), new DeleteControl()];
+            s.flow.controls[0].id = s.task.save_ctl_id;
+            s.flow.controls[0].action = function () {
                 $("#" + s.flow.getElementFlowId(s.task.submit_button)).trigger("click");
             };
             s.flow.controls[0].pages = [s.task.create_name, s.task.edit_name];
@@ -46,7 +46,7 @@ angular.module("dailyController", ["fluid", "ngResource", "datatables"])
                 if (s.task.page.name !== s.task.home) {
                     s.flow.goToHome();
                 }
-                s.dtOptions.reloadData();
+                s.dtInstance.rerender();
             };
 
             s.task.deleteCancel = function () {
@@ -62,17 +62,18 @@ angular.module("dailyController", ["fluid", "ngResource", "datatables"])
                         angular.copy(s.task.modelEdit, s.task.tempEdit);
                     }
                 } else if (s.task.home === page) {
-                    s.dtOptions.reloadData();
+                    s.dtInstance.rerender();
                 }
             };
 
 
             s.$on(s.flow.event.getRefreshId(), function () {
-                s.dtOptions.reloadData();
+                s.dtInstance.rerender();
             });
 
 
-            s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, ss);
+            s.dtOptions =  FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, ss);
+
 
             s.dtColumns = FlowColumns(dtc, "task.edit", "task.delete");
 

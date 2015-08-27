@@ -1,0 +1,11 @@
+@import "mixin";
+@import "variables";
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+
+
+* {
+  @include border-radius($border-radius);
+  font-family: $font-family;
+  font-weight: $font-weight-base;
+}
+

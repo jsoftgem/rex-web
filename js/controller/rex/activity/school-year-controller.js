@@ -2,7 +2,7 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables"])
     .controller("schoolYearCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService",
         function (s, dto, dtc, ms, fm, c, f, ss) {
 
-
+            s.dtInstance = {};
             s.task.deleleModalId = "schoolYearDeleteModal";
             s.task.create_name = "school_year_create";
             s.task.edit_name = "school_year_edit";
@@ -62,7 +62,7 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables"])
 
 
             s.$on(s.flow.event.getRefreshId(), function () {
-                s.dtOptions.reloadData();
+                s.dtInstance.rerender();
             });
 
 
@@ -78,7 +78,7 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables"])
 
                     }
                 } else if (s.task.home === page) {
-                    s.dtOptions.reloadData();
+                    s.dtInstance.rerender();
                 }
             };
 
@@ -89,7 +89,7 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables"])
                 if (s.task.page.name !== s.home) {
                     s.flow.goToHome();
                 }
-                s.dtOptions.reloadData();
+                s.dtInstance.rerender();
             };
 
             s.task.deleteCancel = function () {

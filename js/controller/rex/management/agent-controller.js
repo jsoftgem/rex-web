@@ -45,7 +45,6 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
 
         var deleteCtl = new DeleteControl();
         deleteCtl.id = "agent_del_ctl";
-
         s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, ss);
         s.dtColumns = FlowColumns(dtc);
         s.dtColumns.push(dtc.newColumn("user.flowUserDetail.fullName").withTitle("Name").withOption("searchable", true));
