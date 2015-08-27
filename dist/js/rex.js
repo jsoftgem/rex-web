@@ -3927,10 +3927,11 @@ flowComponents
 
         }
     }])
-    .directive("flowModal", ["flowFrameService", function (f) {
+    .directive("flowModal", ["flowFrameService", "$templateCache", function (f, tc) {
         return {
             restrict: "AE",
-            template: "<div ng-class='flowFrameService.fullScreen ? \"overlay-full\" : \"overlay\"' class='hidden animated fadeIn anim-dur'><div ng-style='style' class='flow-modal animated pulse anim-dur'><div ng-transclude></div></div></div>",
+            /*  template: "<div ng-class='flowFrameService.fullScreen ? \"overlay-full\" : \"overlay\"' class='hidden animated fadeIn anim-dur'><div ng-style='style' class='flow-modal animated pulse anim-dur'><div ng-transclude></div></div></div>",*/
+            template: tc.get("templates/fluid/fluidModal.html"),
             replace: true,
             transclude: true,
             link: function (scope, element, attr) {
@@ -4000,9 +4001,9 @@ flowComponents
                 }
                 var parent = $(element[0]).parent().get();
 
-                var modal = $("<div>").attr("id", "{{id}}_add_tbl_mdl").addClass("overlay hidden animated fadeIn anim-dur").appendTo(parent).get();
+                var modal = $("<div>").attr("id", "{{id}}_add_tbl_mdl").addClass("modal fade fluid-modal").appendTo(parent).get();
 
-                var modalContent = $("<div>").addClass("flow-modal animated anim-dur").attr("id", "{{id}}_mdl_cnt").appendTo(modal).get();
+                var modalContent = $("<div>").addClass("modal-dialog modal-lg").attr("id", "{{id}}_mdl_cnt").appendTo(modal).get();
 
                 var modalPanel = $("<div>").addClass("panel panel-primary").appendTo(modalContent).get();
 
@@ -4205,9 +4206,9 @@ flowComponents
 
                     }
 
-                    var modal = $("<div>").attr("id", "{{id}}_add_tbl_mdl").addClass("overlay hidden animated fadeIn anim-dur").appendTo(parent).get();
+                    var modal = $("<div>").attr("id", "{{id}}_add_tbl_mdl").addClass("modal fade fluid-modal").appendTo(parent).get();
 
-                    var modalContent = $("<div>").addClass("flow-modal animated anim-dur").attr("id", "{{id}}_mdl_cnt").appendTo(modal).get();
+                    var modalContent = $("<div>").addClass("modal-dialog modal-lg").attr("id", "{{id}}_mdl_cnt").appendTo(modal).get();
 
                     var modalPanel = $("<div>").addClass("panel panel-primary").appendTo(modalContent).get();
 
@@ -5519,12 +5520,13 @@ flowComponents
         var flowModalService = {};
 
         flowModalService.show = function (id) {
-            $("#" + id).removeClass("hidden");
+            /* $("#" + id).removeClass("hidden");*/
+            $("#" + id).modal("show");
             $(".frame-content").scrollTo($("#" + id), 800);
         };
 
         flowModalService.hide = function (id, sourceId) {
-            $("#" + id).addClass("hidden");
+            $("#" + id).modal("hide");
             if (sourceId) {
                 $(".frame-content").scrollTo($("#" + sourceId), 800);
             }
@@ -6485,7 +6487,7 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
         animation: '',
         boxed: '',
         layout_menu: '',
-        theme_style: userAppSetting.style,
+    /*    theme_style: userAppSetting.style,*/
         header_topbar: 'header-fixed',
         menu_style: userAppSetting.menu,
         menu_collapse: (userAppSetting.hideMenu ? 'sidebar-collapsed' : ''),
@@ -7114,7 +7116,7 @@ angular.module("templates/fluid/fluidLookup.html", []).run(["$templateCache", fu
 
 angular.module("templates/fluid/fluidModal.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidModal.html",
-    "<div class=\"overlay hidden animated fadeIn anim-dur\"><div ng-style=\"style\" class=\"flow-modal animated pulse anim-dur\"><div ng-transclude></div></div></div>");
+    "<div class=\"modal fade fluid-modal\" role=\"dialog\"><div class=\"modal-dialog modal-lg\"><div class=\"modal-content\"><ng-transclude></ng-transclude></div></div></div>");
 }]);
 
 angular.module("templates/fluid/fluidNotify.html", []).run(["$templateCache", function($templateCache) {

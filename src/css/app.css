@@ -306,6 +306,7 @@ li.fluid-task-item-xs a {
 .cursor-pointer {
     cursor: pointer;
 }
+
 /*
 
 /!*****************************************************************!/
@@ -674,4 +675,13 @@ button.ColVis_Button {
 }
 
 .header-about div {
+}
+
+.fluid-modal {
+    z-index: 99999;
+}
+
+.fluid-modal .modal-content {
+    background: transparent;
+    border: transparent;
 }
