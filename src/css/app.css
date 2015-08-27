@@ -677,11 +677,3 @@ button.ColVis_Button {
 .header-about div {
 }
 
-.fluid-modal {
-    z-index: 99999;
-}
-
-.fluid-modal .modal-content {
-    background: transparent;
-    border: transparent;
-}

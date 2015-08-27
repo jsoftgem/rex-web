@@ -2597,7 +2597,10 @@ flowComponents
             if (this.host) {
                 url = this.host + url;
             }
-            var headers = {"flow-container-id": "_id_fpb_" + task.id, "Content-type": "application/json"};
+            var headers = {
+                "flow-container-id": "_id_fpb_" + task.id,
+                "Content-type": "application/json"
+            };
             if (task.currentPage) {
                 headers.method = "post";
                 headers.flowPage = task.currentPage;
@@ -2688,7 +2691,10 @@ flowComponents
                 url = this.host + url;
             }
 
-            var headers = {"flow-container-id": "_id_fpb_" + task.id, "Content-type": "application/json"};
+            var headers = {
+                "flow-container-id": "_id_fpb_" + task.id,
+                "Content-type": "application/json"
+            };
 
             if (task.currentPage) {
                 headers.method = "put";
@@ -3126,6 +3132,7 @@ flowComponents
 
                 config.headers["Access-Control-Allow-Origin"] = "*";
 
+                console.debug("request-config", config);
                 if (config.headers['flow-container-id'] !== undefined) {
                     // $('#' + config.headers['flow-container-id']).loadingOverlay();
                 }

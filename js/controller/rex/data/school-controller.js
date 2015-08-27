@@ -68,7 +68,7 @@ angular.module("schoolController", ["fluid", "ngResource"])
             else if (method === "delete") {
                 if (s.task.page.name === "school_settings") {
                     if (s.dtInstance) {
-                        s.dtInstance.rerender();
+                        s.dtInstance.reloadData();
                     }
                 }
             }
@@ -78,14 +78,14 @@ angular.module("schoolController", ["fluid", "ngResource"])
         s.$on(s.flow.event.getResizeEventId(), function (event, school, size) {
             if (school === "school_settings") {
                 if (s.dtInstance) {
-                    s.dtInstance.rerender();
+                    s.dtInstance.reloadData();
                 }
             }
         });
 
         s.$on(s.flow.event.getRefreshId(), function () {
             if (s.dtInstance) {
-                s.dtInstance.rerender();
+                s.dtInstance.reloadData();
             }
         });
 
@@ -97,7 +97,7 @@ angular.module("schoolController", ["fluid", "ngResource"])
                 }
             } else if ("school_settings" === page) {
                 if (s.dtInstance) {
-                    s.dtInstance.rerender();
+                    s.dtInstance.reloadData();
                 }
             }
             s.flow.addControl(save, ["school_edit", "school_create"]);
@@ -112,7 +112,7 @@ angular.module("schoolController", ["fluid", "ngResource"])
                 s.flow.goToHome();
             }
             if (s.dtInstance) {
-                s.dtInstance.rerender();
+                s.dtInstance.reloadData();
             }
         };
 

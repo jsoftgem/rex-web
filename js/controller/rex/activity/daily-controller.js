@@ -46,8 +46,8 @@ angular.module("dailyController", ["fluid", "ngResource"])
                 if (s.task.page.name !== s.task.home) {
                     s.flow.goToHome();
                 }
-                if (s.dtInstance.rerender) {
-                    s.dtInstance.rerender();
+                if (s.dtInstance.reloadData) {
+                    s.dtInstance.reloadData();
                 }
             };
 
@@ -64,16 +64,16 @@ angular.module("dailyController", ["fluid", "ngResource"])
                         angular.copy(s.task.modelEdit, s.task.tempEdit);
                     }
                 } else if (s.task.home === page) {
-                    if (s.dtInstance.rerender) {
-                        s.dtInstance.rerender();
+                    if (s.dtInstance.reloadData) {
+                        s.dtInstance.reloadData();
                     }
                 }
             };
 
 
             s.$on(s.flow.event.getRefreshId(), function () {
-                if (s.dtInstance.rerender) {
-                    s.dtInstance.rerender();
+                if (s.dtInstance.reloadData) {
+                    s.dtInstance.reloadData();
                 }
             });
 

@@ -362,3 +362,12 @@ div.flow-form label {
     width: 30pc;
     position: absolute;
 }
+
+.fluid-modal {
+    z-index: 99999;
+}
+
+.fluid-modal .modal-content {
+    background: transparent;
+    border: transparent;
+}

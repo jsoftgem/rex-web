@@ -86,7 +86,7 @@ angular.module("levelController", ["fluid", "ngResource", "datatables", "ngCooki
 
 
         s.$on(s.flow.event.getRefreshId(), function () {
-            if (s.dtInstance) { s.dtInstance.rerender(); }
+            if (s.dtInstance) { s.dtInstance.reloadData(); }
         });
 
         s.task.page.load = function (data, source) {
@@ -97,7 +97,7 @@ angular.module("levelController", ["fluid", "ngResource", "datatables", "ngCooki
                     angular.copy(s.task.levelEdit, s.task.tempEdit);
                 }
             } else if (s.home === page) {
-                if (s.dtInstance) { s.dtInstance.rerender(); }
+                if (s.dtInstance) { s.dtInstance.reloadData(); }
             }
         };
 
@@ -107,7 +107,7 @@ angular.module("levelController", ["fluid", "ngResource", "datatables", "ngCooki
             if (s.task.page.name !== s.home) {
                 s.flow.goToHome();
             }
-            if (s.dtInstance) { s.dtInstance.rerender(); }
+            if (s.dtInstance) { s.dtInstance.reloadData(); }
         };
 
         s.deleteCancel = function () {

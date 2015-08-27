@@ -676,15 +676,6 @@ button.ColVis_Button {
 
 .header-about div {
 }
-
-.fluid-modal {
-    z-index: 99999;
-}
-
-.fluid-modal .modal-content {
-    background: transparent;
-    border: transparent;
-}
 /*
 To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
@@ -1048,6 +1039,15 @@ div.flow-form label {
     overflow: auto;
     width: 30pc;
     position: absolute;
+}
+
+.fluid-modal {
+    z-index: 99999;
+}
+
+.fluid-modal .modal-content {
+    background: transparent;
+    border: transparent;
 }
 /* Loading-overlay styles */
 

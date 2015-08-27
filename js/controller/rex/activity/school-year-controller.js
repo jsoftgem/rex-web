@@ -62,8 +62,8 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables"])
 
 
             s.$on(s.flow.event.getRefreshId(), function () {
-                if (s.dtInstance.rerender) {
-                    s.dtInstance.rerender();
+                if (s.dtInstance.reloadData) {
+                    s.dtInstance.reloadData();
                 }
             });
 
@@ -80,8 +80,8 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables"])
 
                     }
                 } else if (s.task.home === page) {
-                    if (s.dtInstance.rerender) {
-                        s.dtInstance.rerender();
+                    if (s.dtInstance.reloadData) {
+                        s.dtInstance.reloadData();
                     }
                 }
             };
@@ -93,8 +93,8 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables"])
                 if (s.task.page.name !== s.home) {
                     s.flow.goToHome();
                 }
-                if (s.dtInstance.rerender) {
-                    s.dtInstance.rerender();
+                if (s.dtInstance.reloadData) {
+                    s.dtInstance.reloadData();
                 }
             };
 

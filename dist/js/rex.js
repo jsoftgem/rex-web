@@ -93,7 +93,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
             else if (method === "delete") {
                 if (s.task.page.name === "usr_mgr_settings") {
                     if (s.dtInstance) {
-                        s.dtInstance.rerender();
+                        s.dtInstance.reloadData();
                     }
                 }
             }
@@ -103,21 +103,21 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
         s.$on(s.flow.event.getResizeEventId(), function (event, usr_mgr, size) {
             if (usr_mgr === "usr_mgr_settings") {
                 if (s.dtInstance) {
-                    s.dtInstance.rerender();
+                    s.dtInstance.reloadData();
                 }
             }
         });
         s.$on(s.flow.event.getResizeEventId(), function (event, page, size) {
             if (page === "usr_mgr_settings") {
                 if (s.dtInstance) {
-                    s.dtInstance.rerender();
+                    s.dtInstance.reloadData();
                 }
             }
         });
 
         s.$on(s.flow.event.getRefreshId(), function () {
             if (s.dtInstance) {
-                s.dtInstance.rerender();
+                s.dtInstance.reloadData();
             }
         });
 
@@ -140,7 +140,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
 
             } else if ("usr_mgr_settings" === page) {
                 if (s.dtInstance) {
-                    s.dtInstance.rerender();
+                    s.dtInstance.reloadData();
                 }
 
             }
@@ -161,7 +161,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
                 s.flow.goToHome();
             }
             if (s.dtInstance) {
-                s.dtInstance.rerender();
+                s.dtInstance.reloadData();
             }
         };
 
@@ -239,7 +239,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
             else if (method === "delete") {
                 if (s.task.page.name === "profile_settings") {
                     if (s.dtInstance) {
-                        s.dtInstance.rerender();
+                        s.dtInstance.reloadData();
                     }
                 }
             }
@@ -249,14 +249,14 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
         s.$on(s.flow.event.getResizeEventId(), function (event, profile, size) {
             if (profile === "profile_settings") {
                 if (s.dtInstance) {
-                    s.dtInstance.rerender();
+                    s.dtInstance.reloadData();
                 }
             }
         });
 
         s.$on(s.flow.event.getRefreshId(), function () {
             if (s.dtInstance) {
-                s.dtInstance.rerender();
+                s.dtInstance.reloadData();
             }
         });
 
@@ -271,7 +271,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
                 }
             } else if ("profile_settings" === page) {
                 if (s.dtInstance) {
-                    s.dtInstance.rerender();
+                    s.dtInstance.reloadData();
                 }
             }
             s.flow.addControl(save, ["profile_edit", "profile_create"]);
@@ -286,7 +286,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
                 s.flow.goToHome();
             }
             if (s.dtInstance) {
-                s.dtInstance.rerender();
+                s.dtInstance.reloadData();
             }
         };
 
@@ -384,7 +384,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
             else if (method === "delete") {
                 if (s.task.page.name === "group_settings") {
                     if (s.dtInstance) {
-                        s.dtInstance.rerender();
+                        s.dtInstance.reloadData();
                     }
                 }
             }
@@ -393,14 +393,14 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
         s.$on(s.flow.event.getResizeEventId(), function (event, group, size) {
             if (group === "group_settings") {
                 if (s.dtInstance) {
-                    s.dtInstance.rerender();
+                    s.dtInstance.reloadData();
                 }
             }
         });
 
         s.$on(s.flow.event.getRefreshId(), function () {
             if (s.dtInstance) {
-                s.dtInstance.rerender();
+                s.dtInstance.reloadData();
             }
         });
 
@@ -412,7 +412,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
                 }
             } else if ("group_settings" === page) {
                 if (s.dtInstance) {
-                    s.dtInstance.rerender();
+                    s.dtInstance.reloadData();
                 }
             }
             s.flow.addControl(create, "group_settings");
@@ -431,7 +431,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
                 s.flow.goToHome();
             }
             if (s.dtInstance) {
-                s.dtInstance.rerender();
+                s.dtInstance.reloadData();
             }
         };
 
@@ -841,7 +841,7 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
             else if (method === "delete") {
                 if (s.task.page.name === "page_settings") {
                     if (s.dtInstance) {
-                        s.dtInstance.rerender();
+                        s.dtInstance.reloadData();
                     }
                 }
             }
@@ -851,14 +851,14 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
         s.$on(s.flow.event.getResizeEventId(), function (event, page, size) {
             if (page === "page_settings") {
                 if (s.dtInstance) {
-                    s.dtInstance.rerender();
+                    s.dtInstance.reloadData();
                 }
             }
         });
 
         s.$on(s.flow.event.getRefreshId(), function () {
             if (s.dtInstance) {
-                s.dtInstance.rerender();
+                s.dtInstance.reloadData();
             }
         });
 
@@ -870,7 +870,7 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                 }
             } else if ("page_settings" === page) {
                 if (s.dtInstance) {
-                    s.dtInstance.rerender();
+                    s.dtInstance.reloadData();
                 }
             }
             s.flow.addControl(save, ["page_edit", "page_create"]);
@@ -885,7 +885,7 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                 s.flow.goToHome();
             }
             if (s.dtInstance) {
-                s.dtInstance.rerender();
+                s.dtInstance.reloadData();
             }
         };
 
@@ -967,7 +967,7 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                 }
                 else if (method === "delete") {
                     if (s.dtInstance) {
-                        s.dtInstance.rerender();
+                        s.dtInstance.reloadData();
                     }
                 }
             }
@@ -977,14 +977,14 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
         s.$on(s.flow.event.getResizeEventId(), function (event, page, size) {
             if (page === "task_settings") {
                 if (s.dtInstance) {
-                    s.dtInstance.rerender();
+                    s.dtInstance.reloadData();
                 }
             }
         });
 
         s.$on(s.flow.event.getRefreshId(), function () {
             if (s.dtInstance) {
-                s.dtInstance.rerender();
+                s.dtInstance.reloadData();
             }
         });
 
@@ -996,7 +996,7 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                 }
             } else if ("task_settings" === page) {
                 if (s.dtInstance) {
-                    s.dtInstance.rerender();
+                    s.dtInstance.reloadData();
                 }
             }
             s.flow.addControl(save, ["task_edit", "task_create"]);
@@ -1011,7 +1011,7 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                 s.flow.goToHome();
             }
             if (s.dtInstance) {
-                s.dtInstance.rerender();
+                s.dtInstance.reloadData();
             }
         };
 
@@ -1089,7 +1089,7 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                 }
             } else if (method === "delete") {
                 if (s.dtInstance) {
-                    s.dtInstance.rerender();
+                    s.dtInstance.reloadData();
                 }
             }
 
@@ -1098,14 +1098,14 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
         s.$on(s.flow.event.getResizeEventId(), function (event, page, size) {
             if (page === "md_settings") {
                 if (s.dtInstance) {
-                    s.dtInstance.rerender();
+                    s.dtInstance.reloadData();
                 }
             }
         });
 
         s.$on(s.flow.event.getRefreshId(), function () {
             if (s.dtInstance) {
-                s.dtInstance.rerender();
+                s.dtInstance.reloadData();
             }
         });
 
@@ -1117,7 +1117,7 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                 }
             } else if ("md_settings" === page) {
                 if (s.dtInstance) {
-                    s.dtInstance.rerender();
+                    s.dtInstance.reloadData();
                 }
             }
             s.flow.addControl(save, ["md_edit", "md_create"]);
@@ -1132,7 +1132,7 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                 s.flow.goToHome();
             }
             if (s.dtInstance) {
-                s.dtInstance.rerender();
+                s.dtInstance.reloadData();
             }
         };
 
@@ -1205,7 +1205,7 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                 }
             } else if (method === "delete") {
                 if (s.dtInstance) {
-                    s.dtInstance.rerender();
+                    s.dtInstance.reloadData();
                 }
             }
 
@@ -1214,14 +1214,14 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
         s.$on(s.flow.event.getResizeEventId(), function (event, page, size) {
             if (page === "moduleGroup_settings") {
                 if (s.dtInstance) {
-                    s.dtInstance.rerender();
+                    s.dtInstance.reloadData();
                 }
             }
         });
 
         s.$on(s.flow.event.getRefreshId(), function () {
             if (s.dtInstance) {
-                s.dtInstance.rerender();
+                s.dtInstance.reloadData();
             }
         });
 
@@ -1233,7 +1233,7 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                 }
             } else if ("moduleGroup_settings" === page) {
                 if (s.dtInstance) {
-                    s.dtInstance.rerender();
+                    s.dtInstance.reloadData();
                 }
             }
             s.flow.addControl(save, ["moduleGroup_edit", "moduleGroup_create"]);
@@ -1248,7 +1248,7 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                 s.flow.goToHome();
             }
             if (s.dtInstance) {
-                s.dtInstance.rerender();
+                s.dtInstance.reloadData();
             }
         };
 
@@ -5078,7 +5078,11 @@ flowComponents
             if (this.host) {
                 url = this.host + url;
             }
-            var headers = {"flow-container-id": "_id_fpb_" + task.id, "Content-type": "application/json"};
+            var headers = {
+                "flow-container-id": "_id_fpb_" + task.id,
+                "flowPage": task.page.name,
+                "Content-type": "application/json"
+            };
             if (task.currentPage) {
                 headers.method = "post";
                 headers.flowPage = task.currentPage;
@@ -5169,7 +5173,11 @@ flowComponents
                 url = this.host + url;
             }
 
-            var headers = {"flow-container-id": "_id_fpb_" + task.id, "Content-type": "application/json"};
+            var headers = {
+                "flow-container-id": "_id_fpb_" + task.id,
+                "flowPage": task.page.name,
+                "Content-type": "application/json"
+            };
 
             if (task.currentPage) {
                 headers.method = "put";
@@ -5607,6 +5615,7 @@ flowComponents
 
                 config.headers["Access-Control-Allow-Origin"] = "*";
 
+                console.debug("request-config", config);
                 if (config.headers['flow-container-id'] !== undefined) {
                     // $('#' + config.headers['flow-container-id']).loadingOverlay();
                 }
