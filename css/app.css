@@ -637,3 +637,54 @@ li.fluid-task-item-xs a {
 
 .header-about div {
 }
+
+/*PLANNER REDESIGN*/
+.ndg-planner.container-fluid {
+    padding: 0;
+}
+
+.ndg-planner .left-panel {
+    padding-right: 0;
+}
+
+.ndg-planner .left-panel select {
+    padding: 0;
+}
+
+.ndg-planner .left-panel input[type="text"],
+.ndg-planner .left-panel input[readonly],
+.ndg-planner .left-panel input[type="number"]{
+    padding: 0;
+    padding-left: 4px !important;
+}
+
+.ndg-paginator {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.ndg-planner .ndg-paginator select {
+    padding: 6px 0px;
+}
+
+.ndg-planner table.ndg-ptable {
+    margin-top: 10px !important;
+    width: 100%;
+}
+
+.ndg-planner .ndg-ptable thead {
+    border: solid 1px #eeeeee;
+    border-right: none;
+}
+
+.ndg-planner .ndg-ptable th {
+    border-right: solid 1px #eeeeee;
+    text-align: center;
+    vertical-align: middle !important;
+}
+
+.ndg-planner .ndg-ptable td {
+    text-align: left;
+    padding: 10px;
+    vertical-align: middle;
+}

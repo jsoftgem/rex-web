@@ -925,7 +925,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "angularFi
                     if (promise) {
                         promise.success(function () {
                             t(function () {
-                                $("#" + s.flow.getElementFlowId("event_body") + " .event-customer td a").each(function () {
+                                $("#" + s.flow.getElementFlowId("event_body") + " .event-customer td div").each(function () {
                                     $(this).data("eventObject", {
                                         title: $.trim($(this).text()),
                                         activityType: "SCHOOL"

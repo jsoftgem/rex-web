@@ -1,9 +1,8 @@
-<div class="container-fluid form-horizontal" ng-controller="plannerCtrl">
-
+<div class="ndg-planner container-fluid form-horizontal" ng-controller="plannerCtrl">
     <form id="{{flow.getElementFlowId('planner')}}" class="form-horizontal" role="form"
           novalidate>
         <div class="form-group">
-            <div class="col-lg-3 col-md-5 col-sm-5">
+            <div class="col-lg-3 col-md-4 col-sm-5 left-panel">
                 <flow-select id="{{flow.getElementFlowId('schoolYearSelect')}}" task="task" label="School Year"
                              source-url="services/war/school_year_query/list" model="task.schoolYear" disabled="false"
                              required="false"
@@ -20,72 +19,71 @@
 
                     <flow-sub-column title="Agent" model="agent.user.flowUserDetail.fullName"></flow-sub-column>
                 </flow-look-up>
+
                 <flow-field label="Monthly Planned Target" ng-if="task.agent != undefined&& task.view == 'month'"
                             type="number"
                             disabled="true" model="calendar.plannedCount"></flow-field>
 
                 <flow-field label="Weekly Planned Target" ng-if="task.agent != undefined && task.view == 'basicWeek'"
                             type="number" disabled="true" model="calendar.plannedCount"></flow-field>
-                <table class="table table-condensed">
-                    <thead class="bg-primary" style="display:inline-block">
-                    <th ng-if="customer.tag != 'All'">Top</th>
-                    <th>
-                        <div class="input-icon right"><i class="fa fa-search"></i>
-                            <input type="text" placeholder="Customer" class="form-control" ng-model="task.search"/>
-                        </div>
-                    </th>
-                    <th>Market Segment</th>
-                    <th>
-                        <div><span ng-if="customer.tag == 'All'">Page: {{customer.page}}</span></div>
-                        <div>Frequency</div>
-                    </th>
-                    </thead>
-                    <tr>
-                        <td colspan="3">
-                            <div class="btn-group btn-group-sm" role="group" aria-label="...">
-                                <button ng-class="customer.tag == 'All'?'active':'' " class="btn btn-info" type="button"
-                                        ng-click="changeTag('All')">All
-                                </button>
-                                <select ng-if="customer.tag === 'All'" ng-model="customer.size"
-                                        class="btn btn-info">
-                                    <option label="25" value="25"></option>
-                                    <option label="50" value="50"></option>
-                                    <option label="75" value="75"></option>
-                                    <option label="100" value="100"></option>
-                                </select>
-                                <button ng-class="customer.tag == '20' ? 'active':'' " class="btn btn-info"
-                                        type="button"
-                                        ng-click="changeTag('20')">Top 20
-                                </button>
-                                <button ng-class="customer.tag == '50' ? 'active':'' " class="btn btn-info"
-                                        type="button"
-                                        ng-click="changeTag('50')">Top 50
-                                </button>
 
-                                <button ng-disabled="!customer.hasPrevious" ng-if="customer.tag == 'All'" type="button"
-                                        class="btn btn-default" ng-click="prev()"><i
-                                        class="fa fa-backward"></i></button>
-                                <button ng-disabled="!customer.hasNext" ng-if="customer.tag == 'All'" type="button"
-                                        class="btn btn-default" ng-click="next()"><i
-                                        class="fa fa-forward"></i></button>
-                            </div>
-                        </td>
-                    </tr>
+                <div class="input-icon right"><i class="fa fa-search"></i>
+                    <input type="text" placeholder="Search customer" class="form-control" ng-model="task.search"/>
+                </div>
+
+                <div class="btn-group btn-group-sm ndg-paginator" role="group" aria-label="...">
+                    <button ng-class="customer.tag == 'All'?'active':'' " class="btn btn-info" type="button"
+                            ng-click="changeTag('All')">All
+                    </button>
+                    <select ng-if="customer.tag === 'All'" ng-model="customer.size"
+                            class="btn btn-info">
+                        <option label="25" value="25"></option>
+                        <option label="50" value="50"></option>
+                        <option label="75" value="75"></option>
+                        <option label="100" value="100"></option>
+                    </select>
+                    <button ng-class="customer.tag == '20' ? 'active':'' " class="btn btn-info"
+                            type="button"
+                            ng-click="changeTag('20')">Top 20
+                    </button>
+                    <button ng-class="customer.tag == '50' ? 'active':'' " class="btn btn-info"
+                            type="button"
+                            ng-click="changeTag('50')">Top 50
+                    </button>
+
+                    <button ng-disabled="!customer.hasPrevious" ng-if="customer.tag == 'All'" type="button"
+                            class="btn btn-default" ng-click="prev()"><i
+                            class="fa fa-backward"></i></button>
+                    <button ng-disabled="!customer.hasNext" ng-if="customer.tag == 'All'" type="button"
+                            class="btn btn-default" ng-click="next()"><i
+                            class="fa fa-forward"></i></button>
+                </div>
+
+                <table class="table table-condensed ndg-ptable">
+                    <thead class="bg-primary" style="display:inline-block">
+                        <th ng-if="customer.tag != 'All'">Top</th>
+                        <th>Customer Name</th>
+                        <th>Market Segment</th>
+                        <th>
+                            <div><span ng-if="customer.tag == 'All'">Page: {{customer.page}}</span></div>
+                            <div>Frequency</div>
+                        </th>
+                    </thead>
+
                     <tbody class="customer-tag-table" id="{{flow.getElementFlowId('event_body')}}">
 
-                    <tr class="event-customer enabled-day"
-                        ng-repeat="cus in customer.customers | filter : task.search">
-                        <td ng-if="customer.tag != 'All'">{{cus.index}}</td>
-                        <td><a ng-click="opentCustomerSummary(cus.id)" customer="{{cus}}" href="#">{{cus.name}}</a></td>
-                        <td>{{cus.marketSegment}}</td>
-                        <td>{{cus.frequency}}</td>
-                    </tr>
+                        <tr class="event-customer enabled-day" ng-repeat="cus in customer.customers | filter : task.search">
+                            <td ng-if="customer.tag != 'All'">{{cus.index}}</td>
+                            <td><div ng-click="opentCustomerSummary(cus.id)" customer="{{cus}}"><a href="#">{{cus.name}}</a></div></td>
+                            <td>{{cus.marketSegment}}</td>
+                            <td>{{cus.frequency}}</td>
+                        </tr>
                     </tbody>
                 </table>
 
             </div>
-            <div class="col-lg-9 col-md-7 col-sm-7">
-                <div class="panel panel-primary">
+            <div class="col-lg-9 col-md-8 col-sm-7 right-panel">
+                <div class="panel panel-primary ndg-calcon">
                     <div class="panel-heading">
                         <div class="heading-title">
                             <span>Calendar</span>
