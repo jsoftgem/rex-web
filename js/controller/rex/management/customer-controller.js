@@ -108,7 +108,9 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
 
 
         s.$on(s.flow.event.getRefreshId(), function () {
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         });
 
 
@@ -142,7 +144,9 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
                 }
 
             } else if (this.name === s.home) {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             } else if (this.name === s.create_name) {
                 if (s.task.currentPage === s.create_name) {
                     s.task.customerCreate = {};
@@ -158,7 +162,9 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
             if (s.task.page.name !== s.home) {
                 s.flow.goToHome();
             }
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         };
 
         s.deleteCancel = function () {

@@ -1,4 +1,4 @@
-angular.module("dailyController", ["fluid", "ngResource", "datatables"])
+angular.module("dailyController", ["fluid", "ngResource"])
     .controller("dailyCtl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", "$http",
         function (s, dto, dtc, ms, fm, c, f, ss, h) {
             s.dtInstance = {};
@@ -46,7 +46,9 @@ angular.module("dailyController", ["fluid", "ngResource", "datatables"])
                 if (s.task.page.name !== s.task.home) {
                     s.flow.goToHome();
                 }
-                s.dtInstance.rerender();
+                if (s.dtInstance.rerender) {
+                    s.dtInstance.rerender();
+                }
             };
 
             s.task.deleteCancel = function () {
@@ -62,17 +64,21 @@ angular.module("dailyController", ["fluid", "ngResource", "datatables"])
                         angular.copy(s.task.modelEdit, s.task.tempEdit);
                     }
                 } else if (s.task.home === page) {
-                    s.dtInstance.rerender();
+                    if (s.dtInstance.rerender) {
+                        s.dtInstance.rerender();
+                    }
                 }
             };
 
 
             s.$on(s.flow.event.getRefreshId(), function () {
-                s.dtInstance.rerender();
+                if (s.dtInstance.rerender) {
+                    s.dtInstance.rerender();
+                }
             });
 
 
-            s.dtOptions =  FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, ss);
+            s.dtOptions = FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, ss);
 
 
             s.dtColumns = FlowColumns(dtc, "task.edit", "task.delete");

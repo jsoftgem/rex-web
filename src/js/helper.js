@@ -80,7 +80,9 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
         .withDataProp('data')
         .withOption("createdRow", function (row) {
             if (scope && compile) {
-                compile(angular.element(row).contents())(scope);
+                console.debug("table-row", row);
+                console.debug("table-row-div", $(row).find('td div.actions'));
+                compile(angular.element($(row).find('td div.actions')).contents())(scope);
             }
         })
         .withOption("autoWidth", true)
@@ -89,43 +91,43 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
         .withOption("sDom", "<'top'iflp<'clear'>>rt<'bottom'iflp<'clear'>>")
         .withOption("stateSave", true)
         .withOption("serverSide", true)
-        /*   .withTableTools("swf/copy_csv_xls_pdf.swf")
-         .withTableToolsOption("sRowSelect", "os")
-         .withTableToolsButtons([
-         "copy" /!*,{
-         "sExtends": "collection",
-         "sButtonText": "Edit",
-         "aButtons": ["select_all", "select_none"]
-         } TODO: report-api flow-service{
-         "sExtends": "collection",
-         "sButtonText": "Save",
-         "aButtons": ["csv", "xls", "pdf"]
-         }*!/
-         , {
-         "sExtends": "collection",
-         "sButtonText": "Print",
-         "aButtons": [{
-         "sExtends": "text",
-         "bShowAll": true,
-         "sButtonText": "All",
-         "fnClick": function (nButton, oConfig, oFlash) {
-         scope.task.flowHttpService.query({
-         method: "get",
-         data: "",
-         url: url + "/report_list",
-         transformResponse: []
-         }, scope.task)
-         .success(function (data) {
-         console.info("print-data", data);
-         $(data).print({globalStyles: true});
-         });
-         }
-         }]
-         }
-         ])
-         .withColVis()
-         .withColVisOption('aiExclude', [0])
-         .withColVisOption("buttonText", "Columns")*/
+        .withTableTools("swf/copy_csv_xls_pdf.swf")
+        .withTableToolsOption("sRowSelect", "os")
+        .withTableToolsButtons([
+            "copy" /*,{
+             "sExtends": "collection",
+             "sButtonText": "Edit",
+             "aButtons": ["select_all", "select_none"]
+             } TODO: report-api flow-service{
+             "sExtends": "collection",
+             "sButtonText": "Save",
+             "aButtons": ["csv", "xls", "pdf"]
+             }*/
+            , {
+                "sExtends": "collection",
+                "sButtonText": "Print",
+                "aButtons": [{
+                    "sExtends": "text",
+                    "bShowAll": true,
+                    "sButtonText": "All",
+                    "fnClick": function (nButton, oConfig, oFlash) {
+                        scope.task.flowHttpService.query({
+                            method: "get",
+                            data: "",
+                            url: url + "/report_list",
+                            transformResponse: []
+                        }, scope.task)
+                            .success(function (data) {
+                                console.info("print-data", data);
+                                $(data).print({globalStyles: true});
+                            });
+                    }
+                }]
+            }
+        ])
+        .withColVis()
+        .withColVisOption('aiExclude', [0])
+        .withColVisOption("buttonText", "Columns")
         .withPaginationType('simple_numbers');
 }
 
@@ -177,7 +179,7 @@ function renderActions(data, editMethod, deleteMethod, viewMethod) {
     }
 
 
-    return "<div class='btn-group btn-group-md'>" +
+    return "<div class='actions btn-group btn-group-md'>" +
         "<button ng-if=" + view + " flow-permission-visible title='View' task='task' page='task.page' method='put'  type='button' class='btn btn-warning glyphicon glyphicon-search field-margin' ng-click='" + view + "(" + JSON.stringify(data) + ")'></button>" +
         "<button flow-permission-visible title='Edit' task='task' page='task.page' method='put'  type='button' class='btn btn-info glyphicon glyphicon-edit field-margin' ng-click='" + edit + "(" + data.id + ")'></button>" +
         "<button flow-permission-visible title='Delete' task='task' page='task.page' method='delete' type='button' class='btn btn-danger glyphicon glyphicon-trash field-margin' ng-click='" + del + "(" + data.id + ")'> </button></div>";
@@ -281,7 +283,7 @@ function getFirstMonday(date) {
 function getWeekOfMonth(date) {
 
     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
-        'Thursday', 'Friday', 'Saturday'],
+            'Thursday', 'Friday', 'Saturday'],
         prefixes = ['1', '2', '3', '4', '5'];
 
     return prefixes[0 | date.getDate() / 7];

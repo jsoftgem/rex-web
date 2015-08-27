@@ -5,13 +5,13 @@
  */
 
 'use strict';
-angular.module("app", ["MAdmin", "flowServices", "flowFactories", "home", "fluid", "devControllers", "adminControllers", "flowAppDirectives", "sessionControllers", "fNotify", "infinite-scroll", "ngDragDrop", "rexTemplates"])
+angular.module("app", ["MAdmin", "datatables", "datatables.bootstrap", "datatables.tabletools", "datatables.colvis", "flowServices", "flowFactories", "home", "fluid", "devControllers", "adminControllers", "flowAppDirectives", "sessionControllers", "fNotify", "infinite-scroll", "ngDragDrop", "rexTemplates"])
     .run(["flowFrameService", "flowHttpService", "userProfile", "responseEvent", "fnService", "userAppSetting", "HOST", "hasProfile", "$rootScope", "sessionService",
         function (f, fhp, up, re, fns, uas, h, hp, rs, ss) {
 
             fhp.host = h;
             fhp.permissionUrl = "services/flow_permission/has_permission";
-            rs.$watch(function (scope) {
+            rs.$watch(function () {
                 return ss.isSessionOpened();
             }, function (session) {
                 if (session) {

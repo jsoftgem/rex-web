@@ -1,4 +1,4 @@
-angular.module("schoolController", ["fluid", "ngResource", "datatables"])
+angular.module("schoolController", ["fluid", "ngResource"])
     .controller("schoolCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", function (s, dto, dtc, ms, fm, c, f, ss) {
         var create = new CreateControl();
         create.id = "school_create_ctl";
@@ -67,7 +67,9 @@ angular.module("schoolController", ["fluid", "ngResource", "datatables"])
             }
             else if (method === "delete") {
                 if (s.task.page.name === "school_settings") {
-                    s.dtOptions.reloadData();
+                    if (s.dtInstance) {
+                        s.dtInstance.rerender();
+                    }
                 }
             }
         });
@@ -75,12 +77,16 @@ angular.module("schoolController", ["fluid", "ngResource", "datatables"])
 
         s.$on(s.flow.event.getResizeEventId(), function (event, school, size) {
             if (school === "school_settings") {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
         });
 
         s.$on(s.flow.event.getRefreshId(), function () {
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         });
 
         s.flow.pageCallBack = function (page, data, source) {
@@ -90,7 +96,9 @@ angular.module("schoolController", ["fluid", "ngResource", "datatables"])
                     angular.copy(s.task.schoolEdit, s.task.tempEdit);
                 }
             } else if ("school_settings" === page) {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
             s.flow.addControl(save, ["school_edit", "school_create"]);
             s.flow.addControl(deleteCtl, "school_edit");
@@ -103,7 +111,9 @@ angular.module("schoolController", ["fluid", "ngResource", "datatables"])
             if (s.task.page.name !== "school_settings") {
                 s.flow.goToHome();
             }
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         };
 
         s.deleteCancel = function () {

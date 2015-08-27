@@ -101,7 +101,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
             }
             else if (method === "delete") {
                 if (s.task.page.name === "page_settings") {
-                    s.dtOptions.reloadData();
+                    if (s.dtInstance) {
+                        s.dtInstance.rerender();
+                    }
                 }
             }
 
@@ -109,12 +111,16 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
 
         s.$on(s.flow.event.getResizeEventId(), function (event, page, size) {
             if (page === "page_settings") {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
         });
 
         s.$on(s.flow.event.getRefreshId(), function () {
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         });
 
         s.flow.pageCallBack = function (page, data, source) {
@@ -124,7 +130,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                     angular.copy(s.task.pageEdit, s.task.editTemp);
                 }
             } else if ("page_settings" === page) {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
             s.flow.addControl(save, ["page_edit", "page_create"]);
             s.flow.addControl(deleteCtl, "page_edit");
@@ -137,7 +145,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
             if (s.task.page.name !== "page_settings") {
                 s.flow.goToHome();
             }
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         };
 
         s.deleteCancel = function () {
@@ -217,7 +227,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                     }
                 }
                 else if (method === "delete") {
-                    s.dtOptions.reloadData();
+                    if (s.dtInstance) {
+                        s.dtInstance.rerender();
+                    }
                 }
             }
         );
@@ -225,12 +237,16 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
 
         s.$on(s.flow.event.getResizeEventId(), function (event, page, size) {
             if (page === "task_settings") {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
         });
 
         s.$on(s.flow.event.getRefreshId(), function () {
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         });
 
         s.flow.pageCallBack = function (page, data, source) {
@@ -240,7 +256,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                     angular.copy(s.task.tskEdit, s.task.editTemp);
                 }
             } else if ("task_settings" === page) {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
             s.flow.addControl(save, ["task_edit", "task_create"]);
             s.flow.addControl(deleteCtl, "task_edit");
@@ -253,7 +271,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
             if (s.task.page.name !== "task_settings") {
                 s.flow.goToHome();
             }
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         };
 
         s.deleteCancel = function () {
@@ -329,19 +349,25 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                     s.flow.goToHome();
                 }
             } else if (method === "delete") {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
 
         });
 
         s.$on(s.flow.event.getResizeEventId(), function (event, page, size) {
             if (page === "md_settings") {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
         });
 
         s.$on(s.flow.event.getRefreshId(), function () {
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         });
 
         s.flow.pageCallBack = function (page, data, source) {
@@ -351,7 +377,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                     angular.copy(s.task.mdEdit, s.task.editTemp);
                 }
             } else if ("md_settings" === page) {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
             s.flow.addControl(save, ["md_edit", "md_create"]);
             s.flow.addControl(deleteCtl, "md_edit");
@@ -364,7 +392,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
             if (s.task.page.name !== "md_settings") {
                 s.flow.goToHome();
             }
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         };
 
         s.deleteCancel = function () {
@@ -435,19 +465,25 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                     s.flow.goToHome();
                 }
             } else if (method === "delete") {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
 
         });
 
         s.$on(s.flow.event.getResizeEventId(), function (event, page, size) {
             if (page === "moduleGroup_settings") {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
         });
 
         s.$on(s.flow.event.getRefreshId(), function () {
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         });
 
         s.flow.pageCallBack = function (page, data, source) {
@@ -457,7 +493,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                     angular.copy(s.task.moduleGroupEdit, s.task.editTemp);
                 }
             } else if ("moduleGroup_settings" === page) {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
             s.flow.addControl(save, ["moduleGroup_edit", "moduleGroup_create"]);
             s.flow.addControl(deleteCtl, "moduleGroup_edit");
@@ -470,7 +508,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
             if (s.task.page.name !== "moduleGroup_settings") {
                 s.flow.goToHome();
             }
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         };
 
         s.deleteCancel = function () {

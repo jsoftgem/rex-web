@@ -92,7 +92,9 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
             }
             else if (method === "delete") {
                 if (s.task.page.name === "usr_mgr_settings") {
-                    s.dtOptions.reloadData();
+                    if (s.dtInstance) {
+                        s.dtInstance.rerender();
+                    }
                 }
             }
         });
@@ -100,17 +102,23 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
 
         s.$on(s.flow.event.getResizeEventId(), function (event, usr_mgr, size) {
             if (usr_mgr === "usr_mgr_settings") {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
         });
         s.$on(s.flow.event.getResizeEventId(), function (event, page, size) {
             if (page === "usr_mgr_settings") {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
         });
 
         s.$on(s.flow.event.getRefreshId(), function () {
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         });
 
         s.flow.pageCallBack = function (page, data, source) {
@@ -131,7 +139,9 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
                 }
 
             } else if ("usr_mgr_settings" === page) {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
 
             }
             s.flow.addControl(save, ["usr_mgr_edit", "usr_mgr_create"]);
@@ -150,7 +160,9 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
             if (s.task.page.name !== "usr_mgr_settings") {
                 s.flow.goToHome();
             }
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         };
 
         s.deleteCancel = function () {
@@ -226,7 +238,9 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
             }
             else if (method === "delete") {
                 if (s.task.page.name === "profile_settings") {
-                    s.dtOptions.reloadData();
+                    if (s.dtInstance) {
+                        s.dtInstance.rerender();
+                    }
                 }
             }
         });
@@ -234,12 +248,16 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
 
         s.$on(s.flow.event.getResizeEventId(), function (event, profile, size) {
             if (profile === "profile_settings") {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
         });
 
         s.$on(s.flow.event.getRefreshId(), function () {
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         });
 
         s.flow.pageCallBack = function (page, data, source) {
@@ -252,7 +270,9 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
                     angular.copy(s.task.profileEdit, s.task.tempEdit);
                 }
             } else if ("profile_settings" === page) {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
             s.flow.addControl(save, ["profile_edit", "profile_create"]);
             s.flow.addControl(deleteCtl, "profile_edit");
@@ -265,7 +285,9 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
             if (s.task.page.name !== "profile_settings") {
                 s.flow.goToHome();
             }
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         };
 
         s.deleteCancel = function () {
@@ -361,19 +383,25 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
             }
             else if (method === "delete") {
                 if (s.task.page.name === "group_settings") {
-                    s.dtOptions.reloadData();
+                    if (s.dtInstance) {
+                        s.dtInstance.rerender();
+                    }
                 }
             }
         });
 
         s.$on(s.flow.event.getResizeEventId(), function (event, group, size) {
             if (group === "group_settings") {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
         });
 
         s.$on(s.flow.event.getRefreshId(), function () {
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         });
 
         s.flow.pageCallBack = function (page, data, source) {
@@ -383,7 +411,9 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
                     angular.copy(s.task.groupEdit, s.task.editTemp);
                 }
             } else if ("group_settings" === page) {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
             s.flow.addControl(create, "group_settings");
             s.flow.addControl(save, ["group_edit", "group_create"]);
@@ -400,7 +430,9 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
             if (s.task.page.name !== "group_settings") {
                 s.flow.goToHome();
             }
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         };
 
         s.deleteCancel = function () {
@@ -502,21 +534,20 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
         };
 
     }]);
-;
-/*
+;/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
 'use strict';
-angular.module("app", ["MAdmin", "flowServices", "flowFactories", "home", "fluid", "devControllers", "adminControllers", "flowAppDirectives", "sessionControllers", "fNotify", "infinite-scroll", "ngDragDrop", "rexTemplates"])
+angular.module("app", ["MAdmin", "datatables", "datatables.bootstrap", "datatables.tabletools", "datatables.colvis", "flowServices", "flowFactories", "home", "fluid", "devControllers", "adminControllers", "flowAppDirectives", "sessionControllers", "fNotify", "infinite-scroll", "ngDragDrop", "rexTemplates"])
     .run(["flowFrameService", "flowHttpService", "userProfile", "responseEvent", "fnService", "userAppSetting", "HOST", "hasProfile", "$rootScope", "sessionService",
         function (f, fhp, up, re, fns, uas, h, hp, rs, ss) {
 
             fhp.host = h;
             fhp.permissionUrl = "services/flow_permission/has_permission";
-            rs.$watch(function (scope) {
+            rs.$watch(function () {
                 return ss.isSessionOpened();
             }, function (session) {
                 if (session) {
@@ -577,10 +608,9 @@ angular.module("app", ["MAdmin", "flowServices", "flowFactories", "home", "fluid
         }
     });
 ;
+ 
 
-
-;
-/**
+;/**
  * Created by Jerico on 3/11/2015.
  */
 Chart.defaults.global = {
@@ -707,8 +737,7 @@ Chart.defaults.global = {
     // Function - Will fire on animation completion.
     onAnimationComplete: function () {
     }
-};
-/**
+};/**
  * Created by Jerico on 11/5/2014.
  */
 angular.module("devControllers", ["fluid", "ngResource", "datatables"])
@@ -811,7 +840,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
             }
             else if (method === "delete") {
                 if (s.task.page.name === "page_settings") {
-                    s.dtOptions.reloadData();
+                    if (s.dtInstance) {
+                        s.dtInstance.rerender();
+                    }
                 }
             }
 
@@ -819,12 +850,16 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
 
         s.$on(s.flow.event.getResizeEventId(), function (event, page, size) {
             if (page === "page_settings") {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
         });
 
         s.$on(s.flow.event.getRefreshId(), function () {
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         });
 
         s.flow.pageCallBack = function (page, data, source) {
@@ -834,7 +869,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                     angular.copy(s.task.pageEdit, s.task.editTemp);
                 }
             } else if ("page_settings" === page) {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
             s.flow.addControl(save, ["page_edit", "page_create"]);
             s.flow.addControl(deleteCtl, "page_edit");
@@ -847,7 +884,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
             if (s.task.page.name !== "page_settings") {
                 s.flow.goToHome();
             }
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         };
 
         s.deleteCancel = function () {
@@ -927,7 +966,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                     }
                 }
                 else if (method === "delete") {
-                    s.dtOptions.reloadData();
+                    if (s.dtInstance) {
+                        s.dtInstance.rerender();
+                    }
                 }
             }
         );
@@ -935,12 +976,16 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
 
         s.$on(s.flow.event.getResizeEventId(), function (event, page, size) {
             if (page === "task_settings") {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
         });
 
         s.$on(s.flow.event.getRefreshId(), function () {
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         });
 
         s.flow.pageCallBack = function (page, data, source) {
@@ -950,7 +995,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                     angular.copy(s.task.tskEdit, s.task.editTemp);
                 }
             } else if ("task_settings" === page) {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
             s.flow.addControl(save, ["task_edit", "task_create"]);
             s.flow.addControl(deleteCtl, "task_edit");
@@ -963,7 +1010,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
             if (s.task.page.name !== "task_settings") {
                 s.flow.goToHome();
             }
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         };
 
         s.deleteCancel = function () {
@@ -1039,19 +1088,25 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                     s.flow.goToHome();
                 }
             } else if (method === "delete") {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
 
         });
 
         s.$on(s.flow.event.getResizeEventId(), function (event, page, size) {
             if (page === "md_settings") {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
         });
 
         s.$on(s.flow.event.getRefreshId(), function () {
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         });
 
         s.flow.pageCallBack = function (page, data, source) {
@@ -1061,7 +1116,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                     angular.copy(s.task.mdEdit, s.task.editTemp);
                 }
             } else if ("md_settings" === page) {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
             s.flow.addControl(save, ["md_edit", "md_create"]);
             s.flow.addControl(deleteCtl, "md_edit");
@@ -1074,7 +1131,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
             if (s.task.page.name !== "md_settings") {
                 s.flow.goToHome();
             }
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         };
 
         s.deleteCancel = function () {
@@ -1145,19 +1204,25 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                     s.flow.goToHome();
                 }
             } else if (method === "delete") {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
 
         });
 
         s.$on(s.flow.event.getResizeEventId(), function (event, page, size) {
             if (page === "moduleGroup_settings") {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
         });
 
         s.$on(s.flow.event.getRefreshId(), function () {
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         });
 
         s.flow.pageCallBack = function (page, data, source) {
@@ -1167,7 +1232,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
                     angular.copy(s.task.moduleGroupEdit, s.task.editTemp);
                 }
             } else if ("moduleGroup_settings" === page) {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) {
+                    s.dtInstance.rerender();
+                }
             }
             s.flow.addControl(save, ["moduleGroup_edit", "moduleGroup_create"]);
             s.flow.addControl(deleteCtl, "moduleGroup_edit");
@@ -1180,7 +1247,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
             if (s.task.page.name !== "moduleGroup_settings") {
                 s.flow.goToHome();
             }
-            s.dtOptions.reloadData();
+            if (s.dtInstance) {
+                s.dtInstance.rerender();
+            }
         };
 
         s.deleteCancel = function () {
@@ -1188,8 +1257,7 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
         };
 
     }]);
-;
-/**
+;/**
  * Created by Jerico on 11/29/2014.
  */
 var directives = angular.module("flowAppDirectives", ["fluid"]);
@@ -1695,8 +1763,8 @@ directives.directive("flowBarTooltip", ["$timeout", "flowFrameService", "flowHtt
                         angular.forEach(scope.task.pages, function (page) {
                             if (page.pageLinkEnabled !== undefined && page.pageLinkEnabled === true) {
                                 content += "<li page='" + page.name + "'>" +
-                                    "<a href='#' class='color-white' >" + page.title + "</a>" +
-                                    "</li>"
+                                "<a href='#' class='color-white' >" + page.title + "</a>" +
+                                "</li>"
                             }
                         });
                     }
@@ -2263,8 +2331,17 @@ directives.directive("fluidPrintReport", ["$compile", function (c) {
 }])
 
 
-;
-angular.module("fNotify", ["fluid", "truncate"])
+
+
+
+
+
+
+
+
+
+
+;angular.module("fNotify", ["fluid", "truncate"])
     .directive("fnBar", ["fnService", "$timeout", "flowHttpService", "flowFrameService", function (fs, t, f, frs) {
         return {
 
@@ -2386,9 +2463,7 @@ angular.module("fNotify", ["fluid", "truncate"])
 
         return this;
 
-    }]);
-;
-/*
+    }]);;/* 
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -2404,8 +2479,7 @@ angular.module("flowFactories", [])
 
 /*add http://192.168.1.2:9080/rex-war/ when accessing via remote*/
 
-;
-/**Flow Components v0.0.1
+;/**Flow Components v0.0.1
  * Created by Jerico de Guzman
  * October 2014**/
 var flowComponents = angular.module("fluid", ["ngFileUpload", "oc.lazyLoad", "LocalStorageModule"]);
@@ -5713,8 +5787,7 @@ function isJson(str) {
         return false;
     }
     return true;
-};
-/**
+};/**
  * Created by Jerico on 11/16/2014.
  */
 
@@ -5796,7 +5869,9 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
         .withDataProp('data')
         .withOption("createdRow", function (row) {
             if (scope && compile) {
-                compile(angular.element(row).contents())(scope);
+                console.debug("table-row", row);
+                console.debug("table-row-div", $(row).find('td div.actions'));
+                compile(angular.element($(row).find('td div.actions')).contents())(scope);
             }
         })
         .withOption("autoWidth", true)
@@ -5805,43 +5880,43 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
         .withOption("sDom", "<'top'iflp<'clear'>>rt<'bottom'iflp<'clear'>>")
         .withOption("stateSave", true)
         .withOption("serverSide", true)
-        /*   .withTableTools("swf/copy_csv_xls_pdf.swf")
-         .withTableToolsOption("sRowSelect", "os")
-         .withTableToolsButtons([
-         "copy" /!*,{
-         "sExtends": "collection",
-         "sButtonText": "Edit",
-         "aButtons": ["select_all", "select_none"]
-         } TODO: report-api flow-service{
-         "sExtends": "collection",
-         "sButtonText": "Save",
-         "aButtons": ["csv", "xls", "pdf"]
-         }*!/
-         , {
-         "sExtends": "collection",
-         "sButtonText": "Print",
-         "aButtons": [{
-         "sExtends": "text",
-         "bShowAll": true,
-         "sButtonText": "All",
-         "fnClick": function (nButton, oConfig, oFlash) {
-         scope.task.flowHttpService.query({
-         method: "get",
-         data: "",
-         url: url + "/report_list",
-         transformResponse: []
-         }, scope.task)
-         .success(function (data) {
-         console.info("print-data", data);
-         $(data).print({globalStyles: true});
-         });
-         }
-         }]
-         }
-         ])
-         .withColVis()
-         .withColVisOption('aiExclude', [0])
-         .withColVisOption("buttonText", "Columns")*/
+        .withTableTools("swf/copy_csv_xls_pdf.swf")
+        .withTableToolsOption("sRowSelect", "os")
+        .withTableToolsButtons([
+            "copy" /*,{
+             "sExtends": "collection",
+             "sButtonText": "Edit",
+             "aButtons": ["select_all", "select_none"]
+             } TODO: report-api flow-service{
+             "sExtends": "collection",
+             "sButtonText": "Save",
+             "aButtons": ["csv", "xls", "pdf"]
+             }*/
+            , {
+                "sExtends": "collection",
+                "sButtonText": "Print",
+                "aButtons": [{
+                    "sExtends": "text",
+                    "bShowAll": true,
+                    "sButtonText": "All",
+                    "fnClick": function (nButton, oConfig, oFlash) {
+                        scope.task.flowHttpService.query({
+                            method: "get",
+                            data: "",
+                            url: url + "/report_list",
+                            transformResponse: []
+                        }, scope.task)
+                            .success(function (data) {
+                                console.info("print-data", data);
+                                $(data).print({globalStyles: true});
+                            });
+                    }
+                }]
+            }
+        ])
+        .withColVis()
+        .withColVisOption('aiExclude', [0])
+        .withColVisOption("buttonText", "Columns")
         .withPaginationType('simple_numbers');
 }
 
@@ -5893,7 +5968,7 @@ function renderActions(data, editMethod, deleteMethod, viewMethod) {
     }
 
 
-    return "<div class='btn-group btn-group-md'>" +
+    return "<div class='actions btn-group btn-group-md'>" +
         "<button ng-if=" + view + " flow-permission-visible title='View' task='task' page='task.page' method='put'  type='button' class='btn btn-warning glyphicon glyphicon-search field-margin' ng-click='" + view + "(" + JSON.stringify(data) + ")'></button>" +
         "<button flow-permission-visible title='Edit' task='task' page='task.page' method='put'  type='button' class='btn btn-info glyphicon glyphicon-edit field-margin' ng-click='" + edit + "(" + data.id + ")'></button>" +
         "<button flow-permission-visible title='Delete' task='task' page='task.page' method='delete' type='button' class='btn btn-danger glyphicon glyphicon-trash field-margin' ng-click='" + del + "(" + data.id + ")'> </button></div>";
@@ -6040,8 +6115,7 @@ function isDayEnabled(dayDate, currentDate) {
 
     return enabled;
 }
-;
-/*
+;/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -6174,8 +6248,7 @@ angular.module("home", ["flowServices", "fluid", "flowFactories"])
 
     });
 
-;
-/**
+;/**
  * Timeago is a jQuery plugin that makes it easy to support automatically
  * updating fuzzy timestamps (e.g. "4 minutes ago" or "about 1 day ago").
  *
@@ -6192,214 +6265,211 @@ angular.module("home", ["flowServices", "fluid", "flowFactories"])
  */
 
 (function (factory) {
-    if (typeof define === 'function' && define.amd) {
-        // AMD. Register as an anonymous module.
-        define(['jquery'], factory);
-    } else {
-        // Browser globals
-        factory(jQuery);
-    }
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['jquery'], factory);
+  } else {
+    // Browser globals
+    factory(jQuery);
+  }
 }(function ($) {
-    $.timeago = function (timestamp) {
-        if (timestamp instanceof Date) {
-            return inWords(timestamp);
-        } else if (typeof timestamp === "string") {
-            return inWords($.timeago.parse(timestamp));
-        } else if (typeof timestamp === "number") {
-            return inWords(new Date(timestamp));
-        } else {
-            return inWords($.timeago.datetime(timestamp));
+  $.timeago = function(timestamp) {
+    if (timestamp instanceof Date) {
+      return inWords(timestamp);
+    } else if (typeof timestamp === "string") {
+      return inWords($.timeago.parse(timestamp));
+    } else if (typeof timestamp === "number") {
+      return inWords(new Date(timestamp));
+    } else {
+      return inWords($.timeago.datetime(timestamp));
+    }
+  };
+  var $t = $.timeago;
+
+  $.extend($.timeago, {
+    settings: {
+      refreshMillis: 60000,
+      allowPast: true,
+      allowFuture: false,
+      localeTitle: false,
+      cutoff: 0,
+      strings: {
+        prefixAgo: null,
+        prefixFromNow: null,
+        suffixAgo: "ago",
+        suffixFromNow: "from now",
+        inPast: 'any moment now',
+        seconds: "less than a minute",
+        minute: "about a minute",
+        minutes: "%d minutes",
+        hour: "about an hour",
+        hours: "about %d hours",
+        day: "a day",
+        days: "%d days",
+        month: "about a month",
+        months: "%d months",
+        year: "about a year",
+        years: "%d years",
+        wordSeparator: " ",
+        numbers: []
+      }
+    },
+
+    inWords: function(distanceMillis) {
+      if(!this.settings.allowPast && ! this.settings.allowFuture) {
+          throw 'timeago allowPast and allowFuture settings can not both be set to false.';
+      }
+
+      var $l = this.settings.strings;
+      var prefix = $l.prefixAgo;
+      var suffix = $l.suffixAgo;
+      if (this.settings.allowFuture) {
+        if (distanceMillis < 0) {
+          prefix = $l.prefixFromNow;
+          suffix = $l.suffixFromNow;
         }
-    };
-    var $t = $.timeago;
+      }
 
-    $.extend($.timeago, {
-        settings: {
-            refreshMillis: 60000,
-            allowPast: true,
-            allowFuture: false,
-            localeTitle: false,
-            cutoff: 0,
-            strings: {
-                prefixAgo: null,
-                prefixFromNow: null,
-                suffixAgo: "ago",
-                suffixFromNow: "from now",
-                inPast: 'any moment now',
-                seconds: "less than a minute",
-                minute: "about a minute",
-                minutes: "%d minutes",
-                hour: "about an hour",
-                hours: "about %d hours",
-                day: "a day",
-                days: "%d days",
-                month: "about a month",
-                months: "%d months",
-                year: "about a year",
-                years: "%d years",
-                wordSeparator: " ",
-                numbers: []
-            }
-        },
+      if(!this.settings.allowPast && distanceMillis >= 0) {
+        return this.settings.strings.inPast;
+      }
 
-        inWords: function (distanceMillis) {
-            if (!this.settings.allowPast && !this.settings.allowFuture) {
-                throw 'timeago allowPast and allowFuture settings can not both be set to false.';
-            }
+      var seconds = Math.abs(distanceMillis) / 1000;
+      var minutes = seconds / 60;
+      var hours = minutes / 60;
+      var days = hours / 24;
+      var years = days / 365;
 
-            var $l = this.settings.strings;
-            var prefix = $l.prefixAgo;
-            var suffix = $l.suffixAgo;
-            if (this.settings.allowFuture) {
-                if (distanceMillis < 0) {
-                    prefix = $l.prefixFromNow;
-                    suffix = $l.suffixFromNow;
-                }
-            }
+      function substitute(stringOrFunction, number) {
+        var string = $.isFunction(stringOrFunction) ? stringOrFunction(number, distanceMillis) : stringOrFunction;
+        var value = ($l.numbers && $l.numbers[number]) || number;
+        return string.replace(/%d/i, value);
+      }
 
-            if (!this.settings.allowPast && distanceMillis >= 0) {
-                return this.settings.strings.inPast;
-            }
+      var words = seconds < 45 && substitute($l.seconds, Math.round(seconds)) ||
+        seconds < 90 && substitute($l.minute, 1) ||
+        minutes < 45 && substitute($l.minutes, Math.round(minutes)) ||
+        minutes < 90 && substitute($l.hour, 1) ||
+        hours < 24 && substitute($l.hours, Math.round(hours)) ||
+        hours < 42 && substitute($l.day, 1) ||
+        days < 30 && substitute($l.days, Math.round(days)) ||
+        days < 45 && substitute($l.month, 1) ||
+        days < 365 && substitute($l.months, Math.round(days / 30)) ||
+        years < 1.5 && substitute($l.year, 1) ||
+        substitute($l.years, Math.round(years));
 
-            var seconds = Math.abs(distanceMillis) / 1000;
-            var minutes = seconds / 60;
-            var hours = minutes / 60;
-            var days = hours / 24;
-            var years = days / 365;
+      var separator = $l.wordSeparator || "";
+      if ($l.wordSeparator === undefined) { separator = " "; }
+      return $.trim([prefix, words, suffix].join(separator));
+    },
 
-            function substitute(stringOrFunction, number) {
-                var string = $.isFunction(stringOrFunction) ? stringOrFunction(number, distanceMillis) : stringOrFunction;
-                var value = ($l.numbers && $l.numbers[number]) || number;
-                return string.replace(/%d/i, value);
-            }
+    parse: function(iso8601) {
+      var s = $.trim(iso8601);
+      s = s.replace(/\.\d+/,""); // remove milliseconds
+      s = s.replace(/-/,"/").replace(/-/,"/");
+      s = s.replace(/T/," ").replace(/Z/," UTC");
+      s = s.replace(/([\+\-]\d\d)\:?(\d\d)/," $1$2"); // -04:00 -> -0400
+      s = s.replace(/([\+\-]\d\d)$/," $100"); // +09 -> +0900
+      return new Date(s);
+    },
+    datetime: function(elem) {
+      var iso8601 = $t.isTime(elem) ? $(elem).attr("datetime") : $(elem).attr("title");
+      return $t.parse(iso8601);
+    },
+    isTime: function(elem) {
+      // jQuery's `is()` doesn't play well with HTML5 in IE
+      return $(elem).get(0).tagName.toLowerCase() === "time"; // $(elem).is("time");
+    }
+  });
 
-            var words = seconds < 45 && substitute($l.seconds, Math.round(seconds)) ||
-                seconds < 90 && substitute($l.minute, 1) ||
-                minutes < 45 && substitute($l.minutes, Math.round(minutes)) ||
-                minutes < 90 && substitute($l.hour, 1) ||
-                hours < 24 && substitute($l.hours, Math.round(hours)) ||
-                hours < 42 && substitute($l.day, 1) ||
-                days < 30 && substitute($l.days, Math.round(days)) ||
-                days < 45 && substitute($l.month, 1) ||
-                days < 365 && substitute($l.months, Math.round(days / 30)) ||
-                years < 1.5 && substitute($l.year, 1) ||
-                substitute($l.years, Math.round(years));
+  // functions that can be called via $(el).timeago('action')
+  // init is default when no action is given
+  // functions are called with context of a single element
+  var functions = {
+    init: function(){
+      var refresh_el = $.proxy(refresh, this);
+      refresh_el();
+      var $s = $t.settings;
+      if ($s.refreshMillis > 0) {
+        this._timeagoInterval = setInterval(refresh_el, $s.refreshMillis);
+      }
+    },
+    update: function(time){
+      var parsedTime = $t.parse(time);
+      $(this).data('timeago', { datetime: parsedTime });
+      if($t.settings.localeTitle) $(this).attr("title", parsedTime.toLocaleString());
+      refresh.apply(this);
+    },
+    updateFromDOM: function(){
+      $(this).data('timeago', { datetime: $t.parse( $t.isTime(this) ? $(this).attr("datetime") : $(this).attr("title") ) });
+      refresh.apply(this);
+    },
+    dispose: function () {
+      if (this._timeagoInterval) {
+        window.clearInterval(this._timeagoInterval);
+        this._timeagoInterval = null;
+      }
+    }
+  };
 
-            var separator = $l.wordSeparator || "";
-            if ($l.wordSeparator === undefined) {
-                separator = " ";
-            }
-            return $.trim([prefix, words, suffix].join(separator));
-        },
-
-        parse: function (iso8601) {
-            var s = $.trim(iso8601);
-            s = s.replace(/\.\d+/, ""); // remove milliseconds
-            s = s.replace(/-/, "/").replace(/-/, "/");
-            s = s.replace(/T/, " ").replace(/Z/, " UTC");
-            s = s.replace(/([\+\-]\d\d)\:?(\d\d)/, " $1$2"); // -04:00 -> -0400
-            s = s.replace(/([\+\-]\d\d)$/, " $100"); // +09 -> +0900
-            return new Date(s);
-        },
-        datetime: function (elem) {
-            var iso8601 = $t.isTime(elem) ? $(elem).attr("datetime") : $(elem).attr("title");
-            return $t.parse(iso8601);
-        },
-        isTime: function (elem) {
-            // jQuery's `is()` doesn't play well with HTML5 in IE
-            return $(elem).get(0).tagName.toLowerCase() === "time"; // $(elem).is("time");
-        }
+  $.fn.timeago = function(action, options) {
+    var fn = action ? functions[action] : functions.init;
+    if(!fn){
+      throw new Error("Unknown function name '"+ action +"' for timeago");
+    }
+    // each over objects here and call the requested function
+    this.each(function(){
+      fn.call(this, options);
     });
+    return this;
+  };
 
-    // functions that can be called via $(el).timeago('action')
-    // init is default when no action is given
-    // functions are called with context of a single element
-    var functions = {
-        init: function () {
-            var refresh_el = $.proxy(refresh, this);
-            refresh_el();
-            var $s = $t.settings;
-            if ($s.refreshMillis > 0) {
-                this._timeagoInterval = setInterval(refresh_el, $s.refreshMillis);
-            }
-        },
-        update: function (time) {
-            var parsedTime = $t.parse(time);
-            $(this).data('timeago', {datetime: parsedTime});
-            if ($t.settings.localeTitle) $(this).attr("title", parsedTime.toLocaleString());
-            refresh.apply(this);
-        },
-        updateFromDOM: function () {
-            $(this).data('timeago', {datetime: $t.parse($t.isTime(this) ? $(this).attr("datetime") : $(this).attr("title"))});
-            refresh.apply(this);
-        },
-        dispose: function () {
-            if (this._timeagoInterval) {
-                window.clearInterval(this._timeagoInterval);
-                this._timeagoInterval = null;
-            }
-        }
-    };
-
-    $.fn.timeago = function (action, options) {
-        var fn = action ? functions[action] : functions.init;
-        if (!fn) {
-            throw new Error("Unknown function name '" + action + "' for timeago");
-        }
-        // each over objects here and call the requested function
-        this.each(function () {
-            fn.call(this, options);
-        });
-        return this;
-    };
-
-    function refresh() {
-        //check if it's still visible
-        if (!$.contains(document.documentElement, this)) {
-            //stop if it has been removed
-            $(this).timeago("dispose");
-            return this;
-        }
-
-        var data = prepareData(this);
-        var $s = $t.settings;
-
-        if (!isNaN(data.datetime)) {
-            if ($s.cutoff == 0 || Math.abs(distance(data.datetime)) < $s.cutoff) {
-                $(this).text(inWords(data.datetime));
-            }
-        }
-        return this;
+  function refresh() {
+    //check if it's still visible
+    if(!$.contains(document.documentElement,this)){
+      //stop if it has been removed
+      $(this).timeago("dispose");
+      return this;
     }
 
-    function prepareData(element) {
-        element = $(element);
-        if (!element.data("timeago")) {
-            element.data("timeago", {datetime: $t.datetime(element)});
-            var text = $.trim(element.text());
-            if ($t.settings.localeTitle) {
-                element.attr("title", element.data('timeago').datetime.toLocaleString());
-            } else if (text.length > 0 && !($t.isTime(element) && element.attr("title"))) {
-                element.attr("title", text);
-            }
-        }
-        return element.data("timeago");
-    }
+    var data = prepareData(this);
+    var $s = $t.settings;
 
-    function inWords(date) {
-        return $t.inWords(distance(date));
+    if (!isNaN(data.datetime)) {
+      if ( $s.cutoff == 0 || Math.abs(distance(data.datetime)) < $s.cutoff) {
+        $(this).text(inWords(data.datetime));
+      }
     }
+    return this;
+  }
 
-    function distance(date) {
-        return (new Date().getTime() - date.getTime());
+  function prepareData(element) {
+    element = $(element);
+    if (!element.data("timeago")) {
+      element.data("timeago", { datetime: $t.datetime(element) });
+      var text = $.trim(element.text());
+      if ($t.settings.localeTitle) {
+        element.attr("title", element.data('timeago').datetime.toLocaleString());
+      } else if (text.length > 0 && !($t.isTime(element) && element.attr("title"))) {
+        element.attr("title", text);
+      }
     }
+    return element.data("timeago");
+  }
 
-    // fix for IE6 suckage
-    document.createElement("abbr");
-    document.createElement("time");
+  function inWords(date) {
+    return $t.inWords(distance(date));
+  }
+
+  function distance(date) {
+    return (new Date().getTime() - date.getTime());
+  }
+
+  // fix for IE6 suckage
+  document.createElement("abbr");
+  document.createElement("time");
 }));
-;
-"use strict";
+;"use strict";
 var App = angular.module('MAdmin', ['ui.bootstrap', 'fluid', 'flowServices']);
 
 App.controller('AppController', function ($scope, $rootScope, $location, userAppSetting, sessionService, userProfile) {
@@ -6577,9 +6647,9 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
                 base.$originalHeader.after(base.$clonedHeader);
 
                 base.$printStyle = $('<style type="text/css" media="print">' +
-                    '.tableFloatingHeader{display:none !important;}' +
-                    '.tableFloatingHeaderOriginal{position:static !important;}' +
-                    '</style>');
+                '.tableFloatingHeader{display:none !important;}' +
+                '.tableFloatingHeaderOriginal{position:static !important;}' +
+                '</style>');
                 $('head').append(base.$printStyle);
             });
 
@@ -6718,8 +6788,7 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
     };
 
 })(jQuery, window);
-;
-/*
+;/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -6847,8 +6916,7 @@ angular.module("flowServices", ["fluid"])
 
         return this;
     }]);
-;
-/**
+;/**
  * Created by Jerico on 12/15/2014.
  */
 angular.module("sessionControllers", ["fluid", "ngResource", "datatables", "flowServices", "truncate",
@@ -6992,103 +7060,102 @@ angular.module("sessionControllers", ["fluid", "ngResource", "datatables", "flow
         }
 
     }]);
-;
-angular.module('rexTemplates', ['templates/app/header.html', 'templates/app/sidebar.html', 'templates/app/signin.html', 'templates/fluid/fluidBar.html', 'templates/fluid/fluidCheckbox.html', 'templates/fluid/fluidDatePicker.html', 'templates/fluid/fluidField.html', 'templates/fluid/fluidFrame.html', 'templates/fluid/fluidImage.html', 'templates/fluid/fluidLookup.html', 'templates/fluid/fluidModal.html', 'templates/fluid/fluidNotify.html', 'templates/fluid/fluidPanel.html', 'templates/fluid/fluidRadio.html', 'templates/fluid/fluidReportTable.html', 'templates/fluid/fluidSelect.html', 'templates/fluid/fluidTextArea.html', 'templates/fluid/fluidToolbar.html', 'templates/fluid/fluidUploader.html']);
+;angular.module('rexTemplates', ['templates/app/header.html', 'templates/app/sidebar.html', 'templates/app/signin.html', 'templates/fluid/fluidBar.html', 'templates/fluid/fluidCheckbox.html', 'templates/fluid/fluidDatePicker.html', 'templates/fluid/fluidField.html', 'templates/fluid/fluidFrame.html', 'templates/fluid/fluidImage.html', 'templates/fluid/fluidLookup.html', 'templates/fluid/fluidModal.html', 'templates/fluid/fluidNotify.html', 'templates/fluid/fluidPanel.html', 'templates/fluid/fluidRadio.html', 'templates/fluid/fluidReportTable.html', 'templates/fluid/fluidSelect.html', 'templates/fluid/fluidTextArea.html', 'templates/fluid/fluidToolbar.html', 'templates/fluid/fluidUploader.html']);
 
-angular.module("templates/app/header.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("templates/app/header.html",
-        "<nav id=\"topbar\" ng-controller=\"homeCtrl\" role=\"navigation\" style=\"margin-bottom: 0\" data-step=\"1\" class=\"navbar navbar-default navbar-static-top\"><div class=\"navbar-header\"><button type=\"button\" data-toggle=\"collapse\" data-target=\".sidebar-collapse\" class=\"navbar-toggle\"><span class=\"sr-only\">Toggle navigation</span><span class=\"icon-bar\"></span><span class=\"icon-bar\"></span><span class=\"icon-bar\"></span></button> <a id=\"logo\" href=\"#\" class=\"navbar-brand\"><span class=\"fa fa-rocket\"></span><span class=\"logo-text\">{{userProfile.group}}</span><img style=\"display: none\" ng-src=\"{{userProfile.groupEmblem}}\" height=\"46\" width=\"48\" class=\"logo-text-icon emblem\"></a></div><div class=\"topbar-main\"><a href=\"#\" id=\"menu-toggle\" href=\"javascript:void(0);\" ng-click=\"header.collapse('k')\" class=\"hidden-xs\"><i class=\"fa fa-bars\"></i></a><ul class=\"nav navabar\" ng-show=\"flowFrameSerivce.taskList.length > 10\" class=\"hidden-xs\"><li class=\"dropdown dropdown-toggle\"><a data-hover=\"dropdown\" href=\"javascript:void(0);\"><span ng-show=\"flowFrameService.taskList.length > 0\" class=\"badge badge-blue\">{{taskbar.getExcessCount(flowFrameService.taskList)}}</span>&nbsp;<span class=\"caret\"></span></a><ul class=\"dropdown-menu dropdown-user\" style=\"height:200px;overflow:auto\"><li ng-repeat=\"task in flowFrameService.taskList\" ng-show=\"$index >= 10\"><a href=\"#\"><i class=\"{{task.glyph}}\"></i>&nbsp;<span>{{task.title}}</span></a></li></ul></li></ul><ul class=\"nav navbar navbar-top-links navbar-right\"><li><fluid-loader><img src=\"images/loader/loader6.GIF\"></fluid-loader></li><li><div class=\"search-tasks\"><input class=\"animted anim-dur fadeIn\" ng-show=\"flowFrameService.isSearch\" type=\"text\" placeholder=\"Search task\" name=\"taskSearchField\" ng-model=\"flowFrameService.searchTask\"> <a href=\"#\" ng-click=\"flowFrameService.toggleSearch()\" flow-tooltip class=\"fa fa-search\" tooltip-title=\"Search tasks\"></a></div></li><li class=\"dropdown topbar-user\"><a data-toggle=\"dropdown\" href=\"javascript:void(0);\" class=\"dropdown-toggle\"><img ng-src=\"{{userProfile.avatar ? userProfile.avatar : 'images/gallery/profile_default.png'}}\" alt=\"\" class=\"img-responsive img-circle\">&nbsp;<span class=\"hidden-xs\">{{userProfile.fullName}}</span>&nbsp;<span class=\"caret\"></span></a><ul class=\"dropdown-menu dropdown-user\"><li><a href=\"#\" ng-click=\"editProfile()\"><i class=\"octicon octicon-file-media\"></i>My Profile</a></li><li class=\"divider\"></li><li><a href=\"#\" ng-click=\"logout()\"><i class=\"fa fa-key\"></i>Log Out</a></li></ul></li><li fn-bar></li><li class=\"dropdown hidden-lg hidden-md hidden-sm\"><a data-toggle=\"dropdown\" href=\"javascript:void(0);\" class=\"dropdown-toggle\"><i class=\"fa fa-th\"></i> <span ng-show=\"flowFrameService.taskList.length > 0\" class=\"badge badge-blue\">{{flowFrameService.taskList.length}}</span>&nbsp;<span class=\"caret\"></span></a><ul class=\"dropdown-menu dropdown-tasks translucent\"><li><div class=\"dropdown-slimscroll\" style=\"width:250px;height:300px;overflow:auto\"><ul><li class=\"fluid-task-item-xs {{tsk.active ? 'fluid-task-item-active':'fluid-task-item-hidden'}}\" ng-repeat=\"tsk in flowFrameService.taskList\"><a href=\"#\" ng-click=\"taskbar.open(tsk)\"><i class=\"{{tsk.glyph}}\"></i>&nbsp;&nbsp;&nbsp;<span>{{tsk.title}}</span></a></li></ul></div></li></ul></li><li id=\"dropdown-theme-setting\" class=\"dropdown hidden-xs\"><a id=\"theme-setting\" href=\"javascript:;\" ng-click=\"header.toggle('theme')\" class=\"dropdown-toggle\"><i class=\"fa fa-cogs\"></i></a><ul ng-class=\"{show:header.theme}\" class=\"dropdown-menu dropdown-theme-setting pull-right\"><li><h4 class=\"mtn\">Theme Colors</h4><ul id=\"list-color\" class=\"list-unstyled list-inline\"><li data-color=\"green-dark\" ng-click=\"theme_change('green-dark')\" title=\"Green - Dark\" class=\"green-dark\"></li><li data-color=\"red-dark\" ng-click=\"theme_change('red-dark')\" title=\"Red - Dark\" class=\"red-dark\"></li><li data-color=\"pink-dark\" ng-click=\"theme_change('pink-dark')\" title=\"Pink - Dark\" class=\"pink-dark\"></li><li data-color=\"blue-dark\" ng-click=\"theme_change('blue-dark')\" title=\"Blue - Dark\" class=\"blue-dark\"></li><li data-color=\"yellow-dark\" ng-click=\"theme_change('yellow-dark')\" title=\"Yellow - Dark\" class=\"yellow-dark\"></li><li data-color=\"green-grey\" ng-click=\"theme_change('green-grey')\" title=\"Green - Grey\" class=\"green-grey\"></li><li data-color=\"red-grey\" ng-click=\"theme_change('red-grey')\" title=\"Red - Grey\" class=\"red-grey\"></li><li data-color=\"pink-grey\" ng-click=\"theme_change('pink-grey')\" title=\"Pink - Grey\" class=\"pink-grey\"></li><li data-color=\"blue-grey\" ng-click=\"theme_change('blue-grey')\" title=\"Blue - Grey\" class=\"blue-grey\"></li><li data-color=\"yellow-grey\" ng-click=\"theme_change('yellow-grey')\" title=\"Yellow - Grey\" class=\"yellow-grey\"></li><li data-color=\"yellow-green\" ng-click=\"theme_change('yellow-green')\" title=\"Yellow - Green\" class=\"yellow-green\"></li><li data-color=\"orange-grey\" ng-click=\"theme_change('orange-grey')\" title=\"Orange - Grey\" class=\"orange-grey\"></li><li data-color=\"pink-blue\" ng-click=\"theme_change('pink-blue')\" title=\"Pink - Blue\" class=\"pink-blue\"></li><li data-color=\"pink-violet\" ng-click=\"theme_change('pink-violet')\" title=\"Pink - Violet\" class=\"pink-violet active\"></li><li data-color=\"orange-violet\" ng-click=\"theme_change('orange-violet')\" title=\"Orange - Violet\" class=\"orange-violet\"></li><li data-color=\"pink-green\" ng-click=\"theme_change('pink-green')\" title=\"Pink - Green\" class=\"pink-green\"></li><li data-color=\"pink-brown\" ng-click=\"theme_change('pink-brown')\" title=\"Pink - Brown\" class=\"pink-brown\"></li><li data-color=\"orange-blue\" ng-click=\"theme_change('orange-blue')\" title=\"Orange - Blue\" class=\"orange-blue\"></li><li data-color=\"yellow-blue\" ng-click=\"theme_change('yellow-blue')\" title=\"Yellow - Blue\" class=\"yellow-blue\"></li><li data-color=\"green-blue\" ng-click=\"theme_change('green-blue')\" title=\"Green - Blue\" class=\"green-blue\"></li></ul></li></ul></li></ul><a href=\"#\" class=\"fluidTaskBar hidden-md hidden-sm hidden-xs\" ng-class=\"task.active ? 'fluidTaskBar-icon-shown' : ''\" style=\"height:47px;width:48px; margin: 1px\" ng-repeat=\"task in flowFrameService.taskList | limitTo:10\" ng-click=\"taskbar.open(task)\" flow-bar-tooltip index=\"$index\" task=\"task\"><i class=\"fluid-bar-icon {{task.glyph}}\"></i></a><div class=\"dropdown fluidTaskBarMore hidden-md hidden-sm hidden-xs\"><a href=\"#\" data-toggle=\"dropdown\" class=\"hiddex-xs dropdown-toggle\" ng-show=\"flowFrameService.taskList.length > 10\"><i class=\"fluid-bar-icon-sub-task fa fa-th\"></i>&nbsp;<span class=\"badge badge-blue\">{{taskbar.getExcessCount(10)}}</span></a><ul class=\"dropdown-menu dropdown-tasks translucent\"><li><div class=\"dropdown-slimscroll\" style=\"width:250px;height:300px;overflow:auto\"><ul><li class=\"fluid-task-item {{tsk.active ? 'fluid-task-item-active':'fluid-task-item-hidden'}}\" ng-repeat=\"tsk in flowFrameService.taskList\" ng-hide=\"$index < 10\"><div class=\"btn-group btn-group-sm\" style=\"color:white\"><a href=\"#\" class=\"btn btn-danger btn-xs text-inverse\" ng-click=\"taskbar.close(tsk,$index)\"><i class=\"fa fa-close\"></i></a> <a href=\"#\" class=\"btn btn-info btn-xs\" ng-click=\"taskbar.hide(tsk)\"><i class=\"fa fa-angle-down\"></i></a></div><a href=\"#\" ng-click=\"taskbar.open(tsk)\"><i class=\"{{tsk.glyph}}\"></i>&nbsp;&nbsp;&nbsp;<span class=\"task-item\">{{tsk.title}}</span></a></li></ul></div></li></ul></div><a href=\"#\" class=\"fluidTaskBar hidden-lg hidden-xs\" ng-class=\"task.active ? 'fluidTaskBar-icon-shown' : ''\" style=\"height:47px;width:48px; margin: 1px\" ng-repeat=\"task in flowFrameService.taskList | limitTo:5\" ng-click=\"taskbar.open(task)\" flow-tooltip tooltip-title=\"{{task.title}}\"><i class=\"fluid-bar-icon {{task.glyph}}\"></i></a><div class=\"dropdown fluidTaskBarMore hidden-lg hidden-xs\"><a href=\"#\" data-toggle=\"dropdown\" class=\"hiddex-xs dropdown-toggle\" ng-show=\"flowFrameService.taskList.length > 5\"><i class=\"fluid-bar-icon-sub-task fa fa-th\"></i>&nbsp;<span class=\"badge badge-blue\">{{taskbar.getExcessCount(5)}}</span></a><ul class=\"dropdown-menu dropdown-tasks translucent\"><li><div class=\"dropdown-slimscroll\" style=\"width:250px;height:300px;overflow:auto\"><ul><li class=\"fluid-task-item {{tsk.active ? 'fluid-task-item-active':'fluid-task-item-hidden'}}\" ng-repeat=\"tsk in flowFrameService.taskList\" ng-hide=\"$index < 5\"><div class=\"btn-group btn-group-sm\" style=\"color:white\"><a href=\"#\" class=\"btn btn-danger btn-xs text-inverse\" ng-click=\"taskbar.close(tsk,$index)\"><i class=\"fa fa-close\"></i></a> <a href=\"#\" class=\"btn btn-info btn-xs\" ng-click=\"taskbar.hide(tsk)\"><i class=\"fa fa-angle-down\"></i></a></div><a href=\"#\" ng-click=\"taskbar.open(tsk)\"><i class=\"{{tsk.glyph}}\"></i>&nbsp;&nbsp;&nbsp;<span class=\"task-item\">{{tsk.title}}</span></a></li></ul></div></li></ul></div></div></nav>");
+angular.module("templates/app/header.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/app/header.html",
+    "<nav id=\"topbar\" ng-controller=\"homeCtrl\" role=\"navigation\" style=\"margin-bottom: 0\" data-step=\"1\" class=\"navbar navbar-default navbar-static-top\"><div class=\"navbar-header\"><button type=\"button\" data-toggle=\"collapse\" data-target=\".sidebar-collapse\" class=\"navbar-toggle\"><span class=\"sr-only\">Toggle navigation</span><span class=\"icon-bar\"></span><span class=\"icon-bar\"></span><span class=\"icon-bar\"></span></button> <a id=\"logo\" href=\"#\" class=\"navbar-brand\"><span class=\"fa fa-rocket\"></span><span class=\"logo-text\">{{userProfile.group}}</span><img style=\"display: none\" ng-src=\"{{userProfile.groupEmblem}}\" height=\"46\" width=\"48\" class=\"logo-text-icon emblem\"></a></div><div class=\"topbar-main\"><a href=\"#\" id=\"menu-toggle\" href=\"javascript:void(0);\" ng-click=\"header.collapse('k')\" class=\"hidden-xs\"><i class=\"fa fa-bars\"></i></a><ul class=\"nav navabar\" ng-show=\"flowFrameSerivce.taskList.length > 10\" class=\"hidden-xs\"><li class=\"dropdown dropdown-toggle\"><a data-hover=\"dropdown\" href=\"javascript:void(0);\"><span ng-show=\"flowFrameService.taskList.length > 0\" class=\"badge badge-blue\">{{taskbar.getExcessCount(flowFrameService.taskList)}}</span>&nbsp;<span class=\"caret\"></span></a><ul class=\"dropdown-menu dropdown-user\" style=\"height:200px;overflow:auto\"><li ng-repeat=\"task in flowFrameService.taskList\" ng-show=\"$index >= 10\"><a href=\"#\"><i class=\"{{task.glyph}}\"></i>&nbsp;<span>{{task.title}}</span></a></li></ul></li></ul><ul class=\"nav navbar navbar-top-links navbar-right\"><li><fluid-loader><img src=\"images/loader/loader6.GIF\"></fluid-loader></li><li><div class=\"search-tasks\"><input class=\"animted anim-dur fadeIn\" ng-show=\"flowFrameService.isSearch\" type=\"text\" placeholder=\"Search task\" name=\"taskSearchField\" ng-model=\"flowFrameService.searchTask\"> <a href=\"#\" ng-click=\"flowFrameService.toggleSearch()\" flow-tooltip class=\"fa fa-search\" tooltip-title=\"Search tasks\"></a></div></li><li class=\"dropdown topbar-user\"><a data-toggle=\"dropdown\" href=\"javascript:void(0);\" class=\"dropdown-toggle\"><img ng-src=\"{{userProfile.avatar ? userProfile.avatar : 'images/gallery/profile_default.png'}}\" alt=\"\" class=\"img-responsive img-circle\">&nbsp;<span class=\"hidden-xs\">{{userProfile.fullName}}</span>&nbsp;<span class=\"caret\"></span></a><ul class=\"dropdown-menu dropdown-user\"><li><a href=\"#\" ng-click=\"editProfile()\"><i class=\"octicon octicon-file-media\"></i>My Profile</a></li><li class=\"divider\"></li><li><a href=\"#\" ng-click=\"logout()\"><i class=\"fa fa-key\"></i>Log Out</a></li></ul></li><li fn-bar></li><li class=\"dropdown hidden-lg hidden-md hidden-sm\"><a data-toggle=\"dropdown\" href=\"javascript:void(0);\" class=\"dropdown-toggle\"><i class=\"fa fa-th\"></i> <span ng-show=\"flowFrameService.taskList.length > 0\" class=\"badge badge-blue\">{{flowFrameService.taskList.length}}</span>&nbsp;<span class=\"caret\"></span></a><ul class=\"dropdown-menu dropdown-tasks translucent\"><li><div class=\"dropdown-slimscroll\" style=\"width:250px;height:300px;overflow:auto\"><ul><li class=\"fluid-task-item-xs {{tsk.active ? 'fluid-task-item-active':'fluid-task-item-hidden'}}\" ng-repeat=\"tsk in flowFrameService.taskList\"><a href=\"#\" ng-click=\"taskbar.open(tsk)\"><i class=\"{{tsk.glyph}}\"></i>&nbsp;&nbsp;&nbsp;<span>{{tsk.title}}</span></a></li></ul></div></li></ul></li><li id=\"dropdown-theme-setting\" class=\"dropdown hidden-xs\"><a id=\"theme-setting\" href=\"javascript:;\" ng-click=\"header.toggle('theme')\" class=\"dropdown-toggle\"><i class=\"fa fa-cogs\"></i></a><ul ng-class=\"{show:header.theme}\" class=\"dropdown-menu dropdown-theme-setting pull-right\"><li><h4 class=\"mtn\">Theme Colors</h4><ul id=\"list-color\" class=\"list-unstyled list-inline\"><li data-color=\"green-dark\" ng-click=\"theme_change('green-dark')\" title=\"Green - Dark\" class=\"green-dark\"></li><li data-color=\"red-dark\" ng-click=\"theme_change('red-dark')\" title=\"Red - Dark\" class=\"red-dark\"></li><li data-color=\"pink-dark\" ng-click=\"theme_change('pink-dark')\" title=\"Pink - Dark\" class=\"pink-dark\"></li><li data-color=\"blue-dark\" ng-click=\"theme_change('blue-dark')\" title=\"Blue - Dark\" class=\"blue-dark\"></li><li data-color=\"yellow-dark\" ng-click=\"theme_change('yellow-dark')\" title=\"Yellow - Dark\" class=\"yellow-dark\"></li><li data-color=\"green-grey\" ng-click=\"theme_change('green-grey')\" title=\"Green - Grey\" class=\"green-grey\"></li><li data-color=\"red-grey\" ng-click=\"theme_change('red-grey')\" title=\"Red - Grey\" class=\"red-grey\"></li><li data-color=\"pink-grey\" ng-click=\"theme_change('pink-grey')\" title=\"Pink - Grey\" class=\"pink-grey\"></li><li data-color=\"blue-grey\" ng-click=\"theme_change('blue-grey')\" title=\"Blue - Grey\" class=\"blue-grey\"></li><li data-color=\"yellow-grey\" ng-click=\"theme_change('yellow-grey')\" title=\"Yellow - Grey\" class=\"yellow-grey\"></li><li data-color=\"yellow-green\" ng-click=\"theme_change('yellow-green')\" title=\"Yellow - Green\" class=\"yellow-green\"></li><li data-color=\"orange-grey\" ng-click=\"theme_change('orange-grey')\" title=\"Orange - Grey\" class=\"orange-grey\"></li><li data-color=\"pink-blue\" ng-click=\"theme_change('pink-blue')\" title=\"Pink - Blue\" class=\"pink-blue\"></li><li data-color=\"pink-violet\" ng-click=\"theme_change('pink-violet')\" title=\"Pink - Violet\" class=\"pink-violet active\"></li><li data-color=\"orange-violet\" ng-click=\"theme_change('orange-violet')\" title=\"Orange - Violet\" class=\"orange-violet\"></li><li data-color=\"pink-green\" ng-click=\"theme_change('pink-green')\" title=\"Pink - Green\" class=\"pink-green\"></li><li data-color=\"pink-brown\" ng-click=\"theme_change('pink-brown')\" title=\"Pink - Brown\" class=\"pink-brown\"></li><li data-color=\"orange-blue\" ng-click=\"theme_change('orange-blue')\" title=\"Orange - Blue\" class=\"orange-blue\"></li><li data-color=\"yellow-blue\" ng-click=\"theme_change('yellow-blue')\" title=\"Yellow - Blue\" class=\"yellow-blue\"></li><li data-color=\"green-blue\" ng-click=\"theme_change('green-blue')\" title=\"Green - Blue\" class=\"green-blue\"></li></ul></li></ul></li></ul><a href=\"#\" class=\"fluidTaskBar hidden-md hidden-sm hidden-xs\" ng-class=\"task.active ? 'fluidTaskBar-icon-shown' : ''\" style=\"height:47px;width:48px; margin: 1px\" ng-repeat=\"task in flowFrameService.taskList | limitTo:10\" ng-click=\"taskbar.open(task)\" flow-bar-tooltip index=\"$index\" task=\"task\"><i class=\"fluid-bar-icon {{task.glyph}}\"></i></a><div class=\"dropdown fluidTaskBarMore hidden-md hidden-sm hidden-xs\"><a href=\"#\" data-toggle=\"dropdown\" class=\"hiddex-xs dropdown-toggle\" ng-show=\"flowFrameService.taskList.length > 10\"><i class=\"fluid-bar-icon-sub-task fa fa-th\"></i>&nbsp;<span class=\"badge badge-blue\">{{taskbar.getExcessCount(10)}}</span></a><ul class=\"dropdown-menu dropdown-tasks translucent\"><li><div class=\"dropdown-slimscroll\" style=\"width:250px;height:300px;overflow:auto\"><ul><li class=\"fluid-task-item {{tsk.active ? 'fluid-task-item-active':'fluid-task-item-hidden'}}\" ng-repeat=\"tsk in flowFrameService.taskList\" ng-hide=\"$index < 10\"><div class=\"btn-group btn-group-sm\" style=\"color:white\"><a href=\"#\" class=\"btn btn-danger btn-xs text-inverse\" ng-click=\"taskbar.close(tsk,$index)\"><i class=\"fa fa-close\"></i></a> <a href=\"#\" class=\"btn btn-info btn-xs\" ng-click=\"taskbar.hide(tsk)\"><i class=\"fa fa-angle-down\"></i></a></div><a href=\"#\" ng-click=\"taskbar.open(tsk)\"><i class=\"{{tsk.glyph}}\"></i>&nbsp;&nbsp;&nbsp;<span class=\"task-item\">{{tsk.title}}</span></a></li></ul></div></li></ul></div><a href=\"#\" class=\"fluidTaskBar hidden-lg hidden-xs\" ng-class=\"task.active ? 'fluidTaskBar-icon-shown' : ''\" style=\"height:47px;width:48px; margin: 1px\" ng-repeat=\"task in flowFrameService.taskList | limitTo:5\" ng-click=\"taskbar.open(task)\" flow-tooltip tooltip-title=\"{{task.title}}\"><i class=\"fluid-bar-icon {{task.glyph}}\"></i></a><div class=\"dropdown fluidTaskBarMore hidden-lg hidden-xs\"><a href=\"#\" data-toggle=\"dropdown\" class=\"hiddex-xs dropdown-toggle\" ng-show=\"flowFrameService.taskList.length > 5\"><i class=\"fluid-bar-icon-sub-task fa fa-th\"></i>&nbsp;<span class=\"badge badge-blue\">{{taskbar.getExcessCount(5)}}</span></a><ul class=\"dropdown-menu dropdown-tasks translucent\"><li><div class=\"dropdown-slimscroll\" style=\"width:250px;height:300px;overflow:auto\"><ul><li class=\"fluid-task-item {{tsk.active ? 'fluid-task-item-active':'fluid-task-item-hidden'}}\" ng-repeat=\"tsk in flowFrameService.taskList\" ng-hide=\"$index < 5\"><div class=\"btn-group btn-group-sm\" style=\"color:white\"><a href=\"#\" class=\"btn btn-danger btn-xs text-inverse\" ng-click=\"taskbar.close(tsk,$index)\"><i class=\"fa fa-close\"></i></a> <a href=\"#\" class=\"btn btn-info btn-xs\" ng-click=\"taskbar.hide(tsk)\"><i class=\"fa fa-angle-down\"></i></a></div><a href=\"#\" ng-click=\"taskbar.open(tsk)\"><i class=\"{{tsk.glyph}}\"></i>&nbsp;&nbsp;&nbsp;<span class=\"task-item\">{{tsk.title}}</span></a></li></ul></div></li></ul></div></div></nav>");
 }]);
 
-angular.module("templates/app/sidebar.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("templates/app/sidebar.html",
-        "<div ng-controller=\"homeCtrl\" class=\"sidebar-collapse menu-scroll\"><ul id=\"side-menu\" fluid-menu=\"services/flow_module_service/session_modules\" class=\"nav admin-nav-main\"><li class=\"user-panel\"><div class=\"thumb\"><img ng-src=\"{{ userProfile.avatar }}\" class=\"img-circle\"></div><div class=\"info\"><p>{{userProfile.fullName}}</p></div><div class=\"clearfix\"></div></li></ul></div>");
+angular.module("templates/app/sidebar.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/app/sidebar.html",
+    "<div ng-controller=\"homeCtrl\" class=\"sidebar-collapse menu-scroll\"><ul id=\"side-menu\" fluid-menu=\"services/flow_module_service/session_modules\" class=\"nav admin-nav-main\"><li class=\"user-panel\"><div class=\"thumb\"><img ng-src=\"{{ userProfile.avatar }}\" class=\"img-circle\"></div><div class=\"info\"><p>{{userProfile.fullName}}</p></div><div class=\"clearfix\"></div></li></ul></div>");
 }]);
 
-angular.module("templates/app/signin.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("templates/app/signin.html",
-        "<div id=\"signin-page\"><div class=\"page-form-wrapper\"></div><div class=\"page-form\"><form action=\"/#/\" class=\"form\"><div class=\"header-content\"><h1>Log In</h1></div><div class=\"body-content\"><p>Log in with a social network:</p><div class=\"row mbm text-center\"><div class=\"col-md-4\"><a href=\"javascript:void(0);\" class=\"btn btn-sm btn-twitter btn-block\"><i class=\"fa fa-twitter fa-fw\"></i>Twitter</a></div><div class=\"col-md-4\"><a href=\"javascript:void(0);\" class=\"btn btn-sm btn-facebook btn-block\"><i class=\"fa fa-facebook fa-fw\"></i>Facebook</a></div><div class=\"col-md-4\"><a href=\"javascript:void(0);\" class=\"btn btn-sm btn-google-plus btn-block\"><i class=\"fa fa-google-plus fa-fw\"></i>Google +</a></div></div><div class=\"form-group\"><div class=\"input-icon right\"><i class=\"fa fa-user\"></i> <input type=\"text\" placeholder=\"Username\" name=\"username\" class=\"form-control\"></div></div><div class=\"form-group\"><div class=\"input-icon right\"><i class=\"fa fa-key\"></i> <input type=\"password\" placeholder=\"Password\" name=\"password\" class=\"form-control\"></div></div><div class=\"form-group pull-left\"><div class=\"checkbox-list\"><label><input type=\"checkbox\">&nbsp; Keep me signed in</label></div></div><div class=\"form-group pull-right\"><button type=\"button\" onclick=\"window.location.href=&quot;/#/&quot\" class=\"btn btn-success\">Log In &nbsp;<i class=\"fa fa-chevron-circle-right\"></i></button></div><div class=\"clearfix\"></div><div class=\"forget-password\"><h4>Forgotten your Password?</h4><p>no worries, click <a href=\"javascript:void(0);\" class=\"btn-forgot-pwd\">here</a> to reset your password.</p></div><hr><p>Don't have an account? <a id=\"btn-register\" href=\"/#/extra-signup\">Register Now</a></p></div></form></div></div>");
+angular.module("templates/app/signin.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/app/signin.html",
+    "<div id=\"signin-page\"><div class=\"page-form-wrapper\"></div><div class=\"page-form\"><form action=\"/#/\" class=\"form\"><div class=\"header-content\"><h1>Log In</h1></div><div class=\"body-content\"><p>Log in with a social network:</p><div class=\"row mbm text-center\"><div class=\"col-md-4\"><a href=\"javascript:void(0);\" class=\"btn btn-sm btn-twitter btn-block\"><i class=\"fa fa-twitter fa-fw\"></i>Twitter</a></div><div class=\"col-md-4\"><a href=\"javascript:void(0);\" class=\"btn btn-sm btn-facebook btn-block\"><i class=\"fa fa-facebook fa-fw\"></i>Facebook</a></div><div class=\"col-md-4\"><a href=\"javascript:void(0);\" class=\"btn btn-sm btn-google-plus btn-block\"><i class=\"fa fa-google-plus fa-fw\"></i>Google +</a></div></div><div class=\"form-group\"><div class=\"input-icon right\"><i class=\"fa fa-user\"></i> <input type=\"text\" placeholder=\"Username\" name=\"username\" class=\"form-control\"></div></div><div class=\"form-group\"><div class=\"input-icon right\"><i class=\"fa fa-key\"></i> <input type=\"password\" placeholder=\"Password\" name=\"password\" class=\"form-control\"></div></div><div class=\"form-group pull-left\"><div class=\"checkbox-list\"><label><input type=\"checkbox\">&nbsp; Keep me signed in</label></div></div><div class=\"form-group pull-right\"><button type=\"button\" onclick=\"window.location.href=&quot;/#/&quot\" class=\"btn btn-success\">Log In &nbsp;<i class=\"fa fa-chevron-circle-right\"></i></button></div><div class=\"clearfix\"></div><div class=\"forget-password\"><h4>Forgotten your Password?</h4><p>no worries, click <a href=\"javascript:void(0);\" class=\"btn-forgot-pwd\">here</a> to reset your password.</p></div><hr><p>Don't have an account? <a id=\"btn-register\" href=\"/#/extra-signup\">Register Now</a></p></div></form></div></div>");
 }]);
 
-angular.module("templates/fluid/fluidBar.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("templates/fluid/fluidBar.html",
-        "<ul class=\"nav navbar navbar-top-links\"><li ng-class=\"task.active ? 'flow-bar-icon-active':''\" ng-repeat=\"task in taskList | limitTo:10\"><a class=\"flow-bar-icon\" href=\"#\" ng-click=\"open(task)\"><i ng-class=\"task.glyph\"></i><span class=\"hidden-lg hidden-md hidden-sm\">&nbsp;{{task.title}}</span></a></li><li class=\"hidden-xs\" class=\"dropdown\" ng-hide=\"taskList.length < 11\"><a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\"><span class=\"fa fa-angle-down\"></span></a><ul class=\"dropdown-menu\" style=\"overflow: auto\"><li ng-show=\"$index >= 10\" class=\"border\" ng-repeat=\"tsk in taskList\" ng-class=\"tsk.active ?'flow-bar-icon-active':''\"><a href=\"#\" class=\"flow-bar-task\" title=\"{{tsk.title}}\" ng-click=\"open(tsk)\"><i ng-class=\"tsk.glyph\"></i> <span>&nbsp;{{tsk.title}}</span></a></li></ul></li></ul>");
+angular.module("templates/fluid/fluidBar.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/fluid/fluidBar.html",
+    "<ul class=\"nav navbar navbar-top-links\"><li ng-class=\"task.active ? 'flow-bar-icon-active':''\" ng-repeat=\"task in taskList | limitTo:10\"><a class=\"flow-bar-icon\" href=\"#\" ng-click=\"open(task)\"><i ng-class=\"task.glyph\"></i><span class=\"hidden-lg hidden-md hidden-sm\">&nbsp;{{task.title}}</span></a></li><li class=\"hidden-xs\" class=\"dropdown\" ng-hide=\"taskList.length < 11\"><a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\"><span class=\"fa fa-angle-down\"></span></a><ul class=\"dropdown-menu\" style=\"overflow: auto\"><li ng-show=\"$index >= 10\" class=\"border\" ng-repeat=\"tsk in taskList\" ng-class=\"tsk.active ?'flow-bar-icon-active':''\"><a href=\"#\" class=\"flow-bar-task\" title=\"{{tsk.title}}\" ng-click=\"open(tsk)\"><i ng-class=\"tsk.glyph\"></i> <span>&nbsp;{{tsk.title}}</span></a></li></ul></li></ul>");
 }]);
 
-angular.module("templates/fluid/fluidCheckbox.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("templates/fluid/fluidCheckbox.html",
-        "<div class=\"form-group flow-form\"><label ng-click=\"update()\" column=\"12\" class=\"control-label\" for=\"{{name}}\"><input style=\"position: absolute; left: -9999px; width: 1px; height: 1px\" name=\"{{name}}\" ng-model=\"model\" ng-disabled=\"disabled ? disabled : false\" ng-required=\"required ? required : false\"> <span ng-if=\"disabled ? disabled : false\" class=\"fluid-checkbox disabled\"><i ng-if=\"model\" class=\"fa fa-check-square-o\" style=\"font-size: 20px;color: #d3d3d3\"></i> <i ng-if=\"!model\" class=\"fa fa-square-o\" style=\"font-size: 20px;color: #d3d3d3\"></i></span> <span ng-if=\"disabled ? false : true\" class=\"fluid-checkbox\" type=\"button\"><i ng-if=\"model\" class=\"text-success fa fa-check-square-o\" style=\"font-size: 20px\"></i> <i ng-if=\"!model\" class=\"fa fa-square-o\" style=\"font-size: 20px;color: grey\"></i></span> {{label}} <span class=\"text-danger\" ng-show=\"required\">*</span></label></div>");
+angular.module("templates/fluid/fluidCheckbox.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/fluid/fluidCheckbox.html",
+    "<div class=\"form-group flow-form\"><label ng-click=\"update()\" column=\"12\" class=\"control-label\" for=\"{{name}}\"><input style=\"position: absolute; left: -9999px; width: 1px; height: 1px\" name=\"{{name}}\" ng-model=\"model\" ng-disabled=\"disabled ? disabled : false\" ng-required=\"required ? required : false\"> <span ng-if=\"disabled ? disabled : false\" class=\"fluid-checkbox disabled\"><i ng-if=\"model\" class=\"fa fa-check-square-o\" style=\"font-size: 20px;color: #d3d3d3\"></i> <i ng-if=\"!model\" class=\"fa fa-square-o\" style=\"font-size: 20px;color: #d3d3d3\"></i></span> <span ng-if=\"disabled ? false : true\" class=\"fluid-checkbox\" type=\"button\"><i ng-if=\"model\" class=\"text-success fa fa-check-square-o\" style=\"font-size: 20px\"></i> <i ng-if=\"!model\" class=\"fa fa-square-o\" style=\"font-size: 20px;color: grey\"></i></span> {{label}} <span class=\"text-danger\" ng-show=\"required\">*</span></label></div>");
 }]);
 
-angular.module("templates/fluid/fluidDatePicker.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("templates/fluid/fluidDatePicker.html",
-        "<div class=\"form-group flow-form\"><label column=\"12\" class=\"control-label\">{{label}}<span style=\"color: #ea520a\" ng-show=\"required\">*</span></label><div column=\"12\"><input placeholder=\"{{format}}\" name=\"{{name}}\" ng-change=\"convertToTimestamp()\" ng-disabled=\"disabled\" class=\"form-control datepicker\" ng-model=\"temp\" type=\"text\" ng-required=\"required\"></div></div>");
+angular.module("templates/fluid/fluidDatePicker.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/fluid/fluidDatePicker.html",
+    "<div class=\"form-group flow-form\"><label column=\"12\" class=\"control-label\">{{label}}<span style=\"color: #ea520a\" ng-show=\"required\">*</span></label><div column=\"12\"><input placeholder=\"{{format}}\" name=\"{{name}}\" ng-change=\"convertToTimestamp()\" ng-disabled=\"disabled\" class=\"form-control datepicker\" ng-model=\"temp\" type=\"text\" ng-required=\"required\"></div></div>");
 }]);
 
-angular.module("templates/fluid/fluidField.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("templates/fluid/fluidField.html",
-        "<div class=\"form-group flow-form\"><label for=\"{{name}}\" column=\"12\" class=\"control-label\">{{label}}<span class=\"text-danger\" ng-show=\"required\">*</span> <input ng-blur=\"blur()\" name=\"{{name}}\" ng-disabled=\"disabled\" class=\"form-control\" ng-model=\"model\" type=\"{{type}}\" ng-required=\"required\"></label></div>");
+angular.module("templates/fluid/fluidField.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/fluid/fluidField.html",
+    "<div class=\"form-group flow-form\"><label for=\"{{name}}\" column=\"12\" class=\"control-label\">{{label}}<span class=\"text-danger\" ng-show=\"required\">*</span> <input ng-blur=\"blur()\" name=\"{{name}}\" ng-disabled=\"disabled\" class=\"form-control\" ng-model=\"model\" type=\"{{type}}\" ng-required=\"required\"></label></div>");
 }]);
 
-angular.module("templates/fluid/fluidFrame.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("templates/fluid/fluidFrame.html",
-        "<div class=\"container-fluid frame-content\" ng-class=\"flowFrameService.fullScreen ? 'frame-fullscreen' : 'frame-fluidscreen'\"><div ng-if=\"flowFrameService.fullScreen\" class=\"container-fluid frame-content-div\" ng-show=\"flowFrameService.fullScreen\"><flow-panel task=\"flowFrameService.fullScreenTask\"></flow-panel></div><div ng-if=\"!flowFrameService.fullScreen\" class=\"container-fluid frame-content-div\" ng-hide=\"flowFrameService.fullScreen\"><div ng-init=\"initTask(task)\" ng-repeat=\"task in flowFrameService.taskList | filter:{active:true, title:flowFrameService.searchTask}\"><flow-panel task=\"task\"></flow-panel></div></div><div class=\"flow-footer portlet box color portlet-primary\" ng-show=\"flowFrameService.actionBarShowing\" ng-class=\"flowFrameService.actionBarClass\"><div class=\"portlet-header\"><div class=\"tools\"></div></div><div class=\"portlet-body\">body</div></div></div>");
+angular.module("templates/fluid/fluidFrame.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/fluid/fluidFrame.html",
+    "<div class=\"container-fluid frame-content\" ng-class=\"flowFrameService.fullScreen ? 'frame-fullscreen' : 'frame-fluidscreen'\"><div ng-if=\"flowFrameService.fullScreen\" class=\"container-fluid frame-content-div\" ng-show=\"flowFrameService.fullScreen\"><flow-panel task=\"flowFrameService.fullScreenTask\"></flow-panel></div><div ng-if=\"!flowFrameService.fullScreen\" class=\"container-fluid frame-content-div\" ng-hide=\"flowFrameService.fullScreen\"><div ng-init=\"initTask(task)\" ng-repeat=\"task in flowFrameService.taskList | filter:{active:true, title:flowFrameService.searchTask}\"><flow-panel task=\"task\"></flow-panel></div></div><div class=\"flow-footer portlet box color portlet-primary\" ng-show=\"flowFrameService.actionBarShowing\" ng-class=\"flowFrameService.actionBarClass\"><div class=\"portlet-header\"><div class=\"tools\"></div></div><div class=\"portlet-body\">body</div></div></div>");
 }]);
 
-angular.module("templates/fluid/fluidImage.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("templates/fluid/fluidImage.html",
-        "<div class=\"form-group flow-form\"><label column=\"12\" class=\"control-label col-sm-2\">{{label}}<i ng-if=\"notDone\" class=\"fa fa-spinner fa-spin\"></i><span class=\"text-danger\" ng-show=\"required\">*</span><div class=\"flow-group-icon\" accept=\"image/*\" ng-model=\"preview\" ng-file-drop drag-over-class=\"{accept:'flow-group-icon-accept', reject:'flow-group-icon-error', delay:100}\"><img class=\"thumbnail\" style=\"border-radius: 5px\" width=\"198px\" height=\"173px\" ng-src=\"{{preview[0].dataUrl}}\"></div><div class=\"marginBottom5px\" ng-show=\"!disabled\"><span accept=\"image/*\" class=\"btn btn-info\" ng-show=\"!disabled\" ng-file-change=\"onFileSelect(preview[0],$files)\" ng-file-select ng-model=\"preview\"><span class=\"fa fa-image\" ng-show=\"!disabled\"></span>&nbsp;&nbsp;{{preview[0].dataUrl != null ? 'Change' : 'Attach'}}</span></div></label></div>");
+angular.module("templates/fluid/fluidImage.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/fluid/fluidImage.html",
+    "<div class=\"form-group flow-form\"><label column=\"12\" class=\"control-label col-sm-2\">{{label}}<i ng-if=\"notDone\" class=\"fa fa-spinner fa-spin\"></i><span class=\"text-danger\" ng-show=\"required\">*</span><div class=\"flow-group-icon\" accept=\"image/*\" ng-model=\"preview\" ng-file-drop drag-over-class=\"{accept:'flow-group-icon-accept', reject:'flow-group-icon-error', delay:100}\"><img class=\"thumbnail\" style=\"border-radius: 5px\" width=\"198px\" height=\"173px\" ng-src=\"{{preview[0].dataUrl}}\"></div><div class=\"marginBottom5px\" ng-show=\"!disabled\"><span accept=\"image/*\" class=\"btn btn-info\" ng-show=\"!disabled\" ng-file-change=\"onFileSelect(preview[0],$files)\" ng-file-select ng-model=\"preview\"><span class=\"fa fa-image\" ng-show=\"!disabled\"></span>&nbsp;&nbsp;{{preview[0].dataUrl != null ? 'Change' : 'Attach'}}</span></div></label></div>");
 }]);
 
-angular.module("templates/fluid/fluidLookup.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("templates/fluid/fluidLookup.html",
-        "<div class=\"form-group flow-form\"><div ng-transclude></div><label column=\"12\" class=\"control-label\" for=\"{{name}}\">{{label}} <span class=\"text-danger\" ng-show=\"required\">*</span><div class=\"input-group\" name=\"{{name}}\"><input ng-disabled=\"disabled\" id=\"ctnr_{{id}}\" href=\"#\" title=\"{{label}}\" readonly class=\"form-control\" ng-required=\"required\" ng-click=\"look()\" style=\"color:#000000;background: #ffffff\"><span ng-if=\"isNotModeled()\" class=\"input-group-btn\"><button type=\"button\" ng-disabled=\"disabled\" class=\"btn btn-info\" ng-click=\"look()\"><span class=\"fa fa-search\"></span></button></span> <span ng-if=\"isModeled()\" class=\"input-group-btn\"><button type=\"button\" title=\"clear\" class=\"btn btn-info\" ng-disabled=\"disabled\" ng-click=\"clear()\"><span class=\"fa fa-eraser\"></span></button></span></div></label></div>");
+angular.module("templates/fluid/fluidLookup.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/fluid/fluidLookup.html",
+    "<div class=\"form-group flow-form\"><div ng-transclude></div><label column=\"12\" class=\"control-label\" for=\"{{name}}\">{{label}} <span class=\"text-danger\" ng-show=\"required\">*</span><div class=\"input-group\" name=\"{{name}}\"><input ng-disabled=\"disabled\" id=\"ctnr_{{id}}\" href=\"#\" title=\"{{label}}\" readonly class=\"form-control\" ng-required=\"required\" ng-click=\"look()\" style=\"color:#000000;background: #ffffff\"><span ng-if=\"isNotModeled()\" class=\"input-group-btn\"><button type=\"button\" ng-disabled=\"disabled\" class=\"btn btn-info\" ng-click=\"look()\"><span class=\"fa fa-search\"></span></button></span> <span ng-if=\"isModeled()\" class=\"input-group-btn\"><button type=\"button\" title=\"clear\" class=\"btn btn-info\" ng-disabled=\"disabled\" ng-click=\"clear()\"><span class=\"fa fa-eraser\"></span></button></span></div></label></div>");
 }]);
 
-angular.module("templates/fluid/fluidModal.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("templates/fluid/fluidModal.html",
-        "<div class=\"overlay hidden animated fadeIn anim-dur\"><div ng-style=\"style\" class=\"flow-modal animated pulse anim-dur\"><div ng-transclude></div></div></div>");
+angular.module("templates/fluid/fluidModal.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/fluid/fluidModal.html",
+    "<div class=\"overlay hidden animated fadeIn anim-dur\"><div ng-style=\"style\" class=\"flow-modal animated pulse anim-dur\"><div ng-transclude></div></div></div>");
 }]);
 
-angular.module("templates/fluid/fluidNotify.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("templates/fluid/fluidNotify.html",
-        "<li class=\"dropdown\"><a data-toggle=\"dropdown\" href=\"#\" class=\"dropdown-toggle\"><i class=\"fa fa-bell fa-fw\"></i> <span class=\"badge badge-blue\" ng-show=\"fs.alerts.length > 0\">{{fs.alerts.length}}</span></a><ul class=\"dropdown-menu dropdown-alerts\"><li><p>You have {{fs.alerts.length > 0 ? fs.alerts.length +' new' : 'no new' }} notifications</p></li><li><div class=\"dropdown-slimscroll\"><ul><li ng-repeat=\"alert in fs.top\"><a href=\"#\" ng-click=\"open(alert)\" ng-class=\"!alert.notified ?'active':''\"><div ng-class=\"getLabelScheme(alert)\" class=\"fluid-notify-icon\"><i ng-class=\"getMessageTypeGlyph(alert)\"></i></div>&nbsp;{{alert.message | characters: 25 : false}}<span class=\"pull-right text-muted small\">{{fs.interval(alert)}}</span></a></li></ul></div></li><li class=\"last\"><a href=\"#\" class=\"text-right\" ng-click=\"openNotificationCenter()\">See all alerts</a></li></ul></li>");
+angular.module("templates/fluid/fluidNotify.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/fluid/fluidNotify.html",
+    "<li class=\"dropdown\"><a data-toggle=\"dropdown\" href=\"#\" class=\"dropdown-toggle\"><i class=\"fa fa-bell fa-fw\"></i> <span class=\"badge badge-blue\" ng-show=\"fs.alerts.length > 0\">{{fs.alerts.length}}</span></a><ul class=\"dropdown-menu dropdown-alerts\"><li><p>You have {{fs.alerts.length > 0 ? fs.alerts.length +' new' : 'no new' }} notifications</p></li><li><div class=\"dropdown-slimscroll\"><ul><li ng-repeat=\"alert in fs.top\"><a href=\"#\" ng-click=\"open(alert)\" ng-class=\"!alert.notified ?'active':''\"><div ng-class=\"getLabelScheme(alert)\" class=\"fluid-notify-icon\"><i ng-class=\"getMessageTypeGlyph(alert)\"></i></div>&nbsp;{{alert.message | characters: 25 : false}}<span class=\"pull-right text-muted small\">{{fs.interval(alert)}}</span></a></li></ul></div></li><li class=\"last\"><a href=\"#\" class=\"text-right\" ng-click=\"openNotificationCenter()\">See all alerts</a></li></ul></li>");
 }]);
 
-angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("templates/fluid/fluidPanel.html",
-        "<div id=\"_id_fp_{{task.id}}\" task class=\"portlet box {{!flowFrameService.fullScreen ? 'portlet-primary' : 'portlet-default'}}\"><div class=\"portlet-header\" ng-show=\"!task.locked\"><div class=\"caption\"><a ng-if=\"!flowFrameService.fullScreen \" data-toggle=\"collapse\" data-target=\"#_{{task.id}}\" href=\"#\" class=\"flow-panel-heading-title\"><span ng-class=\"task.glyph\" class=\"hidden-sm hidden-md hidden-xs\"></span><span ng-if=\"task.loaded\">&nbsp;{{task.title}} - {{task.page.title}}</span></a> <span ng-if=\"task.loaded && flowFrameService.fullScreen\">&nbsp;{{task.title}} - {{task.page.title}}</span> <img ng-if=\"!task.loaded && !flowFrameService.fullScreen\" src=\"images/loader/windows_like.GIF\"> <img ng-if=\"!task.loaded && flowFrameService.fullScreen\" src=\"images/loader/windows_like_2.GIF\"></div><div class=\"tools\"><div class=\"btn-group btn-group-lg hidden-lg\"><a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\"><span ng-class=\"task.glyph\" class=\"flow-panel-icon-control\"></a><ul class=\"dropdown-menu dropdown-menu-right dropdown-menu-inverse\"><li><a href=\"#\" ng-click=\"task.refresh()\">Refresh</a></li><li class=\"divider hidden-lg hidden-sm hidden-xs\"></li><li ng-if=\"!flowFrameService.fullScreen\"><a ng-click=\"task.fullScreen()\">Fullscreen</a></li><li ng-if=\"flowFrameService.fullScreen\"><a ng-click=\"task.fluidScreen()\">Fluidscreen</a></li><li class=\"hidden-lg\"><a href=\"#\" ng-click=\"task.hide(task)\">Minimize</a></li><li ng-class=\"task.locked ?\n" +
-        "                        'hidden-sm hidden-md hidden-xs' : ''\" class=\"divider\"></li><li><a ng-class=\"task.locked ? 'hidden-sm hidden-md hidden-xs' : ''\" href=\"#\" ng-click=\"task.close()\">Close</a></li></ul></div><div class=\"hidden-md hidden-xs hidden-sm btn-group btn-group-md panel-control\"><button ng-hide=\"flowFrameService.fullScreen\" ng-disabled=\"task.pinned\" title=\"Maximize - 50\" class=\"btn btn-info\" ng-click=\"task.max50()\"><i class=\"element-center fa fa-arrows-h\" style=\"transform: scaleX(0.9)\"></i></button> <button ng-hide=\"flowFrameService.fullScreen\" ng-disabled=\"task.pinned\" ng-click=\"task.max100()\" class=\"btn btn-info\"><i title=\"Maximize - 100\" class=\"element-center fa fa-arrows-h\" style=\"transform: scaleX(1.3)\"></i></button> <button ng-disabled=\"task.pinned\" title=\"Minimize\" ng-click=\"task.hide(task)\" class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}\"><i title=\"minimize\" class=\"element-center fa fa-angle-down\"></i></button> <button ng-if=\"!flowFrameService.fullScreen\" class=\"btn btn-info\" ng-click=\"task.fullScreen()\"><i title=\"Full screen\" class=\"element-center glyphicon glyphicon-fullscreen\"></i></button> <button ng-if=\"flowFrameService.fullScreen\" class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}\" ng-click=\"task.fluidScreen()\"><i title=\"Fluid screen\" class=\"element-center fa fa-th\"></i></button> <button class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}\" ng-click=\"task.refresh()\"><i title=\"Refresh\" class=\"element-center fa\" ng-class=\"task.loaded ? 'fa-refresh' : 'fa-spin fa-refresh'\"></i></button> <button class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-danger'}}\" ng-disabled=\"task.pinned||task.locked\" ng-click=\"task.close()\"><i class=\"element-center fa fa-close\" title=\"Close\" title=\"close\"></i></button></div></div></div><div id=\"_{{task.id}}\" class=\"panel-collapse collapse in\"><div id=\"_id_fpb_{{task.id}}\" class=\"portlet-body minHeight flow-panel\" ng-disabled=\"!task.loaded\"><flow-message id=\"{{flow.getElementFlowId('pnl_msg')}}\"></flow-message><flow-tool size=\"medium\" flow=\"flow\" id=\"{{flow.getElementFlowId('flw_tl')}}\" ng-if=\"task.showToolBar\" task=\"task\" pages=\"task.navPages\"></flow-tool><div ng-if=\"task.pageLoaded\" id=\"page_div_{{task.id}}\" class=\"flow-panel-page\" ng-style=\"!flowFrameService.fullScreen?{overflow:auto}:{}\" ng-include=\"task.page.home\"></div></div></div></div>");
+angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/fluid/fluidPanel.html",
+    "<div id=\"_id_fp_{{task.id}}\" task class=\"portlet box {{!flowFrameService.fullScreen ? 'portlet-primary' : 'portlet-default'}}\"><div class=\"portlet-header\" ng-show=\"!task.locked\"><div class=\"caption\"><a ng-if=\"!flowFrameService.fullScreen \" data-toggle=\"collapse\" data-target=\"#_{{task.id}}\" href=\"#\" class=\"flow-panel-heading-title\"><span ng-class=\"task.glyph\" class=\"hidden-sm hidden-md hidden-xs\"></span><span ng-if=\"task.loaded\">&nbsp;{{task.title}} - {{task.page.title}}</span></a> <span ng-if=\"task.loaded && flowFrameService.fullScreen\">&nbsp;{{task.title}} - {{task.page.title}}</span> <img ng-if=\"!task.loaded && !flowFrameService.fullScreen\" src=\"images/loader/windows_like.GIF\"> <img ng-if=\"!task.loaded && flowFrameService.fullScreen\" src=\"images/loader/windows_like_2.GIF\"></div><div class=\"tools\"><div class=\"btn-group btn-group-lg hidden-lg\"><a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\"><span ng-class=\"task.glyph\" class=\"flow-panel-icon-control\"></a><ul class=\"dropdown-menu dropdown-menu-right dropdown-menu-inverse\"><li><a href=\"#\" ng-click=\"task.refresh()\">Refresh</a></li><li class=\"divider hidden-lg hidden-sm hidden-xs\"></li><li ng-if=\"!flowFrameService.fullScreen\"><a ng-click=\"task.fullScreen()\">Fullscreen</a></li><li ng-if=\"flowFrameService.fullScreen\"><a ng-click=\"task.fluidScreen()\">Fluidscreen</a></li><li class=\"hidden-lg\"><a href=\"#\" ng-click=\"task.hide(task)\">Minimize</a></li><li ng-class=\"task.locked ?\n" +
+    "                        'hidden-sm hidden-md hidden-xs' : ''\" class=\"divider\"></li><li><a ng-class=\"task.locked ? 'hidden-sm hidden-md hidden-xs' : ''\" href=\"#\" ng-click=\"task.close()\">Close</a></li></ul></div><div class=\"hidden-md hidden-xs hidden-sm btn-group btn-group-md panel-control\"><button ng-hide=\"flowFrameService.fullScreen\" ng-disabled=\"task.pinned\" title=\"Maximize - 50\" class=\"btn btn-info\" ng-click=\"task.max50()\"><i class=\"element-center fa fa-arrows-h\" style=\"transform: scaleX(0.9)\"></i></button> <button ng-hide=\"flowFrameService.fullScreen\" ng-disabled=\"task.pinned\" ng-click=\"task.max100()\" class=\"btn btn-info\"><i title=\"Maximize - 100\" class=\"element-center fa fa-arrows-h\" style=\"transform: scaleX(1.3)\"></i></button> <button ng-disabled=\"task.pinned\" title=\"Minimize\" ng-click=\"task.hide(task)\" class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}\"><i title=\"minimize\" class=\"element-center fa fa-angle-down\"></i></button> <button ng-if=\"!flowFrameService.fullScreen\" class=\"btn btn-info\" ng-click=\"task.fullScreen()\"><i title=\"Full screen\" class=\"element-center glyphicon glyphicon-fullscreen\"></i></button> <button ng-if=\"flowFrameService.fullScreen\" class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}\" ng-click=\"task.fluidScreen()\"><i title=\"Fluid screen\" class=\"element-center fa fa-th\"></i></button> <button class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}\" ng-click=\"task.refresh()\"><i title=\"Refresh\" class=\"element-center fa\" ng-class=\"task.loaded ? 'fa-refresh' : 'fa-spin fa-refresh'\"></i></button> <button class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-danger'}}\" ng-disabled=\"task.pinned||task.locked\" ng-click=\"task.close()\"><i class=\"element-center fa fa-close\" title=\"Close\" title=\"close\"></i></button></div></div></div><div id=\"_{{task.id}}\" class=\"panel-collapse collapse in\"><div id=\"_id_fpb_{{task.id}}\" class=\"portlet-body minHeight flow-panel\" ng-disabled=\"!task.loaded\"><flow-message id=\"{{flow.getElementFlowId('pnl_msg')}}\"></flow-message><flow-tool size=\"medium\" flow=\"flow\" id=\"{{flow.getElementFlowId('flw_tl')}}\" ng-if=\"task.showToolBar\" task=\"task\" pages=\"task.navPages\"></flow-tool><div ng-if=\"task.pageLoaded\" id=\"page_div_{{task.id}}\" class=\"flow-panel-page\" ng-style=\"!flowFrameService.fullScreen?{overflow:auto}:{}\" ng-include=\"task.page.home\"></div></div></div></div>");
 }]);
 
-angular.module("templates/fluid/fluidRadio.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("templates/fluid/fluidRadio.html",
-        "<div class=\"form-group flow-form\"><label column=\"12\" class=\"control-label\" for=\"{{name}}\">{{label}} <span class=\"text-danger\" ng-show=\"required\">*</span><div name=\"{{name}}\" class=\"fluid-radio\"></div></label></div>");
+angular.module("templates/fluid/fluidRadio.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/fluid/fluidRadio.html",
+    "<div class=\"form-group flow-form\"><label column=\"12\" class=\"control-label\" for=\"{{name}}\">{{label}} <span class=\"text-danger\" ng-show=\"required\">*</span><div name=\"{{name}}\" class=\"fluid-radio\"></div></label></div>");
 }]);
 
-angular.module("templates/fluid/fluidReportTable.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("templates/fluid/fluidReportTable.html",
-        "<table class=\"table table-hover table-condensed\" ng-init=\"rep = []\"><thead><tr><th class=\"bg-primary header-center\"><input type=\"checkbox\" ng-model=\"task.table.isMaterialsAdvisor\" flow-tooltip tooltip-title=\"{{task.table.isMaterialsAdvisor == true ? 'Hide materials advisor' : 'Show materials advisor'}}\" tooltip-time=\"300\" tooltip-at=\"top right\" tooltip-my=\"bottom left\"></th><th class=\"bg-info\"><input type=\"checkbox\" ng-model=\"task.table.isWeek\" flow-tooltip tooltip-title=\"{{task.table.isWeek == true ? 'Hide week' : 'Show week'}}\" tooltip-time=\"300\" tooltip-at=\"top right\" tooltip-my=\"bottom left\"></th><th ng-if=\"!task.isYear\" class=\"bg-info\"><input type=\"checkbox\" ng-model=\"task.table.isYear\" flow-tooltip tooltip-title=\"{{task.table.isWeek == true ? 'Hide year' : 'Show year'}}\" tooltip-time=\"300\" tooltip-at=\"top right\" tooltip-my=\"bottom left\"></th><th class=\"bg-info header\"></th><th class=\"bg-info header\"></th><th class=\"bg-success\"></th><th class=\"bg-info\"></th><th class=\"bg-info\"></th><th class=\"bg-success\"></th><th class=\"bg-info\"></th><th class=\"bg-info\"></th><th class=\"bg-success\"></th><th class=\"bg-warning\"></th><th class=\"bg-warning\"></th><th class=\"bg-warning\"></th><th class=\"bg-warning\"></th><th class=\"bg-warning\"></th><th class=\"bg-warning\"></th><th class=\"bg-warning\"></th><th class=\"bg-warning\"></th><th class=\"bg-warning\"></th><th class=\"bg-warning\"></th></tr></thead><thead><tr><th class=\"bg-primary\">{{!task.isAgent && task.table.isMaterialsAdvisor ? 'Materials Advisor' :'Action'}}</th><th class=\"bg-info\" ng-if=\"task.table.isWeek\">Week</th><th ng-if=\"!task.isYear && task.table.isYear\" class=\"bg-info\">Year</th><th class=\"bg-info header\">Planned Target</th><th class=\"bg-info header\">Planned Actual</th><th class=\"bg-success\">Planned Call Productivity</th><th class=\"bg-info\">Unplanned Target</th><th class=\"bg-info\">Unplanned Actual</th><th class=\"bg-success\">Unplanned Call Productivity</th><th class=\"bg-info\">Total Target</th><th class=\"bg-info\">Total Actual</th><th class=\"bg-success\">Total Call Productivity</th><th class=\"bg-warning\">Exam Copies Distribution</th><th class=\"bg-warning\">Invitation to Events</th><th class=\"bg-warning\">Confirmation of Events</th><th class=\"bg-warning\">Giveaways Distribution</th><th class=\"bg-warning\">Delivery of Incentive/Donation</th><th class=\"bg-warning\">Purchase Order</th><th class=\"bg-warning\">Delivery of Add'l Order / TRM / Compli</th><th class=\"bg-warning\">Booklist</th><th class=\"bg-warning\">Updated Customer Info Sheet</th><th class=\"bg-warning\">Implemented Ex-Sem</th></tr></thead><tbody ng-repeat=\"(month , report) in task.result | groupBy: 'reportMonth'\" ng-init=\"rep.push({selectedWeek:0})\"><tr><td class=\"bg-info\" colspan=\"2\">{{month}}</td><td colspan=\"3\"><select ng-model=\"rep[$index].selectedWeek\"><option value=\"1\" label=\"Week 1\"></option><option value=\"2\" label=\"Week 2\"></option><option value=\"3\" label=\"Week 3\"></option><option value=\"4\" label=\"Week 4\"></option><option value=\"5\" label=\"Week 5\"></option><option value=\"0\" label=\"All week\"></option></select></td></tr><tr ng-show=\"rep[$index].selectedWeek == 0\" ng-repeat=\"day in report\"><td><a href=\"#\" ng-click=\"task.getCustomers(day)\"><span><i ng-class=\"(day.view ? 'fa fa-search-minus' : 'fa fa-search-plus')\"></i> {{ !task.isAgent && table.isMaterialsAdvisor ? day.materialsAdvisor : ''}}</span></a></td><td ng-if=\"table.isWeek\">{{day.week}}</td><td ng-if=\"!task.isYear\">{{day.year}}</td><td>{{day.plannedTarget}}</td><td>{{day.plannedActual}}</td><td>{{day.plannedCallProductivity | setDecimal: 2}}%</td><td>{{day.unplannedTarget}}</td><td>{{day.unplannedActual}}</td><td>{{day.unplannedCallProductivity | setDecimal: 2}}%</td><td>{{day.totalActivity}}</td><td>{{day.unplannedActual + day.unplannedActual}}</td><td>{{day.totalCallProductivity | setDecimal: 2}}%</td><td>{{day.ecd}}</td><td>{{day.ite}}</td><td>{{day.coe}}</td><td>{{day.gd}}</td><td>{{day.doi}}</td><td>{{day.po}}</td><td>{{day.daotrc}}</td><td>{{day.bookList}}</td><td>{{day.ucis}}</td><td>{{day.ies}}</td></tr></tbody></table>");
+angular.module("templates/fluid/fluidReportTable.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/fluid/fluidReportTable.html",
+    "<table class=\"table table-hover table-condensed\" ng-init=\"rep = []\"><thead><tr><th class=\"bg-primary header-center\"><input type=\"checkbox\" ng-model=\"task.table.isMaterialsAdvisor\" flow-tooltip tooltip-title=\"{{task.table.isMaterialsAdvisor == true ? 'Hide materials advisor' : 'Show materials advisor'}}\" tooltip-time=\"300\" tooltip-at=\"top right\" tooltip-my=\"bottom left\"></th><th class=\"bg-info\"><input type=\"checkbox\" ng-model=\"task.table.isWeek\" flow-tooltip tooltip-title=\"{{task.table.isWeek == true ? 'Hide week' : 'Show week'}}\" tooltip-time=\"300\" tooltip-at=\"top right\" tooltip-my=\"bottom left\"></th><th ng-if=\"!task.isYear\" class=\"bg-info\"><input type=\"checkbox\" ng-model=\"task.table.isYear\" flow-tooltip tooltip-title=\"{{task.table.isWeek == true ? 'Hide year' : 'Show year'}}\" tooltip-time=\"300\" tooltip-at=\"top right\" tooltip-my=\"bottom left\"></th><th class=\"bg-info header\"></th><th class=\"bg-info header\"></th><th class=\"bg-success\"></th><th class=\"bg-info\"></th><th class=\"bg-info\"></th><th class=\"bg-success\"></th><th class=\"bg-info\"></th><th class=\"bg-info\"></th><th class=\"bg-success\"></th><th class=\"bg-warning\"></th><th class=\"bg-warning\"></th><th class=\"bg-warning\"></th><th class=\"bg-warning\"></th><th class=\"bg-warning\"></th><th class=\"bg-warning\"></th><th class=\"bg-warning\"></th><th class=\"bg-warning\"></th><th class=\"bg-warning\"></th><th class=\"bg-warning\"></th></tr></thead><thead><tr><th class=\"bg-primary\">{{!task.isAgent && task.table.isMaterialsAdvisor ? 'Materials Advisor' :'Action'}}</th><th class=\"bg-info\" ng-if=\"task.table.isWeek\">Week</th><th ng-if=\"!task.isYear && task.table.isYear\" class=\"bg-info\">Year</th><th class=\"bg-info header\">Planned Target</th><th class=\"bg-info header\">Planned Actual</th><th class=\"bg-success\">Planned Call Productivity</th><th class=\"bg-info\">Unplanned Target</th><th class=\"bg-info\">Unplanned Actual</th><th class=\"bg-success\">Unplanned Call Productivity</th><th class=\"bg-info\">Total Target</th><th class=\"bg-info\">Total Actual</th><th class=\"bg-success\">Total Call Productivity</th><th class=\"bg-warning\">Exam Copies Distribution</th><th class=\"bg-warning\">Invitation to Events</th><th class=\"bg-warning\">Confirmation of Events</th><th class=\"bg-warning\">Giveaways Distribution</th><th class=\"bg-warning\">Delivery of Incentive/Donation</th><th class=\"bg-warning\">Purchase Order</th><th class=\"bg-warning\">Delivery of Add'l Order / TRM / Compli</th><th class=\"bg-warning\">Booklist</th><th class=\"bg-warning\">Updated Customer Info Sheet</th><th class=\"bg-warning\">Implemented Ex-Sem</th></tr></thead><tbody ng-repeat=\"(month , report) in task.result | groupBy: 'reportMonth'\" ng-init=\"rep.push({selectedWeek:0})\"><tr><td class=\"bg-info\" colspan=\"2\">{{month}}</td><td colspan=\"3\"><select ng-model=\"rep[$index].selectedWeek\"><option value=\"1\" label=\"Week 1\"></option><option value=\"2\" label=\"Week 2\"></option><option value=\"3\" label=\"Week 3\"></option><option value=\"4\" label=\"Week 4\"></option><option value=\"5\" label=\"Week 5\"></option><option value=\"0\" label=\"All week\"></option></select></td></tr><tr ng-show=\"rep[$index].selectedWeek == 0\" ng-repeat=\"day in report\"><td><a href=\"#\" ng-click=\"task.getCustomers(day)\"><span><i ng-class=\"(day.view ? 'fa fa-search-minus' : 'fa fa-search-plus')\"></i> {{ !task.isAgent && table.isMaterialsAdvisor ? day.materialsAdvisor : ''}}</span></a></td><td ng-if=\"table.isWeek\">{{day.week}}</td><td ng-if=\"!task.isYear\">{{day.year}}</td><td>{{day.plannedTarget}}</td><td>{{day.plannedActual}}</td><td>{{day.plannedCallProductivity | setDecimal: 2}}%</td><td>{{day.unplannedTarget}}</td><td>{{day.unplannedActual}}</td><td>{{day.unplannedCallProductivity | setDecimal: 2}}%</td><td>{{day.totalActivity}}</td><td>{{day.unplannedActual + day.unplannedActual}}</td><td>{{day.totalCallProductivity | setDecimal: 2}}%</td><td>{{day.ecd}}</td><td>{{day.ite}}</td><td>{{day.coe}}</td><td>{{day.gd}}</td><td>{{day.doi}}</td><td>{{day.po}}</td><td>{{day.daotrc}}</td><td>{{day.bookList}}</td><td>{{day.ucis}}</td><td>{{day.ies}}</td></tr></tbody></table>");
 }]);
 
-angular.module("templates/fluid/fluidSelect.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("templates/fluid/fluidSelect.html",
-        "<div class=\"form-group flow-form\"><label column=\"12\" class=\"control-label\" for=\"{{name}}\">{{label}}<span class=\"text-danger\" ng-show=\"required\">*</span><select id=\"{{id}}_select\" data-toggle=\"select\" class=\"form-control\" ng-required=\"required\" ng-disabled=\"disabled\" name=\"{{name}}\"><option class=\"hidden-lg hidden-md\" value disabled selected>Select {{label}}</option></select></label></div>");
+angular.module("templates/fluid/fluidSelect.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/fluid/fluidSelect.html",
+    "<div class=\"form-group flow-form\"><label column=\"12\" class=\"control-label\" for=\"{{name}}\">{{label}}<span class=\"text-danger\" ng-show=\"required\">*</span><select id=\"{{id}}_select\" data-toggle=\"select\" class=\"form-control\" ng-required=\"required\" ng-disabled=\"disabled\" name=\"{{name}}\"><option class=\"hidden-lg hidden-md\" value disabled selected>Select {{label}}</option></select></label></div>");
 }]);
 
-angular.module("templates/fluid/fluidTextArea.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("templates/fluid/fluidTextArea.html",
-        "<div class=\"form-group flow-form\"><label column=\"12\" class=\"control-label\">{{label}}<span class=\"text-danger\" ng-show=\"required\">*</span><textarea rows=\"{{rows}}\" cols=\"{{cols}}\" name=\"{{name}}\" ng-disabled=\"disabled\" class=\"form-control\" ng-model=\"model\" type=\"{{type}}\" ng-required=\"required\"></label>\n" +
-        "\n" +
-        "</div>");
+angular.module("templates/fluid/fluidTextArea.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/fluid/fluidTextArea.html",
+    "<div class=\"form-group flow-form\"><label column=\"12\" class=\"control-label\">{{label}}<span class=\"text-danger\" ng-show=\"required\">*</span><textarea rows=\"{{rows}}\" cols=\"{{cols}}\" name=\"{{name}}\" ng-disabled=\"disabled\" class=\"form-control\" ng-model=\"model\" type=\"{{type}}\" ng-required=\"required\"></label>\n" +
+    "\n" +
+    "</div>");
 }]);
 
-angular.module("templates/fluid/fluidToolbar.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("templates/fluid/fluidToolbar.html",
-        "<div class=\"container-fluid animated fadeIn anim-dur\" style=\"overflow: auto\"><div><ul class=\"breadcrumb\"><li class=\"pull-left\" ng-repeat=\"page in task.navPages\"><a title=\"page.title\" href=\"#\" ng-click=\"goToEvent(page.name,page.param)\">{{page.title}}</a></li><div class=\"form-group pull-right\"><div class=\"btn-group {{size}}\"><button id=\"btn_tool_{{control.id}}_{{task.id}}\" ng-repeat=\"control in task.toolbars\" title=\"{{control.label}}\" class=\"btn button-tool\" ng-class=\"getClass(control.uiType)\" ng-click=\"runEvent(control)\" ng-disabled=\"control.disabled\" type=\"button\"><span ng-class=\"control.glyph\"></span></button></div></div><div class=\"clearfix\"></div></ul></div></div>");
+angular.module("templates/fluid/fluidToolbar.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/fluid/fluidToolbar.html",
+    "<div class=\"container-fluid animated fadeIn anim-dur\" style=\"overflow: auto\"><div><ul class=\"breadcrumb\"><li class=\"pull-left\" ng-repeat=\"page in task.navPages\"><a title=\"page.title\" href=\"#\" ng-click=\"goToEvent(page.name,page.param)\">{{page.title}}</a></li><div class=\"form-group pull-right\"><div class=\"btn-group {{size}}\"><button id=\"btn_tool_{{control.id}}_{{task.id}}\" ng-repeat=\"control in task.toolbars\" title=\"{{control.label}}\" class=\"btn button-tool\" ng-class=\"getClass(control.uiType)\" ng-click=\"runEvent(control)\" ng-disabled=\"control.disabled\" type=\"button\"><span ng-class=\"control.glyph\"></span></button></div></div><div class=\"clearfix\"></div></ul></div></div>");
 }]);
 
-angular.module("templates/fluid/fluidUploader.html", []).run(["$templateCache", function ($templateCache) {
-    $templateCache.put("templates/fluid/fluidUploader.html",
-        "<div></div>");
+angular.module("templates/fluid/fluidUploader.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/fluid/fluidUploader.html",
+    "<div></div>");
 }]);
