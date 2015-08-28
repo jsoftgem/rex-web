@@ -1279,9 +1279,9 @@ directives.directive("addPages", ["flowHttpService", "flowModalService", "$compi
 
             var parent = $(element[0]).parent().get();
 
-            var modal = $("<div>").attr("id", "{{id}}_pge_slt_mdl").addClass("overlay hidden animated fadeIn anim-dur").appendTo(parent).get();
+            var modal = $("<div>").attr("id", "{{id}}_pge_slt_mdl").addClass("modal fade fluid-modal").appendTo(parent).get();
 
-            var modalContent = $("<div>").addClass("flow-modal animated anim-dur").attr("id", "{{id}}_mdl_cnt").appendTo(modal).get();
+            var modalContent = $("<div>").addClass("modal-dialog modal-lg").attr("id", "{{id}}_mdl_cnt").appendTo(modal).get();
 
             var modalPanel = $("<div>").addClass("panel panel-default").appendTo(modalContent).get();
 
@@ -2474,8 +2474,8 @@ var HOST = "http://192.168.1.7:9080/rex-services/";
 angular.module("flowFactories", [])
     .constant("HOST", HOST)
     .constant("VIEWER", "vendors/ViewerJS/#")
-    .constant("REX_VERSION", "1.1")
-    .constant("FLUID_VERSION", "1.1b");
+    .constant("REX_VERSION", "1.2")
+    .constant("FLUID_VERSION", "1.2b");
 
 /*add http://192.168.1.2:9080/rex-war/ when accessing via remote*/
 
@@ -2483,7 +2483,7 @@ angular.module("flowFactories", [])
  * Created by Jerico de Guzman
  * October 2014**/
 var flowComponents = angular.module("fluid", ["ngFileUpload", "oc.lazyLoad", "LocalStorageModule"]);
-
+var EVENT_PAGE_SUCCESS = "$onPageSuccess", EVENT_PAGE_ERROR = "$onPageFailed";
 flowComponents.config(["$httpProvider", "localStorageServiceProvider", function (h, ls) {
     ls.setPrefix("fluid")
         .setStorageType("sessionStorage")
@@ -2757,12 +2757,8 @@ flowComponents
                         /*********************/
 
                         /* Action */
-                        scope.loadGet = function () {
-                            //adds control for page
-                            if (!rs.$$phase) {
-                                scope.$apply();
-                            }
 
+                        scope.loadProperties = function () {
                             if (scope.flow.controls) {
                                 angular.forEach(scope.flow.controls, function (control) {
                                     if (control.pages) {
@@ -2770,12 +2766,19 @@ flowComponents
                                     }
                                 });
                             }
+                        };
+                        scope.loadGet = function () {
+                            //adds control for page
+                            if (!rs.$$phase) {
+                                scope.$apply();
+                            }
 
                             if (scope.task.prevPage) {
                                 if (scope.task.prevPage.destroy) {
                                     scope.task.prevPage.destroy();
                                 }
                             }
+
 
                             console.info("autoget-page", scope.task.page);
                             return q(function (resolve, reject) {
@@ -2804,42 +2807,58 @@ flowComponents
                                 var pagePanel = element.find(".flow-panel-page");
                                 console.info("page-panel", pagePanel);
                                 console.info("page-panel-task", scope.task);
-                                pagePanel.ready(function () {
-                                    t(function () {
+                                pagePanel.html("<fluid-include url='{{task.page.home}}' name='{{flow.getElementFlowId(task.page.name)}}'></fluid-include>");
+                                c(pagePanel.contents())(scope);
+                                scope.onLoad = function () {
+                                    if (scope.task.pinned) {
+                                        scope.task.loaded = true;
+                                        scope.flow.onOpenPinned(scope.task.page, scope.task.pageParam);
+                                    } else {
 
-                                        if (scope.task.pinned) {
+                                        if (!scope.task.page.load && scope.flow.pageCallBack) {
+                                            scope.flow.pageCallBack(data.page, data.value);
+                                            if (!rs.$$phase) {
+                                                scope.$apply();
+                                            }
                                             scope.task.loaded = true;
-                                            scope.flow.onOpenPinned(scope.task.page, scope.task.pageParam);
                                         } else {
-
-                                            if (!scope.task.page.load && scope.flow.pageCallBack) {
-                                                scope.flow.pageCallBack(data.page, data.value);
-                                                if (!rs.$$phase) {
-                                                    scope.$apply();
-                                                }
-                                                scope.task.loaded = true;
-                                            } else {
-                                                /* TODO: remove task life cycle*/
-                                                if (scope.task.page.load) {
-                                                    scope.task.page.load(data.value);
-                                                }
-                                                if (!rs.$$phase) {
-                                                    scope.$apply();
-                                                }
-
-                                                scope.task.loaded = true;
+                                            if (scope.task.page.load) {
+                                                scope.task.page.load(data.value);
+                                            }
+                                            if (!rs.$$phase) {
+                                                scope.$apply();
                                             }
 
+                                            scope.task.loaded = true;
                                         }
 
-                                        /*if (scope.task.page.load) {
-                                         scope.task.page.load(data.value);
-                                         }*/
+                                    }
 
-                                    }, 400);
-                                });
+                                    scope.loadProperties();
+                                    console.debug("loadProperties", scope.task);
+                                };
+                            }, function (response) {
+                                scope.task.pageLoaded = true;
+                                scope.task.loaded = true;
+                                var pagePanel = element.find(".flow-panel-page");
+                                pagePanel.html("<fluid-include url='{{task.page.home}}' name='{{flow.getElementFlowId(task.page.name)}}'></fluid-include>");
+                                c(pagePanel.contents())(scope);
                             });
                         };
+
+
+                        scope.$on(EVENT_PAGE_SUCCESS, function (event, name) {
+                            var current = scope.flow.getElementFlowId(scope.task.page.name);
+                            console.debug("event-page-sucess", event);
+                            console.debug("name-page-sucess", name);
+                            if (name === current) {
+                                if (scope.onLoad) {
+                                    scope.onLoad();
+                                } else {
+                                    scope.loadProperties();
+                                }
+                            }
+                        });
 
                         scope.flow.addControl = function (control, pageName) {
                             var exists = false;
@@ -3609,7 +3628,7 @@ flowComponents
                                     }
                                 };
 
-                                t(loadGetFn, 500);
+                                loadGetFn();
                             }
 
                         });
@@ -4909,7 +4928,31 @@ flowComponents
                 }
             }
         }
-    });
+    })
+    .directive('fluidInclude', ['$http', '$compile', '$timeout', "$rootScope", function (h, c, t, r) {
+        return {
+            restrict: 'AE',
+            link: function link($scope, elem, attrs) {
+                //if url is not empty
+                if (attrs.name) {
+                    $scope.name = attrs.name;
+                }
+                if (attrs.url) {
+                    h({method: 'GET', url: attrs.url, cache: true}).then(function (result) {
+                        elem.append(c(angular.element(result.data))($scope));
+                        t(function () {
+                            r.$broadcast(EVENT_PAGE_SUCCESS, $scope.name);
+                        }, 1, false);
+                    }, function () {
+                        t(function () {
+                            r.$broadcast(EVENT_PAGE_ERROR, $scope.name);
+                        }, 1, false);
+                    });
+                }
+            }
+        };
+    }]);
+
 
 function setChildIndexIds(element, taskId, suffix, depth) {
     var children = $(element).children();
@@ -5080,7 +5123,6 @@ flowComponents
             }
             var headers = {
                 "flow-container-id": "_id_fpb_" + task.id,
-                "flowPage": task.page.name,
                 "Content-type": "application/json"
             };
             if (task.currentPage) {
@@ -5175,7 +5217,6 @@ flowComponents
 
             var headers = {
                 "flow-container-id": "_id_fpb_" + task.id,
-                "flowPage": task.page.name,
                 "Content-type": "application/json"
             };
 
@@ -6496,7 +6537,7 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
         animation: '',
         boxed: '',
         layout_menu: '',
-    /*    theme_style: userAppSetting.style,*/
+        theme_style: "style2",
         header_topbar: 'header-fixed',
         menu_style: userAppSetting.menu,
         menu_collapse: (userAppSetting.hideMenu ? 'sidebar-collapsed' : ''),
@@ -6554,9 +6595,6 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
                     if (data.menu) {
                         userAppSetting.menu = data.menu;
                     }
-                    if (data.style) {
-                        userAppSetting.style = data.style;
-                    }
                     if (data.theme) {
                         userAppSetting.theme = data.theme;
                     }
@@ -6566,10 +6604,8 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
                     if (data.hideMenu) {
                         userAppSetting.hideMenu = data.hideMenu;
                     }
-                    $rootScope.style = userAppSetting.style;
                     $rootScope.theme = userAppSetting.theme;
                     $scope.header.menu_style = userAppSetting.menu;
-                    $scope.header.theme_style = userAppSetting.style;
                     $scope.header.menu_collapse = (userAppSetting.hideMenu ? 'sidebar-collapsed' : '');
                     console.info("AppController > session-opened", userAppSetting);
                 });
@@ -6658,9 +6694,9 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
                 base.$originalHeader.after(base.$clonedHeader);
 
                 base.$printStyle = $('<style type="text/css" media="print">' +
-                '.tableFloatingHeader{display:none !important;}' +
-                '.tableFloatingHeaderOriginal{position:static !important;}' +
-                '</style>');
+                    '.tableFloatingHeader{display:none !important;}' +
+                    '.tableFloatingHeaderOriginal{position:static !important;}' +
+                    '</style>');
                 $('head').append(base.$printStyle);
             });
 
@@ -7136,7 +7172,7 @@ angular.module("templates/fluid/fluidNotify.html", []).run(["$templateCache", fu
 angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidPanel.html",
     "<div id=\"_id_fp_{{task.id}}\" task class=\"portlet box {{!flowFrameService.fullScreen ? 'portlet-primary' : 'portlet-default'}}\"><div class=\"portlet-header\" ng-show=\"!task.locked\"><div class=\"caption\"><a ng-if=\"!flowFrameService.fullScreen \" data-toggle=\"collapse\" data-target=\"#_{{task.id}}\" href=\"#\" class=\"flow-panel-heading-title\"><span ng-class=\"task.glyph\" class=\"hidden-sm hidden-md hidden-xs\"></span><span ng-if=\"task.loaded\">&nbsp;{{task.title}} - {{task.page.title}}</span></a> <span ng-if=\"task.loaded && flowFrameService.fullScreen\">&nbsp;{{task.title}} - {{task.page.title}}</span> <img ng-if=\"!task.loaded && !flowFrameService.fullScreen\" src=\"images/loader/windows_like.GIF\"> <img ng-if=\"!task.loaded && flowFrameService.fullScreen\" src=\"images/loader/windows_like_2.GIF\"></div><div class=\"tools\"><div class=\"btn-group btn-group-lg hidden-lg\"><a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\"><span ng-class=\"task.glyph\" class=\"flow-panel-icon-control\"></a><ul class=\"dropdown-menu dropdown-menu-right dropdown-menu-inverse\"><li><a href=\"#\" ng-click=\"task.refresh()\">Refresh</a></li><li class=\"divider hidden-lg hidden-sm hidden-xs\"></li><li ng-if=\"!flowFrameService.fullScreen\"><a ng-click=\"task.fullScreen()\">Fullscreen</a></li><li ng-if=\"flowFrameService.fullScreen\"><a ng-click=\"task.fluidScreen()\">Fluidscreen</a></li><li class=\"hidden-lg\"><a href=\"#\" ng-click=\"task.hide(task)\">Minimize</a></li><li ng-class=\"task.locked ?\n" +
-    "                        'hidden-sm hidden-md hidden-xs' : ''\" class=\"divider\"></li><li><a ng-class=\"task.locked ? 'hidden-sm hidden-md hidden-xs' : ''\" href=\"#\" ng-click=\"task.close()\">Close</a></li></ul></div><div class=\"hidden-md hidden-xs hidden-sm btn-group btn-group-md panel-control\"><button ng-hide=\"flowFrameService.fullScreen\" ng-disabled=\"task.pinned\" title=\"Maximize - 50\" class=\"btn btn-info\" ng-click=\"task.max50()\"><i class=\"element-center fa fa-arrows-h\" style=\"transform: scaleX(0.9)\"></i></button> <button ng-hide=\"flowFrameService.fullScreen\" ng-disabled=\"task.pinned\" ng-click=\"task.max100()\" class=\"btn btn-info\"><i title=\"Maximize - 100\" class=\"element-center fa fa-arrows-h\" style=\"transform: scaleX(1.3)\"></i></button> <button ng-disabled=\"task.pinned\" title=\"Minimize\" ng-click=\"task.hide(task)\" class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}\"><i title=\"minimize\" class=\"element-center fa fa-angle-down\"></i></button> <button ng-if=\"!flowFrameService.fullScreen\" class=\"btn btn-info\" ng-click=\"task.fullScreen()\"><i title=\"Full screen\" class=\"element-center glyphicon glyphicon-fullscreen\"></i></button> <button ng-if=\"flowFrameService.fullScreen\" class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}\" ng-click=\"task.fluidScreen()\"><i title=\"Fluid screen\" class=\"element-center fa fa-th\"></i></button> <button class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}\" ng-click=\"task.refresh()\"><i title=\"Refresh\" class=\"element-center fa\" ng-class=\"task.loaded ? 'fa-refresh' : 'fa-spin fa-refresh'\"></i></button> <button class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-danger'}}\" ng-disabled=\"task.pinned||task.locked\" ng-click=\"task.close()\"><i class=\"element-center fa fa-close\" title=\"Close\" title=\"close\"></i></button></div></div></div><div id=\"_{{task.id}}\" class=\"panel-collapse collapse in\"><div id=\"_id_fpb_{{task.id}}\" class=\"portlet-body minHeight flow-panel\" ng-disabled=\"!task.loaded\"><flow-message id=\"{{flow.getElementFlowId('pnl_msg')}}\"></flow-message><flow-tool size=\"medium\" flow=\"flow\" id=\"{{flow.getElementFlowId('flw_tl')}}\" ng-if=\"task.showToolBar\" task=\"task\" pages=\"task.navPages\"></flow-tool><div ng-if=\"task.pageLoaded\" id=\"page_div_{{task.id}}\" class=\"flow-panel-page\" ng-style=\"!flowFrameService.fullScreen?{overflow:auto}:{}\" ng-include=\"task.page.home\"></div></div></div></div>");
+    "                        'hidden-sm hidden-md hidden-xs' : ''\" class=\"divider\"></li><li><a ng-class=\"task.locked ? 'hidden-sm hidden-md hidden-xs' : ''\" href=\"#\" ng-click=\"task.close()\">Close</a></li></ul></div><div class=\"hidden-md hidden-xs hidden-sm btn-group btn-group-md panel-control\"><button ng-hide=\"flowFrameService.fullScreen\" ng-disabled=\"task.pinned\" title=\"Maximize - 50\" class=\"btn btn-info\" ng-click=\"task.max50()\"><i class=\"element-center fa fa-arrows-h\" style=\"transform: scaleX(0.9)\"></i></button> <button ng-hide=\"flowFrameService.fullScreen\" ng-disabled=\"task.pinned\" ng-click=\"task.max100()\" class=\"btn btn-info\"><i title=\"Maximize - 100\" class=\"element-center fa fa-arrows-h\" style=\"transform: scaleX(1.3)\"></i></button> <button ng-disabled=\"task.pinned\" title=\"Minimize\" ng-click=\"task.hide(task)\" class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}\"><i title=\"minimize\" class=\"element-center fa fa-angle-down\"></i></button> <button ng-if=\"!flowFrameService.fullScreen\" class=\"btn btn-info\" ng-click=\"task.fullScreen()\"><i title=\"Full screen\" class=\"element-center glyphicon glyphicon-fullscreen\"></i></button> <button ng-if=\"flowFrameService.fullScreen\" class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}\" ng-click=\"task.fluidScreen()\"><i title=\"Fluid screen\" class=\"element-center fa fa-th\"></i></button> <button class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}\" ng-click=\"task.refresh()\"><i title=\"Refresh\" class=\"element-center fa\" ng-class=\"task.loaded ? 'fa-refresh' : 'fa-spin fa-refresh'\"></i></button> <button class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-danger'}}\" ng-disabled=\"task.pinned||task.locked\" ng-click=\"task.close()\"><i class=\"element-center fa fa-close\" title=\"Close\" title=\"close\"></i></button></div></div></div><div id=\"_{{task.id}}\" class=\"panel-collapse collapse in\"><div id=\"_id_fpb_{{task.id}}\" class=\"portlet-body minHeight flow-panel\" ng-disabled=\"!task.loaded\"><flow-message id=\"{{flow.getElementFlowId('pnl_msg')}}\"></flow-message><flow-tool size=\"medium\" flow=\"flow\" id=\"{{flow.getElementFlowId('flw_tl')}}\" ng-if=\"task.showToolBar\" task=\"task\" pages=\"task.navPages\"></flow-tool><div id=\"page_div_{{task.id}}\" class=\"flow-panel-page\" ng-style=\"!flowFrameService.fullScreen?{overflow:auto}:{}\"></div></div></div></div>");
 }]);
 
 angular.module("templates/fluid/fluidRadio.html", []).run(["$templateCache", function($templateCache) {

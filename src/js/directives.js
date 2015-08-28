@@ -20,9 +20,9 @@ directives.directive("addPages", ["flowHttpService", "flowModalService", "$compi
 
             var parent = $(element[0]).parent().get();
 
-            var modal = $("<div>").attr("id", "{{id}}_pge_slt_mdl").addClass("overlay hidden animated fadeIn anim-dur").appendTo(parent).get();
+            var modal = $("<div>").attr("id", "{{id}}_pge_slt_mdl").addClass("modal fade fluid-modal").appendTo(parent).get();
 
-            var modalContent = $("<div>").addClass("flow-modal animated anim-dur").attr("id", "{{id}}_mdl_cnt").appendTo(modal).get();
+            var modalContent = $("<div>").addClass("modal-dialog modal-lg").attr("id", "{{id}}_mdl_cnt").appendTo(modal).get();
 
             var modalPanel = $("<div>").addClass("panel panel-default").appendTo(modalContent).get();
 

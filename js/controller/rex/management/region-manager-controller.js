@@ -150,16 +150,24 @@ angular.module("regionManager", ["fluid", "ngResource", "datatables", "ngCookies
                         s.task.loading = true;
                         s.http.post("services/war/agent_query/find_manager_by_region/", undefined, s.task.origin.region.regionCode).
                             success(function (manager) {
-                                s.http.get(s.task.home_url, manager.id)
-                                    .success(function (rsm) {
-                                        s.task.rsm = rsm;
-                                        s.task.title = s.task.rsm.region.regionName;
-                                        s.task.page.title = s.task.rsm.manager.fullName;
-
-                                    }).then(function () {
-                                        s.task.loading = false;
-                                    });
+                                console.debug("manager-region", manager);
+                                if (manager) {
+                                    s.http.get(s.task.home_url, manager.id)
+                                        .success(function (rsm) {
+                                            s.task.rsm = rsm;
+                                            s.task.title = s.task.rsm.region.regionName;
+                                            s.task.page.title = s.task.rsm.manager.fullName;
+                                        }).then(function () {
+                                            s.task.loading = false;
+                                        }, function () {
+                                            s.task.loading = false;
+                                        });
+                                } else {
+                                    s.task.loading = false;
+                                }
                             }).then(function () {
+                                s.task.loading = false;
+                            }, function () {
                                 s.task.loading = false;
                             });
                     }
