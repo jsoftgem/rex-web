@@ -16,7 +16,7 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                 }
 
                 return total;
-            }
+            };
 
             s.task.pageAgent = "report_weekly_agent";
 
@@ -83,11 +83,11 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
 
                 }
 
-            }
+            };
 
             s.task.getDayName = function (dayOfWeek) {
                 return getDayName(dayOfWeek);
-            }
+            };
 
             s.task.reportTable = $("#" + s.flow.getElementFlowId('reportTable'));
 
@@ -101,11 +101,11 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                     manuallyCopyFormValues: true,
                     deferred: $.Deferred()
                 })
-            }
+            };
 
-            s.flow.onRefreshed = function(){
+            s.flow.onRefreshed = function () {
                 s.task.query();
-            }
+            };
             s.task.load = function () {
 
                 s.task.newReport = function () {
@@ -119,7 +119,7 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                     report.isRegion = false;
 
                     return report;
-                }
+                };
                 s.task.report = s.task.newReport();
 
                 hp.check("agent", s.task)
@@ -144,7 +144,8 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                         s.task.report.region = undefined;
                     }
 
-                }
+                };
+
                 s.task.query = function () {
                     var url = "services/war/report_weekly_service/agents?";
 
@@ -190,9 +191,16 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                         if (count > 0) {
                             url += "&"
                         }
-                        url += "size=" + s.task.report.size;
-                        url += "&tag=" + s.task.report.tag;
-                        url += "&start=" + s.task.report.start;
+                        if (s.task.report.size) {
+                            url += "size=" + s.task.report.size;
+                        }
+                        if (s.task.report.tag) {
+                            url += "&tag=" + s.task.report.tag;
+                        }
+
+                        if(s.task.report.start){
+                            url += "&start=" + s.task.report.start;
+                        }
 
                         s.http.get(url).success(function (data) {
                             s.task.report.size = data.size;
@@ -200,7 +208,8 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                             s.task.report.weeklyReports = data.weeklyReports;
                         })
                     }
-                }
+                };
+
                 s.task.valid = function () {
                     var valid = true;
 
@@ -238,7 +247,8 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                 }
 
 
-            }
+            };
+
             s.task.postLoad = function () {
                 s.$watch(function (scope) {
                     return scope.task.report.isYear
@@ -288,7 +298,7 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                         s.task.report.closed = false;
                         s.task.query();
                     }
-                })
+                });
 
                 s.$watch(function (scope) {
                     return scope.task.report.agent
@@ -297,7 +307,7 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                         s.task.report.closed = false;
                         s.task.query();
                     }
-                })
+                });
 
                 s.$watch(function (scope) {
                     return scope.task.report.region
@@ -307,7 +317,7 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                         s.task.query();
                     }
                 })
-            }
+            };
 
             s.task.page.load = function () {
                 if (this.name === s.task.pageAgent) {
@@ -333,11 +343,11 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                 report.isRegion = false;
 
                 return report;
-            }
+            };
 
             s.$on(s.flow.event.getRefreshId(), function () {
                 s.task.query();
-            })
+            });
 
             s.task.load = function () {
 
@@ -658,6 +668,5 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
 
             });
 
+        }]);
 
-        }])
-;

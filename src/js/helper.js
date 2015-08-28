@@ -58,7 +58,7 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
     };
     console.info("datatables-url", url);
     console.info("datatables-header", headers);
-    return dto.newOptions()
+    return new dto.newOptions()
         .withOption("ajax", {
             url: url,
             type: "GET",

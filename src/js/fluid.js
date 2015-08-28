@@ -326,7 +326,7 @@ flowComponents
                                 var pagePanel = element.find(".flow-panel-page");
                                 console.info("page-panel", pagePanel);
                                 console.info("page-panel-task", scope.task);
-                                pagePanel.html("<fluid-include url='{{task.page.home}}' name='{{flow.getElementFlowId(task.page.name)}}'></fluid-include>");
+                                pagePanel.html("<fluid-include url='{{task.page.home}}' name='{{flow.getElementFlowId(task.page.name)}}' taskid='{{task.id}}'></fluid-include>");
                                 c(pagePanel.contents())(scope);
                                 scope.onLoad = function () {
                                     if (scope.task.pinned) {
@@ -360,16 +360,30 @@ flowComponents
                                 scope.task.pageLoaded = true;
                                 scope.task.loaded = true;
                                 var pagePanel = element.find(".flow-panel-page");
-                                pagePanel.html("<fluid-include url='{{task.page.home}}' name='{{flow.getElementFlowId(task.page.name)}}'></fluid-include>");
+                                pagePanel.html("<fluid-include url='{{task.page.home}}' name='{{flow.getElementFlowId(task.page.name)}}' taskid='{{task.id}}'></fluid-include>");
                                 c(pagePanel.contents())(scope);
                             });
                         };
 
 
-                        scope.$on(EVENT_PAGE_SUCCESS, function (event, name) {
+                        scope.$on(EVENT_PAGE_SUCCESS, function (event, name, taskId) {
                             var current = scope.flow.getElementFlowId(scope.task.page.name);
                             console.debug("event-page-sucess", event);
                             console.debug("name-page-sucess", name);
+                            console.debug("taskId-page-sucess", taskId);
+                            if (taskId === scope.task.id && !scope.task.loaded) {
+                                if (scope.task.preLoaded === undefined || scope.task.preLoaded === false) {
+                                    scope.task.preLoad();
+                                    scope.task.preLoaded = true;
+                                }
+                                if (scope.task.preLoaded) {
+                                    scope.task.load();
+                                    scope.task.loaded = true;
+                                }
+                                scope.task.postLoad();
+                            }
+                            ;
+
                             if (name === current) {
                                 if (scope.onLoad) {
                                     scope.onLoad();
@@ -2456,15 +2470,20 @@ flowComponents
                 if (attrs.name) {
                     $scope.name = attrs.name;
                 }
+
+                if (attrs.taskid) {
+                    $scope.taskId = attrs.taskid;
+                }
+
                 if (attrs.url) {
                     h({method: 'GET', url: attrs.url, cache: true}).then(function (result) {
                         elem.append(c(angular.element(result.data))($scope));
                         t(function () {
-                            r.$broadcast(EVENT_PAGE_SUCCESS, $scope.name);
+                            r.$broadcast(EVENT_PAGE_SUCCESS, $scope.name, $scope.taskId);
                         }, 1, false);
                     }, function () {
                         t(function () {
-                            r.$broadcast(EVENT_PAGE_ERROR, $scope.name);
+                            r.$broadcast(EVENT_PAGE_ERROR, $scope.name, $scope.taskId);
                         }, 1, false);
                     });
                 }
@@ -3334,17 +3353,7 @@ function generateTask(scope, t, f2) {
     scope.userTask.flowId = scope.task.flowId;
     console.info("new_task", scope.task);
     var loadGetFn = function () {
-        /*pre-load*/
-        if (scope.task.preLoaded === undefined || scope.task.preLoaded === false) {
-            scope.task.preLoad();
-            scope.task.preLoaded = true;
-        }
         scope.loadGet();
-        if (scope.task.preLoaded) {
-            scope.task.load();
-            scope.task.loaded = true;
-        }
-        scope.task.postLoad();
 
     };
 
