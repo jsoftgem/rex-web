@@ -23,6 +23,11 @@ body {
      background-size: cover;*/
 }
 
+textarea {
+    resize: none !important;
+    min-height: 100px !important;
+}
+
 .brand {
     padding: 0px 0px 0px 0px;
     border-radius: 100px;
@@ -675,6 +680,114 @@ button.ColVis_Button {
 }
 
 .header-about div {
+}
+
+/*PLANNER REDESIGN*/
+.ndg-planner.container-fluid {
+    padding: 0;
+}
+
+.ndg-planner .left-panel {
+    padding-right: 0;
+}
+
+.ndg-planner .left-panel select {
+    padding: 0;
+    background-color: #fff;
+    background-image: none !important;
+}
+
+.ndg-planner .left-panel input[type="text"],
+.ndg-planner .left-panel input[readonly],
+.ndg-planner .left-panel input[type="number"]{
+    padding: 0;
+    padding-left: 4px !important;
+}
+
+.ndg-paginator {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.ndg-planner .ndg-paginator select {
+    padding: 6px 0px 7px;
+    background-color: #5bc0de;
+    background-image: none !important;
+}
+
+.ndg-planner .ndg-paginator .all-btn.active {
+    display: none;
+}
+
+.ndg-planner table.ndg-ptable {
+    margin-top: 10px !important;
+    width: 100%;
+}
+
+.ndg-planner .ndg-ptable th {
+    border-right: solid 1px #eeeeee;
+    text-align: center;
+    vertical-align: middle !important;
+    font-weight: 400;
+}
+
+.ndg-planner .ndg-ptable td {
+    text-align: left;
+    padding: 10px;
+    vertical-align: middle;
+}
+
+.ndg-planner .ndg-ptable .td-drag {
+    background: #468499;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 5px;
+    min-height: 44px;
+}
+
+.ndg-planner .ndg-ptable .td-drag a {
+    color: #fff;
+}
+
+.ndg-planner .right-panel .event-draggable {
+    height: auto;
+    padding: 5px 0px 6px;
+}
+
+.ndg-calcon .fc th,
+.ndg-calcon .fc td {
+    border-left: 0px;
+    border-bottom: 0px;
+}
+
+.ndg-calcon .fc th:last-child,
+.ndg-calcon .fc td:last-child {
+    border-right: 0px;
+}
+
+.ndg-calcon .fc-toolbar .fc-left {
+    padding-left: 20px;
+}
+
+.ndg-calcon .fc-toolbar .fc-right {
+    padding-right: 20px;
+}
+
+.ndg-calcon .fc .fc-toolbar > * > * {
+    margin-left: 0px;
+}
+
+.ndg-calcon .notes-area {
+    width: 100%;
+    height: 94% !important;
+    min-height: 94% !important;
+}
+
+@media (max-width:1180px){
+    .width300px {
+        width:  100%;
+    }
 }
 /*
 To change this license header, choose License Headers in Project Properties.
