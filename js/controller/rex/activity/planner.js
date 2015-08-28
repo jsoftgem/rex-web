@@ -59,6 +59,8 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
             };
             s.task.viewNotes = function () {
                 s.task.showNotes = !s.task.showNotes;
+                s.task.showAttach = false;
+
                 if (s.task.showNotes === false) {
                     s.task.editNote = false;
                 }
@@ -721,8 +723,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
                     if (!s.customer.customers) {
                         s.customer = s.newCustomer();
 
-
-                        $("#" + s.flow.getElementFlowId('event_body') + " .event-customer td a").each(function () {
+                        $("#" + s.flow.getElementFlowId('event_body') + " .event-customer td div").each(function () {
 
                             $(this).removeClass("draggable").addClass("non-draggable");
 
@@ -730,11 +731,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
                                 $(this).draggable("destroy");
                             }
                         });
-
-
                     }
-
-
                 });
 
                 promise.error(function () {
@@ -809,6 +806,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
 
             s.task.viewAttach = function () {
                 s.task.showAttach = !s.task.showAttach;
+                s.task.showNotes = false;
 
                 if (s.task.showAttach) {
                     s.http.post(s.task.attachmentQuery, undefined, s.task.schoolYear.id)
@@ -923,7 +921,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
                     if (promise) {
                         promise.success(function () {
                             t(function () {
-                                $("#" + s.flow.getElementFlowId("event_body") + " .event-customer td a").each(function () {
+                                $("#" + s.flow.getElementFlowId("event_body") + " .event-customer td div").each(function () {
                                     $(this).data("eventObject", {
                                         title: $.trim($(this).text()),
                                         activityType: "SCHOOL"
