@@ -14,7 +14,7 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
         animation: '',
         boxed: '',
         layout_menu: '',
-    /*    theme_style: userAppSetting.style,*/
+        theme_style: "style2",
         header_topbar: 'header-fixed',
         menu_style: userAppSetting.menu,
         menu_collapse: (userAppSetting.hideMenu ? 'sidebar-collapsed' : ''),
@@ -72,9 +72,6 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
                     if (data.menu) {
                         userAppSetting.menu = data.menu;
                     }
-                    if (data.style) {
-                        userAppSetting.style = data.style;
-                    }
                     if (data.theme) {
                         userAppSetting.theme = data.theme;
                     }
@@ -84,10 +81,8 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
                     if (data.hideMenu) {
                         userAppSetting.hideMenu = data.hideMenu;
                     }
-                    $rootScope.style = userAppSetting.style;
                     $rootScope.theme = userAppSetting.theme;
                     $scope.header.menu_style = userAppSetting.menu;
-                    $scope.header.theme_style = userAppSetting.style;
                     $scope.header.menu_collapse = (userAppSetting.hideMenu ? 'sidebar-collapsed' : '');
                     console.info("AppController > session-opened", userAppSetting);
                 });
@@ -176,9 +171,9 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
                 base.$originalHeader.after(base.$clonedHeader);
 
                 base.$printStyle = $('<style type="text/css" media="print">' +
-                '.tableFloatingHeader{display:none !important;}' +
-                '.tableFloatingHeaderOriginal{position:static !important;}' +
-                '</style>');
+                    '.tableFloatingHeader{display:none !important;}' +
+                    '.tableFloatingHeaderOriginal{position:static !important;}' +
+                    '</style>');
                 $('head').append(base.$printStyle);
             });
 

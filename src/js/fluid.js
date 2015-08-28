@@ -2,7 +2,7 @@
  * Created by Jerico de Guzman
  * October 2014**/
 var flowComponents = angular.module("fluid", ["ngFileUpload", "oc.lazyLoad", "LocalStorageModule"]);
-
+var EVENT_PAGE_SUCCESS = "$onPageSuccess", EVENT_PAGE_ERROR = "$onPageFailed";
 flowComponents.config(["$httpProvider", "localStorageServiceProvider", function (h, ls) {
     ls.setPrefix("fluid")
         .setStorageType("sessionStorage")
@@ -276,12 +276,8 @@ flowComponents
                         /*********************/
 
                         /* Action */
-                        scope.loadGet = function () {
-                            //adds control for page
-                            if (!rs.$$phase) {
-                                scope.$apply();
-                            }
 
+                        scope.loadProperties = function () {
                             if (scope.flow.controls) {
                                 angular.forEach(scope.flow.controls, function (control) {
                                     if (control.pages) {
@@ -289,12 +285,19 @@ flowComponents
                                     }
                                 });
                             }
+                        };
+                        scope.loadGet = function () {
+                            //adds control for page
+                            if (!rs.$$phase) {
+                                scope.$apply();
+                            }
 
                             if (scope.task.prevPage) {
                                 if (scope.task.prevPage.destroy) {
                                     scope.task.prevPage.destroy();
                                 }
                             }
+
 
                             console.info("autoget-page", scope.task.page);
                             return q(function (resolve, reject) {
@@ -323,42 +326,58 @@ flowComponents
                                 var pagePanel = element.find(".flow-panel-page");
                                 console.info("page-panel", pagePanel);
                                 console.info("page-panel-task", scope.task);
-                                pagePanel.ready(function () {
-                                    t(function () {
+                                pagePanel.html("<fluid-include url='{{task.page.home}}' name='{{flow.getElementFlowId(task.page.name)}}'></fluid-include>");
+                                c(pagePanel.contents())(scope);
+                                scope.onLoad = function () {
+                                    if (scope.task.pinned) {
+                                        scope.task.loaded = true;
+                                        scope.flow.onOpenPinned(scope.task.page, scope.task.pageParam);
+                                    } else {
 
-                                        if (scope.task.pinned) {
+                                        if (!scope.task.page.load && scope.flow.pageCallBack) {
+                                            scope.flow.pageCallBack(data.page, data.value);
+                                            if (!rs.$$phase) {
+                                                scope.$apply();
+                                            }
                                             scope.task.loaded = true;
-                                            scope.flow.onOpenPinned(scope.task.page, scope.task.pageParam);
                                         } else {
-
-                                            if (!scope.task.page.load && scope.flow.pageCallBack) {
-                                                scope.flow.pageCallBack(data.page, data.value);
-                                                if (!rs.$$phase) {
-                                                    scope.$apply();
-                                                }
-                                                scope.task.loaded = true;
-                                            } else {
-                                                /* TODO: remove task life cycle*/
-                                                if (scope.task.page.load) {
-                                                    scope.task.page.load(data.value);
-                                                }
-                                                if (!rs.$$phase) {
-                                                    scope.$apply();
-                                                }
-
-                                                scope.task.loaded = true;
+                                            if (scope.task.page.load) {
+                                                scope.task.page.load(data.value);
+                                            }
+                                            if (!rs.$$phase) {
+                                                scope.$apply();
                                             }
 
+                                            scope.task.loaded = true;
                                         }
 
-                                        /*if (scope.task.page.load) {
-                                         scope.task.page.load(data.value);
-                                         }*/
+                                    }
 
-                                    }, 400);
-                                });
+                                    scope.loadProperties();
+                                    console.debug("loadProperties", scope.task);
+                                };
+                            }, function (response) {
+                                scope.task.pageLoaded = true;
+                                scope.task.loaded = true;
+                                var pagePanel = element.find(".flow-panel-page");
+                                pagePanel.html("<fluid-include url='{{task.page.home}}' name='{{flow.getElementFlowId(task.page.name)}}'></fluid-include>");
+                                c(pagePanel.contents())(scope);
                             });
                         };
+
+
+                        scope.$on(EVENT_PAGE_SUCCESS, function (event, name) {
+                            var current = scope.flow.getElementFlowId(scope.task.page.name);
+                            console.debug("event-page-sucess", event);
+                            console.debug("name-page-sucess", name);
+                            if (name === current) {
+                                if (scope.onLoad) {
+                                    scope.onLoad();
+                                } else {
+                                    scope.loadProperties();
+                                }
+                            }
+                        });
 
                         scope.flow.addControl = function (control, pageName) {
                             var exists = false;
@@ -1128,7 +1147,7 @@ flowComponents
                                     }
                                 };
 
-                                t(loadGetFn, 500);
+                                loadGetFn();
                             }
 
                         });
@@ -2428,7 +2447,31 @@ flowComponents
                 }
             }
         }
-    });
+    })
+    .directive('fluidInclude', ['$http', '$compile', '$timeout', "$rootScope", function (h, c, t, r) {
+        return {
+            restrict: 'AE',
+            link: function link($scope, elem, attrs) {
+                //if url is not empty
+                if (attrs.name) {
+                    $scope.name = attrs.name;
+                }
+                if (attrs.url) {
+                    h({method: 'GET', url: attrs.url, cache: true}).then(function (result) {
+                        elem.append(c(angular.element(result.data))($scope));
+                        t(function () {
+                            r.$broadcast(EVENT_PAGE_SUCCESS, $scope.name);
+                        }, 1, false);
+                    }, function () {
+                        t(function () {
+                            r.$broadcast(EVENT_PAGE_ERROR, $scope.name);
+                        }, 1, false);
+                    });
+                }
+            }
+        };
+    }]);
+
 
 function setChildIndexIds(element, taskId, suffix, depth) {
     var children = $(element).children();
