@@ -2,7 +2,7 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables"])
     .controller("schoolYearCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService",
         function (s, dto, dtc, ms, fm, c, f, ss) {
 
-
+            s.dtInstance = {};
             s.task.deleleModalId = "schoolYearDeleteModal";
             s.task.create_name = "school_year_create";
             s.task.edit_name = "school_year_edit";
@@ -62,7 +62,9 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables"])
 
 
             s.$on(s.flow.event.getRefreshId(), function () {
-                s.dtOptions.reloadData();
+                if (s.dtInstance.reloadData) {
+                    s.dtInstance.reloadData();
+                }
             });
 
 
@@ -78,7 +80,9 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables"])
 
                     }
                 } else if (s.task.home === page) {
-                    s.dtOptions.reloadData();
+                    if (s.dtInstance.reloadData) {
+                        s.dtInstance.reloadData();
+                    }
                 }
             };
 
@@ -89,7 +93,9 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables"])
                 if (s.task.page.name !== s.home) {
                     s.flow.goToHome();
                 }
-                s.dtOptions.reloadData();
+                if (s.dtInstance.reloadData) {
+                    s.dtInstance.reloadData();
+                }
             };
 
             s.task.deleteCancel = function () {
@@ -241,21 +247,23 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables"])
             }
 
 
-           /* s.$watch(function (scope) {
-                return scope.task.edit.customerLookUp
-            }, function (newValue, oldValue) {
-                if (newValue === undefined) {
-                    *//*s.task.modelCreate.warCustomerMarkets[s.task.create.customerIndex].customerId = undefined;
-                     s.task.modelCreate.warCustomerMarkets[s.task.create.customerIndex].customerCode = undefined;
-                     s.task.modelCreate.warCustomerMarkets[s.task.create.customerIndex].customerName = undefined;*//*
-                } else {
+            /* s.$watch(function (scope) {
+             return scope.task.edit.customerLookUp
+             }, function (newValue, oldValue) {
+             if (newValue === undefined) {
+             */
+            /*s.task.modelCreate.warCustomerMarkets[s.task.create.customerIndex].customerId = undefined;
+             s.task.modelCreate.warCustomerMarkets[s.task.create.customerIndex].customerCode = undefined;
+             s.task.modelCreate.warCustomerMarkets[s.task.create.customerIndex].customerName = undefined;*/
+            /*
+             } else {
 
-                    s.task.modelEdit.warCustomerMarkets[s.task.edit.customerIndex].customerId = newValue.id;
-                    s.task.modelEdit.warCustomerMarkets[s.task.edit.customerIndex].customerCode = newValue.customerCode;
-                    s.task.modelEdit.warCustomerMarkets[s.task.edit.customerIndex].customerName = newValue.school.name;
-                }
+             s.task.modelEdit.warCustomerMarkets[s.task.edit.customerIndex].customerId = newValue.id;
+             s.task.modelEdit.warCustomerMarkets[s.task.edit.customerIndex].customerCode = newValue.customerCode;
+             s.task.modelEdit.warCustomerMarkets[s.task.edit.customerIndex].customerName = newValue.school.name;
+             }
 
-            });*/
+             });*/
 
             s.$on(s.flow.getEventId("createCustomerEvent"), function (event) {
                 if (s.task.modelEdit.warCustomerMarkets === undefined) {
@@ -299,8 +307,6 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables"])
                 alert(event);
                 fm.show(s.flow.getElementFlowId("marketSegmentModal"));
             });
-
-
 
 
         }]);

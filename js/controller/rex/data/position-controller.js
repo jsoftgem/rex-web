@@ -82,7 +82,7 @@ angular.module("positionController", ["fluid", "ngResource", "datatables"])
 
 
         s.$on(s.flow.event.getRefreshId(), function () {
-            s.dtOptions.reloadData();
+            if (s.dtInstance) { s.dtInstance.reloadData(); }
         });
 
         s.flow.pageCallBack = function (page, data, source) {
@@ -92,7 +92,7 @@ angular.module("positionController", ["fluid", "ngResource", "datatables"])
                     angular.copy(s.task.positionEdit, s.task.tempEdit);
                 }
             } else if (s.home === page) {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) { s.dtInstance.reloadData(); }
             }
 
             s.flow.addControl(save, [s.edit_name, s.create_name]);
@@ -106,7 +106,7 @@ angular.module("positionController", ["fluid", "ngResource", "datatables"])
             if (s.task.page.name !== s.home) {
                 s.flow.goToHome();
             }
-            s.dtOptions.reloadData();
+            if (s.dtInstance) { s.dtInstance.reloadData(); }
         };
 
         s.deleteCancel = function () {

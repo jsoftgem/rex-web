@@ -69,3 +69,7 @@
 .report-table {
     font-size: 15px;
 }
+
+.toggle-columns li {
+    border: 1px wheat solid;
+}

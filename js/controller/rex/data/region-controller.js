@@ -80,7 +80,7 @@ angular.module("regionController", ["fluid", "ngResource", "datatables"])
 
 
         s.$on(s.flow.event.getRefreshId(), function () {
-            s.dtOptions.reloadData();
+            if (s.dtInstance) { s.dtInstance.reloadData(); }
         });
 
 
@@ -91,7 +91,7 @@ angular.module("regionController", ["fluid", "ngResource", "datatables"])
                     angular.copy(s.task.regionEdit, s.task.tempEdit);
                 }
             } else if (s.home === page) {
-                s.dtOptions.reloadData();
+                if (s.dtInstance) { s.dtInstance.reloadData(); }
             }
 
             s.flow.addControl(save, [s.edit_name, s.create_name]);
@@ -105,7 +105,7 @@ angular.module("regionController", ["fluid", "ngResource", "datatables"])
             if (s.task.page.name !== s.home) {
                 s.flow.goToHome();
             }
-            s.dtOptions.reloadData();
+            if (s.dtInstance) { s.dtInstance.reloadData(); }
         };
 
         s.deleteCancel = function () {

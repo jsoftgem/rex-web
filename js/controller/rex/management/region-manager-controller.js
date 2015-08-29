@@ -54,7 +54,7 @@ angular.module("regionManager", ["fluid", "ngResource", "datatables", "ngCookies
 
                 s.task.tagEditorAgent.topCustomers[$next] = t;
                 s.task.tagEditorAgent.topCustomers[$next].toBeUpdated = true;
-            }
+            };
 
             s.saveTopSchool = function (agent) {
 
@@ -64,7 +64,7 @@ angular.module("regionManager", ["fluid", "ngResource", "datatables", "ngCookies
                     s.flow.action("put", topCustomers, agent.id);
                 }
 
-            }
+            };
 
             s.removeTopSchool = function ($index, agent) {
                 if ($index < agent.topCustomers.length) {
@@ -74,7 +74,7 @@ angular.module("regionManager", ["fluid", "ngResource", "datatables", "ngCookies
                 if ($index < agent.topCustomers.length) {
                     angular.forEach(agent.topCustomers, function ($agent, $index) {
                         $agent.index = ($index + 1);
-                        $agent.toBeUpdated = true;
+                        $agent.toBeRemoved = true;
                         console.info("cascading changes", $agent);
                     });
                 }
@@ -150,16 +150,24 @@ angular.module("regionManager", ["fluid", "ngResource", "datatables", "ngCookies
                         s.task.loading = true;
                         s.http.post("services/war/agent_query/find_manager_by_region/", undefined, s.task.origin.region.regionCode).
                             success(function (manager) {
-                                s.http.get(s.task.home_url, manager.id)
-                                    .success(function (rsm) {
-                                        s.task.rsm = rsm;
-                                        s.task.title = s.task.rsm.region.regionName;
-                                        s.task.page.title = s.task.rsm.manager.fullName;
-
-                                    }).then(function () {
-                                        s.task.loading = false;
-                                    });
+                                console.debug("manager-region", manager);
+                                if (manager) {
+                                    s.http.get(s.task.home_url, manager.id)
+                                        .success(function (rsm) {
+                                            s.task.rsm = rsm;
+                                            s.task.title = s.task.rsm.region.regionName;
+                                            s.task.page.title = s.task.rsm.manager.fullName;
+                                        }).then(function () {
+                                            s.task.loading = false;
+                                        }, function () {
+                                            s.task.loading = false;
+                                        });
+                                } else {
+                                    s.task.loading = false;
+                                }
                             }).then(function () {
+                                s.task.loading = false;
+                            }, function () {
                                 s.task.loading = false;
                             });
                     }
