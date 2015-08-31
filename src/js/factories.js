@@ -4,13 +4,13 @@
  * and open the template in the editor.
  */
 
-var HOST = "http://192.168.1.7:8080/rex-services/";
+var HOST = "http://war.rexpublishing.com.ph:8080/rex-services/";
 
 angular.module("flowFactories", [])
     .constant("HOST", HOST)
     .constant("VIEWER", "vendors/ViewerJS/#")
-    .constant("REX_VERSION", "1.2")
-    .constant("FLUID_VERSION", "1.2b");
+    .constant("REX_VERSION", "1.3")
+    .constant("FLUID_VERSION", "1.2c");
 
 function withHost(url) {
     if (url && url.charAt(0) === '/') {
