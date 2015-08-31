@@ -1,5 +1,5 @@
 <div id='_id_fp_{{task.id}}' task
-     class="portlet box {{!flowFrameService.fullScreen ? 'portlet-primary' : 'portlet-default'}}">
+     class="portlet box {{!flowFrameService.fullScreen ? 'portlet-primary' : 'portlet-default'}} fluid-panel">
     <div class='portlet-header' ng-show="!task.locked">
         <div class="caption"><a ng-if="!flowFrameService.fullScreen " data-toggle='collapse' data-target='#_{{task.id}}'
                                 href='#'
@@ -67,7 +67,7 @@
                        class='element-center fa fa-angle-down'></i>
                 </button>
                 <button ng-if="!flowFrameService.fullScreen" class="btn btn-info" ng-click='task.fullScreen()'>
-                    <i title="Full screen" class="element-center glyphicon glyphicon-fullscreen"></i>
+                    <i title="Full screen" class="element-center fa fa-expand"></i>
                 </button>
                 <button ng-if='flowFrameService.fullScreen'
                         class="btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}"

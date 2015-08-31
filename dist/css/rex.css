@@ -742,8 +742,9 @@ button.ColVis_Button {
     color: white;
     border-radius: 5px;
     cursor: pointer;
-    padding: 5px;
+    padding: 15px 0;
     min-height: 44px;
+    text-align: center;
 }
 
 .ndg-planner .ndg-ptable .td-drag a {
@@ -752,7 +753,9 @@ button.ColVis_Button {
 
 .ndg-planner .right-panel .event-draggable {
     height: auto;
-    padding: 5px 0px 6px;
+    padding: 15px 0;
+    text-align: center;
+    min-height: 44px;
 }
 
 .ndg-calcon .fc th,
@@ -1120,7 +1123,7 @@ div.flow-form label {
 }
 
 .element-center {
-    padding: 1px;
+    padding: 4px;
     margin: auto;
 }
 
@@ -1161,6 +1164,29 @@ div.flow-form label {
 .fluid-modal .modal-content {
     background: transparent;
     border: transparent;
+}
+
+.fluid-panel .tools i{
+    font-size: 17px;
+}
+.fluid-panel .tools .btn{
+}
+.image-upload {
+}
+
+.image-upload img {
+}
+
+.image-upload .img-group {
+    display: block;
+    padding: 0;
+    margin: auto 0;
+}
+
+.image-upload .img-group img{
+    border: 5px dashed #DDD;
+}
+.image-upload .btn {
 }
 /* Loading-overlay styles */
 

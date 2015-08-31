@@ -585,7 +585,7 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                     s.task.report.data = data;
                     s.task.report.filter = JSON.parse(this.getParam);
 
-                    if (up.agent) {
+                    if (up.agent.id) {
 
                         this.title = up.agent.fullName + "'s Customer";
 

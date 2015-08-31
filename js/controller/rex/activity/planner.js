@@ -38,7 +38,8 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
                 s.task.plannerCalendar.fullCalendar("destroy");
                 s.task.plannerCalendar.fullCalendar("render");
                 s.task.plannerCalendar.fullCalendar(s.task.calendar);
-            }
+            };
+
             s.$on(s.flow.event.getSuccessEventId(), function (event, rv, method) {
                 if (method === "put") {
                     s.task.activities = [];
@@ -47,16 +48,13 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
                     s.task.planner.id = rv.plannedId;
                 }
             });
+
             s.flow.onRefreshed = function () {
-
-
                 s.getPlanner();
-
                 s.refetchCustomer();
-
                 s.task.plannerCalendar.fullCalendar("refetchEvents");
-
             };
+
             s.task.viewNotes = function () {
                 s.task.showNotes = !s.task.showNotes;
                 s.task.showAttach = false;
@@ -65,6 +63,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
                     s.task.editNote = false;
                 }
             };
+
             s.task.saveNotes = function (note) {
                 var promise = {};
                 if (note.id === undefined) {
@@ -86,10 +85,12 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
                 );
 
             };
+
             s.task.uploadAttachmentUrl = "services/upload_service/upload_file?folder=";
             s.task.attachmentQuery = "services/war/planner_attachment_query/attachment_by_school_year?school_year=";
             s.task.attachmentCrud = "services/war/planner_attachment_crud/";
             s.task.uploadedFiles = [];
+
             s.newCustomer = function () {
                 var customer = {};
                 customer.customers = [];
@@ -104,9 +105,12 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
                 customer.page = 1;
                 return customer;
             };
+
             s.customer = s.newCustomer();
+
             s.task.page.load = function () {
-                if (up.agent) {
+                if (up.agent.id) {
+                    console.debug("planner-loaded.profile", up);
                     s.task.hideAgentFilter = !up.agent.isManager;
                     s.task.agent = up.agent;
                     s.task.page.title = up.agent.fullName;
@@ -763,7 +767,8 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
             }
             s.refetchCustomer = function () {
                 s.refreshCustomer = true;
-            }
+            };
+
             s.changeTag = function (tag) {
                 s.customer.tag = tag;
 
@@ -816,7 +821,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
                 if (s.task.attachPrompt) {
                     s.task.deleteAttachCancel();
                 }
-            }
+            };
             s.task.refreshAttach = function () {
                 s.task.attachRefresh = true;
                 if (s.task.showAttach) {
@@ -827,17 +832,19 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
                             s.task.attachRefresh = false;
                         });
                 }
-            }
-            s.task.addToFileList = function (fileModel) {
+            };
+            s.task.addToFileList = function (file) {
                 if (s.task.attachPrompt) {
                     s.task.attachPrompt = false;
                     s.task.deleteAttachId = undefined;
                 }
-                console.info("file", fileModel);
-                var file = fileModel[0];
+                console.debug("files", file);
+                var newFile = {};
+                angular.copy(file, newFile);
                 var folder = "group.school_year." + s.task.schoolYear.id;
                 var url = s.task.uploadAttachmentUrl + folder + "&file-name=" + file.name;
 
+                console.debug("file", file);
                 var attachment = {};
                 attachment.done = false;
                 attachment.fileName = file.name;
@@ -845,12 +852,11 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
                 attachment.schoolYear = s.task.schoolYear.id;
                 s.task.uploadedFiles.push(attachment);
                 u.upload({
-                    url: fh.host + url,
+                    url: withHost(url),
                     headers: {
-                        "Authorization": ss.getSessionProperty(AUTHORIZATION),
                         "flowPage": s.task.currentPage
                     },
-                    data: {file: file}
+                    file: file
                 }).progress(function (event) {
                     console.info("progress", event);
                     attachment.total = event.total;

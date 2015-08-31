@@ -17,7 +17,6 @@
       <excludeFolder url="file://$MODULE_DIR$/bower_components/angular-truncate" />
       <excludeFolder url="file://$MODULE_DIR$/bower_components/components-font-awesome" />
       <excludeFolder url="file://$MODULE_DIR$/bower_components/moment" />
-      <excludeFolder url="file://$MODULE_DIR$/bower_components/ng-file-upload" />
       <excludeFolder url="file://$MODULE_DIR$/bower_components/ngAnimate" />
       <excludeFolder url="file://$MODULE_DIR$/bower_components/ngInfiniteScroll" />
       <excludeFolder url="file://$MODULE_DIR$/bower_components/nsPopover" />

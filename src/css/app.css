@@ -753,7 +753,9 @@ button.ColVis_Button {
 
 .ndg-planner .right-panel .event-draggable {
     height: auto;
-    padding: 5px 0px 6px;
+    padding: 15px 0;
+    text-align: center;
+    min-height: 44px;
 }
 
 .ndg-calcon .fc th,

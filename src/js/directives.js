@@ -5,7 +5,7 @@ var directives = angular.module("flowAppDirectives", ["fluid"]);
 
 
 /* Framework Helper */
-directives.directive("addPages", ["flowHttpService", "flowModalService", "$compile", function (f, fm, c) {
+directives.directive("addPages", ["flowHttpService", "flowModalService", "$compile", "ngFileUpload", function (f, fm, c) {
     return {
         scope: {task: "=", pageUrl: "@", targetList: "=", id: "@", disabled: "="},
         restrict: "AE",
@@ -155,7 +155,7 @@ directives.directive("addAllPages", ["flowHttpService", function (f) {
         }
     }
 }]);
-directives.directive("fluidMenu", function ($parse, $compile, $timeout, flowHttpService, flowFrameService) {
+directives.directive("fluidMenu", function ($parse, $compile, $timeout, flowHttpService, flowFrameService, UserFactory) {
     return {
         link: function ($scope, element, attributes) {
             $scope._menu = {status: [], collapse: {}, hover: []};
@@ -206,46 +206,47 @@ directives.directive("fluidMenu", function ($parse, $compile, $timeout, flowHttp
             };
 
             $scope.$watch(function (scope) {
-                return attributes.fluidMenu;
-            }, function (newValue) {
-                if (newValue) {
+                return UserFactory.isAuthenticated();
+            }, function (authenticated) {
+                if (authenticated) {
                     var groupLength = 0;
-                    flowHttpService.getLocal(attributes.fluidMenu).success(function (groups) {
 
-                        groupLength = groups.length - 1;
+                    var groups = UserFactory.getUser().flowGroups;
 
-                        angular.forEach(groups, function (group, index) {
+                    groupLength = groups.length - 1;
 
-                            var groupLi = $("<li>").appendTo(element[0]).get();
+                    angular.forEach(groups, function (group, index) {
 
-                            var groupA = $("<a>").attr("href", "#").appendTo(groupLi).get();
+                        var groupLi = $("<li>").appendTo(element[0]).get();
 
-                            $("<i>").addClass(group.iconUri).appendTo(groupA).get();
+                        var groupA = $("<a>").attr("href", "#").appendTo(groupLi).get();
 
-                            $("<span>").addClass("menu-title").html(group.title).appendTo(groupA).get();
+                        $("<i>").addClass(group.iconUri).appendTo(groupA).get();
 
-                            $("<span>").addClass("fa arrow").appendTo(groupA).get();
-                            if (group.flowModules && group.flowModules.length > 0) {
-                                var moduleLength = group.flowModules.length - 1;
-                                var subUl = $("<ul>").addClass("nav nav-second-level").appendTo(groupLi).get();
-                                angular.forEach(group.flowModules, function (module, index2) {
-                                    $scope.dataMap.push({name: module.moduleName, data: module});
+                        $("<span>").addClass("menu-title").html(group.title).appendTo(groupA).get();
 
-                                    var subLi = $("<li>").appendTo(subUl).get();
+                        $("<span>").addClass("fa arrow").appendTo(groupA).get();
+                        if (group.flowModules && group.flowModules.length > 0) {
+                            var moduleLength = group.flowModules.length - 1;
+                            var subUl = $("<ul>").addClass("nav nav-second-level").appendTo(groupLi).get();
+                            angular.forEach(group.flowModules, function (module, index2) {
+                                $scope.dataMap.push({name: module.moduleName, data: module});
 
-                                    var subA = $("<a>").attr("href", "#").attr("module", module.moduleName).appendTo(subLi).get();
+                                var subLi = $("<li>").appendTo(subUl).get();
 
-                                    $("<i>").addClass(module.moduleGlyph).appendTo(subA).get();
+                                var subA = $("<a>").attr("href", "#").attr("module", module.moduleName).appendTo(subLi).get();
 
-                                    $("<span>").addClass("submenu-title").html(module.moduleTitle).appendTo(subA).get();
+                                $("<i>").addClass(module.moduleGlyph).appendTo(subA).get();
 
-                                    if (groupLength === index && moduleLength === index2) {
-                                        $scope.loaded = true;
-                                    }
-                                });
-                            }
-                        });
-                    })
+                                $("<span>").addClass("submenu-title").html(module.moduleTitle).appendTo(subA).get();
+
+                                if (groupLength === index && moduleLength === index2) {
+                                    $scope.loaded = true;
+                                }
+                            });
+                        }
+                    });
+
                 } else {
                     $scope.loaded = true;
                 }
@@ -261,7 +262,7 @@ directives.directive("fluidMenu", function ($parse, $compile, $timeout, flowHttp
                 }, $scope.data);
 
                 if ($scope.data && $scope.data.task) {
-                    var task = flowFrameService.addTask($scope.data.task);
+                    flowFrameService.addTask($scope.data.task);
                 }
             };
 
@@ -294,15 +295,13 @@ directives.directive("fluidMenu", function ($parse, $compile, $timeout, flowHttp
                                 'ng-class': '_menu.hover[' + index + ']'
                             });
                         });
-
-                        element.html($compile(element.html())($scope));
-
+                        $compile(element.contents())($scope);
 
                     } else {
                         $scope.reload();
                     }
                 });
-            }
+            };
 
             $scope.reload();
         }
@@ -504,8 +503,8 @@ directives.directive("flowBarTooltip", ["$timeout", "flowFrameService", "flowHtt
                         angular.forEach(scope.task.pages, function (page) {
                             if (page.pageLinkEnabled !== undefined && page.pageLinkEnabled === true) {
                                 content += "<li page='" + page.name + "'>" +
-                                "<a href='#' class='color-white' >" + page.title + "</a>" +
-                                "</li>"
+                                    "<a href='#' class='color-white' >" + page.title + "</a>" +
+                                    "</li>"
                             }
                         });
                     }
@@ -628,7 +627,16 @@ directives.directive('flowProfileVisible', ["flowHttpService", function (f) {
         }
     };
 }]);
-
+directives.directive('fallbackSrc', function () {
+    var fallbackSrc = {
+        link: function postLink(scope, iElement, iAttrs) {
+            iElement.bind('error', function () {
+                angular.element(this).attr("src", iAttrs.fallbackSrc);
+            });
+        }
+    };
+    return fallbackSrc;
+});
 /*UI Helper*/
 
 directives.directive("offset", [function () {

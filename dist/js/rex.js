@@ -1,4 +1,63 @@
 /**
+ * Created by rickzx98 on 8/30/15.
+ */
+
+angular.module("war.resources", ["war.session"])
+    .factory("WarResource", ["$resource", function (resource) {
+        var warResource = function (options) {
+            var rs = resource(options);
+
+            rs.getAvatarPath = function (fileId) {
+                return withHost("services/download_service/getContent/" + fileId);
+            };
+
+            return rs;
+        };
+        return warResource;
+    }])
+    .factory("FlowUserDetail", ["WarResource", function (resource) {
+        var flowUserDetail = resource(withHost("services/v2/user/detail/:path"));
+
+        flowUserDetail.currentDetail = function (flowUserId, fn) {
+            return flowUserDetail.get({path: flowUserId}, fn);
+        };
+
+
+        return flowUserDetail;
+    }])
+    .factory("WarAgent", ["WarResource", function (resource) {
+        var warAgent = resource(withHost("services/v2/war/agent/:path"));
+
+        warAgent.current = function (fn) {
+            return warAgent.get({path: "current-agent"}, fn);
+        };
+
+        return warAgent;
+    }])
+    .factory("TaskResource", ["WarResource", function (resource) {
+
+        var taskResource = resource(withHost("services/v2/task/:path"));
+
+        taskResource.getSessionTasks = function (fn) {
+            return taskResource.query({path: "user"}, fn);
+        };
+
+
+        return taskResource;
+
+    }])
+    .factory("GroupResource", ["WarResource", function (resource) {
+
+
+        var groupResource = resource(withHost("services/v2/user/group/:path"));
+
+        groupResource.getByName = function (name, fn) {
+            groupResource.get({path: "by-name", name: name}, fn);
+        };
+
+        return groupResource;
+
+    }]);;/**
  * Created by Jerico on 11/16/2014.
  */
 angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
@@ -534,46 +593,48 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
         };
 
     }]);
-;/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-'use strict';
-angular.module("app", ["MAdmin", "datatables", "datatables.bootstrap", "datatables.tabletools", "datatables.colvis", "flowServices", "flowFactories", "home", "fluid", "devControllers", "adminControllers", "flowAppDirectives", "sessionControllers", "fNotify", "infinite-scroll", "ngDragDrop", "rexTemplates"])
-    .run(["flowFrameService", "flowHttpService", "userProfile", "responseEvent", "fnService", "userAppSetting", "HOST", "hasProfile", "$rootScope", "sessionService",
-        function (f, fhp, up, re, fns, uas, h, hp, rs, ss) {
-
+;'use strict';
+angular.module("app", ["MAdmin", "war.resources", "war.session", "war.sidebar", "datatables", "datatables.bootstrap", "datatables.tabletools", "datatables.colvis", "flowServices", "flowFactories", "home", "fluid", "devControllers", "adminControllers", "flowAppDirectives", "sessionControllers", "infinite-scroll", "ngDragDrop", "rexTemplates"])
+    .run(["flowFrameService", "flowHttpService", "userProfile", "responseEvent", "userAppSetting", "HOST", "hasProfile", "$rootScope", "sessionService", "UserFactory", "FlowUserDetail", "WarAgent", "TaskResource", "GroupResource",
+        function (f, fhp, up, re, uas, h, hp, rs, ss, uf, FlowUserDetail, WarAgent, TaskResource, GroupResource) {
             fhp.host = h;
             fhp.permissionUrl = "services/flow_permission/has_permission";
             rs.$watch(function () {
-                return ss.isSessionOpened();
+                return uf.isAuthenticated();
             }, function (session) {
                 if (session) {
-                    console.info("session-opened", session);
-                    fhp.getLocal("session/profile/user_detail").success(function (data) {
-                        up.createUserProfile(data);
+                    console.debug("session-opened", session);
+                    console.debug("getUser", uf.getUser());
 
-                        console.info("user_detail", data);
+                    FlowUserDetail.currentDetail(uf.getUser().flowUserDetailId, function (userDetail) {
+                        up.createUserProfile(userDetail);
                     });
 
-                    fhp.postGlobal("services/flow_module_service/user_tasks").success(function (tasks) {
+                    WarAgent.current(function (agent) {
+                        up.agent = agent;
+                    });
+
+
+                    TaskResource.getSessionTasks(function (tasks) {
                         angular.forEach(tasks, function (task) {
                             f.addTask(task);
                         });
-
-
-                        console.info("flow_user_tasks", tasks);
                     });
+
+                    GroupResource.getByName(uf.getUser().group, function (group) {
+                        up.group = group;
+                        up.group.emblemPath = GroupResource.getAvatarPath(up.group.emblemId);
+                        console.debug("created-group", group);
+                    });
+
                 } else {
                     window.location = "signin.html";
                 }
-            })
+            });
             re.addResponse(undefined, 401, true, "signin.html");
             re.addResponse("NOT_AUTHENTICATED", 401);
-            fns.url = "session/notification/alerts";
-            fns.topUrl = "session/notification/top?limit=5";
+            /*   fns.url = "session/notification/alerts";
+             fns.topUrl = "session/notification/top?limit=5";*/
             hp.url = "services/flow_permission/has_profile";
 
         }])
@@ -607,7 +668,7 @@ angular.module("app", ["MAdmin", "datatables", "datatables.bootstrap", "datatabl
             return filtered;
         }
     });
-;
+
  
 
 ;/**
@@ -1264,7 +1325,7 @@ var directives = angular.module("flowAppDirectives", ["fluid"]);
 
 
 /* Framework Helper */
-directives.directive("addPages", ["flowHttpService", "flowModalService", "$compile", function (f, fm, c) {
+directives.directive("addPages", ["flowHttpService", "flowModalService", "$compile", "ngFileUpload", function (f, fm, c) {
     return {
         scope: {task: "=", pageUrl: "@", targetList: "=", id: "@", disabled: "="},
         restrict: "AE",
@@ -1414,7 +1475,7 @@ directives.directive("addAllPages", ["flowHttpService", function (f) {
         }
     }
 }]);
-directives.directive("fluidMenu", function ($parse, $compile, $timeout, flowHttpService, flowFrameService) {
+directives.directive("fluidMenu", function ($parse, $compile, $timeout, flowHttpService, flowFrameService, UserFactory) {
     return {
         link: function ($scope, element, attributes) {
             $scope._menu = {status: [], collapse: {}, hover: []};
@@ -1465,46 +1526,47 @@ directives.directive("fluidMenu", function ($parse, $compile, $timeout, flowHttp
             };
 
             $scope.$watch(function (scope) {
-                return attributes.fluidMenu;
-            }, function (newValue) {
-                if (newValue) {
+                return UserFactory.isAuthenticated();
+            }, function (authenticated) {
+                if (authenticated) {
                     var groupLength = 0;
-                    flowHttpService.getLocal(attributes.fluidMenu).success(function (groups) {
 
-                        groupLength = groups.length - 1;
+                    var groups = UserFactory.getUser().flowGroups;
 
-                        angular.forEach(groups, function (group, index) {
+                    groupLength = groups.length - 1;
 
-                            var groupLi = $("<li>").appendTo(element[0]).get();
+                    angular.forEach(groups, function (group, index) {
 
-                            var groupA = $("<a>").attr("href", "#").appendTo(groupLi).get();
+                        var groupLi = $("<li>").appendTo(element[0]).get();
 
-                            $("<i>").addClass(group.iconUri).appendTo(groupA).get();
+                        var groupA = $("<a>").attr("href", "#").appendTo(groupLi).get();
 
-                            $("<span>").addClass("menu-title").html(group.title).appendTo(groupA).get();
+                        $("<i>").addClass(group.iconUri).appendTo(groupA).get();
 
-                            $("<span>").addClass("fa arrow").appendTo(groupA).get();
-                            if (group.flowModules && group.flowModules.length > 0) {
-                                var moduleLength = group.flowModules.length - 1;
-                                var subUl = $("<ul>").addClass("nav nav-second-level").appendTo(groupLi).get();
-                                angular.forEach(group.flowModules, function (module, index2) {
-                                    $scope.dataMap.push({name: module.moduleName, data: module});
+                        $("<span>").addClass("menu-title").html(group.title).appendTo(groupA).get();
 
-                                    var subLi = $("<li>").appendTo(subUl).get();
+                        $("<span>").addClass("fa arrow").appendTo(groupA).get();
+                        if (group.flowModules && group.flowModules.length > 0) {
+                            var moduleLength = group.flowModules.length - 1;
+                            var subUl = $("<ul>").addClass("nav nav-second-level").appendTo(groupLi).get();
+                            angular.forEach(group.flowModules, function (module, index2) {
+                                $scope.dataMap.push({name: module.moduleName, data: module});
 
-                                    var subA = $("<a>").attr("href", "#").attr("module", module.moduleName).appendTo(subLi).get();
+                                var subLi = $("<li>").appendTo(subUl).get();
 
-                                    $("<i>").addClass(module.moduleGlyph).appendTo(subA).get();
+                                var subA = $("<a>").attr("href", "#").attr("module", module.moduleName).appendTo(subLi).get();
 
-                                    $("<span>").addClass("submenu-title").html(module.moduleTitle).appendTo(subA).get();
+                                $("<i>").addClass(module.moduleGlyph).appendTo(subA).get();
 
-                                    if (groupLength === index && moduleLength === index2) {
-                                        $scope.loaded = true;
-                                    }
-                                });
-                            }
-                        });
-                    })
+                                $("<span>").addClass("submenu-title").html(module.moduleTitle).appendTo(subA).get();
+
+                                if (groupLength === index && moduleLength === index2) {
+                                    $scope.loaded = true;
+                                }
+                            });
+                        }
+                    });
+
                 } else {
                     $scope.loaded = true;
                 }
@@ -1520,7 +1582,7 @@ directives.directive("fluidMenu", function ($parse, $compile, $timeout, flowHttp
                 }, $scope.data);
 
                 if ($scope.data && $scope.data.task) {
-                    var task = flowFrameService.addTask($scope.data.task);
+                    flowFrameService.addTask($scope.data.task);
                 }
             };
 
@@ -1553,15 +1615,13 @@ directives.directive("fluidMenu", function ($parse, $compile, $timeout, flowHttp
                                 'ng-class': '_menu.hover[' + index + ']'
                             });
                         });
-
-                        element.html($compile(element.html())($scope));
-
+                        $compile(element.contents())($scope);
 
                     } else {
                         $scope.reload();
                     }
                 });
-            }
+            };
 
             $scope.reload();
         }
@@ -1763,8 +1823,8 @@ directives.directive("flowBarTooltip", ["$timeout", "flowFrameService", "flowHtt
                         angular.forEach(scope.task.pages, function (page) {
                             if (page.pageLinkEnabled !== undefined && page.pageLinkEnabled === true) {
                                 content += "<li page='" + page.name + "'>" +
-                                "<a href='#' class='color-white' >" + page.title + "</a>" +
-                                "</li>"
+                                    "<a href='#' class='color-white' >" + page.title + "</a>" +
+                                    "</li>"
                             }
                         });
                     }
@@ -1887,7 +1947,16 @@ directives.directive('flowProfileVisible', ["flowHttpService", function (f) {
         }
     };
 }]);
-
+directives.directive('fallbackSrc', function () {
+    var fallbackSrc = {
+        link: function postLink(scope, iElement, iAttrs) {
+            iElement.bind('error', function () {
+                angular.element(this).attr("src", iAttrs.fallbackSrc);
+            });
+        }
+    };
+    return fallbackSrc;
+});
 /*UI Helper*/
 
 directives.directive("offset", [function () {
@@ -2421,9 +2490,9 @@ directives.directive("fluidPrintReport", ["$compile", function (c) {
                         t(scope.topChecks, 10000);
                     });
                 };
-
+/*
                 scope.topChecks();
-                scope.notificationPoll();
+                scope.notificationPoll();*/
 
             }
 
@@ -2469,13 +2538,21 @@ directives.directive("fluidPrintReport", ["$compile", function (c) {
  * and open the template in the editor.
  */
 
-var HOST = "http://192.168.1.7:9080/rex-services/";
+var HOST = "http://192.168.1.7:8080/rex-services/";
 
 angular.module("flowFactories", [])
     .constant("HOST", HOST)
     .constant("VIEWER", "vendors/ViewerJS/#")
     .constant("REX_VERSION", "1.2")
     .constant("FLUID_VERSION", "1.2b");
+
+function withHost(url) {
+    if (url && url.charAt(0) === '/') {
+        url = url.substring(1, url.length - 1);
+    }
+    console.debug("withHost.url", url);
+    return HOST + url;
+}
 
 /*add http://192.168.1.2:9080/rex-war/ when accessing via remote*/
 
@@ -2488,7 +2565,6 @@ flowComponents.config(["$httpProvider", "localStorageServiceProvider", function 
     ls.setPrefix("fluid")
         .setStorageType("sessionStorage")
         .setNotify(true, true);
-
     h.interceptors.push("flowInjector");
 }]);
 flowComponents.run(["$templateCache", function (tc) {
@@ -4375,6 +4451,9 @@ flowComponents
                 name: "@"
             },
             link: function (scope, element, attr) {
+
+                scope.templateUrl = "templates/fluid/fluidSelect.html";
+
                 if (!scope.name && scope.label) {
                     scope.name = scope.label.trim().split(" ").join("_");
                 }
@@ -4392,26 +4471,26 @@ flowComponents
                 }
 
 
-                var options = "";
+                scope.options = "";
 
                 if (scope.fieldValue === undefined) {
-                    options = "item";
+                    scope.options = "item";
                 } else {
-                    options = "item." + scope.fieldValue;
+                    scope.options = "item." + scope.fieldValue;
                 }
 
                 if (scope.fieldLabel === undefined) {
                 } else {
-                    options += " as item." + scope.fieldLabel;
+                    scope.options += " as item." + scope.fieldLabel;
                 }
 
                 if (scope.fieldGroup) {
-                    options += " group by item." + scope.fieldGroup;
+                    scope.options += " group by item." + scope.fieldGroup;
                 }
 
-                options += " for item in sourceList";
+                scope.options += " for item in sourceList";
 
-                var select = element.find("select").attr("ng-options", options).attr("ng-model", "model").get();
+                /* var select = element.find("select").attr("ng-options", options).attr("ng-model", "model").get();*/
 
                 scope.$watch(function (scope) {
                     return scope.sourceUrl;
@@ -4420,6 +4499,8 @@ flowComponents
                     if (value) {
                         f.get(scope.sourceUrl, scope.task).success(function (sourceList) {
                             scope.sourceList = sourceList;
+                            element.html(tc.get(scope.templateUrl));
+                            c(element.contents())(scope);
                         });
                     }
                 });
@@ -4427,9 +4508,10 @@ flowComponents
                 scope.$watch(function (scope) {
                     return attr.values;
                 }, function (value, old) {
-                    console.info("flow-select.values", value);
                     if (value) {
                         scope.sourceList = value.split(",");
+                        element.html(tc.get(scope.templateUrl));
+                        c(element.contents())(scope);
                     }
                 });
 
@@ -4449,10 +4531,8 @@ flowComponents
                     scope.change({item: newValue});
                 });
 
-
-                c(element.contents())(scope);
             },
-            template: tc.get("templates/fluid/fluidSelect.html"),
+            /*   template: tc.get("templates/fluid/fluidSelect.html"),*/
             replace: true
         }
     }])
@@ -4710,9 +4790,9 @@ flowComponents
                 };
                 scope.refresh();
 
-
-                scope.onFileSelect = function (file) {
-
+                scope.onFileSelect = function ($files, $file, $event, $rejectedFiles) {
+                    console.debug("flowImage-onFileSelect", file);
+                    var file = $file;
                     if (file != null) {
                         if (scope.fileReaderSupported && file.type.indexOf('image') > -1) {
                             t(function () {
@@ -4735,7 +4815,6 @@ flowComponents
                                             method: scope.method,
                                             headers: {
                                                 "flow-container-id": "_id_fpb_" + scope.task.id,
-                                                "Authorization": ss.getSessionProperty(AUTHORIZATION),
                                                 "flowPage": scope.task.currentPage,
                                                 "flowUploadFileId": scope.model
                                             },
@@ -4743,12 +4822,10 @@ flowComponents
                                         }).progress(function (evt) {
                                             file.progress = parseInt(100.0 * evt.loaded / evt.total);
                                         }).success(function (data, status, headers, config) {
-                                            $("#_id_fpb_" + scope.task.id).loadingOverlay("remove");
                                             scope.model = data.id;
                                             scope.fileChanged();
 
                                         }).error(function (data, status, headers, config) {
-                                            $("#_id_fpb_" + scope.task.id).loadingOverlay("remove");
                                         });
                                     });
 
@@ -4970,6 +5047,70 @@ flowComponents
                 }
             }
         };
+    }])
+    .directive("FluidImageUpload", ["$templateCache", "Upload", function (tc, u) {
+        return {
+            restrict: "AE",
+            template: tc.get("templates/fluid/fluidImageUpload.html"),
+            scope: {model: "=", url: "@", auto: "=", onLoad: "&", token: "@", width: "=", height: "="},
+            link: function (scope, element, attr) {
+                scope.height = 200;
+                scope.width = 200;
+
+                if (!scope.auto) {
+                    scope.auto = false;
+                }
+
+                scope.$watch(function (scope) {
+                    return scope.model
+                }, function (newModel) {
+                    if (newModel) {
+                        if (newModel instanceof File) {
+                            scope.data = newModel;
+                        } else {
+                            if (scope.token) {
+                                if (newModel.indexOf("?") === -1) {
+                                    scope.src = newModel + "?token=" + scope.token;
+                                } else {
+                                    scope.src = newModel + "&token=" + scope.token;
+                                }
+                            } else {
+                                scope.src = newModel;
+                            }
+                        }
+                    }
+                });
+
+
+                scope.change = function ($files, $file, $event, $rejectedFiles) {
+                    console.debug("$files", $files);
+                    console.debug("$file", $file);
+                    console.debug("$event", $event);
+                    console.debug("$rejectedFiles", $rejectedFiles);
+                    var file = $file;
+                    console.debug("file", file);
+                    if (file != null) {
+                        if (scope.auto) {
+                            u.upload({
+                                url: scope.url,
+                                file: file,
+                                fields: {size: file.size}
+                            }).success(function (uploadedFile) {
+                                if (scope.onLoad) {
+                                    scope.onLoad();
+                                }
+                                scope.model = uploadedFile.id;
+                            });
+                        } else {
+                            scope.model = file;
+                        }
+                    }
+                }
+
+
+            },
+            replace: true
+        }
     }]);
 
 
@@ -5607,14 +5748,6 @@ flowComponents
         this.enabled = true;
         return this;
     }])
-    .service("flowNotificationService", [function () {
-
-        this.flowNotifications = [];
-
-        return this;
-
-
-    }])
     .service("sessionService", ["localStorageService", function (ls) {
 
         this.isSessionSupported = ls.isSupported;
@@ -5625,6 +5758,11 @@ flowComponents
 
         this.isSessionOpened = function () {
             return ls.get(AUTHORIZATION) !== null;
+        }
+
+
+        this.containsKey = function (key) {
+            return !(!this.getSessionProperty(key));
         }
 
         this.addSessionProperty = function (key, value) {
@@ -5641,7 +5779,7 @@ flowComponents
             } else {
                 return ls.cookie.get(key);
             }
-        }
+        };
 
         this.login = function (username, password, remember) {
             var base64 = window.btoa(username + ":" + password);
@@ -5651,7 +5789,15 @@ flowComponents
 
         this.createSession = function (base64) {
             this.addSessionProperty(AUTHORIZATION, "Basic " + base64);
-        }
+        };
+
+        this.removeSessionProperty = function (key) {
+            if (this.isSessionSupported) {
+                return ls.remove(key);
+            } else {
+                return ls.cookie.remove(key);
+            }
+        };
 
         this.logout = function () {
             if (this.isSessionSupported) {
@@ -5672,19 +5818,19 @@ flowComponents
                 if (fls.enabled) {
                     fls.loaded = false;
                 }
-
                 config.headers["Access-Control-Allow-Origin"] = "*";
+                /*
 
-                console.debug("request-config", config);
-                if (config.headers['flow-container-id'] !== undefined) {
-                    // $('#' + config.headers['flow-container-id']).loadingOverlay();
-                }
-                if (ss.isSessionOpened()) {
-                    config.headers['Authorization'] = ss.getSessionProperty(AUTHORIZATION);
-                }
+
+                 console.debug("request-config", config);
+                 if (config.headers['flow-container-id'] !== undefined) {
+                 // $('#' + config.headers['flow-container-id']).loadingOverlay();
+                 }
+                 /!*  if (ss.isSessionOpened()) {
+                 config.headers['Authorization'] = ss.getSessionProperty(AUTHORIZATION);
+                 }*!/*/
                 return config;
-            }
-            ,
+            },
             "requestError": function (rejection) {
                 fls.loaded = true;
                 fls.enabled = true;
@@ -5902,7 +6048,7 @@ function CopyControl() {
 
 function FlowOptionsGET(dto, url, scope, compile, sessionService) {
     var headers = {
-        Authorization: sessionService.getSessionProperty("authorization"),
+        Authorization: "bearer " + sessionService.getSessionProperty("token"),
         method: "get",
         flowPage: scope.task.page.name
     };
@@ -6183,16 +6329,14 @@ function isDayEnabled(dayDate, currentDate) {
  */
 
 
-angular.module("home", ["flowServices", "fluid", "flowFactories"])
-    .controller("homeCtrl", function ($scope, sessionService, $http, flowMessageService, flowFrameService, flowHttpService, $timeout, userProfile) {
+angular.module("home", ["flowServices", "fluid", "flowFactories", "war.session"])
+    .controller("homeCtrl", function ($scope, sessionService, $http, flowMessageService, flowFrameService, flowHttpService, $timeout, userProfile, UserFactory) {
         $scope.userProfile = userProfile;
         $scope.flowFrameService = flowFrameService;
         $scope.taskbar = {};
-
         $scope.taskbar.getExcessCount = function (limit) {
             return $scope.flowFrameService.taskList.length - limit;
-        }
-
+        };
         $scope.taskbar.open = function (task) {
             console.info("open", task);
             console.info("open-frame-service", flowFrameService);
@@ -6200,9 +6344,7 @@ angular.module("home", ["flowServices", "fluid", "flowFactories"])
                 flowFrameService.fullScreenTask = task;
             } else {
                 if (task.active === true) {
-
                     $(".frame-content").scrollTo($("#_id_fp_" + task.id), 800);
-
                 } else {
                     task.active = true;
                     if (task.id.indexOf("gen") === -1) {
@@ -6218,7 +6360,6 @@ angular.module("home", ["flowServices", "fluid", "flowFactories"])
 
 
         };
-
         $scope.taskbar.close = function (task, index) {
             var userTask = {};
             userTask.closed = true;
@@ -6226,8 +6367,7 @@ angular.module("home", ["flowServices", "fluid", "flowFactories"])
             userTask.flowId = task.flowId;
             flowHttpService.post("services/flow_user_task_crud/save_task_state?field=close", userTask, task);
             flowFrameService.taskList.splice(index, 1);
-        }
-
+        };
         $scope.taskbar.hide = function (task) {
             task.active = false;
             var userTask = {};
@@ -6235,73 +6375,37 @@ angular.module("home", ["flowServices", "fluid", "flowFactories"])
             userTask.flowTaskId = task.id.split("_")[0];
             userTask.flowId = task.flowId;
             flowHttpService.post("services/flow_user_task_crud/save_task_state?field=close", userTask, task);
-        }
-
+        };
         $scope.logout = function () {
-
             flowHttpService.postGlobal("services/logout_service/logoff")
-                .success(function (config) {
-                    sessionService.logout();
-                    window.location = "signin.html";
+                .success(function () {
+                    UserFactory.logout();
                 });
         };
-
         $scope.$on("NOT_AUTHENTICATED", function (event, msg) {
             window.location = "signin.html";
             flowMessageService.danger("mainMessage", msg, 2000);
         });
-
         $scope.editProfile = function () {
-            console.info("edit_profile", $scope.userProfile.editProfileTask + "&newTask=false");
-            flowFrameService.addTask($scope.userProfile.editProfileTask + "&newTask=false");
+            flowFrameService.addTask($scope.userProfile.editTaskUrl);
         }
-
     })
-    .controller("signinCtrl", function ($scope, $http, sessionService, flowMessageService, userSessionService, HOST, REX_VERSION) {
+    .controller("signinCtrl", function ($scope, $http, sessionService, flowMessageService, userSessionService, HOST, REX_VERSION, UserFactory) {
 
         $scope.ver = REX_VERSION;
 
         $scope.login = function (user) {
 
-            var request = $http({
-                method: "post",
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                data: {username: user.username, password: user.password, remember: user.remember},
-                transformRequest: function (obj) {
-                    var str = [];
-                    for (var p in obj)
-                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                    return str.join("&");
-                },
-                url: HOST + "services/login_service/auth"
-            });
-
-            request.success(function (data, status, headers, config) {
-                if (data) {
-                    sessionService.createSession(data.bs64auth);
+            UserFactory.login(user)
+                .success(function (data) {
                     window.location = "home.html";
-                }
-            });
-
-            request.error(function (data) {
-                if (data) {
-                    flowMessageService.warning("signinMessage", data.msg, 2000);
-                } else {
-
-                    if (data && data.msg) {
-                        flowMessageService.warning("signinMessage", data.msg, 2000);
-                    } else {
-
-                        flowMessageService.warning("signinMessage", "Invalid username or password", 2000);
-                    }
-                }
-                flowMessageService.open();
-            });
-
+                }).error(function (data) {
+                    flowMessageService.danger("loginMessage", data, 3000).open();
+                });
         }
     })
-    .controller("indexCtrl", function (sessionService) {
-        if (sessionService.isSessionOpened()) {
+    .controller("indexCtrl", function (sessionService, UserFactory) {
+        if (UserFactory.isAuthenticated()) {
             window.location = "home.html";
         } else {
             window.location = "signin.html";
@@ -6652,7 +6756,6 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
     });
 
 });
-
 (function ($, window, undefined) {
     'use strict';
     var name = 'stickyTableHeaders';
@@ -6857,29 +6960,25 @@ angular.module("flowServices", ["fluid"])
         this.createUserSession = function (username, bs64auth) {
             this.username = username;
             this.authorization = bs64auth;
-        }
+        };
+
         this.destroyUserSession = function () {
             this.username = undefined;
             this.authorization = undefined;
-        }
+        };
 
         return this;
     }])
     .service("userProfile", ["flowHttpService", function (f) {
 
         this.createUserProfile = function (userDetail) {
+            console.debug("createUserProfile", userDetail);
             this.fullName = userDetail.fullName;
-            this.username = userDetail.username;
-            this.email = userDetail.email;
-            this.detailId = userDetail.detailId;
-            this.avatar = userDetail.avatar ? f.host + "services/download_service/getContent/" + userDetail.avatar : '../images/gallery/profile_default.png';
-            this.group = userDetail.group;
-            this.groupEmblem = f.host + userDetail.groupEmblem;
+            this.detailId = userDetail.id;
+            this.avatar = withHost("services/download_service/getContent/" + userDetail.avatar);
             this.groupOwner = userDetail.groupOwner;
             this.profiles = userDetail.profiles;
-            this.editProfileTask = userDetail.editProfileTask;
-            this.agent = userDetail.agent;
-
+            this.editTaskUrl = "services/flow_task_service/getTask?name=edit_profile&active=true&size=50&showToolBar=false&page=edit_profile&page-path=" + userDetail.id + "&newTask=false";
         };
 
         this.destroyUserProfile = function () {
@@ -6897,15 +6996,10 @@ angular.module("flowServices", ["fluid"])
 
         this.updateProfile = function (userDetail) {
             this.fullName = userDetail.fullName;
-            this.avatar = f.host + "services/download_service/getContent/" + userDetail.avatar;
+            this.avatar = withHost("services/download_service/getContent/" + userDetail.avatar);
         };
 
         return this;
-    }])
-    .service("notificationService", ["flowHttpService", function (f) {
-        this.queueUrl = "session/notification/queue";
-
-
     }])
     .service("userAppSetting", ["flowHttpService", function (f) {
 
@@ -6925,7 +7019,7 @@ angular.module("flowServices", ["fluid"])
 
         this.createAppSetting = function () {
             return f.getGlobal(this.url + "/setting");
-        }
+        };
 
 
         this.updateSetting = function (query) {
@@ -6950,7 +7044,7 @@ angular.module("flowServices", ["fluid"])
                 .success(function (data) {
 
                 });
-        }
+        };
 
         return this;
 
@@ -6968,17 +7062,18 @@ angular.module("flowServices", ["fluid"])
 
         this.getAvatar = function (id) {
             return id ? f.host + this.url + id : '../images/gallery/profile_default.png';
-        }
+        };
 
         return this;
     }]);
 ;/**
  * Created by Jerico on 12/15/2014.
  */
-angular.module("sessionControllers", ["fluid", "ngResource", "datatables", "flowServices", "truncate",
+angular.module("sessionControllers", ["fluid", "ngResource", "flowServices", "truncate", "flowAppDirectives",
     "ngCookies"])
-    .controller("editProfileCtrl", ["$scope", "userProfile", function (s, u) {
+    .controller("editProfileCtrl", ["$scope", "userProfile", "UserFactory", function (s, u, uf) {
         s.task.page.load = function (data) {
+            console.debug("editProfile-page.data", data);
             this.title = u.fullName;
             s.task.password = {};
             s.task.flowUserDetail = data;
@@ -6990,7 +7085,7 @@ angular.module("sessionControllers", ["fluid", "ngResource", "datatables", "flow
 
         s.task.validatePassword = function () {
             if (s.task.password.current) {
-                s.http.post("session/password_service/validate/", s.task.password.current, u.username)
+                s.http.post("session/password_service/validate/", s.task.password.current, uf.getUser().username)
                     .success(function (valid) {
                         s.task.showChangePasswordField = valid;
                         s.task.showInvalidPassword = !valid;
@@ -7004,13 +7099,13 @@ angular.module("sessionControllers", ["fluid", "ngResource", "datatables", "flow
             s.task.updatePassword = !s.task.updatePassword;
             s.task.showChangePasswordField = false;
             s.task.password = {};
-        }
+        };
 
         s.task.update = function () {
             console.info("update", s.task.updatePassword);
             if (s.task.updatePassword) {
                 if (s.task.password.new) {
-                    s.http.post("session/password_service/change_password/", s.task.password.new, u.username).
+                    s.http.post("session/password_service/change_password/", s.task.password.new, uf.getUser().username).
                         success(function (data) {
                             s.flow.message.success("Password has been changed.");
                             s.task.changePassword();
@@ -7116,16 +7211,136 @@ angular.module("sessionControllers", ["fluid", "ngResource", "datatables", "flow
         }
 
     }]);
-;angular.module('rexTemplates', ['templates/app/header.html', 'templates/app/sidebar.html', 'templates/app/signin.html', 'templates/fluid/fluidBar.html', 'templates/fluid/fluidCheckbox.html', 'templates/fluid/fluidDatePicker.html', 'templates/fluid/fluidField.html', 'templates/fluid/fluidFrame.html', 'templates/fluid/fluidImage.html', 'templates/fluid/fluidLookup.html', 'templates/fluid/fluidModal.html', 'templates/fluid/fluidNotify.html', 'templates/fluid/fluidPanel.html', 'templates/fluid/fluidRadio.html', 'templates/fluid/fluidReportTable.html', 'templates/fluid/fluidSelect.html', 'templates/fluid/fluidTextArea.html', 'templates/fluid/fluidToolbar.html', 'templates/fluid/fluidUploader.html']);
+;/**
+ * Created by rickzx98 on 8/30/15.
+ */
+/**
+ * Created by Jerico on 7/30/2015.
+ */
+angular.module("war.session", ["fluid"])
+    .config(["$httpProvider", function (hp) {
+        hp.interceptors.push('AuthInterceptor');
+    }])
+    .factory("UserFactory", ["$http", "AuthFactory", function (h, a) {
+
+        var userFactory = {
+            login: login,
+            logout: logout,
+            getUser: getUser,
+            isAuthenticated: isAuthenticated
+        };
+
+        function login(login) {
+            var encodedKey = btoa("loginKey:" + login.username + ":" + login.password);
+            return h.post(withHost("session/v2/login"), encodedKey).success(function (data) {
+                if (data) {
+                    a.setToken(data.token);
+                    a.setInfo(data.info);
+                    //navigate to home
+                    console.debug("session-data.info",data.info);
+                }
+            });
+        }
+
+        function logout() {
+            a.removeToken().removeInfo();
+            // navigate to login  screen
+        }
+
+        function getUser() {
+            return a.getInfo();
+        }
+
+        function isAuthenticated() {
+            return a.getToken() != null;
+        }
+
+
+        return userFactory;
+    }])
+    .factory("AuthFactory", ["sessionService", function (ss) {
+
+        var authFactory = {
+            setToken: setToken,
+            getToken: getToken,
+            setInfo: setInfo,
+            getInfo: getInfo,
+            withTokenUrl: withTokenUrl,
+            removeToken: removeToken,
+            removeInfo: removeInfo
+        };
+
+        function removeToken() {
+            ss.removeSessionProperty("token");
+            return this;
+        }
+
+        function removeInfo() {
+            ss.removeSessionProperty("info");
+            return this;
+        }
+
+        function withTokenUrl(url) {
+            var ret = undefined;
+            if (url.indexOf("?") === -1) {
+                ret = url + "?token=" + this.getToken();
+            } else {
+                ret = url + "&token=" + this.getToken();
+            }
+            return ret;
+        }
+
+        function setToken(token) {
+            ss.addSessionProperty("token", token);
+        }
+
+        function getToken() {
+            return ss.getSessionProperty("token");
+        }
+
+        function setInfo(info) {
+            ss.addSessionProperty("info", info);
+        }
+
+        function getInfo() {
+            return ss.getSessionProperty("info");
+        }
+
+        return authFactory;
+    }])
+    .factory("AuthInterceptor", ["AuthFactory", function (a) {
+        return {
+            "request": function (config) {
+                if (a.getToken()) {
+                    config.headers = config.headers || {};
+                    config.headers.Authorization = "bearer " + a.getToken();
+                    console.debug("AuthInterceptor-token", config);
+                }
+                return config;
+            }
+        }
+    }]);
+
+
+
+;/**
+ * Created by rickzx98 on 8/31/15.
+ */
+angular.module("war.sidebar", [])
+    .controller("sidebarCtl", ["$scope", "UserFactory", "userProfile", "userAppSetting", function (scope, UserFactory, up, uas) {
+        scope.userProfile = up;
+        scope.userFactory = UserFactory;
+        scope.appSetting = uas;
+    }]);;angular.module('rexTemplates', ['templates/app/header.html', 'templates/app/sidebar.html', 'templates/app/signin.html', 'templates/fluid/fluidBar.html', 'templates/fluid/fluidCheckbox.html', 'templates/fluid/fluidDatePicker.html', 'templates/fluid/fluidField.html', 'templates/fluid/fluidFrame.html', 'templates/fluid/fluidImage.html', 'templates/fluid/fluidImageUpload.html', 'templates/fluid/fluidLookup.html', 'templates/fluid/fluidModal.html', 'templates/fluid/fluidNotify.html', 'templates/fluid/fluidPanel.html', 'templates/fluid/fluidRadio.html', 'templates/fluid/fluidReportTable.html', 'templates/fluid/fluidSelect.html', 'templates/fluid/fluidTextArea.html', 'templates/fluid/fluidToolbar.html', 'templates/fluid/fluidUploader.html']);
 
 angular.module("templates/app/header.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/app/header.html",
-    "<nav id=\"topbar\" ng-controller=\"homeCtrl\" role=\"navigation\" style=\"margin-bottom: 0\" data-step=\"1\" class=\"navbar navbar-default navbar-static-top\"><div class=\"navbar-header\"><button type=\"button\" data-toggle=\"collapse\" data-target=\".sidebar-collapse\" class=\"navbar-toggle\"><span class=\"sr-only\">Toggle navigation</span><span class=\"icon-bar\"></span><span class=\"icon-bar\"></span><span class=\"icon-bar\"></span></button> <a id=\"logo\" href=\"#\" class=\"navbar-brand\"><span class=\"fa fa-rocket\"></span><span class=\"logo-text\">{{userProfile.group}}</span><img style=\"display: none\" ng-src=\"{{userProfile.groupEmblem}}\" height=\"46\" width=\"48\" class=\"logo-text-icon emblem\"></a></div><div class=\"topbar-main\"><a href=\"#\" id=\"menu-toggle\" href=\"javascript:void(0);\" ng-click=\"header.collapse('k')\" class=\"hidden-xs\"><i class=\"fa fa-bars\"></i></a><ul class=\"nav navabar\" ng-show=\"flowFrameSerivce.taskList.length > 10\" class=\"hidden-xs\"><li class=\"dropdown dropdown-toggle\"><a data-hover=\"dropdown\" href=\"javascript:void(0);\"><span ng-show=\"flowFrameService.taskList.length > 0\" class=\"badge badge-blue\">{{taskbar.getExcessCount(flowFrameService.taskList)}}</span>&nbsp;<span class=\"caret\"></span></a><ul class=\"dropdown-menu dropdown-user\" style=\"height:200px;overflow:auto\"><li ng-repeat=\"task in flowFrameService.taskList\" ng-show=\"$index >= 10\"><a href=\"#\"><i class=\"{{task.glyph}}\"></i>&nbsp;<span>{{task.title}}</span></a></li></ul></li></ul><ul class=\"nav navbar navbar-top-links navbar-right\"><li><fluid-loader><img src=\"images/loader/loader6.GIF\"></fluid-loader></li><li><div class=\"search-tasks\"><input class=\"animted anim-dur fadeIn\" ng-show=\"flowFrameService.isSearch\" type=\"text\" placeholder=\"Search task\" name=\"taskSearchField\" ng-model=\"flowFrameService.searchTask\"> <a href=\"#\" ng-click=\"flowFrameService.toggleSearch()\" flow-tooltip class=\"fa fa-search\" tooltip-title=\"Search tasks\"></a></div></li><li class=\"dropdown topbar-user\"><a data-toggle=\"dropdown\" href=\"javascript:void(0);\" class=\"dropdown-toggle\"><img ng-src=\"{{userProfile.avatar ? userProfile.avatar : 'images/gallery/profile_default.png'}}\" alt=\"\" class=\"img-responsive img-circle\">&nbsp;<span class=\"hidden-xs\">{{userProfile.fullName}}</span>&nbsp;<span class=\"caret\"></span></a><ul class=\"dropdown-menu dropdown-user\"><li><a href=\"#\" ng-click=\"editProfile()\"><i class=\"octicon octicon-file-media\"></i>My Profile</a></li><li class=\"divider\"></li><li><a href=\"#\" ng-click=\"logout()\"><i class=\"fa fa-key\"></i>Log Out</a></li></ul></li><li fn-bar></li><li class=\"dropdown hidden-lg hidden-md hidden-sm\"><a data-toggle=\"dropdown\" href=\"javascript:void(0);\" class=\"dropdown-toggle\"><i class=\"fa fa-th\"></i> <span ng-show=\"flowFrameService.taskList.length > 0\" class=\"badge badge-blue\">{{flowFrameService.taskList.length}}</span>&nbsp;<span class=\"caret\"></span></a><ul class=\"dropdown-menu dropdown-tasks translucent\"><li><div class=\"dropdown-slimscroll\" style=\"width:250px;height:300px;overflow:auto\"><ul><li class=\"fluid-task-item-xs {{tsk.active ? 'fluid-task-item-active':'fluid-task-item-hidden'}}\" ng-repeat=\"tsk in flowFrameService.taskList\"><a href=\"#\" ng-click=\"taskbar.open(tsk)\"><i class=\"{{tsk.glyph}}\"></i>&nbsp;&nbsp;&nbsp;<span>{{tsk.title}}</span></a></li></ul></div></li></ul></li><li id=\"dropdown-theme-setting\" class=\"dropdown hidden-xs\"><a id=\"theme-setting\" href=\"javascript:;\" ng-click=\"header.toggle('theme')\" class=\"dropdown-toggle\"><i class=\"fa fa-cogs\"></i></a><ul ng-class=\"{show:header.theme}\" class=\"dropdown-menu dropdown-theme-setting pull-right\"><li><h4 class=\"mtn\">Theme Colors</h4><ul id=\"list-color\" class=\"list-unstyled list-inline\"><li data-color=\"green-dark\" ng-click=\"theme_change('green-dark')\" title=\"Green - Dark\" class=\"green-dark\"></li><li data-color=\"red-dark\" ng-click=\"theme_change('red-dark')\" title=\"Red - Dark\" class=\"red-dark\"></li><li data-color=\"pink-dark\" ng-click=\"theme_change('pink-dark')\" title=\"Pink - Dark\" class=\"pink-dark\"></li><li data-color=\"blue-dark\" ng-click=\"theme_change('blue-dark')\" title=\"Blue - Dark\" class=\"blue-dark\"></li><li data-color=\"yellow-dark\" ng-click=\"theme_change('yellow-dark')\" title=\"Yellow - Dark\" class=\"yellow-dark\"></li><li data-color=\"green-grey\" ng-click=\"theme_change('green-grey')\" title=\"Green - Grey\" class=\"green-grey\"></li><li data-color=\"red-grey\" ng-click=\"theme_change('red-grey')\" title=\"Red - Grey\" class=\"red-grey\"></li><li data-color=\"pink-grey\" ng-click=\"theme_change('pink-grey')\" title=\"Pink - Grey\" class=\"pink-grey\"></li><li data-color=\"blue-grey\" ng-click=\"theme_change('blue-grey')\" title=\"Blue - Grey\" class=\"blue-grey\"></li><li data-color=\"yellow-grey\" ng-click=\"theme_change('yellow-grey')\" title=\"Yellow - Grey\" class=\"yellow-grey\"></li><li data-color=\"yellow-green\" ng-click=\"theme_change('yellow-green')\" title=\"Yellow - Green\" class=\"yellow-green\"></li><li data-color=\"orange-grey\" ng-click=\"theme_change('orange-grey')\" title=\"Orange - Grey\" class=\"orange-grey\"></li><li data-color=\"pink-blue\" ng-click=\"theme_change('pink-blue')\" title=\"Pink - Blue\" class=\"pink-blue\"></li><li data-color=\"pink-violet\" ng-click=\"theme_change('pink-violet')\" title=\"Pink - Violet\" class=\"pink-violet active\"></li><li data-color=\"orange-violet\" ng-click=\"theme_change('orange-violet')\" title=\"Orange - Violet\" class=\"orange-violet\"></li><li data-color=\"pink-green\" ng-click=\"theme_change('pink-green')\" title=\"Pink - Green\" class=\"pink-green\"></li><li data-color=\"pink-brown\" ng-click=\"theme_change('pink-brown')\" title=\"Pink - Brown\" class=\"pink-brown\"></li><li data-color=\"orange-blue\" ng-click=\"theme_change('orange-blue')\" title=\"Orange - Blue\" class=\"orange-blue\"></li><li data-color=\"yellow-blue\" ng-click=\"theme_change('yellow-blue')\" title=\"Yellow - Blue\" class=\"yellow-blue\"></li><li data-color=\"green-blue\" ng-click=\"theme_change('green-blue')\" title=\"Green - Blue\" class=\"green-blue\"></li></ul></li></ul></li></ul><a href=\"#\" class=\"fluidTaskBar hidden-md hidden-sm hidden-xs\" ng-class=\"task.active ? 'fluidTaskBar-icon-shown' : ''\" style=\"height:47px;width:48px; margin: 1px\" ng-repeat=\"task in flowFrameService.taskList | limitTo:10\" ng-click=\"taskbar.open(task)\" flow-bar-tooltip index=\"$index\" task=\"task\"><i class=\"fluid-bar-icon {{task.glyph}}\"></i></a><div class=\"dropdown fluidTaskBarMore hidden-md hidden-sm hidden-xs\"><a href=\"#\" data-toggle=\"dropdown\" class=\"hiddex-xs dropdown-toggle\" ng-show=\"flowFrameService.taskList.length > 10\"><i class=\"fluid-bar-icon-sub-task fa fa-th\"></i>&nbsp;<span class=\"badge badge-blue\">{{taskbar.getExcessCount(10)}}</span></a><ul class=\"dropdown-menu dropdown-tasks translucent\"><li><div class=\"dropdown-slimscroll\" style=\"width:250px;height:300px;overflow:auto\"><ul><li class=\"fluid-task-item {{tsk.active ? 'fluid-task-item-active':'fluid-task-item-hidden'}}\" ng-repeat=\"tsk in flowFrameService.taskList\" ng-hide=\"$index < 10\"><div class=\"btn-group btn-group-sm\" style=\"color:white\"><a href=\"#\" class=\"btn btn-danger btn-xs text-inverse\" ng-click=\"taskbar.close(tsk,$index)\"><i class=\"fa fa-close\"></i></a> <a href=\"#\" class=\"btn btn-info btn-xs\" ng-click=\"taskbar.hide(tsk)\"><i class=\"fa fa-angle-down\"></i></a></div><a href=\"#\" ng-click=\"taskbar.open(tsk)\"><i class=\"{{tsk.glyph}}\"></i>&nbsp;&nbsp;&nbsp;<span class=\"task-item\">{{tsk.title}}</span></a></li></ul></div></li></ul></div><a href=\"#\" class=\"fluidTaskBar hidden-lg hidden-xs\" ng-class=\"task.active ? 'fluidTaskBar-icon-shown' : ''\" style=\"height:47px;width:48px; margin: 1px\" ng-repeat=\"task in flowFrameService.taskList | limitTo:5\" ng-click=\"taskbar.open(task)\" flow-tooltip tooltip-title=\"{{task.title}}\"><i class=\"fluid-bar-icon {{task.glyph}}\"></i></a><div class=\"dropdown fluidTaskBarMore hidden-lg hidden-xs\"><a href=\"#\" data-toggle=\"dropdown\" class=\"hiddex-xs dropdown-toggle\" ng-show=\"flowFrameService.taskList.length > 5\"><i class=\"fluid-bar-icon-sub-task fa fa-th\"></i>&nbsp;<span class=\"badge badge-blue\">{{taskbar.getExcessCount(5)}}</span></a><ul class=\"dropdown-menu dropdown-tasks translucent\"><li><div class=\"dropdown-slimscroll\" style=\"width:250px;height:300px;overflow:auto\"><ul><li class=\"fluid-task-item {{tsk.active ? 'fluid-task-item-active':'fluid-task-item-hidden'}}\" ng-repeat=\"tsk in flowFrameService.taskList\" ng-hide=\"$index < 5\"><div class=\"btn-group btn-group-sm\" style=\"color:white\"><a href=\"#\" class=\"btn btn-danger btn-xs text-inverse\" ng-click=\"taskbar.close(tsk,$index)\"><i class=\"fa fa-close\"></i></a> <a href=\"#\" class=\"btn btn-info btn-xs\" ng-click=\"taskbar.hide(tsk)\"><i class=\"fa fa-angle-down\"></i></a></div><a href=\"#\" ng-click=\"taskbar.open(tsk)\"><i class=\"{{tsk.glyph}}\"></i>&nbsp;&nbsp;&nbsp;<span class=\"task-item\">{{tsk.title}}</span></a></li></ul></div></li></ul></div></div></nav>");
+    "<nav id=\"topbar\" ng-controller=\"homeCtrl\" role=\"navigation\" style=\"margin-bottom: 0\" data-step=\"1\" class=\"navbar navbar-default navbar-static-top\"><div class=\"navbar-header\"><button type=\"button\" data-toggle=\"collapse\" data-target=\".sidebar-collapse\" class=\"navbar-toggle\"><span class=\"sr-only\">Toggle navigation</span><span class=\"icon-bar\"></span><span class=\"icon-bar\"></span><span class=\"icon-bar\"></span></button> <a id=\"logo\" href=\"#\" class=\"navbar-brand\"><span class=\"fa fa-rocket\"></span><span class=\"logo-text\">{{userProfile.group.groupTitle}}</span><img style=\"display: none\" ng-src=\"{{userProfile.group.emblemPath}}\" fallback-src=\"images/icons/logo.png\" height=\"46\" width=\"48\" class=\"logo-text-icon emblem\"></a></div><div class=\"topbar-main\"><a href=\"#\" id=\"menu-toggle\" href=\"javascript:void(0);\" ng-click=\"header.collapse('k')\" class=\"hidden-xs\"><i class=\"fa fa-bars\"></i></a><ul class=\"nav navabar\" ng-show=\"flowFrameSerivce.taskList.length > 10\" class=\"hidden-xs\"><li class=\"dropdown dropdown-toggle\"><a data-hover=\"dropdown\" href=\"javascript:void(0);\"><span ng-show=\"flowFrameService.taskList.length > 0\" class=\"badge badge-blue\">{{taskbar.getExcessCount(flowFrameService.taskList)}}</span>&nbsp;<span class=\"caret\"></span></a><ul class=\"dropdown-menu dropdown-user\" style=\"height:200px;overflow:auto\"><li ng-repeat=\"task in flowFrameService.taskList\" ng-show=\"$index >= 10\"><a href=\"#\"><i class=\"{{task.glyph}}\"></i>&nbsp;<span>{{task.title}}</span></a></li></ul></li></ul><ul class=\"nav navbar navbar-top-links navbar-right\"><li><fluid-loader><img src=\"images/loader/loader6.GIF\"></fluid-loader></li><li><div class=\"search-tasks\"><input class=\"animted anim-dur fadeIn\" ng-show=\"flowFrameService.isSearch\" type=\"text\" placeholder=\"Search task\" name=\"taskSearchField\" ng-model=\"flowFrameService.searchTask\"> <a href=\"#\" ng-click=\"flowFrameService.toggleSearch()\" flow-tooltip class=\"fa fa-search\" tooltip-title=\"Search tasks\"></a></div></li><li class=\"dropdown topbar-user\"><a data-toggle=\"dropdown\" href=\"javascript:void(0);\" class=\"dropdown-toggle\"><img ng-src=\"{{userProfile.avatar}}\" fallback-src=\"images/gallery/profile_default.png\" alt=\"\" class=\"img-responsive img-circle\">&nbsp;<span class=\"hidden-xs\">{{userProfile.fullName}}</span>&nbsp;<span class=\"caret\"></span></a><ul class=\"dropdown-menu dropdown-user\"><li><a href=\"#\" ng-click=\"editProfile()\"><i class=\"octicon octicon-file-media\"></i>My Profile</a></li><li class=\"divider\"></li><li><a href=\"#\" ng-click=\"logout()\"><i class=\"fa fa-key\"></i>Log Out</a></li></ul></li><li fn-bar></li><li class=\"dropdown hidden-lg hidden-md hidden-sm\"><a data-toggle=\"dropdown\" href=\"javascript:void(0);\" class=\"dropdown-toggle\"><i class=\"fa fa-th\"></i> <span ng-show=\"flowFrameService.taskList.length > 0\" class=\"badge badge-blue\">{{flowFrameService.taskList.length}}</span>&nbsp;<span class=\"caret\"></span></a><ul class=\"dropdown-menu dropdown-tasks translucent\"><li><div class=\"dropdown-slimscroll\" style=\"width:250px;height:300px;overflow:auto\"><ul><li class=\"fluid-task-item-xs {{tsk.active ? 'fluid-task-item-active':'fluid-task-item-hidden'}}\" ng-repeat=\"tsk in flowFrameService.taskList\"><a href=\"#\" ng-click=\"taskbar.open(tsk)\"><i class=\"{{tsk.glyph}}\"></i>&nbsp;&nbsp;&nbsp;<span>{{tsk.title}}</span></a></li></ul></div></li></ul></li><li id=\"dropdown-theme-setting\" class=\"dropdown hidden-xs\"><a id=\"theme-setting\" href=\"javascript:;\" ng-click=\"header.toggle('theme')\" class=\"dropdown-toggle\"><i class=\"fa fa-cogs\"></i></a><ul ng-class=\"{show:header.theme}\" class=\"dropdown-menu dropdown-theme-setting pull-right\"><li><h4 class=\"mtn\">Theme Colors</h4><ul id=\"list-color\" class=\"list-unstyled list-inline\"><li data-color=\"green-dark\" ng-click=\"theme_change('green-dark')\" title=\"Green - Dark\" class=\"green-dark\"></li><li data-color=\"red-dark\" ng-click=\"theme_change('red-dark')\" title=\"Red - Dark\" class=\"red-dark\"></li><li data-color=\"pink-dark\" ng-click=\"theme_change('pink-dark')\" title=\"Pink - Dark\" class=\"pink-dark\"></li><li data-color=\"blue-dark\" ng-click=\"theme_change('blue-dark')\" title=\"Blue - Dark\" class=\"blue-dark\"></li><li data-color=\"yellow-dark\" ng-click=\"theme_change('yellow-dark')\" title=\"Yellow - Dark\" class=\"yellow-dark\"></li><li data-color=\"green-grey\" ng-click=\"theme_change('green-grey')\" title=\"Green - Grey\" class=\"green-grey\"></li><li data-color=\"red-grey\" ng-click=\"theme_change('red-grey')\" title=\"Red - Grey\" class=\"red-grey\"></li><li data-color=\"pink-grey\" ng-click=\"theme_change('pink-grey')\" title=\"Pink - Grey\" class=\"pink-grey\"></li><li data-color=\"blue-grey\" ng-click=\"theme_change('blue-grey')\" title=\"Blue - Grey\" class=\"blue-grey\"></li><li data-color=\"yellow-grey\" ng-click=\"theme_change('yellow-grey')\" title=\"Yellow - Grey\" class=\"yellow-grey\"></li><li data-color=\"yellow-green\" ng-click=\"theme_change('yellow-green')\" title=\"Yellow - Green\" class=\"yellow-green\"></li><li data-color=\"orange-grey\" ng-click=\"theme_change('orange-grey')\" title=\"Orange - Grey\" class=\"orange-grey\"></li><li data-color=\"pink-blue\" ng-click=\"theme_change('pink-blue')\" title=\"Pink - Blue\" class=\"pink-blue\"></li><li data-color=\"pink-violet\" ng-click=\"theme_change('pink-violet')\" title=\"Pink - Violet\" class=\"pink-violet active\"></li><li data-color=\"orange-violet\" ng-click=\"theme_change('orange-violet')\" title=\"Orange - Violet\" class=\"orange-violet\"></li><li data-color=\"pink-green\" ng-click=\"theme_change('pink-green')\" title=\"Pink - Green\" class=\"pink-green\"></li><li data-color=\"pink-brown\" ng-click=\"theme_change('pink-brown')\" title=\"Pink - Brown\" class=\"pink-brown\"></li><li data-color=\"orange-blue\" ng-click=\"theme_change('orange-blue')\" title=\"Orange - Blue\" class=\"orange-blue\"></li><li data-color=\"yellow-blue\" ng-click=\"theme_change('yellow-blue')\" title=\"Yellow - Blue\" class=\"yellow-blue\"></li><li data-color=\"green-blue\" ng-click=\"theme_change('green-blue')\" title=\"Green - Blue\" class=\"green-blue\"></li></ul></li></ul></li></ul><a href=\"#\" class=\"fluidTaskBar hidden-md hidden-sm hidden-xs\" ng-class=\"task.active ? 'fluidTaskBar-icon-shown' : ''\" style=\"height:47px;width:48px; margin: 1px\" ng-repeat=\"task in flowFrameService.taskList | limitTo:10\" ng-click=\"taskbar.open(task)\" flow-bar-tooltip index=\"$index\" task=\"task\"><i class=\"fluid-bar-icon {{task.glyph}}\"></i></a><div class=\"dropdown fluidTaskBarMore hidden-md hidden-sm hidden-xs\"><a href=\"#\" data-toggle=\"dropdown\" class=\"hiddex-xs dropdown-toggle\" ng-show=\"flowFrameService.taskList.length > 10\"><i class=\"fluid-bar-icon-sub-task fa fa-th\"></i>&nbsp;<span class=\"badge badge-blue\">{{taskbar.getExcessCount(10)}}</span></a><ul class=\"dropdown-menu dropdown-tasks translucent\"><li><div class=\"dropdown-slimscroll\" style=\"width:250px;height:300px;overflow:auto\"><ul><li class=\"fluid-task-item {{tsk.active ? 'fluid-task-item-active':'fluid-task-item-hidden'}}\" ng-repeat=\"tsk in flowFrameService.taskList\" ng-hide=\"$index < 10\"><div class=\"btn-group btn-group-sm\" style=\"color:white\"><a href=\"#\" class=\"btn btn-danger btn-xs text-inverse\" ng-click=\"taskbar.close(tsk,$index)\"><i class=\"fa fa-close\"></i></a> <a href=\"#\" class=\"btn btn-info btn-xs\" ng-click=\"taskbar.hide(tsk)\"><i class=\"fa fa-angle-down\"></i></a></div><a href=\"#\" ng-click=\"taskbar.open(tsk)\"><i class=\"{{tsk.glyph}}\"></i>&nbsp;&nbsp;&nbsp;<span class=\"task-item\">{{tsk.title}}</span></a></li></ul></div></li></ul></div><a href=\"#\" class=\"fluidTaskBar hidden-lg hidden-xs\" ng-class=\"task.active ? 'fluidTaskBar-icon-shown' : ''\" style=\"height:47px;width:48px; margin: 1px\" ng-repeat=\"task in flowFrameService.taskList | limitTo:5\" ng-click=\"taskbar.open(task)\" flow-tooltip tooltip-title=\"{{task.title}}\"><i class=\"fluid-bar-icon {{task.glyph}}\"></i></a><div class=\"dropdown fluidTaskBarMore hidden-lg hidden-xs\"><a href=\"#\" data-toggle=\"dropdown\" class=\"hiddex-xs dropdown-toggle\" ng-show=\"flowFrameService.taskList.length > 5\"><i class=\"fluid-bar-icon-sub-task fa fa-th\"></i>&nbsp;<span class=\"badge badge-blue\">{{taskbar.getExcessCount(5)}}</span></a><ul class=\"dropdown-menu dropdown-tasks translucent\"><li><div class=\"dropdown-slimscroll\" style=\"width:250px;height:300px;overflow:auto\"><ul><li class=\"fluid-task-item {{tsk.active ? 'fluid-task-item-active':'fluid-task-item-hidden'}}\" ng-repeat=\"tsk in flowFrameService.taskList\" ng-hide=\"$index < 5\"><div class=\"btn-group btn-group-sm\" style=\"color:white\"><a href=\"#\" class=\"btn btn-danger btn-xs text-inverse\" ng-click=\"taskbar.close(tsk,$index)\"><i class=\"fa fa-close\"></i></a> <a href=\"#\" class=\"btn btn-info btn-xs\" ng-click=\"taskbar.hide(tsk)\"><i class=\"fa fa-angle-down\"></i></a></div><a href=\"#\" ng-click=\"taskbar.open(tsk)\"><i class=\"{{tsk.glyph}}\"></i>&nbsp;&nbsp;&nbsp;<span class=\"task-item\">{{tsk.title}}</span></a></li></ul></div></li></ul></div></div></nav>");
 }]);
 
 angular.module("templates/app/sidebar.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/app/sidebar.html",
-    "<div ng-controller=\"homeCtrl\" class=\"sidebar-collapse menu-scroll\"><ul id=\"side-menu\" fluid-menu=\"services/flow_module_service/session_modules\" class=\"nav admin-nav-main\"><li class=\"user-panel\"><div class=\"thumb\"><img ng-src=\"{{ userProfile.avatar }}\" class=\"img-circle\"></div><div class=\"info\"><p>{{userProfile.fullName}}</p></div><div class=\"clearfix\"></div></li></ul></div>");
+    "<div ng-controller=\"sidebarCtl\" class=\"sidebar-collapse\"><ul id=\"side-menu\" fluid-menu class=\"nav admin-nav-main\"><li class=\"user-panel\"><div class=\"thumb\"><img fallback-src=\"images/gallery/profile_default.png\" ng-src=\"{{userProfile.avatar}}\" class=\"img-circle\"></div><div class=\"info\"><p>{{userProfile.fullName}}</p></div><div class=\"clearfix\"></div></li></ul></div>");
 }]);
 
 angular.module("templates/app/signin.html", []).run(["$templateCache", function($templateCache) {
@@ -7163,6 +7378,11 @@ angular.module("templates/fluid/fluidImage.html", []).run(["$templateCache", fun
     "<div class=\"form-group flow-form\"><label column=\"12\" class=\"control-label col-sm-2\">{{label}}<i ng-if=\"notDone\" class=\"fa fa-spinner fa-spin\"></i><span class=\"text-danger\" ng-show=\"required\">*</span><div class=\"flow-group-icon\" accept=\"image/*\" ng-model=\"preview\" ng-file-drop drag-over-class=\"{accept:'flow-group-icon-accept', reject:'flow-group-icon-error', delay:100}\"><img class=\"thumbnail\" style=\"border-radius: 5px\" width=\"198px\" height=\"173px\" ng-src=\"{{preview[0].dataUrl}}\"></div><div class=\"marginBottom5px\" ng-show=\"!disabled\"><span accept=\"image/*\" class=\"btn btn-info\" ng-show=\"!disabled\" ng-file-change=\"onFileSelect(preview[0],$files)\" ng-file-select ng-model=\"preview\"><span class=\"fa fa-image\" ng-show=\"!disabled\"></span>&nbsp;&nbsp;{{preview[0].dataUrl != null ? 'Change' : 'Attach'}}</span></div></label></div>");
 }]);
 
+angular.module("templates/fluid/fluidImageUpload.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("templates/fluid/fluidImageUpload.html",
+    "<div class=\"image-upload\"><div class=\"img-group\"><img height=\"{{height-30}}\" width=\"{{width}}\" ngf-src=\"data\" fallback-src=\"images/gallery/profile_default.png\" ngf-accept=\"'image/*'\"></div><div class=\"img-group\"><span ngf-select ngf-change=\"change($files, $file, $event, $rejectedFiles)\" ng-model=\"data\" class=\"btn btn-primary\" accept=\"image/*\" ngf-accept=\"'image/*'\"><span ng-if=\"(model == null || model === undefined) && (data == null || data === undefined)\"><i class=\"fa fa-image\"></i> Select image</span> <span ng-if=\"(model != null || modal != undefined) || data\"><i class=\"fa fa-gear\"></i> Change</span></span></div></div>");
+}]);
+
 angular.module("templates/fluid/fluidLookup.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidLookup.html",
     "<div class=\"form-group flow-form\"><div ng-transclude></div><label column=\"12\" class=\"control-label\" for=\"{{name}}\">{{label}} <span class=\"text-danger\" ng-show=\"required\">*</span><div class=\"input-group\" name=\"{{name}}\"><input ng-disabled=\"disabled\" id=\"ctnr_{{id}}\" href=\"#\" title=\"{{label}}\" readonly class=\"form-control\" ng-required=\"required\" ng-click=\"look()\" style=\"color:#000000;background: #ffffff\"><span ng-if=\"isNotModeled()\" class=\"input-group-btn\"><button type=\"button\" ng-disabled=\"disabled\" class=\"btn btn-info\" ng-click=\"look()\"><span class=\"fa fa-search\"></span></button></span> <span ng-if=\"isModeled()\" class=\"input-group-btn\"><button type=\"button\" title=\"clear\" class=\"btn btn-info\" ng-disabled=\"disabled\" ng-click=\"clear()\"><span class=\"fa fa-eraser\"></span></button></span></div></label></div>");
@@ -7180,8 +7400,8 @@ angular.module("templates/fluid/fluidNotify.html", []).run(["$templateCache", fu
 
 angular.module("templates/fluid/fluidPanel.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidPanel.html",
-    "<div id=\"_id_fp_{{task.id}}\" task class=\"portlet box {{!flowFrameService.fullScreen ? 'portlet-primary' : 'portlet-default'}}\"><div class=\"portlet-header\" ng-show=\"!task.locked\"><div class=\"caption\"><a ng-if=\"!flowFrameService.fullScreen \" data-toggle=\"collapse\" data-target=\"#_{{task.id}}\" href=\"#\" class=\"flow-panel-heading-title\"><span ng-class=\"task.glyph\" class=\"hidden-sm hidden-md hidden-xs\"></span><span ng-if=\"task.loaded\">&nbsp;{{task.title}} - {{task.page.title}}</span></a> <span ng-if=\"task.loaded && flowFrameService.fullScreen\">&nbsp;{{task.title}} - {{task.page.title}}</span> <img ng-if=\"!task.loaded && !flowFrameService.fullScreen\" src=\"images/loader/windows_like.GIF\"> <img ng-if=\"!task.loaded && flowFrameService.fullScreen\" src=\"images/loader/windows_like_2.GIF\"></div><div class=\"tools\"><div class=\"btn-group btn-group-lg hidden-lg\"><a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\"><span ng-class=\"task.glyph\" class=\"flow-panel-icon-control\"></a><ul class=\"dropdown-menu dropdown-menu-right dropdown-menu-inverse\"><li><a href=\"#\" ng-click=\"task.refresh()\">Refresh</a></li><li class=\"divider hidden-lg hidden-sm hidden-xs\"></li><li ng-if=\"!flowFrameService.fullScreen\"><a ng-click=\"task.fullScreen()\">Fullscreen</a></li><li ng-if=\"flowFrameService.fullScreen\"><a ng-click=\"task.fluidScreen()\">Fluidscreen</a></li><li class=\"hidden-lg\"><a href=\"#\" ng-click=\"task.hide(task)\">Minimize</a></li><li ng-class=\"task.locked ?\n" +
-    "                        'hidden-sm hidden-md hidden-xs' : ''\" class=\"divider\"></li><li><a ng-class=\"task.locked ? 'hidden-sm hidden-md hidden-xs' : ''\" href=\"#\" ng-click=\"task.close()\">Close</a></li></ul></div><div class=\"hidden-md hidden-xs hidden-sm btn-group btn-group-md panel-control\"><button ng-hide=\"flowFrameService.fullScreen\" ng-disabled=\"task.pinned\" title=\"Maximize - 50\" class=\"btn btn-info\" ng-click=\"task.max50()\"><i class=\"element-center fa fa-arrows-h\" style=\"transform: scaleX(0.9)\"></i></button> <button ng-hide=\"flowFrameService.fullScreen\" ng-disabled=\"task.pinned\" ng-click=\"task.max100()\" class=\"btn btn-info\"><i title=\"Maximize - 100\" class=\"element-center fa fa-arrows-h\" style=\"transform: scaleX(1.3)\"></i></button> <button ng-disabled=\"task.pinned\" title=\"Minimize\" ng-click=\"task.hide(task)\" class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}\"><i title=\"minimize\" class=\"element-center fa fa-angle-down\"></i></button> <button ng-if=\"!flowFrameService.fullScreen\" class=\"btn btn-info\" ng-click=\"task.fullScreen()\"><i title=\"Full screen\" class=\"element-center glyphicon glyphicon-fullscreen\"></i></button> <button ng-if=\"flowFrameService.fullScreen\" class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}\" ng-click=\"task.fluidScreen()\"><i title=\"Fluid screen\" class=\"element-center fa fa-th\"></i></button> <button class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}\" ng-click=\"task.refresh()\"><i title=\"Refresh\" class=\"element-center fa\" ng-class=\"task.loaded ? 'fa-refresh' : 'fa-spin fa-refresh'\"></i></button> <button class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-danger'}}\" ng-disabled=\"task.pinned||task.locked\" ng-click=\"task.close()\"><i class=\"element-center fa fa-close\" title=\"Close\" title=\"close\"></i></button></div></div></div><div id=\"_{{task.id}}\" class=\"panel-collapse collapse in\"><div id=\"_id_fpb_{{task.id}}\" class=\"portlet-body minHeight flow-panel\" ng-disabled=\"!task.loaded\"><flow-message id=\"{{flow.getElementFlowId('pnl_msg')}}\"></flow-message><flow-tool size=\"medium\" flow=\"flow\" id=\"{{flow.getElementFlowId('flw_tl')}}\" ng-if=\"task.showToolBar\" task=\"task\" pages=\"task.navPages\"></flow-tool><div id=\"page_div_{{task.id}}\" class=\"flow-panel-page\" ng-style=\"!flowFrameService.fullScreen?{overflow:auto}:{}\"></div></div></div></div>");
+    "<div id=\"_id_fp_{{task.id}}\" task class=\"portlet box {{!flowFrameService.fullScreen ? 'portlet-primary' : 'portlet-default'}} fluid-panel\"><div class=\"portlet-header\" ng-show=\"!task.locked\"><div class=\"caption\"><a ng-if=\"!flowFrameService.fullScreen \" data-toggle=\"collapse\" data-target=\"#_{{task.id}}\" href=\"#\" class=\"flow-panel-heading-title\"><span ng-class=\"task.glyph\" class=\"hidden-sm hidden-md hidden-xs\"></span><span ng-if=\"task.loaded\">&nbsp;{{task.title}} - {{task.page.title}}</span></a> <span ng-if=\"task.loaded && flowFrameService.fullScreen\">&nbsp;{{task.title}} - {{task.page.title}}</span> <img ng-if=\"!task.loaded && !flowFrameService.fullScreen\" src=\"images/loader/windows_like.GIF\"> <img ng-if=\"!task.loaded && flowFrameService.fullScreen\" src=\"images/loader/windows_like_2.GIF\"></div><div class=\"tools\"><div class=\"btn-group btn-group-lg hidden-lg\"><a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\"><span ng-class=\"task.glyph\" class=\"flow-panel-icon-control\"></a><ul class=\"dropdown-menu dropdown-menu-right dropdown-menu-inverse\"><li><a href=\"#\" ng-click=\"task.refresh()\">Refresh</a></li><li class=\"divider hidden-lg hidden-sm hidden-xs\"></li><li ng-if=\"!flowFrameService.fullScreen\"><a ng-click=\"task.fullScreen()\">Fullscreen</a></li><li ng-if=\"flowFrameService.fullScreen\"><a ng-click=\"task.fluidScreen()\">Fluidscreen</a></li><li class=\"hidden-lg\"><a href=\"#\" ng-click=\"task.hide(task)\">Minimize</a></li><li ng-class=\"task.locked ?\n" +
+    "                        'hidden-sm hidden-md hidden-xs' : ''\" class=\"divider\"></li><li><a ng-class=\"task.locked ? 'hidden-sm hidden-md hidden-xs' : ''\" href=\"#\" ng-click=\"task.close()\">Close</a></li></ul></div><div class=\"hidden-md hidden-xs hidden-sm btn-group btn-group-md panel-control\"><button ng-hide=\"flowFrameService.fullScreen\" ng-disabled=\"task.pinned\" title=\"Maximize - 50\" class=\"btn btn-info\" ng-click=\"task.max50()\"><i class=\"element-center fa fa-arrows-h\" style=\"transform: scaleX(0.9)\"></i></button> <button ng-hide=\"flowFrameService.fullScreen\" ng-disabled=\"task.pinned\" ng-click=\"task.max100()\" class=\"btn btn-info\"><i title=\"Maximize - 100\" class=\"element-center fa fa-arrows-h\" style=\"transform: scaleX(1.3)\"></i></button> <button ng-disabled=\"task.pinned\" title=\"Minimize\" ng-click=\"task.hide(task)\" class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}\"><i title=\"minimize\" class=\"element-center fa fa-angle-down\"></i></button> <button ng-if=\"!flowFrameService.fullScreen\" class=\"btn btn-info\" ng-click=\"task.fullScreen()\"><i title=\"Full screen\" class=\"element-center fa fa-expand\"></i></button> <button ng-if=\"flowFrameService.fullScreen\" class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}\" ng-click=\"task.fluidScreen()\"><i title=\"Fluid screen\" class=\"element-center fa fa-th\"></i></button> <button class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-info'}}\" ng-click=\"task.refresh()\"><i title=\"Refresh\" class=\"element-center fa\" ng-class=\"task.loaded ? 'fa-refresh' : 'fa-spin fa-refresh'\"></i></button> <button class=\"btn {{flowFrameService.fullScreen ? 'btn-default' : 'btn-danger'}}\" ng-disabled=\"task.pinned||task.locked\" ng-click=\"task.close()\"><i class=\"element-center fa fa-close\" title=\"Close\" title=\"close\"></i></button></div></div></div><div id=\"_{{task.id}}\" class=\"panel-collapse collapse in\"><div id=\"_id_fpb_{{task.id}}\" class=\"portlet-body minHeight flow-panel\" ng-disabled=\"!task.loaded\"><flow-message id=\"{{flow.getElementFlowId('pnl_msg')}}\"></flow-message><flow-tool size=\"medium\" flow=\"flow\" id=\"{{flow.getElementFlowId('flw_tl')}}\" ng-if=\"task.showToolBar\" task=\"task\" pages=\"task.navPages\"></flow-tool><div id=\"page_div_{{task.id}}\" class=\"flow-panel-page\" ng-style=\"!flowFrameService.fullScreen?{overflow:auto}:{}\"></div></div></div></div>");
 }]);
 
 angular.module("templates/fluid/fluidRadio.html", []).run(["$templateCache", function($templateCache) {
@@ -7196,7 +7416,7 @@ angular.module("templates/fluid/fluidReportTable.html", []).run(["$templateCache
 
 angular.module("templates/fluid/fluidSelect.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidSelect.html",
-    "<div class=\"form-group flow-form\"><label column=\"12\" class=\"control-label\" for=\"{{name}}\">{{label}}<span class=\"text-danger\" ng-show=\"required\">*</span><select id=\"{{id}}_select\" data-toggle=\"select\" class=\"form-control\" ng-required=\"required\" ng-disabled=\"disabled\" name=\"{{name}}\"><option class=\"hidden-lg hidden-md\" value disabled selected>Select {{label}}</option></select></label></div>");
+    "<div class=\"form-group flow-form\"><label column=\"12\" class=\"control-label\" for=\"{{name}}\">{{label}}<span class=\"text-danger\" ng-show=\"required\">*</span><select id=\"{{id}}_select\" data-toggle=\"select\" class=\"form-control\" ng-required=\"required\" ng-disabled=\"disabled\" name=\"{{name}}\" ng-model=\"model\" ng-options=\"{{options}}\"><option class=\"hidden-lg hidden-md\" value disabled selected>Select {{label}}</option></select></label></div>");
 }]);
 
 angular.module("templates/fluid/fluidTextArea.html", []).run(["$templateCache", function($templateCache) {

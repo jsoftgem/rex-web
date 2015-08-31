@@ -52,7 +52,7 @@ function CopyControl() {
 
 function FlowOptionsGET(dto, url, scope, compile, sessionService) {
     var headers = {
-        Authorization: sessionService.getSessionProperty("authorization"),
+        Authorization: "bearer " + sessionService.getSessionProperty("token"),
         method: "get",
         flowPage: scope.task.page.name
     };

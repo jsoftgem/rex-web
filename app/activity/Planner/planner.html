@@ -2,13 +2,14 @@
 
     <form id="{{flow.getElementFlowId('planner')}}" class="form-horizontal" role="form" novalidate>
         <div class="form-group">
-            <div class="col-lg-3 col-md-4 col-sm-5 left-panel">
+            <div class="col-lg-3">
                 <flow-select id="{{flow.getElementFlowId('schoolYearSelect')}}" task="task" label="School Year"
                              source-url="services/war/school_year_query/list" model="task.schoolYear" disabled="false"
                              required="false"
                              field-label="description">
                 </flow-select>
-
+            </div>
+            <div class="col-lg-3">
                 <flow-look-up ng-if="task.schoolYear != undefined && !task.hideAgentFilter" task="task"
                               id="{{flow.getElementFlowId('agentLookUp')}}"
                               field-label="user.flowUserDetail.fullName"
@@ -19,51 +20,58 @@
 
                     <flow-sub-column title="Agent" model="agent.user.flowUserDetail.fullName"></flow-sub-column>
                 </flow-look-up>
-
-                <flow-field label="Monthly Planned Target" ng-if="task.agent != undefined&& task.view == 'month'"
+            </div>
+            <div class="col-lg-3">
+                <flow-field label="Monthly Planned Target" ng-if="task.agent != undefined && task.view == 'month'"
                             type="number"
                             disabled="true" model="calendar.plannedCount"></flow-field>
-
+            </div>
+            <div class="col-lg-3">
                 <flow-field label="Weekly Planned Target" ng-if="task.agent != undefined && task.view == 'basicWeek'"
                             type="number" disabled="true" model="calendar.plannedCount"></flow-field>
-                <table class="table ndg-ptable">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-3 col-md-4 col-sm-5 left-panel">
+                <div class="input-icon right"><i class="fa fa-search"></i>
+                    <input type="text" placeholder="Search customer" class="form-control" ng-model="task.search"/>
+                </div>
 
-                    <div class="input-icon right"><i class="fa fa-search"></i>
-                        <input type="text" placeholder="Search customer" class="form-control" ng-model="task.search"/>
-                    </div>
+                <div class="btn-group ndg-paginator" role="group" aria-label="...">
+                    <button ng-class="customer.tag == '20' ? 'active':'' " class="btn btn-info"
+                            type="button"
+                            ng-click="changeTag('20')">Top 20
+                    </button>
 
-                    <div class="btn-group ndg-paginator" role="group" aria-label="...">
-                        <button ng-class="customer.tag == '20' ? 'active':'' " class="btn btn-info"
-                                type="button"
-                                ng-click="changeTag('20')">Top 20
-                        </button>
+                    <button ng-class="customer.tag == '50' ? 'active':'' " class="btn btn-info"
+                            type="button"
+                            ng-click="changeTag('50')">Top 50
+                    </button>
 
-                        <button ng-class="customer.tag == '50' ? 'active':'' " class="btn btn-info"
-                                type="button"
-                                ng-click="changeTag('50')">Top 50
-                        </button>
+                    <button ng-class="customer.tag == 'All'?'active':'' " class="btn btn-info all-btn" type="button"
+                            ng-click="changeTag('All')">All
+                    </button>
 
-                        <button ng-class="customer.tag == 'All'?'active':'' " class="btn btn-info all-btn" type="button"
-                                ng-click="changeTag('All')">All
-                        </button>
+                    <select ng-if="customer.tag === 'All'" ng-model="customer.size">
+                        <option label="25" value="25"></option>
+                        <option label="50" value="50"></option>
+                        <option label="75" value="75"></option>
+                        <option label="100" value="100"></option>
+                    </select>
 
-                        <select ng-if="customer.tag === 'All'" ng-model="customer.size" class="btn btn-info">
-                            <option label="25" value="25"></option>
-                            <option label="50" value="50"></option>
-                            <option label="75" value="75"></option>
-                            <option label="100" value="100"></option>
-                        </select>
+                    <button ng-disabled="!customer.hasPrevious" ng-if="customer.tag == 'All'" type="button"
+                            class="btn btn-default" ng-click="prev()"><i
+                            class="fa fa-backward"></i></button>
 
-                        <button ng-disabled="!customer.hasPrevious" ng-if="customer.tag == 'All'" type="button"
-                                class="btn btn-default" ng-click="prev()"><i
-                                class="fa fa-backward"></i></button>
+                    <button ng-disabled="!customer.hasNext" ng-if="customer.tag == 'All'" type="button"
+                            class="btn btn-default" ng-click="next()"><i
+                            class="fa fa-forward"></i></button>
+                </div>
+                <div class="customer-tab-table-container">
+                    <table class="table ndg-ptable">
 
-                        <button ng-disabled="!customer.hasNext" ng-if="customer.tag == 'All'" type="button"
-                                class="btn btn-default" ng-click="next()"><i
-                                class="fa fa-forward"></i></button>
-                    </div>
 
-                    <thead class="bg-primary" style="display:inline-block">
+                        <thead class="bg-primary">
                         <th ng-if="customer.tag != 'All'">Top</th>
                         <th>Customer Name</th>
                         <th>Market Segment</th>
@@ -71,20 +79,24 @@
                             <div><span ng-if="customer.tag == 'All'">Page: {{customer.page}}</span></div>
                             <div>Frequency</div>
                         </th>
-                    </thead>
+                        </thead>
 
-                    <tbody class="customer-tag-table" id="{{flow.getElementFlowId('event_body')}}">
+                        <tbody class="customer-tag-table" id="{{flow.getElementFlowId('event_body')}}">
 
-                        <tr class="event-customer enabled-day" ng-repeat="cus in customer.customers | filter : task.search">
+                        <tr class="event-customer enabled-day"
+                            ng-repeat="cus in customer.customers | filter : task.search">
                             <td ng-if="customer.tag != 'All'">{{cus.index}}</td>
-                            <td><div class="td-drag" ng-click="opentCustomerSummary(cus.id)" customer="{{cus}}" ><a href="#">{{cus.name}}</a></div></td>
-                            <td>{{cus.marketSegment}}</td>
-                            <td>{{cus.frequency}}</td>
+                            <td>
+                                <div class="td-drag" ng-click="opentCustomerSummary(cus.id)" customer="{{cus}}"><a
+                                        href="#">{{cus.name}}</a>
+                                </div>
+                            </td>
+                            <td>{{cus.marketSegment ? cus.marketSegment : "N/A"}}</td>
+                            <td>{{cus.frequency ? cus.frequency : "N/A"}}</td>
                         </tr>
-
-                    </tbody>
-                </table>
-
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div class="col-lg-9 col-md-8 col-sm-7 right-panel">
                 <div class="panel panel-primary ndg-calcon">
@@ -99,8 +111,8 @@
                                         tooltip-title="Attachment"
                                         ng-click="task.viewAttach()"><i
                                         fluid-icon-attach></i></button>
-                                <button ng-if="task.showAttach" ng-file-select ng-model="task.newFile"
-                                        ng-file-change="task.addToFileList(task.newFile)" button
+                                <button ng-if="task.showAttach" ngf-select ng-model="task.newFile"
+                                        ngf-change="task.addToFileList(task.newFile)" button
                                         info="button" flow-tooltip tooltip-title="New attachment"><i
                                         fluid-icon-new></i></button>
                                 <button ng-if="task.showAttach" button info="button"
@@ -206,7 +218,7 @@
                         </div>
                     </div>
 
-                    <div class="pull-left">
+                    <div class="pull-left panel panel-default">
                         <table id="{{flow.getElementFlowId('other_activities')}}"
                                class="table other-activities">
                             <thead>
@@ -225,9 +237,7 @@
                             </tr>
                         </table>
                     </div>
-
                     <div class="clearfix"></div>
-
                     <div id="{{flow.getElementFlowId('plannerCal')}}"></div>
 
                 </div>

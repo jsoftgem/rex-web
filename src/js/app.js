@@ -1,43 +1,45 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 'use strict';
-angular.module("app", ["MAdmin", "datatables", "datatables.bootstrap", "datatables.tabletools", "datatables.colvis", "flowServices", "flowFactories", "home", "fluid", "devControllers", "adminControllers", "flowAppDirectives", "sessionControllers", "fNotify", "infinite-scroll", "ngDragDrop", "rexTemplates"])
-    .run(["flowFrameService", "flowHttpService", "userProfile", "responseEvent", "fnService", "userAppSetting", "HOST", "hasProfile", "$rootScope", "sessionService",
-        function (f, fhp, up, re, fns, uas, h, hp, rs, ss) {
-
+angular.module("app", ["MAdmin", "war.resources", "war.session", "war.sidebar", "datatables", "datatables.bootstrap", "datatables.tabletools", "datatables.colvis", "flowServices", "flowFactories", "home", "fluid", "devControllers", "adminControllers", "flowAppDirectives", "sessionControllers", "infinite-scroll", "ngDragDrop", "rexTemplates"])
+    .run(["flowFrameService", "flowHttpService", "userProfile", "responseEvent", "userAppSetting", "HOST", "hasProfile", "$rootScope", "sessionService", "UserFactory", "FlowUserDetail", "WarAgent", "TaskResource", "GroupResource",
+        function (f, fhp, up, re, uas, h, hp, rs, ss, uf, FlowUserDetail, WarAgent, TaskResource, GroupResource) {
             fhp.host = h;
             fhp.permissionUrl = "services/flow_permission/has_permission";
             rs.$watch(function () {
-                return ss.isSessionOpened();
+                return uf.isAuthenticated();
             }, function (session) {
                 if (session) {
-                    console.info("session-opened", session);
-                    fhp.getLocal("session/profile/user_detail").success(function (data) {
-                        up.createUserProfile(data);
+                    console.debug("session-opened", session);
+                    console.debug("getUser", uf.getUser());
 
-                        console.info("user_detail", data);
+                    FlowUserDetail.currentDetail(uf.getUser().flowUserDetailId, function (userDetail) {
+                        up.createUserProfile(userDetail);
                     });
 
-                    fhp.postGlobal("services/flow_module_service/user_tasks").success(function (tasks) {
+                    WarAgent.current(function (agent) {
+                        up.agent = agent;
+                    });
+
+
+                    TaskResource.getSessionTasks(function (tasks) {
                         angular.forEach(tasks, function (task) {
                             f.addTask(task);
                         });
-
-
-                        console.info("flow_user_tasks", tasks);
                     });
+
+                    GroupResource.getByName(uf.getUser().group, function (group) {
+                        up.group = group;
+                        up.group.emblemPath = GroupResource.getAvatarPath(up.group.emblemId);
+                        console.debug("created-group", group);
+                    });
+
                 } else {
                     window.location = "signin.html";
                 }
-            })
+            });
             re.addResponse(undefined, 401, true, "signin.html");
             re.addResponse("NOT_AUTHENTICATED", 401);
-            fns.url = "session/notification/alerts";
-            fns.topUrl = "session/notification/top?limit=5";
+            /*   fns.url = "session/notification/alerts";
+             fns.topUrl = "session/notification/top?limit=5";*/
             hp.url = "services/flow_permission/has_profile";
 
         }])
@@ -71,6 +73,6 @@ angular.module("app", ["MAdmin", "datatables", "datatables.bootstrap", "datatabl
             return filtered;
         }
     });
-;
+
  
 

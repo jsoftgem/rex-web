@@ -49,10 +49,10 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
         s.dtColumns = FlowColumns(dtc);
         s.dtColumns.push(dtc.newColumn("user.flowUserDetail.fullName").withTitle("Name").withOption("searchable", true));
         s.dtColumns.push(dtc.newColumn("region").withTitle("Region").withOption("searchable", true));
-        s.dtColumns.push(dtc.newColumn("active").withTitle("Active").renderWith(function (data) {
+        s.dtColumns.push(dtc.newColumn("active").withTitle("Active").withOption("searchable", false).renderWith(function (data) {
             return renderCheckbox(data)
         }));
-        s.dtColumns.push(dtc.newColumn("online").withTitle("Online").renderWith(function (data) {
+        s.dtColumns.push(dtc.newColumn("online").withTitle("Online").withOption("searchable", false).renderWith(function (data) {
             return renderCheckbox(data)
         }));
 
@@ -311,7 +311,7 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
                 } else {
                     s.task.agent.schoolYear = data.schoolYear;
                 }
-                if (up.agent) {
+                if (up.agent.id) {
                     s.task.agent = up.agent;
                 }
                 s.task.summary = data;

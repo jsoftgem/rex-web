@@ -5,16 +5,14 @@
  */
 
 
-angular.module("home", ["flowServices", "fluid", "flowFactories"])
-    .controller("homeCtrl", function ($scope, sessionService, $http, flowMessageService, flowFrameService, flowHttpService, $timeout, userProfile) {
+angular.module("home", ["flowServices", "fluid", "flowFactories", "war.session"])
+    .controller("homeCtrl", function ($scope, sessionService, $http, flowMessageService, flowFrameService, flowHttpService, $timeout, userProfile, UserFactory) {
         $scope.userProfile = userProfile;
         $scope.flowFrameService = flowFrameService;
         $scope.taskbar = {};
-
         $scope.taskbar.getExcessCount = function (limit) {
             return $scope.flowFrameService.taskList.length - limit;
-        }
-
+        };
         $scope.taskbar.open = function (task) {
             console.info("open", task);
             console.info("open-frame-service", flowFrameService);
@@ -22,9 +20,7 @@ angular.module("home", ["flowServices", "fluid", "flowFactories"])
                 flowFrameService.fullScreenTask = task;
             } else {
                 if (task.active === true) {
-
                     $(".frame-content").scrollTo($("#_id_fp_" + task.id), 800);
-
                 } else {
                     task.active = true;
                     if (task.id.indexOf("gen") === -1) {
@@ -40,7 +36,6 @@ angular.module("home", ["flowServices", "fluid", "flowFactories"])
 
 
         };
-
         $scope.taskbar.close = function (task, index) {
             var userTask = {};
             userTask.closed = true;
@@ -48,8 +43,7 @@ angular.module("home", ["flowServices", "fluid", "flowFactories"])
             userTask.flowId = task.flowId;
             flowHttpService.post("services/flow_user_task_crud/save_task_state?field=close", userTask, task);
             flowFrameService.taskList.splice(index, 1);
-        }
-
+        };
         $scope.taskbar.hide = function (task) {
             task.active = false;
             var userTask = {};
@@ -57,73 +51,37 @@ angular.module("home", ["flowServices", "fluid", "flowFactories"])
             userTask.flowTaskId = task.id.split("_")[0];
             userTask.flowId = task.flowId;
             flowHttpService.post("services/flow_user_task_crud/save_task_state?field=close", userTask, task);
-        }
-
+        };
         $scope.logout = function () {
-
             flowHttpService.postGlobal("services/logout_service/logoff")
-                .success(function (config) {
-                    sessionService.logout();
-                    window.location = "signin.html";
+                .success(function () {
+                    UserFactory.logout();
                 });
         };
-
         $scope.$on("NOT_AUTHENTICATED", function (event, msg) {
             window.location = "signin.html";
             flowMessageService.danger("mainMessage", msg, 2000);
         });
-
         $scope.editProfile = function () {
-            console.info("edit_profile", $scope.userProfile.editProfileTask + "&newTask=false");
-            flowFrameService.addTask($scope.userProfile.editProfileTask + "&newTask=false");
+            flowFrameService.addTask($scope.userProfile.editTaskUrl);
         }
-
     })
-    .controller("signinCtrl", function ($scope, $http, sessionService, flowMessageService, userSessionService, HOST, REX_VERSION) {
+    .controller("signinCtrl", function ($scope, $http, sessionService, flowMessageService, userSessionService, HOST, REX_VERSION, UserFactory) {
 
         $scope.ver = REX_VERSION;
 
         $scope.login = function (user) {
 
-            var request = $http({
-                method: "post",
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                data: {username: user.username, password: user.password, remember: user.remember},
-                transformRequest: function (obj) {
-                    var str = [];
-                    for (var p in obj)
-                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                    return str.join("&");
-                },
-                url: HOST + "services/login_service/auth"
-            });
-
-            request.success(function (data, status, headers, config) {
-                if (data) {
-                    sessionService.createSession(data.bs64auth);
+            UserFactory.login(user)
+                .success(function (data) {
                     window.location = "home.html";
-                }
-            });
-
-            request.error(function (data) {
-                if (data) {
-                    flowMessageService.warning("signinMessage", data.msg, 2000);
-                } else {
-
-                    if (data && data.msg) {
-                        flowMessageService.warning("signinMessage", data.msg, 2000);
-                    } else {
-
-                        flowMessageService.warning("signinMessage", "Invalid username or password", 2000);
-                    }
-                }
-                flowMessageService.open();
-            });
-
+                }).error(function (data) {
+                    flowMessageService.danger("loginMessage", data, 3000).open();
+                });
         }
     })
-    .controller("indexCtrl", function (sessionService) {
-        if (sessionService.isSessionOpened()) {
+    .controller("indexCtrl", function (sessionService, UserFactory) {
+        if (UserFactory.isAuthenticated()) {
             window.location = "home.html";
         } else {
             window.location = "signin.html";

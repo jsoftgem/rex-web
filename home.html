@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
 <head>
-    <title>{{userProfile.group}} @Fluid</title>
+    <title>{{userProfile.group.groupTitle}} @Fluid</title>
 
     <meta charset="utf-8"/>
 
@@ -32,7 +32,7 @@
     <div id="header-topbar-option-demo" ng-include="'templates/app/header.html'"
          class="page-header-topbar"></div>
     <div id="wrapper" ng-class="header.layout_menu">
-        <nav id="sidebar" role="navigation" data-step="3" data-position="right"
+        <nav id="sidebar" data-step="3" data-position="right"
              ng-include="'templates/app/sidebar.html'" class="navbar-default navbar-static-side"></nav>
         <div id="page-wrapper">
             <div class="hidden-lg hidden-md hidden-sm" style="height:50px;"></div>
@@ -53,7 +53,7 @@
 <script src="bower_components/angular-local-storage/dist/angular-local-storage.min.js" type="text/javascript"></script>
 <script src="bower_components/Chart.js/Chart.min.js" type="text/javascript"></script>
 <script src="bower_components/angular-cookies/angular-cookies.min.js"></script>
-<script src="bower_components/angular-resource/angular-resource.min.js"></script>
+<script src="bower_components/angular-resource/angular-resource.js"></script>
 <script src="bower_components/angular-filter/dist/angular-filter.min.js" type="text/javascript"></script>
 <script src="bower_components/jQuery.print/jQuery.print.js"></script>
 <script src="bower_components/slimScroll/jquery.slimscroll.js"></script>

@@ -11,29 +11,25 @@ angular.module("flowServices", ["fluid"])
         this.createUserSession = function (username, bs64auth) {
             this.username = username;
             this.authorization = bs64auth;
-        }
+        };
+
         this.destroyUserSession = function () {
             this.username = undefined;
             this.authorization = undefined;
-        }
+        };
 
         return this;
     }])
     .service("userProfile", ["flowHttpService", function (f) {
 
         this.createUserProfile = function (userDetail) {
+            console.debug("createUserProfile", userDetail);
             this.fullName = userDetail.fullName;
-            this.username = userDetail.username;
-            this.email = userDetail.email;
-            this.detailId = userDetail.detailId;
-            this.avatar = userDetail.avatar ? f.host + "services/download_service/getContent/" + userDetail.avatar : '../images/gallery/profile_default.png';
-            this.group = userDetail.group;
-            this.groupEmblem = f.host + userDetail.groupEmblem;
+            this.detailId = userDetail.id;
+            this.avatar = withHost("services/download_service/getContent/" + userDetail.avatar);
             this.groupOwner = userDetail.groupOwner;
             this.profiles = userDetail.profiles;
-            this.editProfileTask = userDetail.editProfileTask;
-            this.agent = userDetail.agent;
-
+            this.editTaskUrl = "services/flow_task_service/getTask?name=edit_profile&active=true&size=50&showToolBar=false&page=edit_profile&page-path=" + userDetail.id + "&newTask=false";
         };
 
         this.destroyUserProfile = function () {
@@ -51,15 +47,10 @@ angular.module("flowServices", ["fluid"])
 
         this.updateProfile = function (userDetail) {
             this.fullName = userDetail.fullName;
-            this.avatar = f.host + "services/download_service/getContent/" + userDetail.avatar;
+            this.avatar = withHost("services/download_service/getContent/" + userDetail.avatar);
         };
 
         return this;
-    }])
-    .service("notificationService", ["flowHttpService", function (f) {
-        this.queueUrl = "session/notification/queue";
-
-
     }])
     .service("userAppSetting", ["flowHttpService", function (f) {
 
@@ -79,7 +70,7 @@ angular.module("flowServices", ["fluid"])
 
         this.createAppSetting = function () {
             return f.getGlobal(this.url + "/setting");
-        }
+        };
 
 
         this.updateSetting = function (query) {
@@ -104,7 +95,7 @@ angular.module("flowServices", ["fluid"])
                 .success(function (data) {
 
                 });
-        }
+        };
 
         return this;
 
@@ -122,7 +113,7 @@ angular.module("flowServices", ["fluid"])
 
         this.getAvatar = function (id) {
             return id ? f.host + this.url + id : '../images/gallery/profile_default.png';
-        }
+        };
 
         return this;
     }]);

@@ -1,0 +1,18 @@
+<div class="image-upload">
+    <div class="img-group">
+        <img height="{{height-30}}" width="{{width}}" ngf-src="data"
+             fallback-src="images/gallery/profile_default.png"
+             ngf-accept="'image/*'">
+    </div>
+    <div class="img-group">
+          <span  ngf-select ngf-change="change($files, $file, $event, $rejectedFiles)"
+                ng-model="data"
+                class="btn btn-primary" accept="image/*"
+                ngf-accept="'image/*'">
+              <span ng-if="(model == null || model === undefined) && (data == null || data === undefined)"><i
+                      class="fa fa-image"></i> Select image</span>
+            <span ng-if="(model != null || modal != undefined) || data"><i class="fa fa-gear"></i>  Change</span>
+    </span>
+    </div>
+
+</div>

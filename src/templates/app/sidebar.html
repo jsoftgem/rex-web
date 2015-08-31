@@ -1,14 +1,26 @@
-<div ng-controller="homeCtrl" class="sidebar-collapse menu-scroll">
+<div ng-controller="sidebarCtl" class="sidebar-collapse">
 
-    <ul id="side-menu" fluid-menu="services/flow_module_service/session_modules" class="nav admin-nav-main">
+    <ul id="side-menu" fluid-menu class="nav admin-nav-main">
         <li class="user-panel">
-            <div class="thumb"><img
-                    ng-src="{{ userProfile.avatar }}"
-                    class="img-circle"/></div>
+            <div class="thumb"><img fallback-src="images/gallery/profile_default.png"
+                                    ng-src="{{userProfile.avatar}}"
+                                    class="img-circle"/></div>
             <div class="info">
                 <p>{{userProfile.fullName}}</p>
             </div>
             <div class="clearfix"></div>
         </li>
+        <!-- <li ng-if="!appSetting.hideMenu" class="container-fluid">
+             <div class="input-group">
+                 <input class="form-control" placeholder="Search apps">
+                 <span class="input-group-addon">
+                     <i class="fa fa-search"></i>
+                 </span>
+             </div>
+             <div class="clearfix"></div>
+         </li>-->
+
     </ul>
+
+
 </div>

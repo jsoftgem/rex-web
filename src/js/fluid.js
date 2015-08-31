@@ -7,7 +7,6 @@ flowComponents.config(["$httpProvider", "localStorageServiceProvider", function 
     ls.setPrefix("fluid")
         .setStorageType("sessionStorage")
         .setNotify(true, true);
-
     h.interceptors.push("flowInjector");
 }]);
 flowComponents.run(["$templateCache", function (tc) {
@@ -1894,6 +1893,9 @@ flowComponents
                 name: "@"
             },
             link: function (scope, element, attr) {
+
+                scope.templateUrl = "templates/fluid/fluidSelect.html";
+
                 if (!scope.name && scope.label) {
                     scope.name = scope.label.trim().split(" ").join("_");
                 }
@@ -1911,26 +1913,26 @@ flowComponents
                 }
 
 
-                var options = "";
+                scope.options = "";
 
                 if (scope.fieldValue === undefined) {
-                    options = "item";
+                    scope.options = "item";
                 } else {
-                    options = "item." + scope.fieldValue;
+                    scope.options = "item." + scope.fieldValue;
                 }
 
                 if (scope.fieldLabel === undefined) {
                 } else {
-                    options += " as item." + scope.fieldLabel;
+                    scope.options += " as item." + scope.fieldLabel;
                 }
 
                 if (scope.fieldGroup) {
-                    options += " group by item." + scope.fieldGroup;
+                    scope.options += " group by item." + scope.fieldGroup;
                 }
 
-                options += " for item in sourceList";
+                scope.options += " for item in sourceList";
 
-                var select = element.find("select").attr("ng-options", options).attr("ng-model", "model").get();
+                /* var select = element.find("select").attr("ng-options", options).attr("ng-model", "model").get();*/
 
                 scope.$watch(function (scope) {
                     return scope.sourceUrl;
@@ -1939,6 +1941,8 @@ flowComponents
                     if (value) {
                         f.get(scope.sourceUrl, scope.task).success(function (sourceList) {
                             scope.sourceList = sourceList;
+                            element.html(tc.get(scope.templateUrl));
+                            c(element.contents())(scope);
                         });
                     }
                 });
@@ -1946,9 +1950,10 @@ flowComponents
                 scope.$watch(function (scope) {
                     return attr.values;
                 }, function (value, old) {
-                    console.info("flow-select.values", value);
                     if (value) {
                         scope.sourceList = value.split(",");
+                        element.html(tc.get(scope.templateUrl));
+                        c(element.contents())(scope);
                     }
                 });
 
@@ -1968,10 +1973,8 @@ flowComponents
                     scope.change({item: newValue});
                 });
 
-
-                c(element.contents())(scope);
             },
-            template: tc.get("templates/fluid/fluidSelect.html"),
+            /*   template: tc.get("templates/fluid/fluidSelect.html"),*/
             replace: true
         }
     }])
@@ -2229,9 +2232,9 @@ flowComponents
                 };
                 scope.refresh();
 
-
-                scope.onFileSelect = function (file) {
-
+                scope.onFileSelect = function ($files, $file, $event, $rejectedFiles) {
+                    console.debug("flowImage-onFileSelect", file);
+                    var file = $file;
                     if (file != null) {
                         if (scope.fileReaderSupported && file.type.indexOf('image') > -1) {
                             t(function () {
@@ -2254,7 +2257,6 @@ flowComponents
                                             method: scope.method,
                                             headers: {
                                                 "flow-container-id": "_id_fpb_" + scope.task.id,
-                                                "Authorization": ss.getSessionProperty(AUTHORIZATION),
                                                 "flowPage": scope.task.currentPage,
                                                 "flowUploadFileId": scope.model
                                             },
@@ -2262,12 +2264,10 @@ flowComponents
                                         }).progress(function (evt) {
                                             file.progress = parseInt(100.0 * evt.loaded / evt.total);
                                         }).success(function (data, status, headers, config) {
-                                            $("#_id_fpb_" + scope.task.id).loadingOverlay("remove");
                                             scope.model = data.id;
                                             scope.fileChanged();
 
                                         }).error(function (data, status, headers, config) {
-                                            $("#_id_fpb_" + scope.task.id).loadingOverlay("remove");
                                         });
                                     });
 
@@ -2489,6 +2489,70 @@ flowComponents
                 }
             }
         };
+    }])
+    .directive("FluidImageUpload", ["$templateCache", "Upload", function (tc, u) {
+        return {
+            restrict: "AE",
+            template: tc.get("templates/fluid/fluidImageUpload.html"),
+            scope: {model: "=", url: "@", auto: "=", onLoad: "&", token: "@", width: "=", height: "="},
+            link: function (scope, element, attr) {
+                scope.height = 200;
+                scope.width = 200;
+
+                if (!scope.auto) {
+                    scope.auto = false;
+                }
+
+                scope.$watch(function (scope) {
+                    return scope.model
+                }, function (newModel) {
+                    if (newModel) {
+                        if (newModel instanceof File) {
+                            scope.data = newModel;
+                        } else {
+                            if (scope.token) {
+                                if (newModel.indexOf("?") === -1) {
+                                    scope.src = newModel + "?token=" + scope.token;
+                                } else {
+                                    scope.src = newModel + "&token=" + scope.token;
+                                }
+                            } else {
+                                scope.src = newModel;
+                            }
+                        }
+                    }
+                });
+
+
+                scope.change = function ($files, $file, $event, $rejectedFiles) {
+                    console.debug("$files", $files);
+                    console.debug("$file", $file);
+                    console.debug("$event", $event);
+                    console.debug("$rejectedFiles", $rejectedFiles);
+                    var file = $file;
+                    console.debug("file", file);
+                    if (file != null) {
+                        if (scope.auto) {
+                            u.upload({
+                                url: scope.url,
+                                file: file,
+                                fields: {size: file.size}
+                            }).success(function (uploadedFile) {
+                                if (scope.onLoad) {
+                                    scope.onLoad();
+                                }
+                                scope.model = uploadedFile.id;
+                            });
+                        } else {
+                            scope.model = file;
+                        }
+                    }
+                }
+
+
+            },
+            replace: true
+        }
     }]);
 
 
@@ -3126,14 +3190,6 @@ flowComponents
         this.enabled = true;
         return this;
     }])
-    .service("flowNotificationService", [function () {
-
-        this.flowNotifications = [];
-
-        return this;
-
-
-    }])
     .service("sessionService", ["localStorageService", function (ls) {
 
         this.isSessionSupported = ls.isSupported;
@@ -3144,6 +3200,11 @@ flowComponents
 
         this.isSessionOpened = function () {
             return ls.get(AUTHORIZATION) !== null;
+        }
+
+
+        this.containsKey = function (key) {
+            return !(!this.getSessionProperty(key));
         }
 
         this.addSessionProperty = function (key, value) {
@@ -3160,7 +3221,7 @@ flowComponents
             } else {
                 return ls.cookie.get(key);
             }
-        }
+        };
 
         this.login = function (username, password, remember) {
             var base64 = window.btoa(username + ":" + password);
@@ -3170,7 +3231,15 @@ flowComponents
 
         this.createSession = function (base64) {
             this.addSessionProperty(AUTHORIZATION, "Basic " + base64);
-        }
+        };
+
+        this.removeSessionProperty = function (key) {
+            if (this.isSessionSupported) {
+                return ls.remove(key);
+            } else {
+                return ls.cookie.remove(key);
+            }
+        };
 
         this.logout = function () {
             if (this.isSessionSupported) {
@@ -3191,19 +3260,19 @@ flowComponents
                 if (fls.enabled) {
                     fls.loaded = false;
                 }
-
                 config.headers["Access-Control-Allow-Origin"] = "*";
+                /*
 
-                console.debug("request-config", config);
-                if (config.headers['flow-container-id'] !== undefined) {
-                    // $('#' + config.headers['flow-container-id']).loadingOverlay();
-                }
-                if (ss.isSessionOpened()) {
-                    config.headers['Authorization'] = ss.getSessionProperty(AUTHORIZATION);
-                }
+
+                 console.debug("request-config", config);
+                 if (config.headers['flow-container-id'] !== undefined) {
+                 // $('#' + config.headers['flow-container-id']).loadingOverlay();
+                 }
+                 /!*  if (ss.isSessionOpened()) {
+                 config.headers['Authorization'] = ss.getSessionProperty(AUTHORIZATION);
+                 }*!/*/
                 return config;
-            }
-            ,
+            },
             "requestError": function (rejection) {
                 fls.loaded = true;
                 fls.enabled = true;

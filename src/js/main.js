@@ -120,7 +120,6 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
     });
 
 });
-
 (function ($, window, undefined) {
     'use strict';
     var name = 'stickyTableHeaders';
