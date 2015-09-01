@@ -1,0 +1,93 @@
+<div class="container-fluid" ng-controller="groupCtrl">
+    <form name="{{flow.getElementFlowId('group_edit_form')}}" id="{{flow.getElementFlowId('group_edit_form')}}"
+          class="form-horizontal" role="form" ng-submit="save()" novalidate>
+
+        <input id="{{flow.getElementFlowId('group_submit')}}" type="submit"
+               style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+
+        <flow-field model="task.groupCreate.groupName" label="Name" type="text" required="true"></flow-field>
+        <flow-field model="task.groupCreate.groupTitle" label="Title" type="text" required="true"></flow-field>
+        <flow-select task="task" model="task.groupCreate.ownerUserId" label="Owner" required="true" field-value="id"
+                     disabled="false"
+                     field-label="flowUserDetail.fullName" source-url="services/flow_user_query/list"
+                     change="onSelectUser(task.groupCreate.ownerUserId)"></flow-select>
+
+        <flow-image task="task" label="Emblem" model="task.groupCreate.emblemId"
+                    source-url="services/download_service/getContent/"
+                    url="services/upload_service/upload_file?folder=group&type=emblem" method="post"></flow-image>
+
+        <flow-text-area flow-tooltip tooltip-title="Use comma(,) as separator." tooltip-position="top"
+                        model="task.groupCreate.emails" label="Email addresses" type="email"
+                        required="true"></flow-text-area>
+
+        <flow-sub-table flow="flow" task="task" key-var="user" title="Users" target-list="task.groupCreate.flowUsers"
+                        source-url="services/flow_user_query/list"
+                        id="{{flow.getElementFlowId('userSubTable')}}"
+                        edit-url="services/flow_task_service/getTask?name=usr_mgr_task&active=true&size=50&page=usr_mgr_edit&page-path="
+                        id-field="id">
+
+            <flow-sub-column title="Username" model="user.username"></flow-sub-column>
+            <flow-sub-column title="Email" model="user.email" column-class="hidden-xs"></flow-sub-column>
+        </flow-sub-table>
+
+        <flow-sub-table flow="flow" task="task" key-var="module" title="Modules"
+                        target-list="task.groupCreate.flowUserGroupModules"
+                        id="{{flow.getElementFlowId('moduleSubTable')}}" id-field="flowModuleId"
+                        create-event="createFlowModules" edit-event="editFlowModules" look-up="false">
+            <flow-sub-column title="Module ID" model="module.flowModuleId"></flow-sub-column>
+
+        </flow-sub-table>
+
+        <flow-modal id="{{flow.getElementFlowId('groupModuleModal')}}">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <span>Add module</span>
+                </div>
+                <div class="panel-body">
+                    <flow-message id="{{flow.getElementFlowId('groupModuleModalMsg')}}"></flow-message>
+                    <div class="form-group col-lg-7 col-md-7 col-sm-12 col-xs-12">
+                        <flow-select disabled="task.groupModuleEdit" required="!task.groupModuleEdit" label="Module"
+                                     task="task" model="task.groupModule.flowModuleId"
+                                     field-label="moduleName" field-value="id"
+                                     source-url="services/flow_module_query/list"></flow-select>
+
+                        <flow-select disabled="task.groupModuleEdit" required="!task.groupModuleEdit" required="true"
+                                     label="Task" task="task"
+                                     model="task.groupModule.flowUserGroupTask.flowUserTaskId"
+                                     field-label="name" field-value="id"
+                                     source-url="services/flow_task_query/list"></flow-select>
+                        <flow-select label="Size" task="task" disabled="false" required="false"
+                                     field-value="value" field-label="label"
+                                     model="task.groupModule.flowUserGroupTask.size"
+                                     source-url="factories/flow/SIZES"></flow-select>
+                    </div>
+                    <div class="col-lg-1 col-md-1 hidden-sm hidden-xs"></div>
+                    <div class="form-group col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <flow-check disabled="false" required="false" model="task.groupModule.flowUserGroupTask.active"
+                                    label="Active"></flow-check>
+                        <flow-check disabled="false" required="false" model="task.groupModule.flowUserGroupTask.locked"
+                                    label="Locked"></flow-check>
+                        <flow-check disabled="false" required="false" model="task.groupModule.flowUserGroupTask.pinned"
+                                    label="Pinned"></flow-check>
+                        <flow-check disabled="false" required="false" model="task.groupModule.flowUserGroupTask.closed"
+                                    label="Closed"></flow-check>
+                        <flow-check disabled="false" required="false" model="task.groupModule.flowUserGroupTask.toolBar"
+                                    label="Toolbar"></flow-check>
+                    </div>
+                </div>
+
+                <div class="panel-footer">
+                    <div class="btn-group btn-group-xs">
+                        <button type="button" class="btn btn-info field-margin" ng-click="addGroupModule()">
+                            {{task.groupModuleEdit ?'Update':'Add'}}
+                        </button>
+                        <button type="button" class="btn btn-info field-margin" ng-click="cancelGroupModule()">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </flow-modal>
+    </form>
+</div>

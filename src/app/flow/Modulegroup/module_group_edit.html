@@ -1,0 +1,42 @@
+<div class="container-fluid" ng-controller="moduleGroupCtrl">
+    <form name="{{flow.getElementFlowId('moduleGroup_edit_form')}}"
+          id="{{flow.getElementFlowId('moduleGroup_edit_form')}}"
+          class="form-horizontal" role="form" ng-submit="save()" novalidate>
+
+        <input id="{{flow.getElementFlowId('moduleGroup_submit')}}" type="submit"
+               style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+
+
+        <flow-field model="task.moduleGroupEdit.name" label="Name" type="text" required="true"></flow-field>
+        <flow-field model="task.moduleGroupEdit.title" label="Title" type="text" required="true"></flow-field>
+        <flow-field model="task.moduleGroupEdit.iconUri" label="Glyph" type="text" required="true"></flow-field>
+
+
+        <flow-sub-table flow="flow" task="task" target-list="task.moduleGroupEdit.flowModules" key-var="module" title="Modules"
+                        source-url="services/flow_module_query/list"
+                        id="{{flow.getElementFlowId('moduleGroupSubTable')}}"
+                        edit-url="services/flow_task_service/getTask?id=7&active=true&size=50&page=md_edit&page-path="
+                        id-field="id">
+            <flow-sub-column title="Title" model="module.moduleName"></flow-sub-column>
+            <flow-sub-column title="Glyph" model="module.moduleGlyph"
+                             render-with="<p class='text-primary'><span ng-class='module.moduleGlyph'></span></p>"></flow-sub-column>
+        </flow-sub-table>
+
+        <flow-modal id="{{flow.getElementFlowId('moduleGroupDeleteModal')}}">
+            <div class="panel panel-warning">
+                <div class="panel-heading">Warning</div>
+                <div class="panel-body">Do you want to delete {{task.moduleGroupEdit.name}}?</div>
+                <div class="panel-footer">
+                    <div class="btn-group btn-group-xs">
+                        <button type="button" class="btn btn-warning field-margin" ng-click="deleteConfirm()">Yes
+                        </button>
+                        <button type="button" class="btn btn-info field-margin" ng-click="deleteCancel()">No</button>
+                    </div>
+                </div>
+            </div>
+
+        </flow-modal>
+
+
+    </form>
+</div>

@@ -18,8 +18,8 @@ angular.module("war.resources", ["war.session"])
     .factory("FlowUserDetail", ["WarResource", function (resource) {
         var flowUserDetail = resource(withHost("services/v2/user/detail/:path"));
 
-        flowUserDetail.currentDetail = function (flowUserId, fn) {
-            return flowUserDetail.get({path: flowUserId}, fn);
+        flowUserDetail.currentDetail = function (flowUserId, fn, errfn) {
+            return flowUserDetail.get({path: flowUserId}, fn, errfn);
         };
 
 
@@ -28,8 +28,8 @@ angular.module("war.resources", ["war.session"])
     .factory("WarAgent", ["WarResource", function (resource) {
         var warAgent = resource(withHost("services/v2/war/agent/:path"));
 
-        warAgent.current = function (fn) {
-            return warAgent.get({path: "current-agent"}, fn);
+        warAgent.current = function (fn, errfn) {
+            return warAgent.get({path: "current-agent"}, fn, errfn);
         };
 
         return warAgent;
@@ -38,8 +38,8 @@ angular.module("war.resources", ["war.session"])
 
         var taskResource = resource(withHost("services/v2/task/:path"));
 
-        taskResource.getSessionTasks = function (fn) {
-            return taskResource.query({path: "user"}, fn);
+        taskResource.getSessionTasks = function (fn, errfn) {
+            return taskResource.query({path: "user"}, fn, errfn);
         };
 
 
@@ -51,8 +51,8 @@ angular.module("war.resources", ["war.session"])
 
         var groupResource = resource(withHost("services/v2/user/group/:path"));
 
-        groupResource.getByName = function (name, fn) {
-            groupResource.get({path: "by-name", name: name}, fn);
+        groupResource.getByName = function (name, fn, errfn) {
+            groupResource.get({path: "by-name", name: name}, fn, errfn);
         };
 
         return groupResource;

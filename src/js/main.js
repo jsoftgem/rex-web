@@ -1,7 +1,7 @@
 "use strict";
 var App = angular.module('MAdmin', ['ui.bootstrap', 'fluid', 'flowServices']);
 
-App.controller('AppController', function ($scope, $rootScope, $location, userAppSetting, sessionService, userProfile, userSessionService) {
+App.controller('AppController', function ($scope, $rootScope, $location, userAppSetting, sessionService, userProfile, userSessionService, UserFactory, FlowUserDetail, WarAgent, TaskResource, GroupResource, flowFrameService) {
     $scope.userSessionService = userSessionService;
     $scope.data = {};
     $scope.effect = '';
@@ -61,7 +61,6 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
         }
     };
     $rootScope.userProfile = userProfile;
-
     $scope.$watch(function (scope) {
         return sessionService.isSessionOpened();
     }, function (session) {
@@ -88,21 +87,17 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
                 });
         }
     });
-
-
     $scope.style_change = function () {
         $rootScope.style = $scope.header.theme_style;
         userAppSetting.style = $scope.header.theme_style;
         userAppSetting.updateSetting("style");
 
     };
-
     $scope.theme_change = function (t) {
         $rootScope.theme = t;
         userAppSetting.theme = t;
         userAppSetting.updateSetting("theme");
     };
-
     $(window).scroll(function () {
         if ($(this).scrollTop() > 0) {
             $('.quick-sidebar').css('top', '0');
@@ -119,6 +114,54 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
         $('.news-ticker').remove();
     });
 
+    $scope.$watch(function () {
+        return UserFactory.isAuthenticated();
+    }, function (session) {
+        if (session) {
+            console.debug("session-opened", session);
+            console.debug("getUser", UserFactory.getUser());
+
+            FlowUserDetail.currentDetail(UserFactory.getUser().flowUserDetailId, function (userDetail) {
+                userProfile.createUserProfile(userDetail);
+                userSessionService.profileLoaded = true;
+            }, function () {
+                userSessionService.profileLoaded = false;
+            });
+
+            WarAgent.current(function (agent) {
+                userProfile.agent = agent;
+                userSessionService.agentLoaded = true;
+            }, function () {
+                userSessionService.agentLoaded = false;
+            });
+
+            TaskResource.getSessionTasks(function (tasks) {
+                if (tasks.length === 0) {
+                    userSessionService.userTasksLoaded = true;
+                }
+                angular.forEach(tasks, function (task, $index) {
+                    flowFrameService.addTask(task);
+                    if ((tasks.length - 1) === $index) {
+                        userSessionService.userTasksLoaded = true;
+                    }
+                });
+            }, function () {
+                userSessionService.userTasksLoaded = false;
+            });
+
+            GroupResource.getByName(UserFactory.getUser().group, function (group) {
+                userProfile.group = group;
+                userProfile.group.emblemPath = GroupResource.getAvatarPath(userProfile.group.emblemId);
+                console.debug("created-group", group);
+                userSessionService.groupLoaded = true;
+            }, function () {
+                userSessionService.groupLoaded = false;
+            });
+
+        } else {
+            window.location = "signin.html";
+        }
+    });
 });
 (function ($, window, undefined) {
     'use strict';

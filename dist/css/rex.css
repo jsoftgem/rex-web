@@ -41,16 +41,16 @@ body {
 }
 
 .form .group {
-    background: rgba(205, 10, 10, 0.2);
+    background: rgba(205, 50, 10, 0.2);
     text-align: center;
 }
 
 .form .loader {
-    margin-top: 5px;
+    padding: 15px 0;
 }
 
 .splash .splash-progress {
-    margin-top: 5px;
+    margin-top: 10px;
 }
 
 .splash-progress i {

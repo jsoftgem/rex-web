@@ -4,7 +4,7 @@ angular.module("app", ["MAdmin", "war.resources", "war.session", "war.sidebar", 
         function (f, fhp, up, re, uas, h, hp, rs, ss, uf, FlowUserDetail, WarAgent, TaskResource, GroupResource, uss) {
             fhp.host = h;
             fhp.permissionUrl = "services/flow_permission/has_permission";
-            rs.$watch(function () {
+          /*  rs.$watch(function () {
                 return uf.isAuthenticated();
             }, function (session) {
                 if (session) {
@@ -14,13 +14,16 @@ angular.module("app", ["MAdmin", "war.resources", "war.session", "war.sidebar", 
                     FlowUserDetail.currentDetail(uf.getUser().flowUserDetailId, function (userDetail) {
                         up.createUserProfile(userDetail);
                         uss.profileLoaded = true;
+                    }, function () {
+                        uss.profileLoaded = false;
                     });
 
                     WarAgent.current(function (agent) {
                         up.agent = agent;
                         uss.agentLoaded = true;
+                    }, function () {
+                        uss.agentLoaded = false;
                     });
-
 
                     TaskResource.getSessionTasks(function (tasks) {
                         angular.forEach(tasks, function (task, $index) {
@@ -29,6 +32,8 @@ angular.module("app", ["MAdmin", "war.resources", "war.session", "war.sidebar", 
                                 uss.userTasksLoaded = true;
                             }
                         });
+                    }, function () {
+                        uss.userTasksLoaded = false;
                     });
 
                     GroupResource.getByName(uf.getUser().group, function (group) {
@@ -36,12 +41,14 @@ angular.module("app", ["MAdmin", "war.resources", "war.session", "war.sidebar", 
                         up.group.emblemPath = GroupResource.getAvatarPath(up.group.emblemId);
                         console.debug("created-group", group);
                         uss.groupLoaded = true;
+                    }, function () {
+                        uss.groupLoaded = false;
                     });
 
                 } else {
                     window.location = "signin.html";
                 }
-            });
+            });*/
             re.addResponse(undefined, 401, true, "signin.html");
             re.addResponse("NOT_AUTHENTICATED", 401);
             /*   fns.url = "session/notification/alerts";

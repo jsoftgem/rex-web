@@ -1,0 +1,16 @@
+div.customer-table table{
+    cursor: pointer;
+}
+
+.customer-table table{
+    max-height: 200;
+    overflow: auto;
+}
+
+.activies-panel {
+
+}
+
+.school-emblem {
+    border-radius: 150px;
+}

@@ -1,0 +1,14 @@
+<div class="container-fluid" ng-controller="mdCtrl">
+    <form name="{{flow.getElementFlowId('md_edit_form')}}" id="{{flow.getElementFlowId('md_edit_form')}}"
+          class="form-horizontal" role="form" ng-submit="save()" novalidate>
+
+        <input id="{{flow.getElementFlowId('md_submit')}}" type="submit"
+               style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+
+
+        <flow-field model="task.mdCreate.moduleName" label="Name" type="text" required="true"></flow-field>
+        <flow-field model="task.mdCreate.moduleTitle" label="Title" type="text" required="true"></flow-field>
+        <flow-field model="task.mdCreate.task" label="Task URL" type="text" required="true"></flow-field>
+        <flow-field model="task.mdCreate.moduleGlyph" label="Glyph" type="text" required="true"></flow-field>
+    </form>
+</div>

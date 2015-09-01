@@ -1,0 +1,64 @@
+<div class="container-fluid" ng-controller="profileCtrl">
+    <form id="{{flow.getElementFlowId('profile_edit_form')}}" class="form-horizontal" role="form" ng-submit="save()"
+          novalidate>
+
+        <input id="{{flow.getElementFlowId('profile_submit')}}" type="submit"
+               style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+
+        <div class="form-group col-lg-12 col-md-12  col-sm-12 col-xs-12 col-xs-offset-1">
+            <flow-field model="task.profileCreate.profileName" label="Name" type="text" required="true"></flow-field>
+        </div>
+
+
+        <add-pages task="task" target-list="task.profileCreate.flowProfilePermissions"
+                   page-url="services/flow_page_query/list"></add-pages>
+
+        <!--  <add-all-pages task="task" target-list="task.profileCreate.flowProfilePermissions"
+                         page-url="services/flow_page_query/list"></add-all-pages>-->
+        <button type="button" class="btn btn-info" ng-click="task.profileCreate.flowProfilePermissions=[]">Clear pages
+        </button>
+
+        <div class="form-group"></div>
+
+        <h4>Page Permission</h4>
+
+        <div class="form-group" style="overflow: hidden;">
+
+            <div ng-repeat="pp in task.profileCreate.flowProfilePermissions" class="row animated slideInDown anim-dur"
+                 style="border-top: 1px solid;padding-top: 2px">
+
+                <div class="col-lg-4">
+                    <div class="btn-group btn-group-xs">
+                        <a href="#"><span class="fa fa-remove"
+                                          ng-click="task.profileCreate.flowProfilePermissions.splice($index,1)"></span></a>
+                    </div>
+                    <span>{{pp.flowPageName}}</span>
+                </div>
+                <div class="col-lg-2">
+                    <div offset="2">
+                        <flow-check disabled="false" required="false" label="Delete" model="pp.del"></flow-check>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div offset="2">
+                        <flow-check disabled="false" required="false" label="Read" model="pp.get"></flow-check>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div offset="2">
+                        <flow-check disabled="false" required="false" label="Create/Update (Post)"
+                                    model="pp.post"></flow-check>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div offset="2">
+                        <flow-check disabled="false" required="false" label="Create/Update (Put)"
+                                    model="pp.put"></flow-check>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </form>
+</div>

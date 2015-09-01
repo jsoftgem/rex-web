@@ -330,7 +330,7 @@ flowComponents
                                 var pagePanel = element.find(".flow-panel-page");
                                 console.info("page-panel", pagePanel);
                                 console.info("page-panel-task", scope.task);
-                                pagePanel.html("<fluid-include url='{{task.page.home}}' name='{{flow.getElementFlowId(task.page.name)}}' taskid='{{task.id}}'></fluid-include>");
+                                pagePanel.html("<fluid-include url=\"{{task.page.home}}\" name='{{flow.getElementFlowId(task.page.name)}}' taskid='{{task.id}}'></fluid-include>");
                                 c(pagePanel.contents())(scope);
                                 scope.onLoad = function () {
                                     if (scope.task.pinned) {
@@ -2486,6 +2486,9 @@ flowComponents
                 console.debug("fluidInclude.attrs", attrs);
                 if (tc.get(attrs.url)) {
                     elem.append(c(angular.element(tc.get(attrs.url)))($scope));
+                    t(function () {
+                        r.$broadcast(EVENT_PAGE_SUCCESS, $scope.name, $scope.taskId);
+                    }, 1, false);
                 }
                 else if (attrs.url) {
                     function getPage() {

@@ -1,0 +1,57 @@
+<div class="container-fluid" ng-controller="editProfileCtrl">
+    <form class="form-horizontal" novalidate role="form" ng-submit="task.update()" method="post">
+
+        <button info="submit" button ng-if="!task.updatePassword ||
+            (task.updatePassword && task.showChangePasswordField && (task.password.new!= null && (task.password.new==task.password.confirm)))">
+            <i fluid-icon-save></i>&nbsp;Update
+        </button>
+        <div>
+            <fluid-image-upload column="7" url="services/upload_service/upload_profile"
+                                model="task.flowUserDetail.avatar">
+
+            </fluid-image-upload>
+            <!--  <flow-image column="7" file-changed="fileChanged()" task="task" label="Avatar"
+                           model="task.flowUserDetail.avatar"
+                           source-url="services/download_service/getContent/"
+                           url="services/upload_service/upload_file?folder=group.user&type=avatar"
+                           method="post"></flow-image>-->
+            <div column="5">
+                <flow-field label="Full name" model="task.flowUserDetail.fullName"></flow-field>
+
+                <flow-field label="Question" model="task.flowUserDetail.secretQuestion"></flow-field>
+
+                <flow-field label="Answer" model="task.flowUserDetail.secretAnswer" type="password"></flow-field>
+            </div>
+
+        </div>
+        <div column="12">
+            <div class="form-group">
+                <button button info="button" ng-click="task.changePassword()">
+                    {{!task.updatePassword? 'Change password':'Cancel'}}
+                </button>
+            </div>
+
+            <div ng-if="task.updatePassword" class="form-group">
+                <div ng-if="!task.showChangePasswordField">
+                    <flow-field name="current" type="password" label="Current password"
+                                model="task.password.current">
+                    </flow-field>
+                    <button button info="button" ng-click="task.validatePassword()">Validate</button>
+                </div>
+
+                <flow-field ng-if="task.showChangePasswordField" name="new" type="password" label="New password"
+                            model="task.password.new"></flow-field>
+                <flow-field ng-if="task.showChangePasswordField" name="retype" type="password" label="Confirm password"
+                            model="task.password.confirm"></flow-field>
+
+                <span ng-if="task.showChangePasswordField && (task.password.new!= null && (task.password.new==task.password.confirm))"><i
+                        fluid-icon-check>
+                </i> Password matched. </span>
+
+
+            </div>
+        </div>
+
+
+    </form>
+</div>

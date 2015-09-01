@@ -1,0 +1,19 @@
+<div class="container-fluid" ng-controller="levelCtrl">
+    <form id="{{flow.getElementFlowId('level_edit_form')}}" class="form-horizontal" role="form" ng-submit="save()"
+          novalidate>
+
+        <input id="{{flow.getElementFlowId('level_submit')}}" type="submit"
+               style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+
+
+        <flow-select disabled="false"
+                     task="task"
+                     id="{{flow.getElementFlowId('educationLevelSelect')}}"
+                     model="task.levelCreate.description"
+                     label="Education Level"
+                     source-url="factories/war/table_factories/education_levels"
+                     required="true">
+        </flow-select>
+        <flow-field model="task.levelCreate.levelCourse" label="Level course" type="text" required="true"></flow-field>
+    </form>
+</div>

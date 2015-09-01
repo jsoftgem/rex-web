@@ -1,0 +1,135 @@
+<div ng-controller="customerSummaryCtrl" class="container-fluid">
+
+    <form id="{{flow.getElementFlowId('customersFrame')}}" class="form-horizontal" novalidate>
+        <div class="form-group">
+            <div class="panel panel-info activies-panel">
+                <div class="panel-heading">
+                    <div class="panel-title">Details
+                        <div ng-if="task.agent.selectedCustomer" class="pull-right btn-group btn-group-sm">
+                            <button button warning="button" title="Clear filter" ng-if="task.agent.schoolYear"
+                                    ng-click="clearFilter()"><i fluid-icon-clear></i></button>
+                            <button button info="button" title="Edit Info"
+                                    ng-click="editCustomer(task.agent.selectedCustomer.id)"><i fluid-icon-edit></i>
+                            </button>
+                            <button button info="button" title="View Summary" ng-click="goToSummary()"><i
+                                    fluid-icon-search></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div column="12" ng-if="task.agent.selectedCustomer">
+
+                        <flow-field column="3" label="Customer" model="task.agent.selectedCustomer.school.name"
+                                    disabled="true"></flow-field>
+                        <flow-select disabled="false" required="false" column="3" label="by School Year" task="task"
+                                     field-label="description"
+                                     source-url="services/war/school_year_query/list"
+                                     model="task.agent.schoolYear" change="filter()">
+
+                        </flow-select>
+                        <flow-select disabled="false" required="false" column="3" ng-if="task.agent.schoolYear"
+                                     model="task.agent.month" task="task"
+                                     label="by Month"
+                                     source-url="factories/war/table_factories/months" change="filter()">
+                        </flow-select>
+
+                        <flow-select disabled="false" required="false" column="3" ng-if="task.agent.month"
+                                     model="task.agent.week" task="task"
+                                     label="by Week"
+                                     values="all, 1, 2, 3, 4, 5" change="filter()">
+                        </flow-select>
+                    </div>
+                    <div column="12" ng-if="!task.agent.selectedCustomer">
+                        <span>No customer selected.</span>
+                    </div>
+
+                    <div column="12">
+                        <div column="4">
+
+                            <table class="table table-striped table-bordered table-responsive">
+                                <thead>
+                                <th class="bg-info">Activity Date</th>
+                                <th class="bg-info">Visited</th>
+                                <th class="bg-info">Notes
+                                    <div class="pull-right btn-group btn-group-sm">
+                                        <button ng-if="task.agent.activity.hasPrevious" button info="button"
+                                                ng-click="prev()"><i fluid-icon-back></i></button>
+                                        <button ng-if="task.agent.activity.hasNext" button info="button"
+                                                ng-click="next()"><i
+                                                fluid-icon-next></i></button>
+                                    </div>
+                                </th>
+                                </thead>
+                                <tbody>
+                                <tr class="text-center" ng-repeat="activity in task.agent.activity.activities">
+                                    <td><a href="#" ng-click="editActivity(activity.id)"> {{activity.startDt | date:
+                                        'EEEE MM/dd/yyyy'}}</a></td>
+                                    <td>
+                                        <i class="{{activity.actual ? 'fa fa-check text-success' : 'fa fa-close text-danger'}}"></i>
+                                    </td>
+                                    <td ng-if="activity.actual">
+                                        <textarea disabled="disabled" ng-model="activity.customerSpecificActivity"
+                                                  rows="1"/>
+                                    </td>
+                                    <td ng-if="!activity.actual">
+                                        <textarea disabled="disabled" ng-model="activity.reasonForNonCoverage"
+                                                  rows="1"/>
+                                    </td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div column="8" class="customer-table">
+
+                            <table class="table table-hover table-striped table-responsive table-bordered table-condensed">
+
+                                <thead class="bg-warning">
+                                <th>
+                                    <div class="input-icon right"><i fluid-icon-search></i>
+                                        <input type="text" placeholder="Customer" class="form-control"
+                                               ng-model="customer.school.name"/>
+                                    </div>
+                                </th>
+
+                                <th>
+                                    <div class="input-icon right"><i fluid-icon-search></i>
+                                        <input type="text" placeholder="Customer Code" class="form-control"
+                                               ng-model="customer.customerCode"/>
+                                    </div>
+                                </th>
+                                <th>
+                                    Market Detail
+                                </th>
+                                <th>
+                                    Date Created
+                                </th>
+                                </thead>
+
+                                <tbody>
+                                <tr ng-click="select(school)"
+                                    ng-repeat="school in task.agent.summary.result | filter: customer">
+                                    <td><a href="#"> <img ng-if="school.school.logoId" height="25" width="27"
+                                                          class="school-emblem"
+                                                          ng-src="{{imageService.getAvatar(school.school.logoId)}}"></img>
+                                        {{school.school.name}}</a></td>
+                                    <td>{{school.customerCode}}</td>
+                                    <td>{{school.marketDetail}}</td>
+                                    <td>{{school.createdDt | date : 'medium'}}</td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </form>
+
+</div>

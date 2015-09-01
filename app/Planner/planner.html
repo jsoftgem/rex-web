@@ -1,0 +1,427 @@
+<div class="ndg-planner container-fluid form-horizontal" ng-controller="plannerCtrl">
+
+    <form id="{{flow.getElementFlowId('planner')}}" class="form-horizontal" role="form" novalidate>
+        <div class="form-group">
+            <div class="col-lg-3">
+                <flow-select id="{{flow.getElementFlowId('schoolYearSelect')}}" task="task" label="School Year"
+                             source-url="services/war/school_year_query/list" model="task.schoolYear" disabled="false"
+                             required="false"
+                             field-label="description">
+                </flow-select>
+            </div>
+            <div class="col-lg-3">
+                <flow-look-up ng-if="task.schoolYear != undefined && !task.hideAgentFilter" task="task"
+                              id="{{flow.getElementFlowId('agentLookUp')}}"
+                              field-label="user.flowUserDetail.fullName"
+                              parent-id="{{flow.getElementFlowId('planner')}}"
+                              label="Agent" model="task.agent"
+                              source-url="services/war/agent_query/find_agent_by_current_user_level"
+                              key-var="agent">
+
+                    <flow-sub-column title="Agent" model="agent.user.flowUserDetail.fullName"></flow-sub-column>
+                </flow-look-up>
+            </div>
+            <div class="col-lg-3">
+                <flow-field label="Monthly Planned Target" ng-if="task.agent != undefined && task.view == 'month'"
+                            type="number"
+                            disabled="true" model="calendar.plannedCount"></flow-field>
+            </div>
+            <div class="col-lg-3">
+                <flow-field label="Weekly Planned Target" ng-if="task.agent != undefined && task.view == 'basicWeek'"
+                            type="number" disabled="true" model="calendar.plannedCount"></flow-field>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-lg-3 col-md-4 col-sm-5 left-panel">
+                <div class="input-icon right"><i class="fa fa-search"></i>
+                    <input type="text" placeholder="Search customer" class="form-control" ng-model="task.search"/>
+                </div>
+
+                <div class="btn-group ndg-paginator" role="group" aria-label="...">
+                    <button ng-class="customer.tag == '20' ? 'active':'' " class="btn btn-info"
+                            type="button"
+                            ng-click="changeTag('20')">Top 20
+                    </button>
+
+                    <button ng-class="customer.tag == '50' ? 'active':'' " class="btn btn-info"
+                            type="button"
+                            ng-click="changeTag('50')">Top 50
+                    </button>
+
+                    <button ng-class="customer.tag == 'All'?'active':'' " class="btn btn-info all-btn" type="button"
+                            ng-click="changeTag('All')">All
+                    </button>
+
+                    <select ng-if="customer.tag === 'All'" ng-model="customer.size">
+                        <option label="25" value="25"></option>
+                        <option label="50" value="50"></option>
+                        <option label="75" value="75"></option>
+                        <option label="100" value="100"></option>
+                    </select>
+
+                    <button ng-disabled="!customer.hasPrevious" ng-if="customer.tag == 'All'" type="button"
+                            class="btn btn-default" ng-click="prev()"><i
+                            class="fa fa-backward"></i></button>
+
+                    <button ng-disabled="!customer.hasNext" ng-if="customer.tag == 'All'" type="button"
+                            class="btn btn-default" ng-click="next()"><i
+                            class="fa fa-forward"></i></button>
+                </div>
+                <div class="customer-tab-table-container">
+                    <table class="table ndg-ptable">
+
+
+                        <thead class="bg-primary">
+                        <th ng-if="customer.tag != 'All'">Top</th>
+                        <th>Customer Name</th>
+                        <th>Market Segment</th>
+                        <th>
+                            <div><span ng-if="customer.tag == 'All'">Page: {{customer.page}}</span></div>
+                            <div>Frequency</div>
+                        </th>
+                        </thead>
+
+                        <tbody class="customer-tag-table" id="{{flow.getElementFlowId('event_body')}}">
+
+                        <tr class="event-customer enabled-day"
+                            ng-repeat="cus in customer.customers | filter : task.search">
+                            <td ng-if="customer.tag != 'All'">{{cus.index}}</td>
+                            <td>
+                                <div class="td-drag" ng-click="opentCustomerSummary(cus.id)" customer="{{cus}}"><a
+                                        href="#">{{cus.name}}</a>
+                                </div>
+                            </td>
+                            <td>{{cus.marketSegment ? cus.marketSegment : "N/A"}}</td>
+                            <td>{{cus.frequency ? cus.frequency : "N/A"}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-lg-9 col-md-8 col-sm-7 right-panel">
+                <div class="panel panel-primary ndg-calcon">
+                    <div class="panel-heading">
+                        <div class="pull-left heading-title">
+                            <span>Calendar</span>
+                        </div>
+
+                        <div class="pull-right">
+                            <div class="btn-group margin-left5px">
+                                <button ng-if="task.schoolYear != undefined" button default="button" flow-tooltip
+                                        tooltip-title="Attachment"
+                                        ng-click="task.viewAttach()"><i
+                                        fluid-icon-attach></i></button>
+                                <button ng-if="task.showAttach" ngf-select ng-model="task.newFile"
+                                        ngf-change="task.addToFileList(task.newFile)" button
+                                        info="button" flow-tooltip tooltip-title="New attachment"><i
+                                        fluid-icon-new></i></button>
+                                <button ng-if="task.showAttach" button info="button"
+                                        ng-click="task.refreshAttach()"><i
+                                        fluid-icon-refresh loading="{{task.attachRefresh}}"></i></button>
+                                <button ng-if="task.agent !== undefined"
+                                        ng-click="task.viewNotes()" button
+                                        default="button" flow-tooltip
+                                        tooltip-title="Notes"><i
+                                        class="fa fa-calendar-o"></i></button>
+                                <button ng-if="task.showNotes && !task.editNote" button info="button"
+                                        title="Edit" ng-click="task.editNote=!task.editNote"><i
+                                        fluid-icon-edit=""></i></button>
+                                <button ng-if="task.editNote" button info="button"
+                                        title="Save" ng-click="task.saveNotes(task.dailyNote)"><i
+                                        fluid-icon-save></i></button>
+                            </div>
+                            <div class="btn-group">
+                                <button class="btn btn-info" ng-if="task.agent != undefined"
+                                        ng-disabled="task.planner.enabled == false"
+                                        type="button" ng-click="calendar.submit()">Submit
+                                </button>
+
+                                <button class="btn btn-info" ng-if="task.agent != undefined"
+                                        ng-disabled="task.planner.enabled == false"
+                                        type="button" ng-click="calendar.clearEvents()">Clear
+                                </button>
+                                <button class="btn btn-info"
+                                        ng-if="task.agent != undefined && task.view == task.basicWeek"
+                                        ng-disabled="task.planner.enabled" ng-click="update()"
+                                        type="button">Update
+                                </button>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="note-tool pull-right panel panel-default width300px" ng-if="task.showNotes">
+                        <div class="panel-heading"><h6 class="panel-title"><span><i
+                                class="fa fa-calendar-o"></i> Notes: {{task.selectedDate | date : 'dd EEEE'}}</span>
+                        </h6>
+                        </div>
+                        <div class="panel-body max-height120px">
+                            <textarea class="notes-area" ng-disabled="!task.editNote"
+                                      ng-model="task.dailyNote.description"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="attach-tool pull-right panel {{task.attachPrompt?'panel-warning':'panel-default'}} box width300px margin-left5px"
+                         ng-if="task.showAttach">
+                        <div class="panel-heading">
+                            <h6 class="panel-title"><span ng-if="task.attachPrompt">Are you sure?
+                                <a href="#"
+                                   ng-click="task.deleteAttachConfirmed()">Yes</a> / <a
+                                        href="#" ng-click="task.deleteAttachCancel()">No</a></span><span
+                                    ng-if="!task.attachPrompt"><i fluid-icon-attach></i> Attachments</span>
+
+                            </h6>
+                        </div>
+
+                        <div class="max-height120px">
+                            <table class="table table-hover table-responsive table-condensed">
+                                <thead>
+                                <th></th>
+                                <th></th>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="uploadItem in task.uploadedFiles">
+
+                                    <td>
+                                        <div class="btn-group btn-group-xs">
+                                            <button button info="button" title="view"
+                                                    ng-click="task.openViewer(uploadItem)"><i
+                                                    fluid-icon-search></i>
+                                            </button>
+                                            <a href="{{task.download(uploadItem.uploadedFileId)}}" button
+                                               info="button" title="download"
+                                               download="{{uploadItem.fileName}}"><i
+                                                    fluid-icon-download></i></a>
+                                            <button button danger="button" title="remove"
+                                                    ng-click="task.deleteAttach(uploadItem)"><i
+                                                    fluid-icon-trash></i>
+                                            </button>
+
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div ng-if="!uploadItem.done"
+                                             class="progress progress-striped active">
+                                            <div class="progress-bar progress-bar-success" role="progressbar"
+                                                 aria-valuenow="{{uploadItem.progress}}" aria-valuemin="0"
+                                                 aria-valuemax="{{uploadItem.total}}"
+                                                 style="width: {{100.0 * uploadItem.progress / uploadItem.total}}%;">
+                                                <span class="sr-only">{{100.0 * uploadItem.progress / uploadItem.total}}% Complete</span>
+                                            </div>
+                                        </div>
+                                        <span tooltip-time="700" flow-tooltip
+                                              tooltip-title="{{uploadItem.fileName}}">{{uploadItem.fileName | limitTo: 25}}{{uploadItem.fileName.length > 25 ?'...' :''}}</span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="pull-left panel panel-default">
+                        <table id="{{flow.getElementFlowId('other_activities')}}"
+                               class="table other-activities">
+                            <thead>
+                            <th colspan="3">Other Activities</th>
+                            </thead>
+                            <tr>
+                                <td>
+                                    <div class="event-draggable" activity-type="OFFICE">Office</div>
+                                </td>
+                                <td>
+                                    <div class="event-draggable" activity-type="SEMINAR">Seminar</div>
+                                </td>
+                                <td>
+                                    <div class="event-draggable" activity-type="LEAVE">Leave</div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div id="{{flow.getElementFlowId('plannerCal')}}"></div>
+
+                </div>
+            </div>
+
+        </div>
+    </form>
+
+    <flow-modal id="{{flow.getElementFlowId('activity_modal')}}">
+
+        <div class="panel panel-primary">
+
+            <div class="panel-heading">
+                <span class="heading-title">{{hangingActivity.activity.startDt | date: 'MMMM dd, yyyy'}}</span>
+            </div>
+            <div class="panel-body form-horizontal">
+                <flow-message id="{{flow.getElementFlowId('activity_messages')}}"></flow-message>
+                <div ng-show="hangingActivity.activity.type == 'SCHOOL'">
+                    <flow-field model="hangingActivity.activity.description" disabled="true"
+                                label="Description"></flow-field>
+                    <div class="form-group" style="margin:auto">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                    <flow-check required="false"
+                                                label="Worked with the manager"
+                                                model="hangingActivity.activity.workedWith"></flow-check>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                    <flow-check disabled="false" required="false" label="Exam Copies Distribution"
+                                                model="hangingActivity.activity.ecd"></flow-check>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                    <flow-check disabled="false" required="false" label="Invitation to Events"
+                                                model="hangingActivity.activity.ite"></flow-check>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                    <flow-check disabled="false" required="false" label="Confirmation of Events"
+                                                model="hangingActivity.activity.coe"></flow-check>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                    <flow-check disabled="false" required="false" label="Follow up payment"
+                                                model="hangingActivity.activity.fp"></flow-check>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                    <flow-check disabled="false" required="false"
+                                                label="Giveaways / Raffle Items Distribution"
+                                                model="hangingActivity.activity.gd"></flow-check>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                    <flow-check disabled="false" required="false" label="Delivery of Incentive/Donation"
+                                                model="hangingActivity.activity.doi"></flow-check>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                    <flow-check disabled="false" required="false" label="Follow-Up / Get PO"
+                                                model="hangingActivity.activity.po"></flow-check>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                    <flow-check disabled="false" required="false"
+                                                label="Delivery of Add'l Order / TRM / Compli..."
+                                                model="hangingActivity.activity.daotrc"></flow-check>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                    <flow-check disabled="false" required="false" label="Booklist"
+                                                model="hangingActivity.activity.bookList"></flow-check>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                    <flow-check disabled="false" required="false" label="Updated Customer Info Sheet"
+                                                model="hangingActivity.activity.ucis"></flow-check>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                    <flow-check disabled="false" required="false" label="Implemented Ex-Sem"
+                                                model="hangingActivity.activity.ies"></flow-check>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <flow-text-area label="CUSTOMER SPECIFIC ACTIVITY"
+                                    model="hangingActivity.activity.customerSpecificActivity"></flow-text-area>
+                    <flow-text-area label="REASON FOR NON-COVERAGE / ACTUAL DATE COVERED"
+                                    model="hangingActivity.activity.reasonForNonCoverage"></flow-text-area>
+                </div>
+                <div ng-show="hangingActivity.activity.type == 'LEAVE'">
+                    <flow-text-area label="Reason for leave"
+                                    model="hangingActivity.activity.description"></flow-text-area>
+                </div>
+                <div ng-show="hangingActivity.activity.type == 'SEMINAR' || hangingActivity.activity.type == 'OFFICE'">
+                    <flow-text-area label="Description"
+                                    model="hangingActivity.activity.description"></flow-text-area>
+                </div>
+
+            </div>
+
+            <div class="panel-footer">
+                <button class="btn btn-sm btn-info" type="button" ng-click="hangingActivity.update()">Update</button>
+                <button class="btn btn-sm btn-danger" type="button" ng-click="hangingActivity.cancel()">Cancel</button>
+            </div>
+
+        </div>
+
+    </flow-modal>
+    <flow-modal id="{{flow.getElementFlowId('other_activity')}}">
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="panel-heading">
+                    <span class="heading-title">{{otherActivity.hangingEventObject.start.toDate() | date: 'MMMM dd, yyyy'}}</span>
+                </div>
+            </div>
+
+            <div class="panel-body" ng-switch="otherActivity.hangingEventObject.activity.type">
+                <flow-message id="{{flow.getElementFlowId('other_activity_messages')}}"></flow-message>
+
+                <div ng-switch-when="LEAVE">
+                    <flow-text-area label="Reason for leave" required="true"
+                                    model="otherActivity.hangingEventObject.activity.description"></flow-text-area>
+                </div>
+                <div ng-switch-when="SEMINAR">
+                    <flow-text-area label="Seminar Details" required="true"
+                                    model="otherActivity.hangingEventObject.activity.description"></flow-text-area>
+                </div>
+                <div ng-switch-when="OFFICE">
+                    <flow-text-area label="Description" required="true"
+                                    model="otherActivity.hangingEventObject.activity.description"></flow-text-area>
+                </div>
+            </div>
+
+            <div class="panel-footer">
+                <button class="btn btn-sm btn-info" type="button" ng-click="otherActivity.submit()">Add</button>
+                <button class="btn btn-sm btn-danger" type="button" ng-click="otherActivity.cancel()">Cancel</button>
+            </div>
+
+        </div>
+
+    </flow-modal>
+    <flow-modal id="{{flow.getElementFlowId('attachment_viewer')}}">
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h6 class="panel-title">
+                    <span>
+                        {{task.attachmentView.fileName}}
+                    </span>
+
+                    <div class="btn-group btn-group-xs pull-right">
+                        <button button danger="button" ng-click="task.closeViewer()"><i fluid-icon-close></i></button>
+                    </div>
+
+                </h6>
+
+            </div>
+            <div class="panel-body viewer-body">
+                <iframe frameborder="0" column="12" height="400" class="viewer-frame"
+                        ng-src="{{task.viewerFile}}"></iframe>
+            </div>
+
+
+        </div>
+
+    </flow-modal>
+
+</div>

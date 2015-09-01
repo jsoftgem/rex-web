@@ -1,0 +1,39 @@
+<div class="container-fluid" ng-controller="taskCtrl">
+    <form name="{{flow.getElementFlowId('task_edit_form')}}" id="{{flow.getElementFlowId('task_edit_form')}}"
+          class="form-horizontal" role="form" ng-submit="save()" novalidate>
+
+        <input id="{{flow.getElementFlowId('task_submit')}}" type="submit"
+               style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+
+
+        <flow-field model="task.tskCreate.name" label="Name" type="text" required="true"></flow-field>
+        <flow-field model="task.tskCreate.title" label="Title" type="text" required="true"></flow-field>
+        <flow-field model="task.tskCreate.glyph" label="Glyph" type="text" required="true"></flow-field>
+        <div class="form-group">
+
+            <div class="col-lg-offset-2">
+                <flow-check disabled="false" required="false" model="task.tskCreate.lazyLoad"
+                            label="Lazy loading"></flow-check>
+            </div>
+        </div>
+        <div ng-if="task.tskCreate.lazyLoad">
+            <flow-field model="task.tskCreate.moduleJS" label="Module JS" type="text"
+                        required="task.tskCreate.lazyLoad"></flow-field>
+            <flow-text-area model="task.tskCreate.moduleFiles" label="File paths" flow-tooltip
+                            tooltip-title="Separate using comma(,)."
+                            required="task.tskCreate.lazyLoad"></flow-text-area>
+        </div>
+
+        <flow-sub-table flow="flow" task="task" target-list="task.tskCreate.pages" key-var="page" title="Pages"
+                        source-url="services/flow_page_query/list" id="{{flow.getElementFlowId('taskSubTable')}}"
+                        edit-url="services/flow_task_service/getTask?name=page_task&active=true&size=50&page=page_edit&page-path="
+                        id-field="id">
+            <flow-sub-column title="Name" model="page.name"></flow-sub-column>
+            <flow-sub-column title="Title" model="page.title" column-class="hidden-xs"></flow-sub-column>
+            <flow-sub-column title="Page Url" model="page.home" column-class="hidden-xs"></flow-sub-column>
+            <flow-sub-column title="Home" model="page.isHome"></flow-sub-column>
+        </flow-sub-table>
+
+
+    </form>
+</div>

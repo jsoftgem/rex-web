@@ -1,0 +1,78 @@
+<div class="container-fluid" ng-controller="schoolYearEditCtrl">
+    <form id="{{flow.getElementFlowId('school_year_edit_form')}}" class="form-horizontal" role="form" ng-submit="save()"
+          novalidate>
+
+        <input id="{{flow.getElementFlowId('school_year_submit')}}" type="submit"
+               style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+
+
+        <flow-field label="Description" required="true" model="task.modelEdit.description"></flow-field>
+        <flow-field label="Created by" disabled="true" model="task.edit.createUserFullName"></flow-field>
+        <fieldset>
+            <legend>From</legend>
+            <div class="col-lg-6">
+                <flow-select disabled="false" required="false"
+                             task="task"
+                             id="{{flow.getElementFlowId('monthSelect')}}"
+                             model="task.modelEdit.periodMonth"
+                             label="Month"
+                             source-url="factories/war/table_factories/months">
+                </flow-select>
+            </div>
+            <div class="col-lg-6">
+                <flow-select disabled="false"
+                             required="true"
+                             task="task"
+                             id="{{flow.getElementFlowId('yearSelect')}}"
+                             model="task.modelEdit.periodYear"
+                             label="Year"
+                             source-url="factories/war/table_factories/years">
+                </flow-select>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>To</legend>
+            <div class="col-lg-6">
+                <flow-select disabled="false" required="false"
+                             task="task"
+                             id="{{flow.getElementFlowId('monthSelect2')}}"
+                             model="task.modelEdit.periodMonthTo"
+                             label="Month"
+                             source-url="factories/war/table_factories/months">
+                </flow-select>
+            </div>
+            <div class="col-lg-6">
+                <flow-select disabled="false"
+                             required="true"
+                             task="task"
+                             id="{{flow.getElementFlowId('yearSelect2')}}"
+                             model="task.modelEdit.periodYearTo"
+                             label="Year"
+                             source-url="factories/war/table_factories/years">
+                </flow-select>
+            </div>
+        </fieldset>
+
+
+    </form>
+
+
+    <flow-modal id="{{flow.getElementFlowId('schoolYearDeleteModal')}}">
+
+        <div class="panel panel-warning">
+
+            <div class="panel-heading">Warning</div>
+            <div class="panel-body">Do you want to delete {{task.modelEdit.description}}?</div>
+            <div class="panel-footer">
+                <div class="btn-group btn-group-xs">
+                    <button class="btn btn-warning field-margin" ng-click="task.deleteConfirm()">Yes</button>
+                    <button class="btn btn-info field-margin" ng-click="task.deleteCancel()">No</button>
+                </div>
+            </div>
+        </div>
+
+    </flow-modal>
+
+
+</div>

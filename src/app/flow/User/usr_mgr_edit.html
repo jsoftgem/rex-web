@@ -1,0 +1,68 @@
+<div class="container-fluid" ng-controller="usrMgrCtrl">
+    <form name="{{flow.getElementFlowId('usrMgr_edit_form')}}" id="{{flow.getElementFlowId('usrMgr_edit_form')}}"
+          class="form-horizontal" role="form" ng-submit="save()" novalidate>
+
+        <input id="{{flow.getElementFlowId('usrMgr_submit')}}" type="submit"
+               style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+
+        <flow-field model="task.usrMgrEdit.flowInstance.flowUserDetail.fullName" label="Full name" type="text"
+                    required="true"></flow-field>
+        <flow-field model="task.usrMgrEdit.flowInstance.username" label="Username" type="text"
+                    required="true"></flow-field>
+        <flow-field model="task.usrMgrEdit.flowInstance.email" label="Email" type="email" required="true"></flow-field>
+
+        <flow-look-up
+                task="task"
+                model="task.usrMgrEdit.flowUserGroup"
+                label="Group" required="true"
+                source-url="services/flow_user_group_query/list" title="Group" field-label="groupTitle"
+                key-var="group">
+            <flow-sub-column title="Name" model="group.groupName"></flow-sub-column>
+            <flow-sub-column title="Title" model="group.groupTitle"></flow-sub-column>
+        </flow-look-up>
+
+        <div ng-if="task.page.name == 'usr_mgr_create' || task.page.name == 'group_usr_mgr_create' || task.editPassword">
+            <flow-field model="task.usrMgrEdit.flowInstance.password" label="Password" type="password"
+                        required="true"></flow-field>
+            <flow-field model="task.reTypePassword" label="Confirm password" type="password"
+                        required="true"></flow-field>
+        </div>
+
+        <div class="form-group">
+            <button type="button" ng-if="task.page.name=='usr_mgr_edit'" class="btn btn-info"
+                    ng-click="task.editPassword=!task.editPassword">{{task.editPassword? 'Cancel': 'Edit password'}}
+            </button>
+        </div>
+        <h4>Password recovery setup</h4>
+
+        <flow-field model="task.usrMgrEdit.flowInstance.flowUserDetail.secretQuestion" label="Security question"
+                    type="text"
+                    required="true"></flow-field>
+        <flow-field model="task.usrMgrEdit.flowInstance.flowUserDetail.secretAnswer" label="Secret answer"
+                    type="password"
+                    required="true"></flow-field>
+
+        <flow-sub-table flow="flow" task="task" title="Profiles"
+                        target-list="task.usrMgrEdit.flowInstance.flowUserProfileSet"
+                        source-url="services/flow_user_profile_query/list" key-var="profile">
+            <flow-sub-column title="Profile" model="profile.profileName"></flow-sub-column>
+        </flow-sub-table>
+
+        <flow-modal id="{{flow.getElementFlowId('usrMgrDeleteModal')}}">
+            <div class="panel panel-warning">
+                <div class="panel-heading">Warning</div>
+                <div class="panel-body">Do you want to delete {{task.usrMgrEdit.flowInstance.username}}?</div>
+                <div class="panel-footer">
+                    <div class="btn-group btn-group-xs">
+                        <button type="button" class="btn btn-warning field-margin" ng-click="deleteConfirm()">Yes
+                        </button>
+                        <button type="button" class="btn btn-info field-margin" ng-click="deleteCancel()">No</button>
+                    </div>
+                </div>
+            </div>
+
+        </flow-modal>
+
+
+    </form>
+</div>

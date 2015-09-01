@@ -12,6 +12,15 @@ angular.module("flowServices", ["fluid"])
             return this.profileLoaded && this.agentLoaded && this.userTasksLoaded && this.groupLoaded;
         };
 
+        this.isNotConnected = function () {
+            return this.profileLoaded === false || this.agentLoaded === false || this.userTasksLoaded === false || this.groupLoaded === false;
+        };
+
+
+        this.reload = function () {
+            window.location = "home.html";
+        };
+
         return this;
     }])
     .service("userProfile", ["flowHttpService", function (f) {
