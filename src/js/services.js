@@ -8,14 +8,8 @@
 angular.module("flowServices", ["fluid"])
     .service("userSessionService", [function () {
 
-        this.createUserSession = function (username, bs64auth) {
-            this.username = username;
-            this.authorization = bs64auth;
-        };
-
-        this.destroyUserSession = function () {
-            this.username = undefined;
-            this.authorization = undefined;
+        this.isReady = function () {
+            return this.profileLoaded && this.agentLoaded && this.userTasksLoaded && this.groupLoaded;
         };
 
         return this;

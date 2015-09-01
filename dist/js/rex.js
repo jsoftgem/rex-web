@@ -87,7 +87,7 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
         s.save = function () {
             if (s.task.page.name === "usr_mgr_edit") {
                 if (!angular.equals(s.task.usrMgrEdit, s.task.editTemp)) {
-                    0;
+                    console.info("retyped", s.task.reTypePassword);
                     if (!s.task.editPassword) {
                         s.task.usrMgrEdit.flowInstance.password = null;
                     } else {
@@ -595,36 +595,42 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
     }]);
 ;'use strict';
 angular.module("app", ["MAdmin", "war.resources", "war.session", "war.sidebar", "datatables", "datatables.bootstrap", "datatables.tabletools", "datatables.colvis", "flowServices", "flowFactories", "home", "fluid", "devControllers", "adminControllers", "flowAppDirectives", "sessionControllers", "infinite-scroll", "ngDragDrop", "rexTemplates"])
-    .run(["flowFrameService", "flowHttpService", "userProfile", "responseEvent", "userAppSetting", "HOST", "hasProfile", "$rootScope", "sessionService", "UserFactory", "FlowUserDetail", "WarAgent", "TaskResource", "GroupResource",
-        function (f, fhp, up, re, uas, h, hp, rs, ss, uf, FlowUserDetail, WarAgent, TaskResource, GroupResource) {
+    .run(["flowFrameService", "flowHttpService", "userProfile", "responseEvent", "userAppSetting", "HOST", "hasProfile", "$rootScope", "sessionService", "UserFactory", "FlowUserDetail", "WarAgent", "TaskResource", "GroupResource", "userSessionService",
+        function (f, fhp, up, re, uas, h, hp, rs, ss, uf, FlowUserDetail, WarAgent, TaskResource, GroupResource, uss) {
             fhp.host = h;
             fhp.permissionUrl = "services/flow_permission/has_permission";
             rs.$watch(function () {
                 return uf.isAuthenticated();
             }, function (session) {
                 if (session) {
-                    0;
-                    0;
+                    console.debug("session-opened", session);
+                    console.debug("getUser", uf.getUser());
 
                     FlowUserDetail.currentDetail(uf.getUser().flowUserDetailId, function (userDetail) {
                         up.createUserProfile(userDetail);
+                        uss.profileLoaded = true;
                     });
 
                     WarAgent.current(function (agent) {
                         up.agent = agent;
+                        uss.agentLoaded = true;
                     });
 
 
                     TaskResource.getSessionTasks(function (tasks) {
-                        angular.forEach(tasks, function (task) {
+                        angular.forEach(tasks, function (task, $index) {
                             f.addTask(task);
+                            if ((tasks.length - 1) === $index) {
+                                uss.userTasksLoaded = true;
+                            }
                         });
                     });
 
                     GroupResource.getByName(uf.getUser().group, function (group) {
                         up.group = group;
                         up.group.emblemPath = GroupResource.getAvatarPath(up.group.emblemId);
-                        0;
+                        console.debug("created-group", group);
+                        uss.groupLoaded = true;
                     });
 
                 } else {
@@ -1657,7 +1663,7 @@ directives.directive("fluidSubTaskbar", ["flowFrameService", "$timeout", "$compi
                     }
 
                     if ((f.taskList.length - 1) === index) {
-                        0;
+                        console.log("loaded");
                         scope.loaded = true;
                     }
 
@@ -2550,7 +2556,7 @@ function withHost(url) {
     if (url && url.charAt(0) === '/') {
         url = url.substring(1, url.length - 1);
     }
-    0;
+    console.debug("withHost.url", url);
     return HOST + url;
 }
 
@@ -2600,8 +2606,8 @@ flowComponents
                         }
                         scope.flowFrameService = f;
 
-                        0;
-                        0;
+                        console.info("fullScreen", scope.flowFrameService.fullScreen);
+                        console.info("fluidPanel-task", scope.task);
                         scope.userTask = {};
                         scope.userTask.closed = false;
                         scope.flow = {};
@@ -2710,7 +2716,7 @@ flowComponents
                             if (newTask) {
                                 url += "&newTask=" + newTask;
                             }
-                            0;
+                            console.info("openTask", url);
 
                             f.addTask(url, origin ? origin : scope.task, true);
                         }
@@ -2861,7 +2867,7 @@ flowComponents
                             }
 
 
-                            0;
+                            console.info("autoget-page", scope.task.page);
                             return q(function (resolve, reject) {
                                 if ((scope.task.page !== undefined && scope.task.page !== null) && (scope.task.page.autoGet !== null && scope.task.page.autoGet === true)) {
                                     scope.task.currentPage = scope.task.page.name;
@@ -2875,19 +2881,19 @@ flowComponents
                                     }
                                     f2.get(url, scope.task)
                                         .success(function (data) {
-                                            0;
+                                            console.info("autoget", data);
                                             resolve({page: scope.task.page.name, value: data});
                                         });
                                 } else if ((scope.task.page !== undefined && scope.task.page !== null) && (scope.task.page.autoGet === null || scope.task.page.autoGet === false)) {
                                     scope.task.currentPage = scope.task.page.name;
-                                    0;
+                                    console.info("autoget false", false);
                                     resolve({page: scope.task.page.name});
                                 }
                             }).then(function (data) {
                                 scope.task.pageLoaded = true;
                                 var pagePanel = element.find(".flow-panel-page");
-                                0;
-                                0;
+                                console.info("page-panel", pagePanel);
+                                console.info("page-panel-task", scope.task);
                                 pagePanel.html("<fluid-include url='{{task.page.home}}' name='{{flow.getElementFlowId(task.page.name)}}' taskid='{{task.id}}'></fluid-include>");
                                 c(pagePanel.contents())(scope);
                                 scope.onLoad = function () {
@@ -2916,7 +2922,7 @@ flowComponents
                                     }
 
                                     scope.loadProperties();
-                                    0;
+                                    console.debug("loadProperties", scope.task);
                                 };
                             }, function (response) {
                                 scope.task.pageLoaded = true;
@@ -2930,9 +2936,6 @@ flowComponents
 
                         scope.$on(EVENT_PAGE_SUCCESS, function (event, name, taskId) {
                             var current = scope.flow.getElementFlowId(scope.task.page.name);
-                            0;
-                            0;
-                            0;
                             if (taskId === scope.task.id && !scope.task.loaded) {
                                 if (scope.task.preLoaded === undefined || scope.task.preLoaded === false) {
                                     scope.task.preLoad();
@@ -2944,14 +2947,14 @@ flowComponents
                                 }
                                 scope.task.postLoad();
                             }
-                            ;
-
                             if (name === current) {
                                 if (scope.onLoad) {
                                     scope.onLoad();
                                 } else {
                                     scope.loadProperties();
                                 }
+
+                                scope.task.taskLoadRetryCount = 0;
                             }
                         });
 
@@ -3058,7 +3061,7 @@ flowComponents
                             }
                         };
                         scope.getToPage = function (name, param) {
-                            0;
+                            console.info("getToPage", scope.task.pages);
                             return q(function (resolve, reject) {
                                 angular.forEach(scope.task.pages, function (page) {
                                         if (name === page.name) {
@@ -3131,7 +3134,7 @@ flowComponents
                             });
                         };
                         scope.flow.goTo = function (name, param) {
-                            0;
+                            console.info("goTo", name);
                             if (scope.flow.onPageChanging(name, param)) {
                                 return scope.getToPage(name, param).then(scope.loadGet());
                             }
@@ -3293,16 +3296,16 @@ flowComponents
                             if (task) {
                                 if (task.generic) {
                                     scope.task.page = undefined;
-                                    0;
+                                    console.info("flow-panel-session", ss);
                                     scope.baseTask = ss.getSessionProperty(scope.task.url);
 
                                     if (scope.baseTask) {
-                                        0;
+                                        console.info("flow-panel-base-task-cache", scope.baseTask);
                                         var newTask = scope.task.newTask;
                                         var $task = {};
                                         scope.copy = {};
                                         angular.copy(scope.task, scope.copy);
-                                        0;
+                                        console.info("flow-panel-cache-task", scope.baseTask);
                                         if (!f.fullScreen) {
 
                                             angular.forEach(f.taskList, function (task, key) {
@@ -3326,14 +3329,14 @@ flowComponents
                                         scope.task.newTask = newTask;
                                         scope.task.flowHttpService = f2;
                                     } else {
-                                        0;
+                                        console.info("flow-panel-base-task-new", scope.baseTask);
                                         f2.get(scope.task.url, scope.task).success(function (d) {
                                             ss.addSessionProperty(scope.task.url, d);
                                             var newTask = scope.task.newTask;
                                             var $task = {};
                                             scope.copy = {};
                                             angular.copy(scope.task, scope.copy);
-                                            0;
+                                            console.info("generated-taskp", d);
                                             if (!f.fullScreen) {
 
                                                 angular.forEach(f.taskList, function (task, key) {
@@ -3356,8 +3359,8 @@ flowComponents
                                             scope.task.generic = false;
                                             scope.task.newTask = newTask;
                                             scope.task.flowHttpService = f2;
-                                            0;
-                                            0;
+                                            console.info("task-initialization-finished", scope.task);
+                                            console.info("generated-task-pages", scope.task.pages);
                                         });
                                     }
                                 }
@@ -3428,7 +3431,7 @@ flowComponents
                             return;
                         }, function (task) {
                             if (task) {
-                                0;
+                                console.info("post-task-watcher", task);
                                 if (task.generic === false) {
                                     if (task.lazyLoad === true) {
                                         var pathArr = undefined;
@@ -3450,7 +3453,7 @@ flowComponents
                                             files: files,
                                             cache: true
                                         }).then(function () {
-                                            0;
+                                            console.debug("fluid.response", oc.isLoaded(task.moduleJS));
                                             generateTask(scope, t, f2);
                                         });
                                     } else {
@@ -3548,7 +3551,7 @@ flowComponents
                                                     scope.userTask.flowTaskId = scope.task.id.split("_")[0];
                                                     scope.userTask.flowId = scope.task.flowId;
                                                     f2.post("services/flow_user_task_crud/save_task_state?field=size", scope.userTask, scope.task);
-                                                    0;
+                                                    console.log("max75");
                                                 }
                                             }
                                         }
@@ -3748,9 +3751,9 @@ flowComponents
 
                                 panelBody.css("overflow", "auto");
 
-                                0;
+                                console.info("panelBody", panelBody);
 
-                                0;
+                                console.info("headerHeight", headerHeight);
 
                             }
                         });
@@ -3759,14 +3762,14 @@ flowComponents
                         element.ajaxStart(function () {
                             t(function () {
                                 scope.task.loaded = false;
-                                0;
+                                console.info("ajax-" + scope.task.name + "started:", scope.task);
                             });
                         });
 
                         element.ajaxStop(function () {
                             t(function () {
                                 scope.task.loaded = true;
-                                0;
+                                console.info("ajax-" + scope.task.name + "stopped:", scope.task);
                             });
                         })
 
@@ -3889,7 +3892,7 @@ flowComponents
 
 
                 scope.runEvent = function (control) {
-                    0;
+                    console.info("control", control);
                     if (control.action) {
                         control.action();
                     } else {
@@ -4500,7 +4503,7 @@ flowComponents
                 scope.$watch(function (scope) {
                     return scope.sourceUrl;
                 }, function (value, old) {
-                    0;
+                    console.info("flow-select.sourceUrl", value);
                     if (value) {
                         f.get(scope.sourceUrl, scope.task).success(function (sourceList) {
                             scope.sourceList = sourceList;
@@ -4551,16 +4554,16 @@ flowComponents
                 if (attr.method) {
                     scope.method = attr.method;
                 }
-                0;
+                console.info("permissionEnabled-url", f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method);
 
                 var url = f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method;
 
                 var enabled = ss.getSessionProperty(url);
 
-                0;
+                console.info("permissionEnabled", enabled);
 
                 if (enabled !== null) {
-                    0;
+                    console.info("permissionEnabled-old", enabled);
                     if (enabled === 'false') {
                         element.attr("disabled", "");
                     }
@@ -4574,7 +4577,7 @@ flowComponents
                             }
                             ss.addSessionProperty(url, data);
                         });
-                    0;
+                    console.info("permissionEnabled-new");
                 }
             }
 
@@ -4589,22 +4592,22 @@ flowComponents
                 if (attr.method) {
                     scope.method = attr.method;
                 }
-                0;
+                console.info("permissionVisible-url", f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method);
 
                 var url = f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method;
 
                 var visible = ss.getSessionProperty(url);
 
-                0;
+                console.info("permissionVisible", visible);
 
                 if (visible !== null) {
-                    0;
+                    console.info("permissionVisible-old", visible);
 
                     if (visible === 'false') {
                         element.addClass("hidden");
-                        0;
+                        console.info("permissionVisible-hidden");
                     } else {
-                        0;
+                        console.info("permissionVisible-visible");
                         element.removeClass("hidden");
                     }
 
@@ -4764,9 +4767,9 @@ flowComponents
 
                 scope.refresh = function () {
                     t(function () {
-                        0;
+                        console.info("model", scope.model);
                         if (scope.model) {
-                            0;
+                            console.info("model-2", scope.model);
                             if (scope.sourceUrl) {
                                 scope.preview[0] = {};
                                 scope.preview[0].dataUrl = fh.host + scope.sourceUrl + scope.model;
@@ -4796,7 +4799,7 @@ flowComponents
                 scope.refresh();
 
                 scope.onFileSelect = function ($files, $file, $event, $rejectedFiles) {
-                    0;
+                    console.debug("flowImage-onFileSelect", file);
                     var file = $file;
                     if (file != null) {
                         if (scope.fileReaderSupported && file.type.indexOf('image') > -1) {
@@ -5025,30 +5028,54 @@ flowComponents
             }
         }
     })
-    .directive('fluidInclude', ['$http', '$compile', '$timeout', "$rootScope", function (h, c, t, r) {
+    .directive('fluidInclude', ['$http', '$compile', '$timeout', "$rootScope", "$templateCache", "$ocLazyLoad", function (h, c, t, r, tc, oc) {
         return {
             restrict: 'AE',
             link: function link($scope, elem, attrs) {
                 //if url is not empty
+                $scope.retry = 0;
+                $scope.retryCount = 10;
                 if (attrs.name) {
                     $scope.name = attrs.name;
+                }
+
+
+                if (attrs.retryCount) {
+                    scope.retryCount = attrs.retryCount;
                 }
 
                 if (attrs.taskid) {
                     $scope.taskId = attrs.taskid;
                 }
+                console.debug("fluidInclude.attrs", attrs);
+                if (tc.get(attrs.url)) {
+                    elem.append(c(angular.element(tc.get(attrs.url)))($scope));
+                }
+                else if (attrs.url) {
+                    function getPage() {
+                        h({
+                            method: 'GET',
+                            url: attrs.url,
+                            cache: true,
+                            headers: {"Content-Type": "text/html"}
+                        }).then(function (result) {
+                            console.debug("fluidInclude.result", result);
+                            tc.put(attrs.url, result.data);
+                            elem.append(c(angular.element(result.data))($scope));
+                            t(function () {
+                                r.$broadcast(EVENT_PAGE_SUCCESS, $scope.name, $scope.taskId);
+                            }, 1, false);
+                        }, function (response) {
+                            if ($scope.retry < $scope.retryCount) {
+                                $scope.retry++;
+                                t(getPage, 5000, false);
+                            } else {
+                                r.$broadcast(EVENT_PAGE_ERROR, $scope.name, $scope.taskId);
+                            }
+                        });
+                    }
 
-                if (attrs.url) {
-                    h({method: 'GET', url: attrs.url, cache: true}).then(function (result) {
-                        elem.append(c(angular.element(result.data))($scope));
-                        t(function () {
-                            r.$broadcast(EVENT_PAGE_SUCCESS, $scope.name, $scope.taskId);
-                        }, 1, false);
-                    }, function () {
-                        t(function () {
-                            r.$broadcast(EVENT_PAGE_ERROR, $scope.name, $scope.taskId);
-                        }, 1, false);
-                    });
+                    getPage();
                 }
             }
         };
@@ -5088,12 +5115,12 @@ flowComponents
 
 
                 scope.change = function ($files, $file, $event, $rejectedFiles) {
-                    0;
-                    0;
-                    0;
-                    0;
+                    console.debug("$files", $files);
+                    console.debug("$file", $file);
+                    console.debug("$event", $event);
+                    console.debug("$rejectedFiles", $rejectedFiles);
                     var file = $file;
-                    0;
+                    console.debug("file", file);
                     if (file != null) {
                         if (scope.auto) {
                             u.upload({
@@ -5193,7 +5220,7 @@ flowComponents
             this.fullScreenTask = undefined;
         };
         this.getFullTask = function (task) {
-            0;
+            console.info("getFullTask", task);
             var fullScreenTask = undefined;
 
             if (task) {
@@ -5201,7 +5228,7 @@ flowComponents
 
                 fullScreenTask.url = this.taskUrl + task.name;
                 fullScreenTask.size = 100;
-                0;
+                console.info("task", fullScreenTask);
             }
 
             return fullScreenTask;
@@ -5544,7 +5571,7 @@ flowComponents
 
             var sessionValue = ss.getSessionProperty(key);
 
-            0;
+            console.info("flow-http-server-cache-session-value", sessionValue);
 
             var promise = h({
                 method: "get",
@@ -5573,8 +5600,8 @@ flowComponents
                 response.config = config;
                 response.statusText = statusText;
                 ss.addSessionProperty(key, response);
-                0;
-                0;
+                console.info("flow-http-server-new-session-key", key);
+                console.info("flow-http-server-new-session-value", data);
             });
 
             return promise;
@@ -5823,9 +5850,9 @@ flowComponents
                 if (fls.enabled) {
                     fls.loaded = false;
                 }
-                config.headers["Access-Control-Allow-Origin"] = "*";
-                /*
 
+                /*
+                 config.headers["Access-Control-Allow-Origin"] = "*";
 
                  console.debug("request-config", config);
                  if (config.headers['flow-container-id'] !== undefined) {
@@ -5934,7 +5961,7 @@ function estimateHeight(height) {
 
 
 function generateTask(scope, t, f2) {
-    0;
+    console.info("generateTask > scope.task.page", scope.task.page);
     scope.task.pageLoaded = false;
     if (scope.task.page === undefined || scope.task.page === null) {
         if (scope.task.pages) {
@@ -5943,7 +5970,7 @@ function generateTask(scope, t, f2) {
             scope.homeUrl = $page.page.get;
             scope.home = $page.page.name;
             scope.task.navPages = [$page.page];
-            0;
+            console.info("page", scope.task.page);
         }
     } else {
         scope.homeUrl = scope.task.page.get;
@@ -5962,7 +5989,7 @@ function generateTask(scope, t, f2) {
 
         if (scope.task.page.param && scope.task.page.param !== "null") {
             scope.homeUrl = scope.task.page.get + scope.task.page.param;
-            0;
+            console.info("homeUrl", scope.homeUrl);
         }
 
         if (scope.task.navPages.indexOf(page) > -1) {
@@ -5983,7 +6010,7 @@ function generateTask(scope, t, f2) {
     }
 
     scope.userTask.flowId = scope.task.flowId;
-    0;
+    console.info("new_task", scope.task);
     var loadGetFn = function () {
         scope.loadGet();
 
@@ -6057,8 +6084,8 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
         method: "get",
         flowPage: scope.task.page.name
     };
-    0;
-    0;
+    console.info("datatables-url", url);
+    console.info("datatables-header", headers);
     return new dto.newOptions()
         .withOption("ajax", {
             url: url,
@@ -6081,8 +6108,8 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
         .withDataProp('data')
         .withOption("createdRow", function (row) {
             if (scope && compile) {
-                0;
-                0;
+                console.debug("table-row", row);
+                console.debug("table-row-div", $(row).find('td div.actions'));
                 compile(angular.element($(row).find('td div.actions')).contents())(scope);
             }
         })
@@ -6119,7 +6146,7 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
                             transformResponse: []
                         }, scope.task)
                             .success(function (data) {
-                                0;
+                                console.info("print-data", data);
                                 $(data).print({globalStyles: true});
                             });
                     }
@@ -6335,7 +6362,8 @@ function isDayEnabled(dayDate, currentDate) {
 
 
 angular.module("home", ["flowServices", "fluid", "flowFactories", "war.session"])
-    .controller("homeCtrl", function ($scope, sessionService, $http, flowMessageService, flowFrameService, flowHttpService, $timeout, userProfile, UserFactory) {
+    .controller("homeCtrl", function ($scope, sessionService, $http, flowMessageService, flowFrameService, flowHttpService, $timeout, userProfile, UserFactory, userSessionService) {
+        $scope.userSessionService = userSessionService;
         $scope.userProfile = userProfile;
         $scope.flowFrameService = flowFrameService;
         $scope.taskbar = {};
@@ -6343,8 +6371,8 @@ angular.module("home", ["flowServices", "fluid", "flowFactories", "war.session"]
             return $scope.flowFrameService.taskList.length - limit;
         };
         $scope.taskbar.open = function (task) {
-            0;
-            0;
+            console.info("open", task);
+            console.info("open-frame-service", flowFrameService);
             if (flowFrameService.fullScreen) {
                 flowFrameService.fullScreenTask = task;
             } else {
@@ -6642,8 +6670,8 @@ angular.module("home", ["flowServices", "fluid", "flowFactories", "war.session"]
 ;"use strict";
 var App = angular.module('MAdmin', ['ui.bootstrap', 'fluid', 'flowServices']);
 
-App.controller('AppController', function ($scope, $rootScope, $location, userAppSetting, sessionService, userProfile) {
-
+App.controller('AppController', function ($scope, $rootScope, $location, userAppSetting, sessionService, userProfile, userSessionService) {
+    $scope.userSessionService = userSessionService;
     $scope.data = {};
     $scope.effect = '';
     $scope.header = {
@@ -6655,7 +6683,7 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
         animation: '',
         boxed: '',
         layout_menu: '',
-        theme_style: "style2",
+        theme_style: userAppSetting.style,
         header_topbar: 'header-fixed',
         menu_style: userAppSetting.menu,
         menu_collapse: (userAppSetting.hideMenu ? 'sidebar-collapsed' : ''),
@@ -6725,7 +6753,7 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
                     $rootScope.theme = userAppSetting.theme;
                     $scope.header.menu_style = userAppSetting.menu;
                     $scope.header.menu_collapse = (userAppSetting.hideMenu ? 'sidebar-collapsed' : '');
-                    0;
+                    console.info("AppController > session-opened", userAppSetting);
                 });
         }
     });
@@ -6962,14 +6990,8 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
 angular.module("flowServices", ["fluid"])
     .service("userSessionService", [function () {
 
-        this.createUserSession = function (username, bs64auth) {
-            this.username = username;
-            this.authorization = bs64auth;
-        };
-
-        this.destroyUserSession = function () {
-            this.username = undefined;
-            this.authorization = undefined;
+        this.isReady = function () {
+            return this.profileLoaded && this.agentLoaded && this.userTasksLoaded && this.groupLoaded;
         };
 
         return this;
@@ -6977,7 +6999,7 @@ angular.module("flowServices", ["fluid"])
     .service("userProfile", ["flowHttpService", function (f) {
 
         this.createUserProfile = function (userDetail) {
-            0;
+            console.debug("createUserProfile", userDetail);
             this.fullName = userDetail.fullName;
             this.detailId = userDetail.id;
             this.avatar = withHost("services/download_service/getContent/" + userDetail.avatar);
@@ -7078,7 +7100,7 @@ angular.module("sessionControllers", ["fluid", "ngResource", "flowServices", "tr
     "ngCookies"])
     .controller("editProfileCtrl", ["$scope", "userProfile", "UserFactory", function (s, u, uf) {
         s.task.page.load = function (data) {
-            0;
+            console.debug("editProfile-page.data", data);
             this.title = u.fullName;
             s.task.password = {};
             s.task.flowUserDetail = data;
@@ -7107,7 +7129,7 @@ angular.module("sessionControllers", ["fluid", "ngResource", "flowServices", "tr
         };
 
         s.task.update = function () {
-            0;
+            console.info("update", s.task.updatePassword);
             if (s.task.updatePassword) {
                 if (s.task.password.new) {
                     s.http.post("session/password_service/change_password/", s.task.password.new, uf.getUser().username).
@@ -7240,7 +7262,7 @@ angular.module("war.session", ["fluid"])
                     a.setToken(data.token);
                     a.setInfo(data.info);
                     //navigate to home
-                    0;
+                    console.debug("session-data.info",data.info);
                 }
             });
         }
@@ -7317,7 +7339,7 @@ angular.module("war.session", ["fluid"])
                 if (a.getToken()) {
                     config.headers = config.headers || {};
                     config.headers.Authorization = "bearer " + a.getToken();
-                    0;
+                    console.debug("AuthInterceptor-token", config);
                 }
                 return config;
             }

@@ -372,9 +372,6 @@ flowComponents
 
                         scope.$on(EVENT_PAGE_SUCCESS, function (event, name, taskId) {
                             var current = scope.flow.getElementFlowId(scope.task.page.name);
-                            console.debug("event-page-sucess", event);
-                            console.debug("name-page-sucess", name);
-                            console.debug("taskId-page-sucess", taskId);
                             if (taskId === scope.task.id && !scope.task.loaded) {
                                 if (scope.task.preLoaded === undefined || scope.task.preLoaded === false) {
                                     scope.task.preLoad();
@@ -386,14 +383,14 @@ flowComponents
                                 }
                                 scope.task.postLoad();
                             }
-                            ;
-
                             if (name === current) {
                                 if (scope.onLoad) {
                                     scope.onLoad();
                                 } else {
                                     scope.loadProperties();
                                 }
+
+                                scope.task.taskLoadRetryCount = 0;
                             }
                         });
 
@@ -2467,30 +2464,54 @@ flowComponents
             }
         }
     })
-    .directive('fluidInclude', ['$http', '$compile', '$timeout', "$rootScope", function (h, c, t, r) {
+    .directive('fluidInclude', ['$http', '$compile', '$timeout', "$rootScope", "$templateCache", "$ocLazyLoad", function (h, c, t, r, tc, oc) {
         return {
             restrict: 'AE',
             link: function link($scope, elem, attrs) {
                 //if url is not empty
+                $scope.retry = 0;
+                $scope.retryCount = 10;
                 if (attrs.name) {
                     $scope.name = attrs.name;
+                }
+
+
+                if (attrs.retryCount) {
+                    scope.retryCount = attrs.retryCount;
                 }
 
                 if (attrs.taskid) {
                     $scope.taskId = attrs.taskid;
                 }
+                console.debug("fluidInclude.attrs", attrs);
+                if (tc.get(attrs.url)) {
+                    elem.append(c(angular.element(tc.get(attrs.url)))($scope));
+                }
+                else if (attrs.url) {
+                    function getPage() {
+                        h({
+                            method: 'GET',
+                            url: attrs.url,
+                            cache: true,
+                            headers: {"Content-Type": "text/html"}
+                        }).then(function (result) {
+                            console.debug("fluidInclude.result", result);
+                            tc.put(attrs.url, result.data);
+                            elem.append(c(angular.element(result.data))($scope));
+                            t(function () {
+                                r.$broadcast(EVENT_PAGE_SUCCESS, $scope.name, $scope.taskId);
+                            }, 1, false);
+                        }, function (response) {
+                            if ($scope.retry < $scope.retryCount) {
+                                $scope.retry++;
+                                t(getPage, 5000, false);
+                            } else {
+                                r.$broadcast(EVENT_PAGE_ERROR, $scope.name, $scope.taskId);
+                            }
+                        });
+                    }
 
-                if (attrs.url) {
-                    h({method: 'GET', url: attrs.url, cache: true}).then(function (result) {
-                        elem.append(c(angular.element(result.data))($scope));
-                        t(function () {
-                            r.$broadcast(EVENT_PAGE_SUCCESS, $scope.name, $scope.taskId);
-                        }, 1, false);
-                    }, function () {
-                        t(function () {
-                            r.$broadcast(EVENT_PAGE_ERROR, $scope.name, $scope.taskId);
-                        }, 1, false);
-                    });
+                    getPage();
                 }
             }
         };
@@ -3265,9 +3286,9 @@ flowComponents
                 if (fls.enabled) {
                     fls.loaded = false;
                 }
-                config.headers["Access-Control-Allow-Origin"] = "*";
-                /*
 
+                /*
+                 config.headers["Access-Control-Allow-Origin"] = "*";
 
                  console.debug("request-config", config);
                  if (config.headers['flow-container-id'] !== undefined) {

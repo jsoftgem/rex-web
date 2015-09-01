@@ -23,6 +23,46 @@ body {
      background-size: cover;*/
 }
 
+.bg {
+    background: url(../../images/bg/1.jpg);
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.splash {
+    margin: 0 auto;
+    padding: 40px 0;
+}
+
+.splash .form {
+    margin-top: 50px;
+}
+
+.form .group {
+    background: rgba(205, 10, 10, 0.2);
+    text-align: center;
+}
+
+.form .loader {
+    margin-top: 5px;
+}
+
+.splash .splash-progress {
+    margin-top: 5px;
+}
+
+.splash-progress i {
+    margin: 5px;
+    font-size: 25px;
+}
+
+.splash .loaded {
+    color: white;
+    box-shadow: whitesmoke;
+}
+
 textarea {
     resize: none !important;
     min-height: 100px !important;
@@ -699,7 +739,7 @@ button.ColVis_Button {
 
 .ndg-planner .left-panel input[type="text"],
 .ndg-planner .left-panel input[readonly],
-.ndg-planner .left-panel input[type="number"]{
+.ndg-planner .left-panel input[type="number"] {
     padding: 0;
     padding-left: 4px !important;
 }
@@ -787,8 +827,8 @@ button.ColVis_Button {
     min-height: 94% !important;
 }
 
-@media (max-width:1180px){
+@media (max-width: 1180px) {
     .width300px {
-        width:  100%;
+        width: 100%;
     }
 }

@@ -1,7 +1,7 @@
 'use strict';
 angular.module("app", ["MAdmin", "war.resources", "war.session", "war.sidebar", "datatables", "datatables.bootstrap", "datatables.tabletools", "datatables.colvis", "flowServices", "flowFactories", "home", "fluid", "devControllers", "adminControllers", "flowAppDirectives", "sessionControllers", "infinite-scroll", "ngDragDrop", "rexTemplates"])
-    .run(["flowFrameService", "flowHttpService", "userProfile", "responseEvent", "userAppSetting", "HOST", "hasProfile", "$rootScope", "sessionService", "UserFactory", "FlowUserDetail", "WarAgent", "TaskResource", "GroupResource",
-        function (f, fhp, up, re, uas, h, hp, rs, ss, uf, FlowUserDetail, WarAgent, TaskResource, GroupResource) {
+    .run(["flowFrameService", "flowHttpService", "userProfile", "responseEvent", "userAppSetting", "HOST", "hasProfile", "$rootScope", "sessionService", "UserFactory", "FlowUserDetail", "WarAgent", "TaskResource", "GroupResource", "userSessionService",
+        function (f, fhp, up, re, uas, h, hp, rs, ss, uf, FlowUserDetail, WarAgent, TaskResource, GroupResource, uss) {
             fhp.host = h;
             fhp.permissionUrl = "services/flow_permission/has_permission";
             rs.$watch(function () {
@@ -13,16 +13,21 @@ angular.module("app", ["MAdmin", "war.resources", "war.session", "war.sidebar", 
 
                     FlowUserDetail.currentDetail(uf.getUser().flowUserDetailId, function (userDetail) {
                         up.createUserProfile(userDetail);
+                        uss.profileLoaded = true;
                     });
 
                     WarAgent.current(function (agent) {
                         up.agent = agent;
+                        uss.agentLoaded = true;
                     });
 
 
                     TaskResource.getSessionTasks(function (tasks) {
-                        angular.forEach(tasks, function (task) {
+                        angular.forEach(tasks, function (task, $index) {
                             f.addTask(task);
+                            if ((tasks.length - 1) === $index) {
+                                uss.userTasksLoaded = true;
+                            }
                         });
                     });
 
@@ -30,6 +35,7 @@ angular.module("app", ["MAdmin", "war.resources", "war.session", "war.sidebar", 
                         up.group = group;
                         up.group.emblemPath = GroupResource.getAvatarPath(up.group.emblemId);
                         console.debug("created-group", group);
+                        uss.groupLoaded = true;
                     });
 
                 } else {

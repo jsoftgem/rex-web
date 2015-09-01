@@ -6,7 +6,8 @@
 
 
 angular.module("home", ["flowServices", "fluid", "flowFactories", "war.session"])
-    .controller("homeCtrl", function ($scope, sessionService, $http, flowMessageService, flowFrameService, flowHttpService, $timeout, userProfile, UserFactory) {
+    .controller("homeCtrl", function ($scope, sessionService, $http, flowMessageService, flowFrameService, flowHttpService, $timeout, userProfile, UserFactory, userSessionService) {
+        $scope.userSessionService = userSessionService;
         $scope.userProfile = userProfile;
         $scope.flowFrameService = flowFrameService;
         $scope.taskbar = {};

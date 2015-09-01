@@ -26,9 +26,9 @@
 
 
 </head>
-<body ng-controller="AppController"
+<body ng-controller="AppController" class="bg"
       ng-class="[header.menu_style, header.menu_collapse, header.header_topbar]">
-<div ng-class="header.boxed" class="default-page app-font">
+<div ng-if="userSessionService.isReady()" ng-class="header.boxed" class="default-page app-font">
     <div id="header-topbar-option-demo" ng-include="'templates/app/header.html'"
          class="page-header-topbar"></div>
     <div id="wrapper" ng-class="header.layout_menu">
@@ -39,6 +39,25 @@
             <flow-frame></flow-frame>
         </div>
     </div>
+</div>
+<div ng-if="!userSessionService.isReady()" class="splash">
+    <div class="form">
+        <div class="group">
+            <img width="200" height="210" src="images/icons/logo.png">
+
+            <div class="splash-progress">
+                <i class="fa fa-picture-o" ng-class="userSessionService.profileLoaded?'loaded':''"></i>
+                <i class="fa fa-gears" ng-class="userSessionService.agentLoaded?'loaded':''"></i>
+                <i class="fa fa-tasks" ng-class="userSessionService.userTasksLoaded?'loaded':''"></i>
+                <i class="fa fa-users" ng-class="userSessionService.groupLoaded?'loaded':''"></i>
+            </div>
+            <div class="loader">
+                <img width="120" height="120"
+                     src="images/icons/ajax-loader.gif">
+            </div>
+        </div>
+    </div>
+
 </div>
 <!-- Loading library javascript-->
 

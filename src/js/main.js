@@ -1,8 +1,8 @@
 "use strict";
 var App = angular.module('MAdmin', ['ui.bootstrap', 'fluid', 'flowServices']);
 
-App.controller('AppController', function ($scope, $rootScope, $location, userAppSetting, sessionService, userProfile) {
-
+App.controller('AppController', function ($scope, $rootScope, $location, userAppSetting, sessionService, userProfile, userSessionService) {
+    $scope.userSessionService = userSessionService;
     $scope.data = {};
     $scope.effect = '';
     $scope.header = {
@@ -14,7 +14,7 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
         animation: '',
         boxed: '',
         layout_menu: '',
-        theme_style: "style2",
+        theme_style: userAppSetting.style,
         header_topbar: 'header-fixed',
         menu_style: userAppSetting.menu,
         menu_collapse: (userAppSetting.hideMenu ? 'sidebar-collapsed' : ''),
