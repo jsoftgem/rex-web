@@ -10,7 +10,7 @@ angular.module("flowFactories", [])
     .constant("HOST", HOST)
     .constant("VIEWER", "vendors/ViewerJS/#")
     .constant("REX_VERSION", "1.3")
-    .constant("FLUID_VERSION", "1.2c");
+    .constant("FLUID_VERSION", "1.2c");cd
 
 function withHost(url) {
     if (url && url.charAt(0) === '/') {

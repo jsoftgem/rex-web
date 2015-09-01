@@ -7,7 +7,12 @@ flowComponents.config(["$httpProvider", "localStorageServiceProvider", function 
     ls.setPrefix("fluid")
         .setStorageType("sessionStorage")
         .setNotify(true, true);
+    h.defaults.headers.common = {};
+    h.defaults.headers.post = {};
+    h.defaults.headers.put = {};
+    h.defaults.headers.patch = {};
     h.interceptors.push("flowInjector");
+
 }]);
 flowComponents.run(["$templateCache", function (tc) {
 }]);

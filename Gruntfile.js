@@ -152,8 +152,9 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-bower-task');
     grunt.loadNpmTasks('grunt-karma');
-    grunt.loadNpmTasks('grunt-strip');/*
-    grunt.loadNpmTasks('grunt-contrib-sass');*/
+    grunt.loadNpmTasks('grunt-strip');
+    /*
+     grunt.loadNpmTasks('grunt-contrib-sass');*/
 
     /*
      grunt.registerTask('dev', ['bower', 'connect:server', 'watch:dev']);
@@ -161,6 +162,6 @@ module.exports = function (grunt) {
      grunt.registerTask('minified', ['bower', 'connect:server', 'watch:min']);
      grunt.registerTask('package', ['bower', 'jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'uglify:dist',
      'clean:temp', 'compress:dist']);*/
-    grunt.registerTask('package', ['bower', 'html2js:dist', 'concat:dist', 'uglify:dist',
+    grunt.registerTask('package', ['bower', 'html2js:dist', 'concat:dist', 'strip', 'uglify:dist',
         'clean:temp', 'compress:dist', 'concat_css', 'cssmin']);
 }
