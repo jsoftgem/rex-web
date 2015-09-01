@@ -24,7 +24,7 @@ angular.module("war.session", ["fluid"])
                     a.setToken(data.token);
                     a.setInfo(data.info);
                     //navigate to home
-                    console.debug("session-data.info",data.info);
+                    console.debug("session-data.info", data.info);
                 }
             });
         }
@@ -103,6 +103,13 @@ angular.module("war.session", ["fluid"])
                     config.headers.Authorization = "bearer " + a.getToken();
                     console.debug("AuthInterceptor-token", config);
                 }
+
+                if (config.url.indexOf("--fInclude") !== -1) {
+                    config.headers = [];
+                    config.url = config.url.replace("--fInclude", ""); //fix for fluidInclude bad request
+                }
+
+
                 return config;
             }
         }

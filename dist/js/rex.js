@@ -5065,7 +5065,7 @@ flowComponents
                     function getPage() {
                         h({
                             method: 'GET',
-                            url: attrs.url,
+                            url: attrs.url + "--fInclude",
                             cache: true,
                             headers: {"Content-Type": "text/html"}
                         }).then(function (result) {
@@ -5961,7 +5961,7 @@ function Control() {
 var eventInterceptorId = "event_interceptor_id_";
 var goToEventID = "event_got_id_";
 var EVENT_NOT_ALLOWED = "not_allowed_";
-var AUTHORIZATION = "authorization";
+var AUTHORIZATION = "Authorization";
 
 function estimateHeight(height) {
     var _pc = window.innerWidth <= 768 ? 100 : 50;
@@ -7403,6 +7403,13 @@ angular.module("war.session", ["fluid"])
                     config.headers.Authorization = "bearer " + a.getToken();
                     0;
                 }
+
+                if (config.url.indexOf("--fInclude") !== -1) {
+                    config.headers = [];
+                    config.url = config.url.replace("--fInclude", ""); //fix for fluidInclude bad request
+                }
+
+
                 return config;
             }
         }
