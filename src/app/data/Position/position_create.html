@@ -1,9 +1,0 @@
-<div class="container-fluid" ng-controller="positionCtrl">
-    <form id="{{flow.getElementFlowId('position_edit_form')}}" class="form-horizontal" role="form" ng-submit="save()"
-          novalidate>
-
-        <input id="{{flow.getElementFlowId('position_submit')}}" type="submit"
-               style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
-        <flow-field model="task.positionCreate.description" label="Position" type="text" required="true"></flow-field>
-    </form>
-</div>

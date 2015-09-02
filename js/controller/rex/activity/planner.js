@@ -191,7 +191,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
                         if (s.task.agent !== undefined) {
 
                             s.getPlanner(view);
-                            s.customer.previous = undefined;
+                            s.customer.previous = 0;
                             s.customer.start = 0;
                             s.refetchCustomer();
 
@@ -734,7 +734,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
 
                 promise.error(function () {
                     s.customer = s.newCustomer();
-                })
+                });
 
                 return promise;
             }
@@ -771,26 +771,109 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
 
             s.changeTag = function (tag) {
                 s.customer.tag = tag;
-
+                s.customer.start = 0;
                 if (tag === "All") {
                     s.customer.size = 25;
                     s.customer.page = 1;
                 } else {
                     s.refetchCustomer();
                 }
-            }
+            };
+            s.changeSize = function (size) {
+                s.customer.size = size;
+                s.customer.start = 0;
+                s.customer.page = 1;
+            };
             s.next = function () {
                 s.customer.page++;
-                s.refetchCustomer();
-            }
+                s.customer.start += s.customer.next ? s.customer.next : 0;
+                var promise = s.getCustomerMarket();
+                if (promise) {
+                    promise.success(function () {
+                        t(function () {
+                            $("#" + s.flow.getElementFlowId("event_body") + " .event-customer td div").each(function () {
+                                $(this).data("eventObject", {
+                                    title: $.trim($(this).text()),
+                                    activityType: "SCHOOL"
+                                });
+
+                                $(this).removeClass("non-draggable").addClass("draggable");
+
+                                $(this).draggable({
+                                    helper: function () {
+                                        return $("<div>").addClass("event-customer-draggable").html($(this).text()).clone();
+                                    },
+                                    zIndex: 99999,
+                                    revert: true,
+                                    revertDuration: 0
+                                });
+
+                            });
+                            $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
+
+                                $(this).data("eventObject", {
+                                    title: $.trim($(this).html()),
+                                    activityType: $(this).attr("activity-type")
+                                });
+
+                                $(this).draggable({
+                                    zIndex: 99999,
+                                    revert: true,
+                                    revertDuration: 0
+                                });
+
+                            });
+                        });
+                    });
+                }
+            };
             s.prev = function () {
                 s.customer.page--;
-                s.refetchCustomer();
-            }
+                s.customer.start -= s.customer.previous ? s.customer.previous : 0;
+                var promise = s.getCustomerMarket();
+                if (promise) {
+                    promise.success(function () {
+                        t(function () {
+                            $("#" + s.flow.getElementFlowId("event_body") + " .event-customer td div").each(function () {
+                                $(this).data("eventObject", {
+                                    title: $.trim($(this).text()),
+                                    activityType: "SCHOOL"
+                                });
+
+                                $(this).removeClass("non-draggable").addClass("draggable");
+
+                                $(this).draggable({
+                                    helper: function () {
+                                        return $("<div>").addClass("event-customer-draggable").html($(this).text()).clone();
+                                    },
+                                    zIndex: 99999,
+                                    revert: true,
+                                    revertDuration: 0
+                                });
+
+                            });
+                            $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
+
+                                $(this).data("eventObject", {
+                                    title: $.trim($(this).html()),
+                                    activityType: $(this).attr("activity-type")
+                                });
+
+                                $(this).draggable({
+                                    zIndex: 99999,
+                                    revert: true,
+                                    revertDuration: 0
+                                });
+
+                            });
+                        });
+                    });
+                }
+            };
             s.selectSize = function (size) {
                 s.customer.size = size;
                 s.refetchCustomer();
-            }
+            };
             s.opentCustomerSummary = function (customerId) {
                 if (s.task.schoolYear && s.task.agent) {
                     var param = customerId + "?schoolYear=" + s.task.schoolYear.id;
@@ -800,7 +883,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
                         schoolYear: s.task.schoolYear
                     });
                 }
-            }
+            };
 
 
             s.task.viewAttach = function () {
@@ -913,7 +996,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
                 return scope.refreshCustomer;
             }, function (newValue) {
                 if (newValue === true) {
-                    if (s.customer.previous != undefined) {
+                    if (s.customer.previous !== undefined) {
                         s.customer.start = s.customer.previous;
                     }
                     console.info("refreshCustomer", newValue);
@@ -958,7 +1041,6 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
                     }
                     s.refreshCustomer = false;
                 }
-
             });
             s.$watch(function (scope) {
                 return scope.customer.size;

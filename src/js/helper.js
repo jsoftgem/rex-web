@@ -53,7 +53,6 @@ function CopyControl() {
 function FlowOptionsGET(dto, url, scope, compile, sessionService) {
     var headers = {
         Authorization: "bearer " + sessionService.getSessionProperty("token"),
-        method: "get",
         flowPage: scope.task.page.name
     };
     console.info("datatables-url", url);
@@ -61,7 +60,7 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
     return new dto.newOptions()
         .withOption("ajax", {
             url: url,
-            type: "GET",
+            type: "POST",
             headers: headers,
             cache: true,
             crossDomain: true,

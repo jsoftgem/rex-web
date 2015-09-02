@@ -2412,6 +2412,23 @@ directives.directive("fluidPrintReport", ["$compile", function (c) {
     }
 }])
 
+directives.directive("getHeight", [function () {
+
+    return {
+        restrict: "A",
+        link: function (scope, element, attr) {
+
+            if (attr.elementId) {
+
+                var copyElement = angular.element($("#" + attr.elementId));
+
+            }
+
+
+        }
+    }
+
+}]);
 
 
 
@@ -6091,7 +6108,6 @@ function CopyControl() {
 function FlowOptionsGET(dto, url, scope, compile, sessionService) {
     var headers = {
         Authorization: "bearer " + sessionService.getSessionProperty("token"),
-        method: "get",
         flowPage: scope.task.page.name
     };
     0;
@@ -6099,7 +6115,7 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
     return new dto.newOptions()
         .withOption("ajax", {
             url: url,
-            type: "GET",
+            type: "POST",
             headers: headers,
             cache: true,
             crossDomain: true,
@@ -7048,7 +7064,10 @@ angular.module("flowServices", ["fluid"])
         };
 
         this.isNotConnected = function () {
-            return this.profileLoaded === false || this.agentLoaded === false || this.userTasksLoaded === false || this.groupLoaded === false;
+            return (this.profileLoaded !== undefined && this.profileLoaded === false) ||
+                (this.agentLoaded !== undefined && this.agentLoaded === false) ||
+                (this.userTasksLoaded !== undefined && this.userTasksLoaded === false) ||
+                (this.groupLoaded !== undefined && this.groupLoaded === false);
         };
 
 

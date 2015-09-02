@@ -52,13 +52,6 @@
                             ng-click="changeTag('All')">All
                     </button>
 
-                    <select ng-if="customer.tag === 'All'" ng-model="customer.size">
-                        <option label="25" value="25"></option>
-                        <option label="50" value="50"></option>
-                        <option label="75" value="75"></option>
-                        <option label="100" value="100"></option>
-                    </select>
-
                     <button ng-disabled="!customer.hasPrevious" ng-if="customer.tag == 'All'" type="button"
                             class="btn btn-default" ng-click="prev()"><i
                             class="fa fa-backward"></i></button>
@@ -66,6 +59,22 @@
                     <button ng-disabled="!customer.hasNext" ng-if="customer.tag == 'All'" type="button"
                             class="btn btn-default" ng-click="next()"><i
                             class="fa fa-forward"></i></button>
+
+                    <div class="btn-group" role="group" ng-if="customer.tag === 'All'">
+                        <button class="btn btn-info dropdown-toggle" type="button"
+                                id="{{flow.getElementFlowId('sizeDropdownId')}}"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{customer.size}}
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="{{flow.getElementFlowId('sizeDropdownId')}}">
+                            <li><a href="#" ng-click="changeSize(25)">25</a></li>
+                            <li><a href="#" ng-click="changeSize(50)">50</a></li>
+                            <li><a href="#" ng-click="changeSize(75)">75</a></li>
+                            <li><a href="#" ng-click="changeSize(100)">100</a></li>
+                        </ul>
+                    </div>
+
                 </div>
                 <div class="customer-tab-table-container">
                     <table class="table ndg-ptable">

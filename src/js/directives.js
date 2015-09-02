@@ -1079,6 +1079,23 @@ directives.directive("fluidPrintReport", ["$compile", function (c) {
     }
 }])
 
+directives.directive("getHeight", [function () {
+
+    return {
+        restrict: "A",
+        link: function (scope, element, attr) {
+
+            if (attr.elementId) {
+
+                var copyElement = angular.element($("#" + attr.elementId));
+
+            }
+
+
+        }
+    }
+
+}]);
 
 
 
