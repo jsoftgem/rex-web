@@ -14,7 +14,7 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
         animation: '',
         boxed: '',
         layout_menu: '',
-        theme_style: userAppSetting.style,
+        theme_style: userAppSetting.theme,
         header_topbar: 'header-fixed',
         menu_style: userAppSetting.menu,
         menu_collapse: (userAppSetting.hideMenu ? 'sidebar-collapsed' : ''),

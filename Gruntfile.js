@@ -59,7 +59,21 @@ module.exports = function (grunt) {
             uglify: {
                 dist: {
                     files: [
-                        {'dist/js/rex.min.js': ['dist/js/rex.js']}
+                        {
+                            'dist/js/rex.min.js': ['dist/js/rex.js'],
+                            'js/controller/rex/activity/customer-summary-controller.js': ['src/controller/activity/customer-summary-controller.js'],
+                            'js/controller/rex/activity/daily-controller.js': ['src/controller/activity/daily-controller.js'],
+                            'js/controller/rex/activity/planner.js': ['src/controller/activity/planner.js'],
+                            'js/controller/rex/activity/school-year-controller.js': ['src/controller/activity/school-year-controller.js'],
+                            'js/controller/rex/data/level-controller.js': ['src/controller/data/level-controller.js'],
+                            'js/controller/rex/data/position-controller.js': ['src/controller/data/position-controller.js'],
+                            'js/controller/rex/data/region-controller.js': ['src/controller/data/region-controller.js'],
+                            'js/controller/rex/data/school-controller.js': ['src/controller/data/school-controller.js'],
+                            'js/controller/rex/management/agent-controller.js': ['src/controller/management/agent-controller.js'],
+                            'js/controller/rex/management/customer-controller.js': ['src/controller/management/customer-controller.js'],
+                            'js/controller/rex/management/region-manager-controller.js': ['src/controller/management/region-manager-controller.js'],
+                            'js/controller/rex/reports/reports-controller.js': ['src/controller/reports/reports-controller.js']
+                        }
                     ],
                     options: {
                         mangle: false

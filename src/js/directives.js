@@ -1,11 +1,11 @@
 /**
  * Created by Jerico on 11/29/2014.
  */
-var directives = angular.module("flowAppDirectives", ["fluid"]);
+var directives = angular.module("flowAppDirectives", ["fluid", "ngFileUpload"]);
 
 
 /* Framework Helper */
-directives.directive("addPages", ["flowHttpService", "flowModalService", "$compile", "ngFileUpload", function (f, fm, c) {
+directives.directive("addPages", ["flowHttpService", "flowModalService", "$compile", function (f, fm, c) {
     return {
         scope: {task: "=", pageUrl: "@", targetList: "=", id: "@", disabled: "="},
         restrict: "AE",

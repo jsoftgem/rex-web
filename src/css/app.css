@@ -7,14 +7,16 @@ and open the template in the editor.
     Created on : 09 20, 14, 11:44:35 AM
     Author     : Jerico
 */
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+
+* {
+    font-family: 'Montserrat', sans-serif;
+    font-style: normal;
+}
 
 body {
     /*background-color: #95a5a6;*/
-    font-family: "Tahoma";
-    font-weight: 400;
-    font-style: normal;
-    line-height: 20px;
-    font-size: 16px;
+
     /* background-color: #ecf0f1;*/
     /* background: url(../img/fancy_deboss.png);*/
     /* -webkit-background-size: cover;

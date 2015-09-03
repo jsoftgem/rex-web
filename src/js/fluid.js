@@ -27,6 +27,11 @@ flowComponents
                 link: {
                     pre: function (scope, element) {
                         /* Initialize variables*/
+
+
+                        element.ready(function () {
+                            $(".frame-content").scrollTo(element, 200);
+                        });
                         scope.pathRegexPattern = /{[\w|\d]*}/;
                         scope.generateUrl = function (url, param) {
                             if (isJson(param)) {
@@ -1450,6 +1455,7 @@ flowComponents
                 if (!scope.name && scope.label) {
                     scope.name = scope.label.trim().split(" ").join("_");
                 }
+
                 if (scope.required === undefined) {
                     scope.required = false;
                 }
@@ -1501,7 +1507,7 @@ flowComponents
             }
         }
     }])
-    .directive("flowSubTable", ["$compile", "flowModalService", "flowHttpService", "flowFrameService", "$rootScope", function (c, fm, f, f2, rs) {
+    .directive("flowSubTable", ["$compile", "flowModalService", "flowHttpService", "flowFrameService", "$rootScope","$templateCache", function (c, fm, f, f2, rs,tc) {
         return {
             restrict: "AE",
             transclude: true,
@@ -1523,7 +1529,7 @@ flowComponents
 
 
             },
-            template: "<div class='form-group'><div class='panel panel-primary'><div class='panel-heading'><a href='#' class='flow-panel-heading-title' data-toggle='collapse' data-target='#{{id}}_collapse'>{{title}}</a><div class='pull-right'><div class='btn-group btn-group-xs'><button type='button' class='btn btn-info flow-sub-table-control' ng-click='create()' ng-show='createEnabled'><span class='fa fa-plus'></span></button><button ng-show=\"lookUp == 'true'\" type='button' class='btn btn-info flow-sub-table-control' ng-click='look()'><span class='fa fa-search'></span></button></div></div></div><div class='panel-collapse collapse in' id='{{id}}_collapse'><div class='panel-body' ><div ng-transclude></div><div class='container-fluid' style='overflow-y: auto'><table class='table table-responsive table-hover'></table></div></div></div></div>",
+            template: tc.get("templates/fluid/fluidSubTable.html"),
             link: function (scope, element) {
                 if (!scope.lookUp) {
                     scope.lookUp = "true";
@@ -1936,11 +1942,14 @@ flowComponents
 
                 /* var select = element.find("select").attr("ng-options", options).attr("ng-model", "model").get();*/
 
+
+                var loader = $("<span>").text("Loading " + (scope.label ? scope.label : 'selection') + " ").append($("<i>").addClass("fa fa-spinner fa-spin"));
                 scope.$watch(function (scope) {
                     return scope.sourceUrl;
                 }, function (value, old) {
                     console.info("flow-select.sourceUrl", value);
                     if (value) {
+                        element.html(loader);
                         f.get(scope.sourceUrl, scope.task).success(function (sourceList) {
                             scope.sourceList = sourceList;
                             element.html(tc.get(scope.templateUrl));
@@ -2636,9 +2645,7 @@ flowComponents
                 this.toggleFluidscreen();
             }
 
-            t(function () {
-                $(".frame-content").scrollTo($("div.box[task]:eq(" + index + ")"), 200);
-            }, 300);
+
         };
 
         this.toggleSearch = function () {

@@ -1,0 +1,26 @@
+<div class='form-group'>
+    <div class='panel panel-primary'>
+        <div class='panel-heading'><a href='#' class='flow-panel-heading-title' data-toggle='collapse'
+                                      data-target='#{{id}}_collapse'>{{title}}</a>
+
+            <div class='pull-right'>
+                <div class='btn-group btn-group-xs'>
+                    <button type='button' class='btn btn-info flow-sub-table-control' ng-click='create()'
+                            ng-show='createEnabled'><span class='fa fa-plus'></span></button>
+                    <button ng-show="lookUp=== 'true'" type='button' class='btn btn-info flow-sub-table-control'
+                            ng-click='look()'><span
+                            class='fa fa-search'></span></button>
+                </div>
+            </div>
+        </div>
+        <div class='panel-collapse collapse in' id='{{id}}_collapse'>
+            <div class='panel-body'>
+                <div ng-transclude></div>
+                <div class='container-fluid' style='overflow-y: auto'>
+                    <table class='table table-responsive table-hover'></table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
