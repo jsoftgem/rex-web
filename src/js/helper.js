@@ -90,43 +90,43 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
         .withOption("sDom", "<'top'iflp<'clear'>>rt<'bottom'iflp<'clear'>>")
         .withOption("stateSave", true)
         .withOption("serverSide", true)
-        .withTableTools("swf/copy_csv_xls_pdf.swf")
-        .withTableToolsOption("sRowSelect", "os")
-        .withTableToolsButtons([
-            "copy" /*,{
-             "sExtends": "collection",
-             "sButtonText": "Edit",
-             "aButtons": ["select_all", "select_none"]
-             } TODO: report-api flow-service{
-             "sExtends": "collection",
-             "sButtonText": "Save",
-             "aButtons": ["csv", "xls", "pdf"]
-             }*/
-            , {
-                "sExtends": "collection",
-                "sButtonText": "Print",
-                "aButtons": [{
-                    "sExtends": "text",
-                    "bShowAll": true,
-                    "sButtonText": "All",
-                    "fnClick": function (nButton, oConfig, oFlash) {
-                        scope.task.flowHttpService.query({
-                            method: "get",
-                            data: "",
-                            url: url + "/report_list",
-                            transformResponse: []
-                        }, scope.task)
-                            .success(function (data) {
-                                console.info("print-data", data);
-                                $(data).print({globalStyles: true});
-                            });
-                    }
-                }]
-            }
-        ])
-        .withColVis()
-        .withColVisOption('aiExclude', [0])
-        .withColVisOption("buttonText", "Columns")
+        /*.withTableTools("swf/copy_csv_xls_pdf.swf")
+         .withTableToolsOption("sRowSelect", "os")
+         .withTableToolsButtons([
+         "copy" /!*,{
+         "sExtends": "collection",
+         "sButtonText": "Edit",
+         "aButtons": ["select_all", "select_none"]
+         } TODO: report-api flow-service{
+         "sExtends": "collection",
+         "sButtonText": "Save",
+         "aButtons": ["csv", "xls", "pdf"]
+         }*!/
+         , {
+         "sExtends": "collection",
+         "sButtonText": "Print",
+         "aButtons": [{
+         "sExtends": "text",
+         "bShowAll": true,
+         "sButtonText": "All",
+         "fnClick": function (nButton, oConfig, oFlash) {
+         scope.task.flowHttpService.query({
+         method: "get",
+         data: "",
+         url: url + "/report_list",
+         transformResponse: []
+         }, scope.task)
+         .success(function (data) {
+         console.info("print-data", data);
+         $(data).print({globalStyles: true});
+         });
+         }
+         }]
+         }
+         ])
+         .withColVis()
+         .withColVisOption('aiExclude', [0])
+         .withColVisOption("buttonText", "Columns")*/
         .withPaginationType('simple_numbers');
 }
 
@@ -149,7 +149,11 @@ function FlowOptionGETv2(dto, options) {
 function FlowColumns(dtc, editMethod, deleteMethod, viewMethod) {
     return [dtc.newColumn(null).withTitle('Actions').notSortable().withOption("searchable", false)
         .renderWith(function (data, type, full, meta) {
-            return renderActions(data, editMethod, deleteMethod, viewMethod);
+
+
+            var scope = angular.element($(meta.settings.aoData[meta.row].anCells[meta.col])).scope();
+
+            return renderActions(data, editMethod, deleteMethod, viewMethod, scope, meta.row);
         })]
 }
 
@@ -160,7 +164,10 @@ function renderCheckbox(data) {
     }
     return "<p class='text-primary'><span class='" + span + "'></span></p>"
 }
-function renderActions(data, editMethod, deleteMethod, viewMethod) {
+function renderActions(data, editMethod, deleteMethod, viewMethod, scope, row) {
+
+    console.debug("renderActions.scope", scope);
+
     var edit = "edit";
     var del = "delete";
     var view = "view";
@@ -178,8 +185,15 @@ function renderActions(data, editMethod, deleteMethod, viewMethod) {
     }
 
 
+    if (scope) {
+        if (!scope.dataItem) {
+            scope.dataItem = [];
+        }
+        scope.dataItem[row] = data;
+    }
+
     return "<div class='actions btn-group btn-group-md'>" +
-        "<button ng-if=" + view + " flow-permission-visible title='View' task='task' page='task.page' method='put'  type='button' class='btn btn-warning glyphicon glyphicon-search field-margin' ng-click='" + view + "(" + JSON.stringify(data) + ")'></button>" +
+        "<button ng-if=" + view + " flow-permission-visible title='View' task='task' page='task.page' method='put'  type='button' class='btn btn-warning glyphicon glyphicon-search field-margin' ng-click='" + view + "(dataItem[" + row + "])'></button>" +
         "<button flow-permission-visible title='Edit' task='task' page='task.page' method='put'  type='button' class='btn btn-info glyphicon glyphicon-edit field-margin' ng-click='" + edit + "(" + data.id + ")'></button>" +
         "<button flow-permission-visible title='Delete' task='task' page='task.page' method='delete' type='button' class='btn btn-danger glyphicon glyphicon-trash field-margin' ng-click='" + del + "(" + data.id + ")'> </button></div>";
 }

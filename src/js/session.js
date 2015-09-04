@@ -22,9 +22,11 @@ angular.module("war.session", ["fluid"])
             return h.post(withHost("session/v2/login"), encodedKey).success(function (data) {
                 if (data) {
                     a.setToken(data.token);
-                    a.setInfo(data.info);
+                    var info = btoa(JSON.stringify(data.info));
+                    console.debug("session.info", data.info);
+                    console.debug("session.encrypted", info);
+                    a.setInfo(info);
                     //navigate to home
-                    console.debug("session-data.info", data.info);
                 }
             });
         }
@@ -90,7 +92,10 @@ angular.module("war.session", ["fluid"])
         }
 
         function getInfo() {
-            return ss.getSessionProperty("info");
+            var info = window.atob(ss.getSessionProperty("info"));
+            var parsed = JSON.parse(info);
+            console.debug("session.info.", parsed);
+            return parsed;
         }
 
         return authFactory;

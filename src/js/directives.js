@@ -637,6 +637,143 @@ directives.directive('fallbackSrc', function () {
     };
     return fallbackSrc;
 });
+
+directives.directive("flowPermissionEnabled", ["flowHttpService", "$compile", "sessionService", "UserFactory", function (f, c, ss, uf) {
+    return {
+        restrict: "A",
+        scope: {task: "=", page: "="},
+        link: function (scope, element, attr) {
+            if (attr.method) {
+                scope.method = attr.method;
+            }
+
+            console.info("permissionEnabled-url", f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method);
+
+            var url = "pageName=" + scope.page.name + "&method=" + scope.method;
+
+            var enabled = ss.getSessionProperty(url);
+
+            console.debug("permissionEnabled", enabled);
+
+            if (enabled != null) {
+                console.debug("permissionEnabled-old", enabled);
+                if (enabled === false) {
+                    element.attr("disabled", "");
+                }
+            } else {
+                var profiles = uf.getUser().flowUserProfiles;
+
+                if (profiles) {
+
+                    if (enabled == null && enabled !== false) {
+                        enabled = false;
+                        var profileLength = profiles.length - 1;
+                        angular.forEach(profiles, function (profile, $index) {
+                            if (!enabled) {
+                                var flowProfilePermissionList = profile.flowProfilePermissions;
+                                angular.forEach(flowProfilePermissionList, function (permission) {
+                                    if (!enabled) {
+                                        if (scope.page.name === permission.flowPageName) {
+                                            if (scope.method.toLocaleLowerCase() === "put") {
+                                                enabled = permission.put;
+                                            } else if (scope.method.toLocaleLowerCase() === "get") {
+                                                enabled = permission.get;
+                                            } else if (scope.method.toLocaleLowerCase() === "post") {
+                                                enabled = permission.post;
+                                            } else if (scope.method.toLocaleLowerCase() === "del") {
+                                                enabled = permission.del;
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                            if (profileLength === $index) {
+                                if (enabled === false) {
+                                    element.attr("disabled", "");
+                                } else if (element.attr("disabled")) {
+                                    element.removeAttr("disabled");
+                                }
+                                ss.addSessionProperty(url, enabled);
+                            }
+                        });
+                    }
+                }
+
+            }
+
+
+        }
+
+    }
+}]);
+directives.directive("flowPermissionVisible", ["flowHttpService", "$compile", "sessionService", "UserFactory", function (f, c, ss, uf) {
+    return {
+        restrict: "A",
+        scope: {task: "=", page: "="},
+        link: function (scope, element, attr) {
+            if (attr.method) {
+                scope.method = attr.method;
+            }
+
+
+            console.info("permissionEnabled-url", f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method);
+
+            var url = "pageName=" + scope.page.name + "&method=" + scope.method;
+
+            var enabled = ss.getSessionProperty(url);
+
+            console.debug("permissionEnabled", enabled);
+
+            if (enabled != null) {
+                console.debug("permissionEnabled-old", enabled);
+                if (enabled === false) {
+                    element.addClass("hidden");
+                }
+            } else {
+                var profiles = uf.getUser().flowUserProfiles;
+                if (profiles) {
+
+                    if (enabled == null && enabled !== false) {
+                        enabled = false;
+                        var profileLength = profiles.length - 1;
+                        angular.forEach(profiles, function (profile, $index) {
+                            if (!enabled) {
+                                var flowProfilePermissionList = profile.flowProfilePermissions;
+                                angular.forEach(flowProfilePermissionList, function (permission) {
+                                    if (!enabled) {
+                                        if (scope.page.name === permission.flowPageName) {
+                                            if (scope.method.toLocaleLowerCase() === "put") {
+                                                enabled = permission.put;
+                                            } else if (scope.method.toLocaleLowerCase() === "get") {
+                                                enabled = permission.get;
+                                            } else if (scope.method.toLocaleLowerCase() === "post") {
+                                                enabled = permission.post;
+                                            } else if (scope.method.toLocaleLowerCase() === "del") {
+                                                enabled = permission.del;
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                            if (profileLength === $index) {
+                                if (enabled === false) {
+                                    element.addClass("hidden");
+                                } else if (element.hasClass("hidden")) {
+                                    element.removeClass("hidden");
+                                }
+                                ss.addSessionProperty(url, enabled);
+                            }
+                        });
+                    }
+                }
+
+            }
+
+
+        }
+
+    }
+}]);
 /*UI Helper*/
 
 directives.directive("offset", [function () {

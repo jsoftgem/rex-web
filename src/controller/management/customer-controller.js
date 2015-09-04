@@ -23,20 +23,20 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
 
         create.action = function () {
             s.flow.goTo(s.create_name);
-        }
+        };
         create.pages = s.home;
 
         var save = new SaveControl();
         save.id = "customer_save_ctl";
         save.action = function () {
             $("#" + s.flow.getElementFlowId(s.submit_button)).trigger("click");
-        }
+        };
         save.pages = [s.edit_name, s.create_name];
         var delCtl = new DeleteControl();
         delCtl.id = "customer_del_ctl";
         delCtl.action = function () {
             fm.show(s.flow.getElementFlowId(s.deleleModalId));
-        }
+        };
         delCtl.pages = s.edit_name;
 
         s.flow.controls = [create, save, delCtl];
@@ -51,7 +51,7 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
 
         s.edit = function (id) {
             s.flow.goTo(s.edit_name, id);
-        }
+        };
 
         s.view = function (customer) {
             console.info("customer", customer);
@@ -62,7 +62,7 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
                     agent: {id: customer.ownerAgentId, fullName: customer.ownerName}
                 });
             }
-        }
+        };
 
 
         s.delete = function (id) {
