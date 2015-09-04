@@ -1,5 +1,5 @@
 angular.module("customerController", ["fluid", "ngResource", "datatables"])
-    .controller("customerCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService","userProfile", function (s, dto, dtc, ms, fm, c, f, ss, up) {
+    .controller("customerCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", "userProfile", function (s, dto, dtc, ms, fm, c, f, ss, up) {
         s.userProfile = up;
         s.deleleModalId = "customerDeleteModal";
         s.create_name = "customer_create";
@@ -65,12 +65,10 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
         };
 
 
-        s.delete = function (id) {
+        s.delete = function (data) {
+            s.task.customerEdit = data;
             fm.show(s.flow.getElementFlowId(s.deleleModalId));
-            s.http.get("services/war/customer_query/getInstance/", id).success(function (data) {
-                s.task.customerEdit = data;
-            });
-        }
+        };
 
         s.save = function () {
             if (s.task.page.name === s.edit_name) {

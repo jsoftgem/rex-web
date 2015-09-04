@@ -127,12 +127,11 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
             s.flow.goTo("usr_mgr_edit", id);
         };
 
-        s.delete = function (id) {
+        s.delete = function (data) {
+            s.task.usrMgrEdit = {};
+            s.task.usrMgrEdit.flowInstance = data;
             fm.show(s.flow.getElementFlowId("usrMgrDeleteModal"));
-            s.http.get("services/flow_user_query/getInstance/", id).success(function (data) {
-                s.task.usrMgrEdit = {};
-                s.task.usrMgrEdit.flowInstance = data;
-            });
+
         };
 
 
@@ -264,11 +263,10 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
             s.flow.goTo("profile_edit", id);
         };
 
-        s.delete = function (id) {
+        s.delete = function (data) {
+            s.task.profileEdit = data;
             fm.show(s.flow.getElementFlowId("profileDeleteModal"));
-            s.http.get("services/flow_user_profile_query/getInstance/", id).success(function (page) {
-                s.task.profileEdit = page;
-            });
+
         };
 
         s.save = function () {
@@ -403,11 +401,9 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
             s.flow.goTo("group_edit", id);
         };
 
-        s.delete = function (id) {
+        s.delete = function (data) {
+            s.task.groupEdit = data;
             fm.show(s.flow.getElementFlowId("groupDeleteModal"));
-            s.http.get("services/flow_user_group_query/getInstance/", id).success(function (page) {
-                s.task.groupEdit = page;
-            });
         };
 
         s.save = function () {
@@ -883,11 +879,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
             s.flow.goTo("page_edit", id);
         };
 
-        s.delete = function (id) {
+        s.delete = function (data) {
+            s.task.pageEdit = data;
             fm.show(s.flow.getElementFlowId("pageDeleteModal"));
-            s.http.get("services/flow_page_query/getInstance/", id).success(function (page) {
-                s.task.pageEdit = page;
-            });
         };
 
         s.save = function () {
@@ -1009,11 +1003,10 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
             s.flow.goTo("task_edit", id);
         };
 
-        s.delete = function (id) {
+        s.delete = function (data) {
+            s.task.tskEdit = data;
             fm.show(s.flow.getElementFlowId("taskDeleteModal"));
-            s.http.get("services/flow_task_query/getInstance/", id).success(function (task) {
-                s.task.tskEdit = task;
-            });
+
         };
 
         s.save = function () {
@@ -1132,11 +1125,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
             s.flow.goTo("md_edit", id);
         };
 
-        s.delete = function (id) {
+        s.delete = function (data) {
+            s.task.mdEdit = data;
             fm.show(s.flow.getElementFlowId("mdDeleteModal"));
-            s.http.get("services/flow_module_query/getInstance/", id).success(function (page) {
-                s.task.mdEdit = page;
-            });
         };
 
         s.save = function () {
@@ -1248,11 +1239,10 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
             s.flow.goTo("moduleGroup_edit", id);
         };
 
-        s.delete = function (id) {
+        s.delete = function (data) {
+            s.task.moduleGroupEdit = data;
             fm.show(s.flow.getElementFlowId("moduleGroupDeleteModal"));
-            s.http.get("services/flow_task_group_query/getInstance/", id).success(function (page) {
-                s.task.moduleGroupEdit = page;
-            });
+
         };
 
         s.save = function () {
@@ -2132,7 +2122,9 @@ directives.directive("button", [function () {
     return {
         restrict: 'A',
         link: function (scope, iElement, iAttrs) {
-
+            if (iAttrs.sizeClass) {
+                iElement.addClass(iAttrs.sizeClass);
+            }
             iElement.addClass("btn");
             if (iAttrs.info) {
                 iElement.attr("type", iAttrs.info);
@@ -2151,6 +2143,7 @@ directives.directive("button", [function () {
                 iElement.addClass("btn-default");
             }
 
+            iElement.addClass("btn-lg");
 
         }
     };
@@ -4211,7 +4204,7 @@ flowComponents
 
         }
     }])
-    .directive("flowModal", ["flowFrameService", "$templateCache", function (f, tc) {
+    .directive("flowModal", ["flowFrameService", "$templateCache", "flowModalService", function (f, tc, fm) {
         return {
             restrict: "AE",
             /*  template: "<div ng-class='flowFrameService.fullScreen ? \"overlay-full\" : \"overlay\"' class='hidden animated fadeIn anim-dur'><div ng-style='style' class='flow-modal animated pulse anim-dur'><div ng-transclude></div></div></div>",*/
@@ -4229,10 +4222,14 @@ flowComponents
                 if (attr.width) {
                     scope.style.width = attr.width;
                 }
+
+                scope.hide = function () {
+                    fm.hide(attr.id);
+                }
             }
         }
     }])
-    .directive("flowSubTable", ["$compile", "flowModalService", "flowHttpService", "flowFrameService", "$rootScope","$templateCache", function (c, fm, f, f2, rs,tc) {
+    .directive("flowSubTable", ["$compile", "flowModalService", "flowHttpService", "flowFrameService", "$rootScope", "$templateCache", function (c, fm, f, f2, rs, tc) {
         return {
             restrict: "AE",
             transclude: true,
@@ -4569,15 +4566,20 @@ flowComponents
 
                     scope.look = function () {
                         if (scope.sourceUrl) {
+                            scope.isLooking = true;
                             f.get(scope.sourceUrl, scope.task).success(function (data) {
                                 scope.sourceList = data;
+                                fm.show(scope.id + "_add_tbl_mdl");
+                                $(modalContent).addClass("pulse");
+                                $(modalContent).one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
+                                    $(modalContent).removeClass("pulse");
+                                });
+                                scope.isLooking = false;
+                            }).error(function () {
+                                scope.isLooking = false;
                             });
                         }
-                        fm.show(scope.id + "_add_tbl_mdl");
-                        $(modalContent).addClass("pulse");
-                        $(modalContent).one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
-                            $(modalContent).removeClass("pulse");
-                        });
+
                     };
 
                 });
@@ -6308,9 +6310,9 @@ function renderActions(data, editMethod, deleteMethod, viewMethod, scope, row) {
     }
 
     return "<div class='actions btn-group btn-group-md'>" +
-        "<button ng-if=" + view + " flow-permission-visible title='View' task='task' page='task.page' method='put'  type='button' class='btn btn-warning glyphicon glyphicon-search field-margin' ng-click='" + view + "(dataItem[" + row + "])'></button>" +
-        "<button flow-permission-visible title='Edit' task='task' page='task.page' method='put'  type='button' class='btn btn-info glyphicon glyphicon-edit field-margin' ng-click='" + edit + "(" + data.id + ")'></button>" +
-        "<button flow-permission-visible title='Delete' task='task' page='task.page' method='delete' type='button' class='btn btn-danger glyphicon glyphicon-trash field-margin' ng-click='" + del + "(" + data.id + ")'> </button></div>";
+        "<button ng-if=" + view + " flow-permission-visible title='View' task='task' page='task.page' method='put'  type='button' class='btn btn-warning glyphicon glyphicon-search field-margin' ng-click='" + view + "(dataItem[" + row + "],row)'></button>" +
+        "<button flow-permission-visible title='Edit' task='task' page='task.page' method='put'  type='button' class='btn btn-info glyphicon glyphicon-edit field-margin' ng-click='" + edit + "(" + data.id + ",row)'></button>" +
+        "<button flow-permission-visible title='Delete' task='task' page='task.page' method='delete' type='button' class='btn btn-danger glyphicon glyphicon-trash field-margin' ng-click='" + del + "(dataItem[" + row + "],row)'> </button></div>";
 }
 
 
@@ -7614,7 +7616,7 @@ angular.module("templates/fluid/fluidImageUpload.html", []).run(["$templateCache
 
 angular.module("templates/fluid/fluidLookup.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidLookup.html",
-    "<div class=\"form-group flow-form\"><div ng-transclude></div><label column=\"12\" class=\"control-label\" for=\"{{name}}\">{{label}} <span class=\"text-danger\" ng-show=\"required\">*</span><div class=\"input-group\" name=\"{{name}}\"><input ng-disabled=\"disabled\" id=\"ctnr_{{id}}\" href=\"#\" title=\"{{label}}\" readonly class=\"form-control\" ng-required=\"required\" ng-click=\"look()\" style=\"color:#000000;background: #ffffff\"><span ng-if=\"isNotModeled()\" class=\"input-group-btn\"><button type=\"button\" ng-disabled=\"disabled\" class=\"btn btn-info\" ng-click=\"look()\"><span class=\"fa fa-search\"></span></button></span> <span ng-if=\"isModeled()\" class=\"input-group-btn\"><button type=\"button\" title=\"clear\" class=\"btn btn-info\" ng-disabled=\"disabled\" ng-click=\"clear()\"><span class=\"fa fa-eraser\"></span></button></span></div></label></div>");
+    "<div class=\"form-group flow-form\"><div ng-transclude></div><label column=\"12\" class=\"control-label\" for=\"{{name}}\">{{label}} <span class=\"text-danger\" ng-show=\"required\">*</span><div class=\"input-group\" name=\"{{name}}\"><input ng-disabled=\"disabled\" id=\"ctnr_{{id}}\" href=\"#\" title=\"{{label}}\" readonly class=\"form-control\" ng-required=\"required\" ng-click=\"look()\" style=\"color:#000000;background: #ffffff\"><span ng-if=\"isNotModeled()\" class=\"input-group-btn\"><button type=\"button\" ng-disabled=\"disabled\" class=\"btn btn-info\" ng-click=\"look()\"><span ng-class=\" isLooking ? 'fa fa-spinner fa-spin' :'fa fa-search'\"></span></button></span> <span ng-if=\"isModeled()\" class=\"input-group-btn\"><button type=\"button\" title=\"clear\" class=\"btn btn-info\" ng-disabled=\"disabled\" ng-click=\"clear()\"><span class=\"fa fa-eraser\"></span></button></span></div></label></div>");
 }]);
 
 angular.module("templates/fluid/fluidModal.html", []).run(["$templateCache", function($templateCache) {

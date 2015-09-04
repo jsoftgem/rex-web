@@ -166,13 +166,11 @@ textarea {
 .fluidTaskBar {
     float: left;
     padding: 15px 20px;
-    background-color: transparent;
     -webkit-transition: all 0.3s;
     transition: all 0.3s;
     height: 50px;
     border-radius: 0;
     color: #ffffff;
-    border-radius: 7px;
     text-align: center;
     display: block;
     background-color: rgba(2, 152, 210, 0.9);
@@ -226,7 +224,6 @@ textarea {
     height: 50px;
     border-radius: 0;
     color: #ffffff;
-    border-radius: 7px;
 }
 
 .fluid-task-item {
@@ -782,7 +779,7 @@ button.ColVis_Button {
 .ndg-planner .ndg-ptable .td-drag {
     background: #468499;
     color: white;
-    border-radius: 5px;
+    border-radius: 0;
     cursor: pointer;
     padding: 15px 0;
     min-height: 44px;

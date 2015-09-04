@@ -1486,7 +1486,7 @@ flowComponents
 
         }
     }])
-    .directive("flowModal", ["flowFrameService", "$templateCache", function (f, tc) {
+    .directive("flowModal", ["flowFrameService", "$templateCache", "flowModalService", function (f, tc, fm) {
         return {
             restrict: "AE",
             /*  template: "<div ng-class='flowFrameService.fullScreen ? \"overlay-full\" : \"overlay\"' class='hidden animated fadeIn anim-dur'><div ng-style='style' class='flow-modal animated pulse anim-dur'><div ng-transclude></div></div></div>",*/
@@ -1504,10 +1504,14 @@ flowComponents
                 if (attr.width) {
                     scope.style.width = attr.width;
                 }
+
+                scope.hide = function () {
+                    fm.hide(attr.id);
+                }
             }
         }
     }])
-    .directive("flowSubTable", ["$compile", "flowModalService", "flowHttpService", "flowFrameService", "$rootScope","$templateCache", function (c, fm, f, f2, rs,tc) {
+    .directive("flowSubTable", ["$compile", "flowModalService", "flowHttpService", "flowFrameService", "$rootScope", "$templateCache", function (c, fm, f, f2, rs, tc) {
         return {
             restrict: "AE",
             transclude: true,
@@ -1844,15 +1848,20 @@ flowComponents
 
                     scope.look = function () {
                         if (scope.sourceUrl) {
+                            scope.isLooking = true;
                             f.get(scope.sourceUrl, scope.task).success(function (data) {
                                 scope.sourceList = data;
+                                fm.show(scope.id + "_add_tbl_mdl");
+                                $(modalContent).addClass("pulse");
+                                $(modalContent).one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
+                                    $(modalContent).removeClass("pulse");
+                                });
+                                scope.isLooking = false;
+                            }).error(function () {
+                                scope.isLooking = false;
                             });
                         }
-                        fm.show(scope.id + "_add_tbl_mdl");
-                        $(modalContent).addClass("pulse");
-                        $(modalContent).one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
-                            $(modalContent).removeClass("pulse");
-                        });
+
                     };
 
                 });

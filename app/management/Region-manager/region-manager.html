@@ -8,7 +8,7 @@
 
                 <div class="avatar-div">
                     <div class="floatLeft width120px">
-                        <img class="thumbnail" height="90" width="85"
+                        <img class="thumbnail" height="90" width="85" fallback-src="images/gallery/profile_default.png"
                              ng-src="{{imageService.getAvatar(task.rsm.manager.avatar)}}" class="img-circle"/>
                     </div>
 
@@ -46,13 +46,15 @@
                                 <th colspan="2">
                                     <div class="pull-left width70px">
                                         <img style="margin-left:auto;margin-right:auto;"
-                                             height="50"
-                                             width="60"
+                                             height="70" fallback-src="images/gallery/profile_default.png"
+                                             width="67"
                                              ng-src="{{imageService.getAvatar(agent.avatar)}}"
                                                 />
                                     </div>
-                                    <div class="pull-left width120px text-left">{{agent.fullName}}
-                                        <div class="btn-group btn-group-xs">
+                                    <div class="pull-left width120px text-left">
+                                        <p>{{agent.fullName}}</p>
+
+                                        <div class="btn-group btn-group-md">
                                             <button style="margin-left:auto;margin-right:auto;"
                                                     button
                                                     info="button"
@@ -65,12 +67,12 @@
                                                     warning="button"
                                                     ng-click="viewTopSchools(agent)" flow-tooltip
                                                     tooltip-title="Click to view">
-                                                <i ng-if="!agent.viewTop" class="fa fa-search"></i>
-                                                <i ng-if="agent.viewTop" class="fa fa-minus"></i>
+                                                <i ng-if="!agent.viewTop && !agent.loading" class="fa fa-search"></i>
+                                                <i ng-if="agent.viewTop && !agent.loading" class="fa fa-minus"></i>
+                                                <i ng-if="agent.loading"
+                                                   class="fa fa-spin fa-spinner"></i>
                                             </button>
                                         </div>
-                                        <i ng-if="agent.loading"
-                                           class="fa fa-spin fa-spinner"></i>
                                     </div>
                                     <div class="pull-left width120px text-left">
                                         <div>

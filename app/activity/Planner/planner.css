@@ -9,7 +9,7 @@
 }
 
 .event-customer {
-    border-radius: 5px;
+    border-radius: 0;
     margin-bottom: 1px;
     text-align: center;
     cursor: pointer;
@@ -19,7 +19,7 @@
 .event-customer-draggable {
     background: #468499;
     color: white;
-    border-radius: 5px;
+    border-radius: 0;
     margin-bottom: 1px;
     text-align: center;
     cursor: pointer;
@@ -30,7 +30,7 @@
     opacity: 0.9;
     background: #468499;
     color: white;
-    border-radius: 5px;
+    border-radius: 0;
     text-align: center;
     cursor: pointer;
     width: 100px;
@@ -63,7 +63,7 @@
 .draggable {
     color: cornflowerblue;
     border: 1px #00498f;
-    border-radius: 5px;
+    border-radius: 0;
 }
 
 .non-draggable {

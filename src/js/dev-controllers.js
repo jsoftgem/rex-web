@@ -70,11 +70,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
             s.flow.goTo("page_edit", id);
         };
 
-        s.delete = function (id) {
+        s.delete = function (data) {
+            s.task.pageEdit = data;
             fm.show(s.flow.getElementFlowId("pageDeleteModal"));
-            s.http.get("services/flow_page_query/getInstance/", id).success(function (page) {
-                s.task.pageEdit = page;
-            });
         };
 
         s.save = function () {
@@ -196,11 +194,10 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
             s.flow.goTo("task_edit", id);
         };
 
-        s.delete = function (id) {
+        s.delete = function (data) {
+            s.task.tskEdit = data;
             fm.show(s.flow.getElementFlowId("taskDeleteModal"));
-            s.http.get("services/flow_task_query/getInstance/", id).success(function (task) {
-                s.task.tskEdit = task;
-            });
+
         };
 
         s.save = function () {
@@ -319,11 +316,9 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
             s.flow.goTo("md_edit", id);
         };
 
-        s.delete = function (id) {
+        s.delete = function (data) {
+            s.task.mdEdit = data;
             fm.show(s.flow.getElementFlowId("mdDeleteModal"));
-            s.http.get("services/flow_module_query/getInstance/", id).success(function (page) {
-                s.task.mdEdit = page;
-            });
         };
 
         s.save = function () {
@@ -435,11 +430,10 @@ angular.module("devControllers", ["fluid", "ngResource", "datatables"])
             s.flow.goTo("moduleGroup_edit", id);
         };
 
-        s.delete = function (id) {
+        s.delete = function (data) {
+            s.task.moduleGroupEdit = data;
             fm.show(s.flow.getElementFlowId("moduleGroupDeleteModal"));
-            s.http.get("services/flow_task_group_query/getInstance/", id).success(function (page) {
-                s.task.moduleGroupEdit = page;
-            });
+
         };
 
         s.save = function () {

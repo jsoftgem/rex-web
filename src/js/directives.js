@@ -799,7 +799,9 @@ directives.directive("button", [function () {
     return {
         restrict: 'A',
         link: function (scope, iElement, iAttrs) {
-
+            if (iAttrs.sizeClass) {
+                iElement.addClass(iAttrs.sizeClass);
+            }
             iElement.addClass("btn");
             if (iAttrs.info) {
                 iElement.attr("type", iAttrs.info);
@@ -818,6 +820,7 @@ directives.directive("button", [function () {
                 iElement.addClass("btn-default");
             }
 
+            iElement.addClass("btn-lg");
 
         }
     };

@@ -68,12 +68,11 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
             s.flow.goTo("usr_mgr_edit", id);
         };
 
-        s.delete = function (id) {
+        s.delete = function (data) {
+            s.task.usrMgrEdit = {};
+            s.task.usrMgrEdit.flowInstance = data;
             fm.show(s.flow.getElementFlowId("usrMgrDeleteModal"));
-            s.http.get("services/flow_user_query/getInstance/", id).success(function (data) {
-                s.task.usrMgrEdit = {};
-                s.task.usrMgrEdit.flowInstance = data;
-            });
+
         };
 
 
@@ -205,11 +204,10 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
             s.flow.goTo("profile_edit", id);
         };
 
-        s.delete = function (id) {
+        s.delete = function (data) {
+            s.task.profileEdit = data;
             fm.show(s.flow.getElementFlowId("profileDeleteModal"));
-            s.http.get("services/flow_user_profile_query/getInstance/", id).success(function (page) {
-                s.task.profileEdit = page;
-            });
+
         };
 
         s.save = function () {
@@ -344,11 +342,9 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
             s.flow.goTo("group_edit", id);
         };
 
-        s.delete = function (id) {
+        s.delete = function (data) {
+            s.task.groupEdit = data;
             fm.show(s.flow.getElementFlowId("groupDeleteModal"));
-            s.http.get("services/flow_user_group_query/getInstance/", id).success(function (page) {
-                s.task.groupEdit = page;
-            });
         };
 
         s.save = function () {

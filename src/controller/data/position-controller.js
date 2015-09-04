@@ -45,11 +45,9 @@ angular.module("positionController", ["fluid", "ngResource", "datatables"])
             s.flow.goTo(s.edit_name, id);
         }
 
-        s.delete = function (id) {
+        s.delete = function (data) {
+            s.task.positionEdit = data;
             fm.show(s.flow.getElementFlowId(s.deleleModalId));
-            s.http.get(s.getInstanceQuery, id).success(function (data) {
-                s.task.positionEdit = data;
-            });
         }
 
         s.save = function () {
@@ -82,7 +80,9 @@ angular.module("positionController", ["fluid", "ngResource", "datatables"])
 
 
         s.$on(s.flow.event.getRefreshId(), function () {
-            if (s.dtInstance) { s.dtInstance.reloadData(); }
+            if (s.dtInstance) {
+                s.dtInstance.reloadData();
+            }
         });
 
         s.flow.pageCallBack = function (page, data, source) {
@@ -92,7 +92,9 @@ angular.module("positionController", ["fluid", "ngResource", "datatables"])
                     angular.copy(s.task.positionEdit, s.task.tempEdit);
                 }
             } else if (s.home === page) {
-                if (s.dtInstance) { s.dtInstance.reloadData(); }
+                if (s.dtInstance) {
+                    s.dtInstance.reloadData();
+                }
             }
 
             s.flow.addControl(save, [s.edit_name, s.create_name]);
@@ -106,7 +108,9 @@ angular.module("positionController", ["fluid", "ngResource", "datatables"])
             if (s.task.page.name !== s.home) {
                 s.flow.goToHome();
             }
-            if (s.dtInstance) { s.dtInstance.reloadData(); }
+            if (s.dtInstance) {
+                s.dtInstance.reloadData();
+            }
         };
 
         s.deleteCancel = function () {

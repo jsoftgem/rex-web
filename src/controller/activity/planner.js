@@ -8,6 +8,11 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
         function (s, dto, dtc, ms, fm, c, f, ss, h, t, ffs, u, hp, up, fh, v) {
 
 
+            s.submitActivitiesConfirmation = function () {
+                fm.show("submitConfirm");
+            };
+
+
             s.otherActivity = {};
             s.refreshCustomer = false;
             s.hangingActivity = {};
@@ -594,8 +599,10 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
                     plannerSession.warPlanner = s.task.planner;
                     plannerSession.activities = s.task.activities;
                     s.flow.action("put", plannerSession);
+                    fm.hide("submitConfirm");
                 }
-            }
+                ;
+            };
             s.otherActivity.submit = function () {
 
                 if (s.otherActivity.hangingEventObject) {

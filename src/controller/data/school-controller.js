@@ -34,11 +34,10 @@ angular.module("schoolController", ["fluid", "ngResource"])
             s.flow.goTo("school_edit", id);
         };
 
-        s.delete = function (id) {
+        s.delete = function (data) {
+            s.task.schoolEdit = data;
             fm.show(s.flow.getElementFlowId("schoolDeleteModal"));
-            s.http.get("services/war/school_query/getInstance/", id).success(function (page) {
-                s.task.schoolEdit = page;
-            });
+
         };
 
         s.save = function () {

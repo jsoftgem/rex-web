@@ -71,11 +71,9 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
             s.flow.goTo("agent_edit", id);
         };
 
-        s.delete = function (id) {
+        s.delete = function (data) {
+            s.task.agentEdit = data;
             fm.show(s.flow.getElementFlowId("agentDeleteModal"));
-            s.http.get("services/war/agent_query/getInstance/", id).success(function (data) {
-                s.task.agentEdit = data;
-            });
         };
 
 
@@ -110,7 +108,9 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
             }
             else if (method === "delete") {
                 if (s.task.page.name === "agent_home") {
-                    if (s.dtInstance) { s.dtInstance.reloadData(); }
+                    if (s.dtInstance) {
+                        s.dtInstance.reloadData();
+                    }
                 }
             }
         });
@@ -118,17 +118,23 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
 
         s.$on(s.flow.event.getResizeEventId(), function (event, page, size) {
             if (page === "agent_home") {
-                if (s.dtInstance) { s.dtInstance.reloadData(); }
+                if (s.dtInstance) {
+                    s.dtInstance.reloadData();
+                }
             }
         });
         s.$on(s.flow.event.getResizeEventId(), function (event, page, size) {
             if (page === "agent_home") {
-                if (s.dtInstance) { s.dtInstance.reloadData(); }
+                if (s.dtInstance) {
+                    s.dtInstance.reloadData();
+                }
             }
         });
 
         s.$on(s.flow.event.getRefreshId(), function () {
-            if (s.dtInstance) { s.dtInstance.reloadData(); }
+            if (s.dtInstance) {
+                s.dtInstance.reloadData();
+            }
         });
 
         s.task.page.load = function (data, source) {
@@ -142,7 +148,9 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
                 }
 
             } else if ("agent_home" === page) {
-                if (s.dtInstance) { s.dtInstance.reloadData(); }
+                if (s.dtInstance) {
+                    s.dtInstance.reloadData();
+                }
 
             }
             s.flow.addControl(save, ["agent_edit", "agent_create"]);
@@ -161,7 +169,9 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
             if (s.task.page.name !== "agent_home") {
                 s.flow.goToHome();
             }
-            if (s.dtInstance) { s.dtInstance.reloadData(); }
+            if (s.dtInstance) {
+                s.dtInstance.reloadData();
+            }
         };
 
         s.deleteCancel = function () {

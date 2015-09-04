@@ -40,12 +40,11 @@
         <flow-modal id="{{flow.getElementFlowId('groupDeleteModal')}}">
             <div class="panel panel-warning">
                 <div class="panel-heading">Warning</div>
-                <div class="panel-body">Do you want to delete {{task.groupEdit.groupName}}?</div>
+                <div class="panel-body"><p>Do you want to delete {{task.groupEdit.groupName}}?</p></div>
                 <div class="panel-footer">
-                    <div class="btn-task.groupEdit btn-task.groupEdit-xs">
-                        <button type="button" class="btn btn-warning field-margin" ng-click="deleteConfirm()">Yes
-                        </button>
-                        <button type="button" class="btn btn-info field-margin" ng-click="deleteCancel()">No</button>
+                    <div class="btn-group">
+                        <button button info="button" class="field-margin" ng-click="deleteConfirm()">Yes</button>
+                        <button button danger="button" class="field-margin" ng-click="deleteCancel()">No</button>
                     </div>
                 </div>
             </div>

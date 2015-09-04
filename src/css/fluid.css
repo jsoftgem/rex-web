@@ -372,8 +372,13 @@ div.flow-form label {
     border: transparent;
 }
 
-.fluid-panel .tools i{
-    font-size: 17px;
+.fluid-panel .tools i {
+    font-size: 22px;
 }
-.fluid-panel .tools .btn{
+
+.fluid-panel .tools .btn {
+}
+
+.fluid-modal .panel-body p {
+    font-size: 17px;
 }

@@ -33,11 +33,9 @@ angular.module("dailyController", ["fluid", "ngResource"])
                 s.flow.goTo(s.task.edit_name, id);
             };
 
-            s.task.delete = function (id) {
+            s.task.delete = function (data) {
+                s.task.modelEdit = data;
                 fm.show(s.flow.getElementFlowId(s.task.deleleModalId));
-                s.http.get(s.task.getInstanceQuery, id).success(function (data) {
-                    s.task.modelEdit = data;
-                });
             };
 
             s.task.deleteConfirm = function () {

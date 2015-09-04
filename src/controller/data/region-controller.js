@@ -43,12 +43,10 @@ angular.module("regionController", ["fluid", "ngResource", "datatables"])
             s.flow.goTo(s.edit_name, id);
         }
 
-        s.delete = function (id) {
+        s.delete = function (data) {
+            s.task.regionEdit = data;
             fm.show(s.flow.getElementFlowId(s.deleleModalId));
-            s.http.get("services/war/region_query/getInstance/", id).success(function (data) {
-                s.task.regionEdit = data;
-            });
-        }
+        };
 
         s.save = function () {
             if (s.task.page.name === s.edit_name) {
@@ -80,7 +78,9 @@ angular.module("regionController", ["fluid", "ngResource", "datatables"])
 
 
         s.$on(s.flow.event.getRefreshId(), function () {
-            if (s.dtInstance) { s.dtInstance.reloadData(); }
+            if (s.dtInstance) {
+                s.dtInstance.reloadData();
+            }
         });
 
 
@@ -91,7 +91,9 @@ angular.module("regionController", ["fluid", "ngResource", "datatables"])
                     angular.copy(s.task.regionEdit, s.task.tempEdit);
                 }
             } else if (s.home === page) {
-                if (s.dtInstance) { s.dtInstance.reloadData(); }
+                if (s.dtInstance) {
+                    s.dtInstance.reloadData();
+                }
             }
 
             s.flow.addControl(save, [s.edit_name, s.create_name]);
@@ -105,7 +107,9 @@ angular.module("regionController", ["fluid", "ngResource", "datatables"])
             if (s.task.page.name !== s.home) {
                 s.flow.goToHome();
             }
-            if (s.dtInstance) { s.dtInstance.reloadData(); }
+            if (s.dtInstance) {
+                s.dtInstance.reloadData();
+            }
         };
 
         s.deleteCancel = function () {
