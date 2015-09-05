@@ -8,8 +8,9 @@
                     <button type='button' class='btn btn-info flow-sub-table-control' ng-click='create()'
                             ng-show='createEnabled'><span class='fa fa-plus'></span></button>
                     <button ng-show="lookUp=== 'true'" type='button' class='btn btn-info flow-sub-table-control'
-                            ng-click='look()'><span
-                            class='fa fa-search'></span></button>
+                            ng-disabled="isLooking"
+                            ng-click='look()'><i
+                            ng-class="isLooking?'fa fa-spin fa-spinner':'fa fa-search'"></i></button>
                 </div>
             </div>
         </div>

@@ -17,8 +17,7 @@
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="vendors/bootstrap-datepicker/css/datepicker.css">
     <!-- Loading template style-->
-    <link rel="stylesheet" data-ng-href="css/themes/style1/pink-blue.css"/>
-    <link ng-if="style" rel="stylesheet" data-ng-href="css/themes/{{style}}/{{theme}}.css"/>
+    <link ng-if="theme" rel="stylesheet" data-ng-href="css/themes/style1/{{theme}}.css"/>
     <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="bower_components/components-font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="bower_components/octicons/octicons/octicons.css" rel="stylesheet">
@@ -49,6 +48,7 @@
             <img width="200" height="210" src="images/icons/logo.png">
 
             <div class="splash-progress">
+                <i class="fa fa-home" ng-class="userSessionService.userAppSettingLoaded ?'loaded':''"></i>
                 <i class="fa fa-picture-o" ng-class="userSessionService.profileLoaded?'loaded':''"></i>
                 <i class="fa fa-gears" ng-class="userSessionService.agentLoaded?'loaded':''"></i>
                 <i class="fa fa-tasks" ng-class="userSessionService.userTasksLoaded?'loaded':''"></i>

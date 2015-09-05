@@ -61,32 +61,6 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
         }
     };
     $rootScope.userProfile = userProfile;
-    $scope.$watch(function (scope) {
-        return sessionService.isSessionOpened();
-    }, function (session) {
-        if (session) {
-            userAppSetting.
-                createAppSetting()
-                .success(function (data) {
-                    if (data.menu) {
-                        userAppSetting.menu = data.menu;
-                    }
-                    if (data.theme) {
-                        userAppSetting.theme = data.theme;
-                    }
-                    if (data.bgColor) {
-                        userAppSetting.bgColor = data.bgColor;
-                    }
-                    if (data.hideMenu) {
-                        userAppSetting.hideMenu = data.hideMenu;
-                    }
-                    $rootScope.theme = userAppSetting.theme;
-                    $scope.header.menu_style = userAppSetting.menu;
-                    $scope.header.menu_collapse = (userAppSetting.hideMenu ? 'sidebar-collapsed' : '');
-                    console.info("AppController > session-opened", userAppSetting);
-                });
-        }
-    });
     $scope.style_change = function () {
         $rootScope.style = $scope.header.theme_style;
         userAppSetting.style = $scope.header.theme_style;
@@ -121,6 +95,36 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
             console.debug("session-opened", session);
             console.debug("getUser", UserFactory.getUser());
 
+            $scope.userSessionService.userAppSettingLoaded = undefined;
+            userSessionService.profileLoaded = undefined;
+            userSessionService.agentLoaded = undefined;
+            userSessionService.userTasksLoaded = undefined;
+            userSessionService.groupLoaded = undefined;
+            userAppSetting.
+                createAppSetting()
+                .success(function (data) {
+                    if (data.menu) {
+                        userAppSetting.menu = data.menu;
+                    }
+                    if (data.theme) {
+                        userAppSetting.theme = data.theme;
+                    }
+                    if (data.bgColor) {
+                        userAppSetting.bgColor = data.bgColor;
+                    }
+                    if (data.hideMenu) {
+                        userAppSetting.hideMenu = data.hideMenu;
+                    }
+                    $rootScope.theme = userAppSetting.theme;
+                    $scope.header.menu_style = userAppSetting.menu;
+                    $scope.header.menu_collapse = (userAppSetting.hideMenu ? 'sidebar-collapsed' : '');
+                    $scope.userSessionService.userAppSettingLoaded = true;
+                    console.debug("AppController > session-opened", userAppSetting);
+                })
+                .error(function () {
+                    $scope.userSessionService.userAppSettingLoaded = false;
+                });
+
             FlowUserDetail.currentDetail(UserFactory.getUser().flowUserDetailId, function (userDetail) {
                 userProfile.createUserProfile(userDetail);
                 userSessionService.profileLoaded = true;
@@ -137,6 +141,7 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
 
             TaskResource.getSessionTasks(function (tasks) {
                 if (tasks.length === 0) {
+                    flowFrameService.addTask("services/flow_task_service/getTask?name=planner_task&active=true&size=100&showToolBar=false");
                     userSessionService.userTasksLoaded = true;
                 }
                 angular.forEach(tasks, function (task, $index) {

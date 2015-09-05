@@ -9,14 +9,15 @@ angular.module("flowServices", ["fluid"])
     .service("userSessionService", [function () {
 
         this.isReady = function () {
-            return this.profileLoaded && this.agentLoaded && this.userTasksLoaded && this.groupLoaded;
+            return this.profileLoaded && this.agentLoaded && this.userTasksLoaded && this.groupLoaded && this.userAppSettingLoaded;
         };
 
         this.isNotConnected = function () {
             return (this.profileLoaded !== undefined && this.profileLoaded === false) ||
                 (this.agentLoaded !== undefined && this.agentLoaded === false) ||
                 (this.userTasksLoaded !== undefined && this.userTasksLoaded === false) ||
-                (this.groupLoaded !== undefined && this.groupLoaded === false);
+                (this.groupLoaded !== undefined && this.groupLoaded === false) ||
+                (this.userAppSettingLoaded !== undefined && this.userAppSettingLoaded === false);
         };
 
 

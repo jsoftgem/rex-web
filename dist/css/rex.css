@@ -1234,11 +1234,6 @@ div.flow-form label {
 }
 /* Loading-overlay styles */
 
-@font-face {
-    font-family: "demo";
-    src: url('../../../fonts/icons.woff') format("woff"), url('../../../fonts/icons.ttf') format("truetype");
-}
-
 @-moz-keyframes loadingStart {
     0% {
         opacity: 0;

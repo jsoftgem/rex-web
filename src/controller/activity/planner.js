@@ -118,7 +118,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
                     console.debug("planner-loaded.profile", up);
                     s.task.hideAgentFilter = !up.agent.isManager;
                     s.task.agent = up.agent;
-                    s.task.page.title = up.agent.fullName;
+                    s.task.page.title = up.agent.initials;
                 }
                 s.task.plannerCalendar = $("#" + s.flow.getElementFlowId("plannerCal"));
                 s.task.calendar = {
@@ -721,7 +721,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
                     + "&agentId=" + s.customer.agentId
                     + "&weekStart=" + s.customer.weekStart
                     + "&page=" + s.customer.page;
-            }
+            };
             s.getCustomerMarket = function () {
                 if (s.task.agent === undefined) return;
                 var promise = s.http.get(s.buildCustomerQuery());
@@ -775,7 +775,8 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
                 }
 
 
-            }
+            };
+
             s.refetchCustomer = function () {
                 s.refreshCustomer = true;
             };
@@ -966,16 +967,20 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
                     });
                 });
             }
+
             s.task.download = function (uploadFieldId) {
                 return fh.host + "services/download_service/getContent/" + uploadFieldId;
             }
+
             s.task.downloadInfo = function (uploadFieldId) {
                 return s.http.get("services/download_service/getInfo/", uploadFieldId)
             }
+
             s.task.deleteAttach = function (attachment) {
                 s.task.deleteAttachId = attachment.id;
                 s.task.attachPrompt = true;
             }
+
             s.task.deleteAttachCancel = function () {
                 s.task.attachPrompt = false;
                 s.task.deleteAttachId = undefined;
@@ -989,18 +994,20 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
                         s.task.refreshAttach();
                     });
 
-            }
+            };
+
             s.task.closeViewer = function () {
                 s.task.attachmentView = undefined;
                 s.task.viewerFile = undefined;
                 fm.hide(s.flow.getElementFlowId("attachment_viewer"));
                 s.task.refreshAttach();
-            }
+            };
+
             s.task.openViewer = function (attachment) {
                 s.task.attachmentView = attachment;
                 s.task.viewerFile = v + h + "services/download_service/getContent/" + attachment.uploadedFileId;
                 fm.show(s.flow.getElementFlowId("attachment_viewer"));
-            }
+            };
 
 
             s.$watch(function (scope) {

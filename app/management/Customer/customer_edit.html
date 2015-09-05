@@ -16,8 +16,7 @@
                 <flow-field disabled="task.origin && task.origin.agent" model="task.customerEdit.customerCode"
                             label="Customer code" required="true"
                             type="text"></flow-field>
-
-                <flow-select disabled="userProfile.group != 'General Manager'" required="false"
+                <flow-select disabled="userProfile.group.groupName != 'agent_general_manager'" required="false"
                              task="task"
                              id="{{flow.getElementFlowId('ownershipAgentSelect')}}"
                              label="Materials Advisor"

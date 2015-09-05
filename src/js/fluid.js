@@ -1665,15 +1665,18 @@ flowComponents
 
                 scope.look = function () {
                     if (scope.sourceUrl) {
+                        scope.isLooking = true;
                         f.get(scope.sourceUrl, scope.task).success(function (data) {
                             scope.sourceList = data;
+                            fm.show(scope.id + "_add_tbl_mdl");
+                            $(modalContent).addClass("pulse");
+                            $(modalContent).one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
+                                $(modalContent).removeClass("pulse");
+                            });
+                            scope.isLooking = false;
                         });
                     }
-                    fm.show(scope.id + "_add_tbl_mdl");
-                    $(modalContent).addClass("pulse");
-                    $(modalContent).one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
-                        $(modalContent).removeClass("pulse");
-                    });
+
                 };
 
 
@@ -1750,7 +1753,6 @@ flowComponents
                 if (!scope.name && scope.label) {
                     scope.name = scope.label.trim().split(" ").join("_");
                 }
-                /*TODO: must return the object when model is a field value */
                 if (scope.id === undefined) {
                     var currentElement = $(element).get();
                     var index = $(currentElement).index();
@@ -2552,7 +2554,6 @@ flowComponents
             this.taskList.push(task);
         };
         this.addTask = function (url, origin, newTask) {
-            //TODO: remove newTask
 
             var genericTask = this.createGenericTask();
 
@@ -3398,3 +3399,13 @@ function isJson(str) {
     }
     return true;
 }
+
+/*
+* TODO:
+* 1) flowSelect bootstrap style;
+* 2) flowSubTable issue;
+* 3) fix fluidImageUploader;
+* 4) add task Note: create a standalone note taking application;
+* 5) add task manager: for killing task; task performance summary;
+* 6) add task portal: create an internal portlet-style portal for War applications;
+* */

@@ -1333,7 +1333,7 @@ directives.directive("addPages", ["flowHttpService", "flowModalService", "$compi
         scope: {task: "=", pageUrl: "@", targetList: "=", id: "@", disabled: "="},
         restrict: "AE",
         replace: true,
-        template: "<button ng-disabled='disabled' type='button' ng-click='look()' class='btn btn-info'>Add pages</button>",
+        template: "<button ng-disabled='disabled && isLooking' type='button' ng-click='look()' class='btn btn-info'><span>Add pages</span> <i ng-if='isLooking' class='fa fa-spinner fa-spin'></i></button>",
         link: function (scope, element) {
 
 
@@ -1347,15 +1347,15 @@ directives.directive("addPages", ["flowHttpService", "flowModalService", "$compi
 
             var modalContent = $("<div>").addClass("modal-dialog modal-lg").attr("id", "{{id}}_mdl_cnt").appendTo(modal).get();
 
-            var modalPanel = $("<div>").addClass("panel panel-default").appendTo(modalContent).get();
+            var modalPanel = $("<div>").addClass("panel panel-primary").appendTo(modalContent).get();
 
             var modalPanelHeading = $("<div>").addClass("panel-heading").appendTo(modalPanel).get();
 
-            var spanTitle = $("<span>").addClass("text-info").addClass("col-lg-5 col-md-5 col-sm-3 col-xs-3").html("Select a page").appendTo(modalPanelHeading).get();
+            $("<span>").addClass("text-inverse").addClass("col-lg-5 col-md-5 col-sm-3 col-xs-3").html("Select a page").appendTo(modalPanelHeading).get();
 
             var inputGroup = $("<div>").addClass("col-lg-7 col-md-7 col-sm-9 col-xs-9").addClass("input-group").appendTo(modalPanelHeading).get();
 
-            var inputSearch = $("<input>").addClass("form-control").attr("type", "text").attr("ng-model", "search").appendTo(inputGroup).get();
+            $("<input>").addClass("form-control").attr("type", "text").attr("ng-model", "search").appendTo(inputGroup).get();
 
             var inputSpan = $("<span>").addClass("input-group-addon").appendTo(inputGroup).get();
 
@@ -1417,6 +1417,7 @@ directives.directive("addPages", ["flowHttpService", "flowModalService", "$compi
             };
 
             scope.look = function () {
+                scope.isLooking = true;
                 f.get(scope.pageUrl, scope.task).success(function (pages) {
                     scope.pages = pages;
                     angular.forEach(scope.targetList, function (pp) {
@@ -1427,6 +1428,7 @@ directives.directive("addPages", ["flowHttpService", "flowModalService", "$compi
                         });
                     });
                     fm.show(scope.id + "_pge_slt_mdl");
+                    scope.isLooking = false;
                 });
             };
 
@@ -2039,13 +2041,13 @@ directives.directive("flowPermissionVisible", ["flowHttpService", "$compile", "s
             }
 
 
-            console.info("permissionEnabled-url", f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method);
+            console.info("permissionVisible-url", f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method);
 
             var url = "pageName=" + scope.page.name + "&method=" + scope.method;
 
             var enabled = ss.getSessionProperty(url);
-
-            console.debug("permissionEnabled", enabled);
+            console.debug("permissionVisible-method", scope.method);
+            console.debug("permissionVisible", enabled);
 
             if (enabled != null) {
                 console.debug("permissionEnabled-old", enabled);
@@ -2698,7 +2700,7 @@ directives.directive("getHeight", [function () {
  * and open the template in the editor.
  */
 
-var HOST = "http://war.rexpublishing.com.ph:8080/rex-services/";
+var HOST = "http://192.168.1.11:8080/rex-services/";
 
 angular.module("flowFactories", [])
     .constant("HOST", HOST)
@@ -4383,15 +4385,18 @@ flowComponents
 
                 scope.look = function () {
                     if (scope.sourceUrl) {
+                        scope.isLooking = true;
                         f.get(scope.sourceUrl, scope.task).success(function (data) {
                             scope.sourceList = data;
+                            fm.show(scope.id + "_add_tbl_mdl");
+                            $(modalContent).addClass("pulse");
+                            $(modalContent).one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
+                                $(modalContent).removeClass("pulse");
+                            });
+                            scope.isLooking = false;
                         });
                     }
-                    fm.show(scope.id + "_add_tbl_mdl");
-                    $(modalContent).addClass("pulse");
-                    $(modalContent).one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
-                        $(modalContent).removeClass("pulse");
-                    });
+
                 };
 
 
@@ -4468,7 +4473,6 @@ flowComponents
                 if (!scope.name && scope.label) {
                     scope.name = scope.label.trim().split(" ").join("_");
                 }
-                /*TODO: must return the object when model is a field value */
                 if (scope.id === undefined) {
                     var currentElement = $(element).get();
                     var index = $(currentElement).index();
@@ -5270,7 +5274,6 @@ flowComponents
             this.taskList.push(task);
         };
         this.addTask = function (url, origin, newTask) {
-            //TODO: remove newTask
 
             var genericTask = this.createGenericTask();
 
@@ -6115,7 +6118,17 @@ function isJson(str) {
         return false;
     }
     return true;
-};/**
+}
+
+/*
+* TODO:
+* 1) flowSelect bootstrap style;
+* 2) flowSubTable issue;
+* 3) fix fluidImageUploader;
+* 4) add task Note: create a standalone note taking application;
+* 5) add task manager: for killing task; task performance summary;
+* 6) add task portal: create an internal portlet-style portal for War applications;
+* */;/**
  * Created by Jerico on 11/16/2014.
  */
 
@@ -6869,32 +6882,6 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
         }
     };
     $rootScope.userProfile = userProfile;
-    $scope.$watch(function (scope) {
-        return sessionService.isSessionOpened();
-    }, function (session) {
-        if (session) {
-            userAppSetting.
-                createAppSetting()
-                .success(function (data) {
-                    if (data.menu) {
-                        userAppSetting.menu = data.menu;
-                    }
-                    if (data.theme) {
-                        userAppSetting.theme = data.theme;
-                    }
-                    if (data.bgColor) {
-                        userAppSetting.bgColor = data.bgColor;
-                    }
-                    if (data.hideMenu) {
-                        userAppSetting.hideMenu = data.hideMenu;
-                    }
-                    $rootScope.theme = userAppSetting.theme;
-                    $scope.header.menu_style = userAppSetting.menu;
-                    $scope.header.menu_collapse = (userAppSetting.hideMenu ? 'sidebar-collapsed' : '');
-                    console.info("AppController > session-opened", userAppSetting);
-                });
-        }
-    });
     $scope.style_change = function () {
         $rootScope.style = $scope.header.theme_style;
         userAppSetting.style = $scope.header.theme_style;
@@ -6929,6 +6916,36 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
             console.debug("session-opened", session);
             console.debug("getUser", UserFactory.getUser());
 
+            $scope.userSessionService.userAppSettingLoaded = undefined;
+            userSessionService.profileLoaded = undefined;
+            userSessionService.agentLoaded = undefined;
+            userSessionService.userTasksLoaded = undefined;
+            userSessionService.groupLoaded = undefined;
+            userAppSetting.
+                createAppSetting()
+                .success(function (data) {
+                    if (data.menu) {
+                        userAppSetting.menu = data.menu;
+                    }
+                    if (data.theme) {
+                        userAppSetting.theme = data.theme;
+                    }
+                    if (data.bgColor) {
+                        userAppSetting.bgColor = data.bgColor;
+                    }
+                    if (data.hideMenu) {
+                        userAppSetting.hideMenu = data.hideMenu;
+                    }
+                    $rootScope.theme = userAppSetting.theme;
+                    $scope.header.menu_style = userAppSetting.menu;
+                    $scope.header.menu_collapse = (userAppSetting.hideMenu ? 'sidebar-collapsed' : '');
+                    $scope.userSessionService.userAppSettingLoaded = true;
+                    console.debug("AppController > session-opened", userAppSetting);
+                })
+                .error(function () {
+                    $scope.userSessionService.userAppSettingLoaded = false;
+                });
+
             FlowUserDetail.currentDetail(UserFactory.getUser().flowUserDetailId, function (userDetail) {
                 userProfile.createUserProfile(userDetail);
                 userSessionService.profileLoaded = true;
@@ -6945,6 +6962,7 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
 
             TaskResource.getSessionTasks(function (tasks) {
                 if (tasks.length === 0) {
+                    flowFrameService.addTask("services/flow_task_service/getTask?name=planner_task&active=true&size=100&showToolBar=false");
                     userSessionService.userTasksLoaded = true;
                 }
                 angular.forEach(tasks, function (task, $index) {
@@ -7173,14 +7191,15 @@ angular.module("flowServices", ["fluid"])
     .service("userSessionService", [function () {
 
         this.isReady = function () {
-            return this.profileLoaded && this.agentLoaded && this.userTasksLoaded && this.groupLoaded;
+            return this.profileLoaded && this.agentLoaded && this.userTasksLoaded && this.groupLoaded && this.userAppSettingLoaded;
         };
 
         this.isNotConnected = function () {
             return (this.profileLoaded !== undefined && this.profileLoaded === false) ||
                 (this.agentLoaded !== undefined && this.agentLoaded === false) ||
                 (this.userTasksLoaded !== undefined && this.userTasksLoaded === false) ||
-                (this.groupLoaded !== undefined && this.groupLoaded === false);
+                (this.groupLoaded !== undefined && this.groupLoaded === false) ||
+                (this.userAppSettingLoaded !== undefined && this.userAppSettingLoaded === false);
         };
 
 
@@ -7652,7 +7671,7 @@ angular.module("templates/fluid/fluidSelect.html", []).run(["$templateCache", fu
 
 angular.module("templates/fluid/fluidSubTable.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidSubTable.html",
-    "<div class=\"form-group\"><div class=\"panel panel-primary\"><div class=\"panel-heading\"><a href=\"#\" class=\"flow-panel-heading-title\" data-toggle=\"collapse\" data-target=\"#{{id}}_collapse\">{{title}}</a><div class=\"pull-right\"><div class=\"btn-group btn-group-xs\"><button type=\"button\" class=\"btn btn-info flow-sub-table-control\" ng-click=\"create()\" ng-show=\"createEnabled\"><span class=\"fa fa-plus\"></span></button> <button ng-show=\"lookUp=== 'true'\" type=\"button\" class=\"btn btn-info flow-sub-table-control\" ng-click=\"look()\"><span class=\"fa fa-search\"></span></button></div></div></div><div class=\"panel-collapse collapse in\" id=\"{{id}}_collapse\"><div class=\"panel-body\"><div ng-transclude></div><div class=\"container-fluid\" style=\"overflow-y: auto\"><table class=\"table table-responsive table-hover\"></table></div></div></div></div></div>");
+    "<div class=\"form-group\"><div class=\"panel panel-primary\"><div class=\"panel-heading\"><a href=\"#\" class=\"flow-panel-heading-title\" data-toggle=\"collapse\" data-target=\"#{{id}}_collapse\">{{title}}</a><div class=\"pull-right\"><div class=\"btn-group btn-group-xs\"><button type=\"button\" class=\"btn btn-info flow-sub-table-control\" ng-click=\"create()\" ng-show=\"createEnabled\"><span class=\"fa fa-plus\"></span></button> <button ng-show=\"lookUp=== 'true'\" type=\"button\" class=\"btn btn-info flow-sub-table-control\" ng-disabled=\"isLooking\" ng-click=\"look()\"><i ng-class=\"isLooking?'fa fa-spin fa-spinner':'fa fa-search'\"></i></button></div></div></div><div class=\"panel-collapse collapse in\" id=\"{{id}}_collapse\"><div class=\"panel-body\"><div ng-transclude></div><div class=\"container-fluid\" style=\"overflow-y: auto\"><table class=\"table table-responsive table-hover\"></table></div></div></div></div></div>");
 }]);
 
 angular.module("templates/fluid/fluidTextArea.html", []).run(["$templateCache", function($templateCache) {

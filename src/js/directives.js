@@ -10,7 +10,7 @@ directives.directive("addPages", ["flowHttpService", "flowModalService", "$compi
         scope: {task: "=", pageUrl: "@", targetList: "=", id: "@", disabled: "="},
         restrict: "AE",
         replace: true,
-        template: "<button ng-disabled='disabled' type='button' ng-click='look()' class='btn btn-info'>Add pages</button>",
+        template: "<button ng-disabled='disabled && isLooking' type='button' ng-click='look()' class='btn btn-info'><span>Add pages</span> <i ng-if='isLooking' class='fa fa-spinner fa-spin'></i></button>",
         link: function (scope, element) {
 
 
@@ -24,15 +24,15 @@ directives.directive("addPages", ["flowHttpService", "flowModalService", "$compi
 
             var modalContent = $("<div>").addClass("modal-dialog modal-lg").attr("id", "{{id}}_mdl_cnt").appendTo(modal).get();
 
-            var modalPanel = $("<div>").addClass("panel panel-default").appendTo(modalContent).get();
+            var modalPanel = $("<div>").addClass("panel panel-primary").appendTo(modalContent).get();
 
             var modalPanelHeading = $("<div>").addClass("panel-heading").appendTo(modalPanel).get();
 
-            var spanTitle = $("<span>").addClass("text-info").addClass("col-lg-5 col-md-5 col-sm-3 col-xs-3").html("Select a page").appendTo(modalPanelHeading).get();
+            $("<span>").addClass("text-inverse").addClass("col-lg-5 col-md-5 col-sm-3 col-xs-3").html("Select a page").appendTo(modalPanelHeading).get();
 
             var inputGroup = $("<div>").addClass("col-lg-7 col-md-7 col-sm-9 col-xs-9").addClass("input-group").appendTo(modalPanelHeading).get();
 
-            var inputSearch = $("<input>").addClass("form-control").attr("type", "text").attr("ng-model", "search").appendTo(inputGroup).get();
+            $("<input>").addClass("form-control").attr("type", "text").attr("ng-model", "search").appendTo(inputGroup).get();
 
             var inputSpan = $("<span>").addClass("input-group-addon").appendTo(inputGroup).get();
 
@@ -94,6 +94,7 @@ directives.directive("addPages", ["flowHttpService", "flowModalService", "$compi
             };
 
             scope.look = function () {
+                scope.isLooking = true;
                 f.get(scope.pageUrl, scope.task).success(function (pages) {
                     scope.pages = pages;
                     angular.forEach(scope.targetList, function (pp) {
@@ -104,6 +105,7 @@ directives.directive("addPages", ["flowHttpService", "flowModalService", "$compi
                         });
                     });
                     fm.show(scope.id + "_pge_slt_mdl");
+                    scope.isLooking = false;
                 });
             };
 
@@ -716,13 +718,13 @@ directives.directive("flowPermissionVisible", ["flowHttpService", "$compile", "s
             }
 
 
-            console.info("permissionEnabled-url", f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method);
+            console.info("permissionVisible-url", f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method);
 
             var url = "pageName=" + scope.page.name + "&method=" + scope.method;
 
             var enabled = ss.getSessionProperty(url);
-
-            console.debug("permissionEnabled", enabled);
+            console.debug("permissionVisible-method", scope.method);
+            console.debug("permissionVisible", enabled);
 
             if (enabled != null) {
                 console.debug("permissionEnabled-old", enabled);
