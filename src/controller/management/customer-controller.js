@@ -17,7 +17,7 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
         s.task.edit = {};
         s.task.edit.agent = {};
         s.task.create = {};
-        s.task.create.agent = {};
+        s.task.create.agent = undefined;
         var create = new CreateControl();
         create.id = "customer_create_ctl";
 
@@ -80,7 +80,7 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
             } else if (s.task.page.name === s.create_name) {
                 s.flow.action("put", s.task.customerCreate);
             }
-        }
+        };
 
 
         s.$on(s.flow.event.getSuccessEventId(), function (event, data, method) {
@@ -188,7 +188,7 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
             }
 
             fm.show(s.flow.getElementFlowId("contactsModal"));
-            console.debug("createContactEvent",event);
+            console.debug("createContactEvent", event);
         });
 
         s.$on(s.flow.getEventId("editContactEvent"),
@@ -537,15 +537,13 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
         s.ownershipOptions = [{label: "Public", value: "PUBLIC"}, {label: "Private", value: "PRIVATE"}];
 
 
-        s.selectAgent = function (item) {
+        s.selectAgent = function (item, full, index) {
             if (s.task.page.name === s.create_name) {
-                s.task.customerCreate.ownerAgentId = s.task.create.agent.id;
-                s.task.customerCreate.regionCode = s.task.create.agent.region;
+                s.task.customerCreate.regionCode = full.region;
             } else if (s.task.page.name === s.edit_name) {
-                s.task.customerEdit.ownerAgentId = s.task.edit.agent.id;
-                s.task.customerEdit.regionCode = s.task.edit.agent.region;
+                s.task.customerEdit.regionCode = full.region;
             }
-        }
+        };
 
 
         /*s.$watch(function (scope) {

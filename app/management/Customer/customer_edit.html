@@ -16,16 +16,17 @@
                 <flow-field disabled="task.origin && task.origin.agent" model="task.customerEdit.customerCode"
                             label="Customer code" required="true"
                             type="text"></flow-field>
-                <flow-select disabled="userProfile.group.groupName != 'agent_general_manager'" required="false"
-                             task="task"
-                             id="{{flow.getElementFlowId('ownershipAgentSelect')}}"
-                             label="Materials Advisor"
-                             field-value="id"
-                             field-label="user.flowUserDetail.fullName"
-                             model="task.customerEdit.ownerAgentId"
-                             source-url="services/war/agent_query/list"
-                             change="selectAgent(item)">
-                </flow-select>
+                <fluid-select primary fluid-disabled="userProfile.group.groupName != 'agent_general_manager'"
+                              class="width100pc"
+                              with-host="sourceUrl"
+                              id="{{flow.getElementFlowId('ownershipAgentSelect')}}"
+                              label="Materials Advisor"
+                              field-value="id"
+                              field-label="user.flowUserDetail.fullName"
+                              model="task.customerEdit.ownerAgentId"
+                              source-url="services/war/agent_query/list"
+                              change="selectAgent(item,full,$index)">
+                </fluid-select>
 
                 <flow-field model="task.customerEdit.regionCode" label="Region" disabled="true"></flow-field>
                 <flow-field model="task.customerEdit.school.name" label="School" disabled="true"></flow-field>
@@ -122,13 +123,12 @@
 
                         <div column="12">
                             <div column="6">
-                                <flow-select disabled="false" required="false"
-                                             task="task"
-                                             id="{{flow.getElementFlowId('evalSelect')}}"
-                                             model="task.customerEdit.evaluation"
-                                             label="Evaluation"
-                                             source-url="factories/war/table_factories/months">
-                                </flow-select>
+                                <fluid-select primary with-host="sourceUrl" class="width100pc"
+                                              id="{{flow.getElementFlowId('evalSelect')}}"
+                                              model="task.customerEdit.evaluation"
+                                              label="Evaluation"
+                                              source-url="factories/war/table_factories/months">
+                                </fluid-select>
 
                             </div>
                             <div column="1">
@@ -136,15 +136,13 @@
                                             label=" to"></flow-check>
                             </div>
                             <div column="5">
-                                <flow-select disabled="false" required="false"
-                                             ng-if="task.isEditEvaluationTo"
-                                             task="task"
-                                             id="{{flow.getElementFlowId('evalSelect2')}}"
-                                             model="task.customerEdit.evaluationTo"
-                                             label=""
-                                             source-url="factories/war/table_factories/months"
-                                        >
-                                </flow-select>
+                                <fluid-select primary with-host="sourceUrl" class="width100pc"
+                                              ng-if="task.isEditEvaluationTo"
+                                              id="{{flow.getElementFlowId('evalSelect2')}}"
+                                              model="task.customerEdit.evaluationTo"
+                                              label=""
+                                              source-url="factories/war/table_factories/months">
+                                </fluid-select>
                             </div>
 
                         </div>
@@ -152,41 +150,37 @@
 
                         <div column="12">
                             <div column="6">
-                                <flow-select disabled="false" required="false"
-                                             task="task"
-                                             id="{{flow.getElementFlowId('orderSelect')}}"
-                                             model="task.customerEdit.ordering"
-                                             label="Ordering"
-                                             source-url="factories/war/table_factories/months">
-                                </flow-select>
+                                <fluid-select primary with-host="sourceUrl" class="width100pc"
+                                              id="{{flow.getElementFlowId('orderSelect')}}"
+                                              model="task.customerEdit.ordering"
+                                              label="Ordering"
+                                              source-url="factories/war/table_factories/months">
+                                </fluid-select>
                             </div>
                             <div column="1">
                                 <flow-check disabled="false" required="false" model="task.isEditOrderingTo"
                                             label=" to"></flow-check>
                             </div>
                             <div column="5">
-                                <flow-select disabled="false" required="false"
-                                             ng-if="task.isEditOrderingTo"
-                                             task="task"
-                                             id="{{flow.getElementFlowId('orderSelect2')}}"
-                                             model="task.customerEdit.orderingTo"
-                                             label=" "
-                                             source-url="factories/war/table_factories/months"
-                                        >
-                                </flow-select>
+                                <fluid-select primary with-host="sourceUrl" class="width100pc"
+                                              ng-if="task.isEditOrderingTo"
+                                              id="{{flow.getElementFlowId('orderSelect2')}}"
+                                              model="task.customerEdit.orderingTo"
+                                              label=" "
+                                              source-url="factories/war/table_factories/months">
+                                </fluid-select>
                             </div>
 
                         </div>
 
                         <div column="12">
                             <div column="6">
-                                <flow-select disabled="false" required="false"
-                                             task="task"
-                                             id="{{flow.getElementFlowId('deliverySelect')}}"
-                                             model="task.customerEdit.delivery"
-                                             label="Delivery"
-                                             source-url="factories/war/table_factories/months">
-                                </flow-select>
+                                <fluid-select primary with-host="sourceUrl" class="width100pc"
+                                              id="{{flow.getElementFlowId('deliverySelect')}}"
+                                              model="task.customerEdit.delivery"
+                                              label="Delivery"
+                                              source-url="factories/war/table_factories/months">
+                                </fluid-select>
 
                             </div>
                             <div column="1">
@@ -194,28 +188,26 @@
                                             label=" to"></flow-check>
                             </div>
                             <div column="5">
-                                <flow-select disabled="false" required="false"
-                                             ng-if="task.isEditDeliveryTo"
-                                             task="task"
-                                             id="{{flow.getElementFlowId('deliverySelect2')}}"
-                                             model="task.customerEdit.deliveryTo"
-                                             label=" "
-                                             source-url="factories/war/table_factories/months"
+                                <fluid-select primary with-host="sourceUrl" class="width100pc"
+                                              ng-if="task.isEditDeliveryTo"
+                                              id="{{flow.getElementFlowId('deliverySelect2')}}"
+                                              model="task.customerEdit.deliveryTo"
+                                              label=" "
+                                              source-url="factories/war/table_factories/months"
                                         >
-                                </flow-select>
+                                </fluid-select>
                             </div>
 
                         </div>
 
                         <div column="12">
                             <div column="6">
-                                <flow-select disabled="false" required="false"
-                                             task="task"
-                                             id="{{flow.getElementFlowId('collectionSelect')}}"
-                                             model="task.customerEdit.collection"
-                                             label="Collection"
-                                             source-url="factories/war/table_factories/months">
-                                </flow-select>
+                                <fluid-select primary with-host="sourceUrl" class="width100pc"
+                                              id="{{flow.getElementFlowId('collectionSelect')}}"
+                                              model="task.customerEdit.collection"
+                                              label="Collection"
+                                              source-url="factories/war/table_factories/months">
+                                </fluid-select>
 
                             </div>
                             <div column="1">
@@ -223,15 +215,14 @@
                                             label=" to"></flow-check>
                             </div>
                             <div column="5">
-                                <flow-select disabled="false" required="false"
-                                             ng-if="task.isEditCollectionTo"
-                                             task="task"
-                                             id="{{flow.getElementFlowId('collectionSelect2')}}"
-                                             model="task.customerEdit.collectionTo"
-                                             label=" "
-                                             source-url="factories/war/table_factories/months"
+                                <fluid-select primary with-host="sourceUrl" class="width100pc"
+                                              ng-if="task.isEditCollectionTo"
+                                              id="{{flow.getElementFlowId('collectionSelect2')}}"
+                                              model="task.customerEdit.collectionTo"
+                                              label=" "
+                                              source-url="factories/war/table_factories/months"
                                         >
-                                </flow-select>
+                                </fluid-select>
                             </div>
 
                         </div>
@@ -378,18 +369,18 @@
             <div class="panel-body">
                 <div class="form-horizontal">
 
-                    <flow-select disabled="false"
-                                 task="task"
-                                 id="{{flow.getElementFlowId('educationLevelSelect')}}"
-                                 model="task.customerEdit.customerLevels[task.levelIndex].level"
-                                 label="Education Level"
-                                 source-url="services/war/level_query/list"
-                                 field-label="levelCourse"
-                                 field-value="id"
-                                 required="true">
-                    </flow-select>
+                    <fluid-select primary with-host="sourceUrl" class="width100pc"
+                                  id="{{flow.getElementFlowId('educationLevelSelect')}}"
+                                  model="task.customerEdit.customerLevels[task.levelIndex].level"
+                                  label="Education Level"
+                                  source-url="services/war/level_query/list"
+                                  field-label="levelCourse"
+                                  field-value="id"
+                                  required="true">
+                    </fluid-select>
 
-                    <flow-field model="task.customerEdit.customerLevels[task.levelIndex].population" label="Population"
+                    <flow-field model="task.customerEdit.customerLevels[task.levelIndex].population"
+                                label="Population"
                                 required="true"></flow-field>
 
                     <flow-field model="task.customerEdit.customerLevels[task.levelIndex].tuitionFeeFrom"
@@ -419,28 +410,26 @@
                 <div class="form-horizontal">
 
                     <div class="col-lg-6">
-                        <flow-select disabled="false"
-                                     task="task"
-                                     id="{{flow.getElementFlowId('levelSelect')}}"
-                                     model="task.customerEdit.contactDetails[task.contactIndex].level"
-                                     label="Education Level"
-                                     source-url="factories/war/table_factories/education_levels"
-                                     required="true">
-                        </flow-select>
+                        <fluid-select primary with-host="sourceUrl" class="width100pc"
+                                      id="{{flow.getElementFlowId('levelSelect')}}"
+                                      model="task.customerEdit.contactDetails[task.contactIndex].level"
+                                      label="Education Level"
+                                      source-url="factories/war/table_factories/education_levels"
+                                      required="true">
+                        </fluid-select>
 
                         <flow-field model="task.customerEdit.contactDetails[task.contactIndex].description"
                                     label="Contact person" required="true"></flow-field>
 
-                        <flow-select disabled="false"
-                                     task="task"
-                                     id="{{flow.getElementFlowId('positionSelect')}}"
-                                     model="task.customerEdit.contactDetails[task.contactIndex].position"
-                                     field-label="description"
-                                     field-value="id"
-                                     label="Position"
-                                     source-url="services/war/position_query/list"
-                                     required="true">
-                        </flow-select>
+                        <fluid-select primary with-host="sourceUrl" class="width100pc"
+                                      id="{{flow.getElementFlowId('positionSelect')}}"
+                                      model="task.customerEdit.contactDetails[task.contactIndex].position"
+                                      field-label="description"
+                                      field-value="id"
+                                      label="Position"
+                                      source-url="services/war/position_query/list"
+                                      required="true">
+                        </fluid-select>
                     </div>
 
                     <div class="col-lg-6">
@@ -448,14 +437,13 @@
                         <flow-date-picker model="task.customerEdit.contactDetails[task.contactIndex].birthdate"
                                           label="Birth date"></flow-date-picker>
 
-                        <flow-select disabled="false"
-                                     task="task"
-                                     id="{{flow.getElementFlowId('relationshipTypeSelect')}}"
-                                     model="task.customerEdit.contactDetails[task.contactIndex].relationshipType"
-                                     label="Relationship type"
-                                     source-url="factories/war/table_factories/relationship_types"
-                                     required="true">
-                        </flow-select>
+                        <fluid-select primary with-host="sourceUrl" class="width100pc"
+                                      id="{{flow.getElementFlowId('relationshipTypeSelect')}}"
+                                      model="task.customerEdit.contactDetails[task.contactIndex].relationshipType"
+                                      label="Relationship type"
+                                      source-url="factories/war/table_factories/relationship_types"
+                                      required="true">
+                        </fluid-select>
 
                         <div class="form-group">
                             <flow-check disabled="false" required="false"
@@ -530,9 +518,11 @@
 
                 <div class="form-horizontal">
                     <flow-message id="{{flow.getElementFlowId('potentialInfoMessage')}}"></flow-message>
-                    <flow-select disabled="s.task.potentialManaged" task="task" label="School Year"
-                                 field-label="description" model="task.tempSchoolYear" change="onChangeSchoolYear(item)"
-                                 source-url="services/war/school_year_query/list"></flow-select>
+                    <fluid-select primary with-host="sourceUrl" class="width100pc"
+                                  fluid-disabled="s.task.potentialManaged" label="School Year"
+                                  field-label="description" model="task.tempSchoolYear"
+                                  change="onChangeSchoolYear(item)"
+                                  source-url="services/war/school_year_query/list"></fluid-select>
 
                     <flow-field label="Market Potential" type="number"
                                 model="task.customerEdit.warCustomerMarketSchoolYears[task.potentialIndex].marketPotential"></flow-field>
