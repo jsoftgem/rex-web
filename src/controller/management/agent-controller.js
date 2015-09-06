@@ -226,7 +226,7 @@ angular.module("agentController", ["fluid", "ngResource", "datatables", "flowSer
             s.task.agent.summary = {};
             console.info("customerSummaryCtrl", this.name);
             if (this.name === "customer_agent_home") {
-                this.title = "assigned to " + s.task.agent.fullName;
+                this.title = "assigned to " + s.task.agent.initials;
                 s.http.post("services/war/customer_light_query/find_by_assigned_agent")
                     .success(function (data) {
                         s.task.agent.summary.result = data;
