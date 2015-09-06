@@ -5,7 +5,7 @@
             <fieldset>
                 <legend>Options</legend>
                 <div column="3">
-                    <fluid-select class="col-lg-10" with-host="sourceUrl" fluid-disabled="!task.report.isYear" primary
+                    <fluid-select class="width100pc" with-host="sourceUrl" fluid-disabled="!task.report.isYear" primary
                                   model="task.report.year" label="Year"
                                   source-url="factories/war/table_factories/years"></fluid-select>
 
@@ -15,7 +15,7 @@
                 </div>
 
                 <div column="3">
-                    <fluid-select class="col-lg-10" fluid-disabled="!task.report.isMonth" with-host="sourceUrl" primary
+                    <fluid-select class="width100pc" fluid-disabled="!task.report.isMonth" with-host="sourceUrl" primary
                                   model="task.report.month" label="Month"
                                   source-url="factories/war/table_factories/months" required="false">
 
@@ -47,7 +47,7 @@
 
                 <div ng-hide="task.hideAgentFilter" column="3">
 
-                    <fluid-select class="col-lg-10" fluid-disabled="!task.report.isRegion" model="task.report.region"
+                    <fluid-select class="width100pc" fluid-disabled="!task.report.isRegion" model="task.report.region"
                                   with-host="sourceUrl" primary
                                   label="Region" field-label="regionCode" field-value="regionCode"
                                   source-url="services/war/region_query/list"></fluid-select>
