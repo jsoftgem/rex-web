@@ -1131,10 +1131,8 @@ and open the template in the editor.
 }
 
 div.flow-form label {
-    font-size: 14px;
     font-style: inherit;
     font-variant: inherit;
-    text-align: left !important;
 }
 
 .panel-control {
@@ -1728,6 +1726,7 @@ and open the template in the editor.
 .slide-animate.ng-leave {
     right: 0;
 }
+.fluid-select .fluid-select-dropdown,.fluid-select .fluid-select-dropdown .dropdown-toggle{font-size:17px}.fluid-select .fluid-select-dropdown{width:100%}.fluid-select .fluid-select-dropdown .dropdown-toggle{text-align:left;width:100%}.fluid-select .fluid-select-dropdown .dropdown-toggle .caret{text-align:center;margin:10px;float:right}.fluid-select .fluid-select-item a{cursor:pointer}.fluid-select .dropdown-menu{max-height:300px;overflow-y:auto}
 /*!
  * drawer v2.0.0
  * 

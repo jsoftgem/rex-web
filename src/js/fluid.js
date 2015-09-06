@@ -1572,11 +1572,11 @@ flowComponents
 
                 var modalPanelHeading = $("<div>").addClass("panel-heading").appendTo(modalPanel).get();
 
-                var spanTitle = $("<span>").addClass("text-inverse").addClass("col-lg-5 col-md-5 col-sm-3 col-xs-3").html("Select " + scope.title).appendTo(modalPanelHeading).get();
+                $("<span>").addClass("text-inverse").addClass("col-lg-5 col-md-5 col-sm-3 col-xs-3").html("Select " + scope.title).appendTo(modalPanelHeading).get();
 
                 var inputGroup = $("<div>").addClass("col-lg-7 col-md-7 col-sm-9 col-xs-9").addClass("input-group").appendTo(modalPanelHeading).get();
 
-                var inputSearch = $("<input>").addClass("form-control").attr("type", "text").attr("ng-model", "search").appendTo(inputGroup).get();
+                $("<input>").addClass("form-control").attr("type", "text").attr("ng-model", "search").appendTo(inputGroup).get();
 
                 var inputSpan = $("<span>").addClass("input-group-addon").appendTo(inputGroup).get();
 
@@ -1590,7 +1590,7 @@ flowComponents
 
                 var buttonGroup = $("<div>").addClass("btn-group btn-group-sm").appendTo(pullRightFooterDiv).get();
 
-                var closeButton = $("<button>").addClass("btn btn-info").attr("ng-click", "close()").attr("type", "button").html("close").appendTo(buttonGroup).get();
+                $("<button>").addClass("btn btn-info").attr("ng-click", "close()").attr("type", "button").html("close").appendTo(buttonGroup).get();
 
                 var columns = element.find("flow-sub-column");
 
@@ -1627,10 +1627,10 @@ flowComponents
                 var buttonGroupDiv = $("<div>").addClass("btn-group").addClass("btn-group-xs").appendTo(tdAction).get();
 
                 if (scope.editEnabled) {
-                    var editButton = $("<button>").addClass("btn btn-info").addClass("glyphicon glyphicon-edit").addClass("horizontalSpace").attr("type", "button").attr("title", "edit").attr("ng-click", "edit(" + scope.keyVar + "." + scope.idField + ",$index)").appendTo(buttonGroupDiv).get();
+                    $("<button>").addClass("btn btn-info").addClass("glyphicon glyphicon-edit").addClass("horizontalSpace").attr("type", "button").attr("title", "edit").attr("ng-click", "edit(" + scope.keyVar + "." + scope.idField + ",$index)").appendTo(buttonGroupDiv).get();
                 }
 
-                var removeButton = $("<button>").addClass("btn btn-danger").addClass("glyphicon glyphicon-minus").addClass("horizontalSpace").attr("type", "button").attr("title", "remove").attr("ng-click", "remove($index)").appendTo(buttonGroupDiv).get();
+                $("<button>").addClass("btn btn-danger").addClass("glyphicon glyphicon-minus").addClass("horizontalSpace").attr("type", "button").attr("title", "remove").attr("ng-click", "remove($index)").appendTo(buttonGroupDiv).get();
 
 
                 for (var i = 0; i < columns.length; i++) {
@@ -1658,8 +1658,6 @@ flowComponents
                     } else if (scope.editEvent) {
                         rs.$broadcast(scope.editEvent + "_fp_" + scope.task.id, param, index);
                     }
-
-
                 };
 
 
@@ -3401,11 +3399,11 @@ function isJson(str) {
 }
 
 /*
-* TODO:
-* 1) flowSelect bootstrap style;
-* 2) flowSubTable issue;
-* 3) fix fluidImageUploader;
-* 4) add task Note: create a standalone note taking application;
-* 5) add task manager: for killing task; task performance summary;
-* 6) add task portal: create an internal portlet-style portal for War applications;
-* */
+ * TODO:
+ * 1) flowSelect bootstrap style;
+ * 2) flowSubTable issue;
+ * 3) fix fluidImageUploader;
+ * 4) add task Note: create a standalone note taking application;
+ * 5) add task manager: for killing task; task performance summary;
+ * 6) add task portal: create an internal portlet-style portal for War applications;
+ * */

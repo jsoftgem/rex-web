@@ -1,54 +1,57 @@
 'use strict';
-angular.module("app", ["MAdmin", "war.resources", "war.session", "war.sidebar", "datatables", "datatables.bootstrap", "datatables.tabletools", "datatables.colvis", "flowServices", "flowFactories", "home", "fluid", "devControllers", "adminControllers", "flowAppDirectives", "sessionControllers", "infinite-scroll", "ngDragDrop", "rexTemplates"])
+angular.module("app", ["MAdmin", "fluid.webComponents", "war.resources", "war.session", "war.sidebar", "datatables", "datatables.bootstrap", "datatables.tabletools", "datatables.colvis", "flowServices", "flowFactories", "home", "fluid", "devControllers", "adminControllers", "flowAppDirectives", "sessionControllers", "infinite-scroll", "ngDragDrop", "rexTemplates"])
     .run(["flowFrameService", "flowHttpService", "userProfile", "responseEvent", "userAppSetting", "HOST", "hasProfile", "$rootScope", "sessionService", "UserFactory", "FlowUserDetail", "WarAgent", "TaskResource", "GroupResource", "userSessionService",
         function (f, fhp, up, re, uas, h, hp, rs, ss, uf, FlowUserDetail, WarAgent, TaskResource, GroupResource, uss) {
             fhp.host = h;
+            rs.withHost = function (url) {
+                return withHost(url);
+            };
             fhp.permissionUrl = "services/flow_permission/has_permission";
-          /*  rs.$watch(function () {
-                return uf.isAuthenticated();
-            }, function (session) {
-                if (session) {
-                    console.debug("session-opened", session);
-                    console.debug("getUser", uf.getUser());
+            /*  rs.$watch(function () {
+             return uf.isAuthenticated();
+             }, function (session) {
+             if (session) {
+             console.debug("session-opened", session);
+             console.debug("getUser", uf.getUser());
 
-                    FlowUserDetail.currentDetail(uf.getUser().flowUserDetailId, function (userDetail) {
-                        up.createUserProfile(userDetail);
-                        uss.profileLoaded = true;
-                    }, function () {
-                        uss.profileLoaded = false;
-                    });
+             FlowUserDetail.currentDetail(uf.getUser().flowUserDetailId, function (userDetail) {
+             up.createUserProfile(userDetail);
+             uss.profileLoaded = true;
+             }, function () {
+             uss.profileLoaded = false;
+             });
 
-                    WarAgent.current(function (agent) {
-                        up.agent = agent;
-                        uss.agentLoaded = true;
-                    }, function () {
-                        uss.agentLoaded = false;
-                    });
+             WarAgent.current(function (agent) {
+             up.agent = agent;
+             uss.agentLoaded = true;
+             }, function () {
+             uss.agentLoaded = false;
+             });
 
-                    TaskResource.getSessionTasks(function (tasks) {
-                        angular.forEach(tasks, function (task, $index) {
-                            f.addTask(task);
-                            if ((tasks.length - 1) === $index) {
-                                uss.userTasksLoaded = true;
-                            }
-                        });
-                    }, function () {
-                        uss.userTasksLoaded = false;
-                    });
+             TaskResource.getSessionTasks(function (tasks) {
+             angular.forEach(tasks, function (task, $index) {
+             f.addTask(task);
+             if ((tasks.length - 1) === $index) {
+             uss.userTasksLoaded = true;
+             }
+             });
+             }, function () {
+             uss.userTasksLoaded = false;
+             });
 
-                    GroupResource.getByName(uf.getUser().group, function (group) {
-                        up.group = group;
-                        up.group.emblemPath = GroupResource.getAvatarPath(up.group.emblemId);
-                        console.debug("created-group", group);
-                        uss.groupLoaded = true;
-                    }, function () {
-                        uss.groupLoaded = false;
-                    });
+             GroupResource.getByName(uf.getUser().group, function (group) {
+             up.group = group;
+             up.group.emblemPath = GroupResource.getAvatarPath(up.group.emblemId);
+             console.debug("created-group", group);
+             uss.groupLoaded = true;
+             }, function () {
+             uss.groupLoaded = false;
+             });
 
-                } else {
-                    window.location = "signin.html";
-                }
-            });*/
+             } else {
+             window.location = "signin.html";
+             }
+             });*/
             re.addResponse(undefined, 401, true, "signin.html");
             re.addResponse("NOT_AUTHENTICATED", 401);
             /*   fns.url = "session/notification/alerts";

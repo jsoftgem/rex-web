@@ -639,7 +639,6 @@ directives.directive('fallbackSrc', function () {
     };
     return fallbackSrc;
 });
-
 directives.directive("flowPermissionEnabled", ["flowHttpService", "$compile", "sessionService", "UserFactory", function (f, c, ss, uf) {
     return {
         restrict: "A",
@@ -673,7 +672,8 @@ directives.directive("flowPermissionEnabled", ["flowHttpService", "$compile", "s
                         angular.forEach(profiles, function (profile, $index) {
                             if (!enabled) {
                                 var flowProfilePermissionList = profile.flowProfilePermissions;
-                                angular.forEach(flowProfilePermissionList, function (permission) {
+                                var nestedProfileLength = flowProfilePermissionList.length - 1;
+                                angular.forEach(flowProfilePermissionList, function (permission, $index2) {
                                     if (!enabled) {
                                         if (scope.page.name === permission.flowPageName) {
                                             if (scope.method.toLocaleLowerCase() === "put") {
@@ -682,21 +682,24 @@ directives.directive("flowPermissionEnabled", ["flowHttpService", "$compile", "s
                                                 enabled = permission.get;
                                             } else if (scope.method.toLocaleLowerCase() === "post") {
                                                 enabled = permission.post;
-                                            } else if (scope.method.toLocaleLowerCase() === "del") {
+                                            } else if (scope.method.toLocaleLowerCase() === "delete") {
                                                 enabled = permission.del;
                                             }
                                         }
                                     }
+                                    if (profileLength === $index && nestedProfileLength === $index2) {
+                                        console.debug("permission end", enabled);
+                                        if (enabled === false) {
+                                            element.attr("disabled", "");
+                                        } else if (element.attr("disabled")) {
+                                            element.removeAttr("disabled");
+                                        }
+
+                                        ss.addSessionProperty(url, enabled);
+                                    }
                                 });
                             }
-                            if (profileLength === $index) {
-                                if (enabled === false) {
-                                    element.attr("disabled", "");
-                                } else if (element.attr("disabled")) {
-                                    element.removeAttr("disabled");
-                                }
-                                ss.addSessionProperty(url, enabled);
-                            }
+
                         });
                     }
                 }
@@ -727,8 +730,9 @@ directives.directive("flowPermissionVisible", ["flowHttpService", "$compile", "s
             console.debug("permissionVisible", enabled);
 
             if (enabled != null) {
-                console.debug("permissionEnabled-old", enabled);
-                if (enabled === false) {
+                console.debug("permissionVisible-old", enabled);
+                if (enabled === "false") {
+                    console.debug("permissionVisible-end.hidden", enabled);
                     element.addClass("hidden");
                 }
             } else {
@@ -741,7 +745,8 @@ directives.directive("flowPermissionVisible", ["flowHttpService", "$compile", "s
                         angular.forEach(profiles, function (profile, $index) {
                             if (!enabled) {
                                 var flowProfilePermissionList = profile.flowProfilePermissions;
-                                angular.forEach(flowProfilePermissionList, function (permission) {
+                                var nestedProfileLength = flowProfilePermissionList.length - 1;
+                                angular.forEach(flowProfilePermissionList, function (permission, $index2) {
                                     if (!enabled) {
                                         if (scope.page.name === permission.flowPageName) {
                                             if (scope.method.toLocaleLowerCase() === "put") {
@@ -750,21 +755,28 @@ directives.directive("flowPermissionVisible", ["flowHttpService", "$compile", "s
                                                 enabled = permission.get;
                                             } else if (scope.method.toLocaleLowerCase() === "post") {
                                                 enabled = permission.post;
-                                            } else if (scope.method.toLocaleLowerCase() === "del") {
+                                            } else if (scope.method.toLocaleLowerCase() === "delete") {
                                                 enabled = permission.del;
                                             }
                                         }
                                     }
+                                    console.debug("profileLength", profileLength);
+                                    console.debug("$index", $index);
+                                    console.debug("nestedProfileLength", nestedProfileLength);
+                                    console.debug("$index2", $index2);
+                                    if (profileLength === $index && nestedProfileLength === $index2) {
+                                        console.debug("permissionVisible-end", enabled);
+                                        if (enabled === "false") {
+                                            console.debug("permissionVisible-end.hidden", enabled);
+                                            element.addClass("hidden");
+                                        } else if (element.hasClass("hidden")) {
+                                            element.removeClass("hidden");
+                                        }
+                                        ss.addSessionProperty(url, enabled);
+                                    }
                                 });
                             }
-                            if (profileLength === $index) {
-                                if (enabled === false) {
-                                    element.addClass("hidden");
-                                } else if (element.hasClass("hidden")) {
-                                    element.removeClass("hidden");
-                                }
-                                ss.addSessionProperty(url, enabled);
-                            }
+
                         });
                     }
                 }
@@ -1237,6 +1249,17 @@ directives.directive("getHeight", [function () {
         }
     }
 
+}]);
+
+directives.directive("withHost", ["$parse", function (p) {
+    return {
+        restrict: "A",
+        link: function (scope, element, attr) {
+            if (attr[attr.withHost]) {
+                attr[attr.withHost] = withHost(attr[attr.withHost]);
+            }
+        }
+    }
 }]);
 
 

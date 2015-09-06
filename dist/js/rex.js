@@ -590,56 +590,59 @@ angular.module("adminControllers", ["fluid", "ngResource", "datatables"])
 
     }]);
 ;'use strict';
-angular.module("app", ["MAdmin", "war.resources", "war.session", "war.sidebar", "datatables", "datatables.bootstrap", "datatables.tabletools", "datatables.colvis", "flowServices", "flowFactories", "home", "fluid", "devControllers", "adminControllers", "flowAppDirectives", "sessionControllers", "infinite-scroll", "ngDragDrop", "rexTemplates"])
+angular.module("app", ["MAdmin", "fluid.webComponents", "war.resources", "war.session", "war.sidebar", "datatables", "datatables.bootstrap", "datatables.tabletools", "datatables.colvis", "flowServices", "flowFactories", "home", "fluid", "devControllers", "adminControllers", "flowAppDirectives", "sessionControllers", "infinite-scroll", "ngDragDrop", "rexTemplates"])
     .run(["flowFrameService", "flowHttpService", "userProfile", "responseEvent", "userAppSetting", "HOST", "hasProfile", "$rootScope", "sessionService", "UserFactory", "FlowUserDetail", "WarAgent", "TaskResource", "GroupResource", "userSessionService",
         function (f, fhp, up, re, uas, h, hp, rs, ss, uf, FlowUserDetail, WarAgent, TaskResource, GroupResource, uss) {
             fhp.host = h;
+            rs.withHost = function (url) {
+                return withHost(url);
+            };
             fhp.permissionUrl = "services/flow_permission/has_permission";
-          /*  rs.$watch(function () {
-                return uf.isAuthenticated();
-            }, function (session) {
-                if (session) {
-                    console.debug("session-opened", session);
-                    console.debug("getUser", uf.getUser());
+            /*  rs.$watch(function () {
+             return uf.isAuthenticated();
+             }, function (session) {
+             if (session) {
+             console.debug("session-opened", session);
+             console.debug("getUser", uf.getUser());
 
-                    FlowUserDetail.currentDetail(uf.getUser().flowUserDetailId, function (userDetail) {
-                        up.createUserProfile(userDetail);
-                        uss.profileLoaded = true;
-                    }, function () {
-                        uss.profileLoaded = false;
-                    });
+             FlowUserDetail.currentDetail(uf.getUser().flowUserDetailId, function (userDetail) {
+             up.createUserProfile(userDetail);
+             uss.profileLoaded = true;
+             }, function () {
+             uss.profileLoaded = false;
+             });
 
-                    WarAgent.current(function (agent) {
-                        up.agent = agent;
-                        uss.agentLoaded = true;
-                    }, function () {
-                        uss.agentLoaded = false;
-                    });
+             WarAgent.current(function (agent) {
+             up.agent = agent;
+             uss.agentLoaded = true;
+             }, function () {
+             uss.agentLoaded = false;
+             });
 
-                    TaskResource.getSessionTasks(function (tasks) {
-                        angular.forEach(tasks, function (task, $index) {
-                            f.addTask(task);
-                            if ((tasks.length - 1) === $index) {
-                                uss.userTasksLoaded = true;
-                            }
-                        });
-                    }, function () {
-                        uss.userTasksLoaded = false;
-                    });
+             TaskResource.getSessionTasks(function (tasks) {
+             angular.forEach(tasks, function (task, $index) {
+             f.addTask(task);
+             if ((tasks.length - 1) === $index) {
+             uss.userTasksLoaded = true;
+             }
+             });
+             }, function () {
+             uss.userTasksLoaded = false;
+             });
 
-                    GroupResource.getByName(uf.getUser().group, function (group) {
-                        up.group = group;
-                        up.group.emblemPath = GroupResource.getAvatarPath(up.group.emblemId);
-                        console.debug("created-group", group);
-                        uss.groupLoaded = true;
-                    }, function () {
-                        uss.groupLoaded = false;
-                    });
+             GroupResource.getByName(uf.getUser().group, function (group) {
+             up.group = group;
+             up.group.emblemPath = GroupResource.getAvatarPath(up.group.emblemId);
+             console.debug("created-group", group);
+             uss.groupLoaded = true;
+             }, function () {
+             uss.groupLoaded = false;
+             });
 
-                } else {
-                    window.location = "signin.html";
-                }
-            });*/
+             } else {
+             window.location = "signin.html";
+             }
+             });*/
             re.addResponse(undefined, 401, true, "signin.html");
             re.addResponse("NOT_AUTHENTICATED", 401);
             /*   fns.url = "session/notification/alerts";
@@ -1962,7 +1965,6 @@ directives.directive('fallbackSrc', function () {
     };
     return fallbackSrc;
 });
-
 directives.directive("flowPermissionEnabled", ["flowHttpService", "$compile", "sessionService", "UserFactory", function (f, c, ss, uf) {
     return {
         restrict: "A",
@@ -1996,7 +1998,8 @@ directives.directive("flowPermissionEnabled", ["flowHttpService", "$compile", "s
                         angular.forEach(profiles, function (profile, $index) {
                             if (!enabled) {
                                 var flowProfilePermissionList = profile.flowProfilePermissions;
-                                angular.forEach(flowProfilePermissionList, function (permission) {
+                                var nestedProfileLength = flowProfilePermissionList.length - 1;
+                                angular.forEach(flowProfilePermissionList, function (permission, $index2) {
                                     if (!enabled) {
                                         if (scope.page.name === permission.flowPageName) {
                                             if (scope.method.toLocaleLowerCase() === "put") {
@@ -2005,21 +2008,24 @@ directives.directive("flowPermissionEnabled", ["flowHttpService", "$compile", "s
                                                 enabled = permission.get;
                                             } else if (scope.method.toLocaleLowerCase() === "post") {
                                                 enabled = permission.post;
-                                            } else if (scope.method.toLocaleLowerCase() === "del") {
+                                            } else if (scope.method.toLocaleLowerCase() === "delete") {
                                                 enabled = permission.del;
                                             }
                                         }
                                     }
+                                    if (profileLength === $index && nestedProfileLength === $index2) {
+                                        console.debug("permission end", enabled);
+                                        if (enabled === false) {
+                                            element.attr("disabled", "");
+                                        } else if (element.attr("disabled")) {
+                                            element.removeAttr("disabled");
+                                        }
+
+                                        ss.addSessionProperty(url, enabled);
+                                    }
                                 });
                             }
-                            if (profileLength === $index) {
-                                if (enabled === false) {
-                                    element.attr("disabled", "");
-                                } else if (element.attr("disabled")) {
-                                    element.removeAttr("disabled");
-                                }
-                                ss.addSessionProperty(url, enabled);
-                            }
+
                         });
                     }
                 }
@@ -2050,8 +2056,9 @@ directives.directive("flowPermissionVisible", ["flowHttpService", "$compile", "s
             console.debug("permissionVisible", enabled);
 
             if (enabled != null) {
-                console.debug("permissionEnabled-old", enabled);
-                if (enabled === false) {
+                console.debug("permissionVisible-old", enabled);
+                if (enabled === "false") {
+                    console.debug("permissionVisible-end.hidden", enabled);
                     element.addClass("hidden");
                 }
             } else {
@@ -2064,7 +2071,8 @@ directives.directive("flowPermissionVisible", ["flowHttpService", "$compile", "s
                         angular.forEach(profiles, function (profile, $index) {
                             if (!enabled) {
                                 var flowProfilePermissionList = profile.flowProfilePermissions;
-                                angular.forEach(flowProfilePermissionList, function (permission) {
+                                var nestedProfileLength = flowProfilePermissionList.length - 1;
+                                angular.forEach(flowProfilePermissionList, function (permission, $index2) {
                                     if (!enabled) {
                                         if (scope.page.name === permission.flowPageName) {
                                             if (scope.method.toLocaleLowerCase() === "put") {
@@ -2073,21 +2081,28 @@ directives.directive("flowPermissionVisible", ["flowHttpService", "$compile", "s
                                                 enabled = permission.get;
                                             } else if (scope.method.toLocaleLowerCase() === "post") {
                                                 enabled = permission.post;
-                                            } else if (scope.method.toLocaleLowerCase() === "del") {
+                                            } else if (scope.method.toLocaleLowerCase() === "delete") {
                                                 enabled = permission.del;
                                             }
                                         }
                                     }
+                                    console.debug("profileLength", profileLength);
+                                    console.debug("$index", $index);
+                                    console.debug("nestedProfileLength", nestedProfileLength);
+                                    console.debug("$index2", $index2);
+                                    if (profileLength === $index && nestedProfileLength === $index2) {
+                                        console.debug("permissionVisible-end", enabled);
+                                        if (enabled === "false") {
+                                            console.debug("permissionVisible-end.hidden", enabled);
+                                            element.addClass("hidden");
+                                        } else if (element.hasClass("hidden")) {
+                                            element.removeClass("hidden");
+                                        }
+                                        ss.addSessionProperty(url, enabled);
+                                    }
                                 });
                             }
-                            if (profileLength === $index) {
-                                if (enabled === false) {
-                                    element.addClass("hidden");
-                                } else if (element.hasClass("hidden")) {
-                                    element.removeClass("hidden");
-                                }
-                                ss.addSessionProperty(url, enabled);
-                            }
+
                         });
                     }
                 }
@@ -2562,6 +2577,17 @@ directives.directive("getHeight", [function () {
 
 }]);
 
+directives.directive("withHost", ["$parse", function (p) {
+    return {
+        restrict: "A",
+        link: function (scope, element, attr) {
+            if (attr[attr.withHost]) {
+                attr[attr.withHost] = withHost(attr[attr.withHost]);
+            }
+        }
+    }
+}]);
+
 
 
 
@@ -2700,7 +2726,7 @@ directives.directive("getHeight", [function () {
  * and open the template in the editor.
  */
 
-var HOST = "http://192.168.1.11:8080/rex-services/";
+var HOST = "http://war.rexpublishing.com.ph:8080/rex-services/";
 
 angular.module("flowFactories", [])
     .constant("HOST", HOST)
@@ -4292,11 +4318,11 @@ flowComponents
 
                 var modalPanelHeading = $("<div>").addClass("panel-heading").appendTo(modalPanel).get();
 
-                var spanTitle = $("<span>").addClass("text-inverse").addClass("col-lg-5 col-md-5 col-sm-3 col-xs-3").html("Select " + scope.title).appendTo(modalPanelHeading).get();
+                $("<span>").addClass("text-inverse").addClass("col-lg-5 col-md-5 col-sm-3 col-xs-3").html("Select " + scope.title).appendTo(modalPanelHeading).get();
 
                 var inputGroup = $("<div>").addClass("col-lg-7 col-md-7 col-sm-9 col-xs-9").addClass("input-group").appendTo(modalPanelHeading).get();
 
-                var inputSearch = $("<input>").addClass("form-control").attr("type", "text").attr("ng-model", "search").appendTo(inputGroup).get();
+                $("<input>").addClass("form-control").attr("type", "text").attr("ng-model", "search").appendTo(inputGroup).get();
 
                 var inputSpan = $("<span>").addClass("input-group-addon").appendTo(inputGroup).get();
 
@@ -4310,7 +4336,7 @@ flowComponents
 
                 var buttonGroup = $("<div>").addClass("btn-group btn-group-sm").appendTo(pullRightFooterDiv).get();
 
-                var closeButton = $("<button>").addClass("btn btn-info").attr("ng-click", "close()").attr("type", "button").html("close").appendTo(buttonGroup).get();
+                $("<button>").addClass("btn btn-info").attr("ng-click", "close()").attr("type", "button").html("close").appendTo(buttonGroup).get();
 
                 var columns = element.find("flow-sub-column");
 
@@ -4347,10 +4373,10 @@ flowComponents
                 var buttonGroupDiv = $("<div>").addClass("btn-group").addClass("btn-group-xs").appendTo(tdAction).get();
 
                 if (scope.editEnabled) {
-                    var editButton = $("<button>").addClass("btn btn-info").addClass("glyphicon glyphicon-edit").addClass("horizontalSpace").attr("type", "button").attr("title", "edit").attr("ng-click", "edit(" + scope.keyVar + "." + scope.idField + ",$index)").appendTo(buttonGroupDiv).get();
+                    $("<button>").addClass("btn btn-info").addClass("glyphicon glyphicon-edit").addClass("horizontalSpace").attr("type", "button").attr("title", "edit").attr("ng-click", "edit(" + scope.keyVar + "." + scope.idField + ",$index)").appendTo(buttonGroupDiv).get();
                 }
 
-                var removeButton = $("<button>").addClass("btn btn-danger").addClass("glyphicon glyphicon-minus").addClass("horizontalSpace").attr("type", "button").attr("title", "remove").attr("ng-click", "remove($index)").appendTo(buttonGroupDiv).get();
+                $("<button>").addClass("btn btn-danger").addClass("glyphicon glyphicon-minus").addClass("horizontalSpace").attr("type", "button").attr("title", "remove").attr("ng-click", "remove($index)").appendTo(buttonGroupDiv).get();
 
 
                 for (var i = 0; i < columns.length; i++) {
@@ -4378,8 +4404,6 @@ flowComponents
                     } else if (scope.editEvent) {
                         rs.$broadcast(scope.editEvent + "_fp_" + scope.task.id, param, index);
                     }
-
-
                 };
 
 
@@ -6121,14 +6145,14 @@ function isJson(str) {
 }
 
 /*
-* TODO:
-* 1) flowSelect bootstrap style;
-* 2) flowSubTable issue;
-* 3) fix fluidImageUploader;
-* 4) add task Note: create a standalone note taking application;
-* 5) add task manager: for killing task; task performance summary;
-* 6) add task portal: create an internal portlet-style portal for War applications;
-* */;/**
+ * TODO:
+ * 1) flowSelect bootstrap style;
+ * 2) flowSubTable issue;
+ * 3) fix fluidImageUploader;
+ * 4) add task Note: create a standalone note taking application;
+ * 5) add task manager: for killing task; task performance summary;
+ * 6) add task portal: create an internal portlet-style portal for War applications;
+ * */;/**
  * Created by Jerico on 11/16/2014.
  */
 
@@ -6302,7 +6326,7 @@ function renderActions(data, editMethod, deleteMethod, viewMethod, scope, row) {
     var del = "delete";
     var view = "view";
 
-    if (viewMethod != undefined) {
+    if (viewMethod !== undefined) {
         view = viewMethod;
     }
 
@@ -6323,7 +6347,7 @@ function renderActions(data, editMethod, deleteMethod, viewMethod, scope, row) {
     }
 
     return "<div class='actions btn-group btn-group-md'>" +
-        "<button ng-if=" + view + " flow-permission-visible title='View' task='task' page='task.page' method='put'  type='button' class='btn btn-warning glyphicon glyphicon-search field-margin' ng-click='" + view + "(dataItem[" + row + "],row)'></button>" +
+        "<button ng-if=\"" + view + "\" flow-permission-visible title='View' task='task' page='task.page' method='put'  type='button' class='btn btn-warning glyphicon glyphicon-search field-margin' ng-click='" + view + "(dataItem[" + row + "],row)'></button>" +
         "<button flow-permission-visible title='Edit' task='task' page='task.page' method='put'  type='button' class='btn btn-info glyphicon glyphicon-edit field-margin' ng-click='" + edit + "(" + data.id + ",row)'></button>" +
         "<button flow-permission-visible title='Delete' task='task' page='task.page' method='delete' type='button' class='btn btn-danger glyphicon glyphicon-trash field-margin' ng-click='" + del + "(dataItem[" + row + "],row)'> </button></div>";
 }
@@ -7671,7 +7695,7 @@ angular.module("templates/fluid/fluidSelect.html", []).run(["$templateCache", fu
 
 angular.module("templates/fluid/fluidSubTable.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidSubTable.html",
-    "<div class=\"form-group\"><div class=\"panel panel-primary\"><div class=\"panel-heading\"><a href=\"#\" class=\"flow-panel-heading-title\" data-toggle=\"collapse\" data-target=\"#{{id}}_collapse\">{{title}}</a><div class=\"pull-right\"><div class=\"btn-group btn-group-xs\"><button type=\"button\" class=\"btn btn-info flow-sub-table-control\" ng-click=\"create()\" ng-show=\"createEnabled\"><span class=\"fa fa-plus\"></span></button> <button ng-show=\"lookUp=== 'true'\" type=\"button\" class=\"btn btn-info flow-sub-table-control\" ng-disabled=\"isLooking\" ng-click=\"look()\"><i ng-class=\"isLooking?'fa fa-spin fa-spinner':'fa fa-search'\"></i></button></div></div></div><div class=\"panel-collapse collapse in\" id=\"{{id}}_collapse\"><div class=\"panel-body\"><div ng-transclude></div><div class=\"container-fluid\" style=\"overflow-y: auto\"><table class=\"table table-responsive table-hover\"></table></div></div></div></div></div>");
+    "<div class=\"form-group\"><div class=\"panel panel-primary\"><div class=\"panel-heading\"><a href=\"#\" class=\"flow-panel-heading-title\" data-toggle=\"collapse\" data-target=\"#{{id}}_collapse\">{{title}}</a><div class=\"pull-right\"><div class=\"btn-group btn-group-xs\"><button type=\"button\" class=\"btn btn-info flow-sub-table-control\" ng-click=\"create()\" ng-show=\"createEnabled\"><span class=\"fa fa-plus\"></span></button> <button ng-show=\"lookUp === 'true'\" type=\"button\" class=\"btn btn-info flow-sub-table-control\" ng-disabled=\"isLooking\" ng-click=\"look()\"><i ng-class=\"isLooking?'fa fa-spin fa-spinner':'fa fa-search'\"></i></button></div></div></div><div class=\"panel-collapse collapse in\" id=\"{{id}}_collapse\"><div class=\"panel-body\"><div ng-transclude></div><div class=\"container-fluid\" style=\"overflow-y: auto\"><table class=\"table table-responsive table-hover\"></table></div></div></div></div></div>");
 }]);
 
 angular.module("templates/fluid/fluidTextArea.html", []).run(["$templateCache", function($templateCache) {

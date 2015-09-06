@@ -172,7 +172,7 @@ function renderActions(data, editMethod, deleteMethod, viewMethod, scope, row) {
     var del = "delete";
     var view = "view";
 
-    if (viewMethod != undefined) {
+    if (viewMethod !== undefined) {
         view = viewMethod;
     }
 
@@ -193,7 +193,7 @@ function renderActions(data, editMethod, deleteMethod, viewMethod, scope, row) {
     }
 
     return "<div class='actions btn-group btn-group-md'>" +
-        "<button ng-if=" + view + " flow-permission-visible title='View' task='task' page='task.page' method='put'  type='button' class='btn btn-warning glyphicon glyphicon-search field-margin' ng-click='" + view + "(dataItem[" + row + "],row)'></button>" +
+        "<button ng-if=\"" + view + "\" flow-permission-visible title='View' task='task' page='task.page' method='put'  type='button' class='btn btn-warning glyphicon glyphicon-search field-margin' ng-click='" + view + "(dataItem[" + row + "],row)'></button>" +
         "<button flow-permission-visible title='Edit' task='task' page='task.page' method='put'  type='button' class='btn btn-info glyphicon glyphicon-edit field-margin' ng-click='" + edit + "(" + data.id + ",row)'></button>" +
         "<button flow-permission-visible title='Delete' task='task' page='task.page' method='delete' type='button' class='btn btn-danger glyphicon glyphicon-trash field-margin' ng-click='" + del + "(dataItem[" + row + "],row)'> </button></div>";
 }

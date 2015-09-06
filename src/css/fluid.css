@@ -298,10 +298,8 @@ and open the template in the editor.
 }
 
 div.flow-form label {
-    font-size: 14px;
     font-style: inherit;
     font-variant: inherit;
-    text-align: left !important;
 }
 
 .panel-control {

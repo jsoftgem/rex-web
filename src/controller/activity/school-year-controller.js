@@ -116,7 +116,7 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables"])
 
 
             s.$watch(function (scope) {
-                return scope.task.create.customerLookUp
+                return scope.task.create.customerLookUp;
             }, function (newValue, oldValue) {
                 if (newValue === undefined) {
                     /*s.task.modelCreate.warCustomerMarkets[s.task.create.customerIndex].customerId = undefined;
@@ -131,7 +131,7 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables"])
 
             });
 
-            s.$on(s.flow.getEventId("createCustomerEvent"), function (event) {
+           /* s.$on(s.flow.getEventId("createCustomerEvent"), function (event) {
                 if (s.task.modelCreate.warCustomerMarkets === undefined) {
                     s.task.modelCreate.warCustomerMarkets = [];
                 }
@@ -142,28 +142,28 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables"])
                 s.task.create.customerIndex = s.task.modelCreate.warCustomerMarkets.length - 1;
 
                 fm.show(s.flow.getElementFlowId("customerModal"));
-            })
+            })*/
 
 
-            s.$on(s.flow.getEventId("editCustomerEvent"), function (event, id, index) {
+            /* s.$on(s.flow.getEventId("editCustomerEvent"), function (event, id, index) {
 
-                s.task.create.customerTemp = {};
+             s.task.create.customerTemp = {};
 
-                angular.copy(s.task.modelCreate.warCustomerMarkets[index], s.task.create.customerTemp);
+             angular.copy(s.task.modelCreate.warCustomerMarkets[index], s.task.create.customerTemp);
 
-                s.task.create.customerManaged = true;
+             s.task.create.customerManaged = true;
 
-                s.task.create.customerIndex = index;
+             s.task.create.customerIndex = index;
 
-                fm.show(s.flow.getElementFlowId("customerModal"));
-            })
+             fm.show(s.flow.getElementFlowId("customerModal"));
+             })
+             */
 
-
-            s.add = function () {
+        /*    s.add = function () {
                 s.task.create.customerMarket = {};
                 s.task.modelCreate.warCustomerMarkets.push(s.task.create.customerMarket);
                 s.task.create.customerIndex = s.task.modelCreate.warCustomerMarkets.length - 1;
-            }
+            }*/
 
             s.saveAndClose = function () {
                 fm.hide(s.flow.getElementFlowId("customerModal"), s.flow.getElementFlowId('customerLookUp'));
@@ -192,15 +192,15 @@ angular.module("schoolYearController", ["fluid", "ngResource", "datatables"])
             });
 
 
-            s.$watch(function (scope) {
-                    return scope.task.modelCreate.warCustomerMarkets[s.task.create.customerIndex].marketPotential
-                },
-                function (newMarketPotential, oldMarketPotential) {
+            /* s.$watch(function (scope) {
+             return scope.task.modelCreate.warCustomerMarkets[s.task.create.customerIndex].marketPotential
+             },
+             function (newMarketPotential, oldMarketPotential) {
 
-                    s.task.modelCreate.warCustomerMarkets[s.task.create.customerIndex].marketPotentialSegment = getMarketSegment(newMarketPotential);
+             s.task.modelCreate.warCustomerMarkets[s.task.create.customerIndex].marketPotentialSegment = getMarketSegment(newMarketPotential);
 
-                }
-            );
+             }
+             );*/
 
         }])
     .controller("schoolYearEditCtrl", ["$scope", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService",

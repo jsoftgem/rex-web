@@ -2,13 +2,12 @@
 
     <form id="{{flow.getElementFlowId('planner')}}" class="form-horizontal" role="form" novalidate>
         <div class="form-group">
-            <div class="col-lg-3">
-                <flow-select id="{{flow.getElementFlowId('schoolYearSelect')}}" task="task" label="School Year"
-                             source-url="services/war/school_year_query/list" model="task.schoolYear" disabled="false"
-                             required="false"
-                             field-label="description">
-                </flow-select>
-            </div>
+            <fluid-select with-host="sourceUrl" class="col-lg-3 col-md-12 col-sm-12 col-xs-12" primary
+                          id="{{flow.getElementFlowId('schoolYearSelect')}}"
+                          label="School Year"
+                          source-url="services/war/school_year_query/list" model="task.schoolYear"
+                          field-label="description">
+            </fluid-select>
             <div class="col-lg-3">
                 <flow-look-up ng-if="task.schoolYear != undefined && !task.hideAgentFilter" task="task"
                               id="{{flow.getElementFlowId('agentLookUp')}}"

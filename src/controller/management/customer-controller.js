@@ -188,6 +188,7 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
             }
 
             fm.show(s.flow.getElementFlowId("contactsModal"));
+            console.debug("createContactEvent",event);
         });
 
         s.$on(s.flow.getEventId("editContactEvent"),

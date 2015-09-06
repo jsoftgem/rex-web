@@ -5,24 +5,21 @@
             <fieldset>
                 <legend>Options</legend>
                 <div column="3">
-                    <div class="col-lg-10">
-                        <flow-select disabled="!task.report.isYear" required="false" model="task.report.year"
-                                     task="task" label="Year"
-                                     source-url="factories/war/table_factories/years"></flow-select>
-                    </div>
+                    <fluid-select class="col-lg-10" with-host="sourceUrl" fluid-disabled="!task.report.isYear" primary
+                                  model="task.report.year" label="Year"
+                                  source-url="factories/war/table_factories/years"></fluid-select>
+
                     <div class="col-lg-1">
                         <flow-check disabled="false" required="false" model="task.report.isYear"></flow-check>
                     </div>
                 </div>
 
                 <div column="3">
-                    <div class="col-lg-10">
-                        <flow-select disabled="!task.report.isMonth"
-                                     model="task.report.month" task="task" label="Month"
-                                     source-url="factories/war/table_factories/months" required="false">
+                    <fluid-select class="col-lg-10" fluid-disabled="!task.report.isMonth" with-host="sourceUrl" primary
+                                  model="task.report.month" label="Month"
+                                  source-url="factories/war/table_factories/months" required="false">
 
-                        </flow-select>
-                    </div>
+                    </fluid-select>
                     <div class="col-lg-2">
                         <flow-check disabled="false" required="false" model="task.report.isMonth"></flow-check>
                     </div>
@@ -49,13 +46,11 @@
                 </div>
 
                 <div ng-hide="task.hideAgentFilter" column="3">
-                    <div class="col-lg-10">
 
-                        <flow-select required="false" disabled="!task.report.isRegion" model="task.report.region"
-                                     task="task"
-                                     label="Region" field-label="regionCode" field-value="regionCode"
-                                     source-url="services/war/region_query/list"></flow-select>
-                    </div>
+                    <fluid-select class="col-lg-10" fluid-disabled="!task.report.isRegion" model="task.report.region"
+                                  with-host="sourceUrl" primary
+                                  label="Region" field-label="regionCode" field-value="regionCode"
+                                  source-url="services/war/region_query/list"></fluid-select>
 
                     <div class="col-lg-2">
                         <flow-check disabled="false" required="false" model="task.report.isRegion"></flow-check>
