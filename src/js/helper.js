@@ -341,6 +341,67 @@ function isDayEnabled(dayDate, currentDate) {
 }
 
 
+function setDraggable(s) {
+
+    $("#" + s.flow.getElementFlowId("event_body") + " .event-customer td div").each(function () {
+        $(this).data("eventObject", {
+            title: $.trim($(this).text()),
+            activityType: "SCHOOL"
+        });
+
+        $(this).removeClass("non-draggable").addClass("draggable");
+
+        $(this).draggable({
+            helper: function () {
+                return $("<div>").addClass("event-customer-draggable").html($(this).text()).clone();
+            },
+            zIndex: 99999,
+            revert: true,
+            revertDuration: 0
+        });
+
+    });
+
+    $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
+
+        $(this).removeAttr("disabled");
+
+        $(this).data("eventObject", {
+            title: $.trim($(this).html()),
+            activityType: $(this).attr("activity-type")
+        });
+
+        $(this).draggable({
+            zIndex: 99999,
+            revert: true,
+            revertDuration: 0
+        });
+    });
+}
+
+function disableDraggable(s) {
+
+    $("#" + s.flow.getElementFlowId("event_body") + " .event-customer td div").each(function () {
+
+        $(this).removeClass("draggable").addClass("non-draggable");
+
+        if ($(this).draggable()) {
+            $(this).draggable("destroy");
+        }
+
+    });
+
+    $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
+
+        $(this).attr("disabled", "");
+
+        if ($(this).draggable()) {
+            $(this).draggable("destroy");
+        }
+    });
+}
+
+
 /*
  * jQuery Double Tap
  * Developer: Sergey Margaritov (sergey@margaritov.net)

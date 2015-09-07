@@ -4197,17 +4197,9 @@ flowComponents
             restrict: "AE",
             scope: {model: "=", label: "@", required: "=", disabled: "=", name: "@"},
             template: tc.get("templates/fluid/fluidCheckbox.html"),
-            link: function (scope) {
+            link: function (scope, element) {
                 if (!scope.name && scope.label) {
                     scope.name = scope.label.trim().split(" ").join("_");
-                }
-
-                if (scope.required === undefined) {
-                    scope.required = false;
-                }
-
-                if (scope.disabled === undefined) {
-                    scope.disabled = false;
                 }
 
                 if (scope.model === undefined) {
@@ -4219,6 +4211,27 @@ flowComponents
                         scope.model = !scope.model;
                     }
                 }
+
+
+                scope.$watch(function (scope) {
+                    return scope.disabled;
+                }, function (disabled) {
+                    if (disabled) {
+                        element.find("input").attr("disabled", "");
+                    } else {
+                        element.find("input").removeAttr("disabled");
+                    }
+                });
+                scope.$watch(function (scope) {
+                    return scope.required;
+                }, function (required) {
+                    if (required) {
+                        element.find("input").attr("required", "");
+                    } else {
+                        element.find("input").removeAttr("required");
+                    }
+                });
+
 
             },
             replace: true
@@ -4490,7 +4503,9 @@ flowComponents
                 keyVar: "@",
                 fieldValue: "@",
                 parentId: "@",
-                name: "@"
+                name: "@",
+                changed: "&",
+                removed: "&"
             },
             link: function (scope, element) {
 
@@ -4632,6 +4647,16 @@ flowComponents
                 scope.clear = function () {
                     scope.model = undefined;
                 };
+
+                scope.$watch(function (scope) {
+                    return scope.model;
+                }, function (value, oldValue) {
+                    if (value) {
+                        scope.changed({item: value});
+                    } else {
+                        scope.removed({oldItem: oldValue})
+                    }
+                });
 
             },
             template: tc.get("templates/fluid/fluidLookup.html"),
@@ -6495,6 +6520,67 @@ function isDayEnabled(dayDate, currentDate) {
 }
 
 
+function setDraggable(s) {
+
+    $("#" + s.flow.getElementFlowId("event_body") + " .event-customer td div").each(function () {
+        $(this).data("eventObject", {
+            title: $.trim($(this).text()),
+            activityType: "SCHOOL"
+        });
+
+        $(this).removeClass("non-draggable").addClass("draggable");
+
+        $(this).draggable({
+            helper: function () {
+                return $("<div>").addClass("event-customer-draggable").html($(this).text()).clone();
+            },
+            zIndex: 99999,
+            revert: true,
+            revertDuration: 0
+        });
+
+    });
+
+    $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
+
+        $(this).removeAttr("disabled");
+
+        $(this).data("eventObject", {
+            title: $.trim($(this).html()),
+            activityType: $(this).attr("activity-type")
+        });
+
+        $(this).draggable({
+            zIndex: 99999,
+            revert: true,
+            revertDuration: 0
+        });
+    });
+}
+
+function disableDraggable(s) {
+
+    $("#" + s.flow.getElementFlowId("event_body") + " .event-customer td div").each(function () {
+
+        $(this).removeClass("draggable").addClass("non-draggable");
+
+        if ($(this).draggable()) {
+            $(this).draggable("destroy");
+        }
+
+    });
+
+    $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
+
+        $(this).attr("disabled", "");
+
+        if ($(this).draggable()) {
+            $(this).draggable("destroy");
+        }
+    });
+}
+
+
 /*
  * jQuery Double Tap
  * Developer: Sergey Margaritov (sergey@margaritov.net)
@@ -7629,7 +7715,7 @@ angular.module("templates/fluid/fluidBar.html", []).run(["$templateCache", funct
 
 angular.module("templates/fluid/fluidCheckbox.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("templates/fluid/fluidCheckbox.html",
-    "<div class=\"form-group flow-form\"><label ng-click=\"update()\" column=\"12\" class=\"control-label\" for=\"{{name}}\"><input style=\"position: absolute; left: -9999px; width: 1px; height: 1px\" name=\"{{name}}\" ng-model=\"model\" ng-disabled=\"disabled ? disabled : false\" ng-required=\"required ? required : false\"> <span ng-if=\"disabled ? disabled : false\" class=\"fluid-checkbox disabled\"><i ng-if=\"model\" class=\"fa fa-check-square-o\" style=\"font-size: 20px;color: #d3d3d3\"></i> <i ng-if=\"!model\" class=\"fa fa-square-o\" style=\"font-size: 20px;color: #d3d3d3\"></i></span> <span ng-if=\"disabled ? false : true\" class=\"fluid-checkbox\" type=\"button\"><i ng-if=\"model\" class=\"text-success fa fa-check-square-o\" style=\"font-size: 20px\"></i> <i ng-if=\"!model\" class=\"fa fa-square-o\" style=\"font-size: 20px;color: grey\"></i></span> {{label}} <span class=\"text-danger\" ng-show=\"required\">*</span></label></div>");
+    "<div class=\"form-group flow-form\"><label ng-click=\"update()\" column=\"12\" class=\"control-label\" for=\"{{name}}\"><span class=\"pull-left\"><input style=\"position: absolute; left: -9999px; width: 1px; height: 1px\" name=\"{{name}}\" ng-model=\"model\"> <span ng-if=\"disabled ? disabled : false\" class=\"fluid-checkbox disabled\"><i ng-if=\"model\" class=\"fa fa-check-square-o\" style=\"font-size: 20px;color: #d3d3d3\"></i> <i ng-if=\"!model\" class=\"fa fa-square-o\" style=\"font-size: 20px;color: #d3d3d3\"></i></span> <span ng-if=\"disabled ? false : true\" class=\"fluid-checkbox\" type=\"button\"><i ng-if=\"model\" class=\"text-success fa fa-check-square-o\" style=\"font-size: 20px\"></i> <i ng-if=\"!model\" class=\"fa fa-square-o\" style=\"font-size: 20px;color: grey\"></i></span></span> <span class=\"marginLeft5px pull-left\">{{label}}</span> <span class=\"text-danger\" ng-show=\"required\">*</span></label></div>");
 }]);
 
 angular.module("templates/fluid/fluidDatePicker.html", []).run(["$templateCache", function($templateCache) {

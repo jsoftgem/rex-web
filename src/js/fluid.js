@@ -1451,17 +1451,9 @@ flowComponents
             restrict: "AE",
             scope: {model: "=", label: "@", required: "=", disabled: "=", name: "@"},
             template: tc.get("templates/fluid/fluidCheckbox.html"),
-            link: function (scope) {
+            link: function (scope, element) {
                 if (!scope.name && scope.label) {
                     scope.name = scope.label.trim().split(" ").join("_");
-                }
-
-                if (scope.required === undefined) {
-                    scope.required = false;
-                }
-
-                if (scope.disabled === undefined) {
-                    scope.disabled = false;
                 }
 
                 if (scope.model === undefined) {
@@ -1473,6 +1465,27 @@ flowComponents
                         scope.model = !scope.model;
                     }
                 }
+
+
+                scope.$watch(function (scope) {
+                    return scope.disabled;
+                }, function (disabled) {
+                    if (disabled) {
+                        element.find("input").attr("disabled", "");
+                    } else {
+                        element.find("input").removeAttr("disabled");
+                    }
+                });
+                scope.$watch(function (scope) {
+                    return scope.required;
+                }, function (required) {
+                    if (required) {
+                        element.find("input").attr("required", "");
+                    } else {
+                        element.find("input").removeAttr("required");
+                    }
+                });
+
 
             },
             replace: true
@@ -1744,7 +1757,9 @@ flowComponents
                 keyVar: "@",
                 fieldValue: "@",
                 parentId: "@",
-                name: "@"
+                name: "@",
+                changed: "&",
+                removed: "&"
             },
             link: function (scope, element) {
 
@@ -1886,6 +1901,16 @@ flowComponents
                 scope.clear = function () {
                     scope.model = undefined;
                 };
+
+                scope.$watch(function (scope) {
+                    return scope.model;
+                }, function (value, oldValue) {
+                    if (value) {
+                        scope.changed({item: value});
+                    } else {
+                        scope.removed({oldItem: oldValue})
+                    }
+                });
 
             },
             template: tc.get("templates/fluid/fluidLookup.html"),

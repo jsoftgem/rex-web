@@ -2,14 +2,17 @@
 
     <form id="{{flow.getElementFlowId('planner')}}" class="form-horizontal" role="form" novalidate>
         <div class="form-group">
-            <fluid-select with-host="sourceUrl" class="col-lg-3 col-md-12 col-sm-12 col-xs-12" primary
+            <fluid-select change="selectYear(item)" with-host="sourceUrl" class="col-lg-3 col-md-12 col-sm-12 col-xs-12"
+                          primary
                           id="{{flow.getElementFlowId('schoolYearSelect')}}"
                           label="School Year"
                           source-url="services/war/school_year_query/list" model="task.schoolYear"
                           field-label="description">
             </fluid-select>
             <div class="col-lg-3">
-                <flow-look-up ng-if="task.schoolYear != undefined && !task.hideAgentFilter" task="task"
+                <flow-look-up changed="changeAgent(item)" removed="flow.onRefreshed()"
+                              ng-if="task.schoolYear != undefined && !task.hideAgentFilter"
+                              task="task"
                               id="{{flow.getElementFlowId('agentLookUp')}}"
                               field-label="user.flowUserDetail.fullName"
                               parent-id="{{flow.getElementFlowId('planner')}}"
@@ -92,10 +95,10 @@
                         <tbody class="customer-tag-table" id="{{flow.getElementFlowId('event_body')}}">
 
                         <tr class="event-customer enabled-day"
-                            ng-repeat="cus in customer.customers | filter : task.search">
+                            ng-repeat="cus in customer.customers | filter : task.search" ng-init="initDrag($last)">
                             <td ng-if="customer.tag != 'All'">{{cus.index}}</td>
                             <td>
-                                <div class="td-drag" ng-click="opentCustomerSummary(cus.id)" customer="{{cus}}"><a
+                                <div class="td-drag" ng-click="openCustomerSummary(cus.id)" customer="{{cus}}"><a
                                         href="#">{{cus.name}}</a>
                                 </div>
                             </td>
@@ -373,7 +376,6 @@
 
     </flow-modal>
     <flow-modal id="{{flow.getElementFlowId('other_activity')}}">
-
         <div class="panel panel-primary">
             <div class="panel-heading">
                 <div class="panel-heading">
@@ -431,7 +433,7 @@
         </div>
 
     </flow-modal>
-    <flow-modal id="submitConfirm">
+    <flow-modal id="{{flow.getElementFlowId('submitConfirm')}}">
         <div class="panel panel-info">
             <div class="panel-heading">
                     <span class="panel-title">
