@@ -100,9 +100,13 @@ angular.module("war.session", ["fluid"])
 
         return authFactory;
     }])
-    .factory("AuthInterceptor", ["AuthFactory", function (a) {
+    .factory("AuthInterceptor", ["AuthFactory", "APP_KEY", function (a, appKey) {
         return {
             "request": function (config) {
+
+                config.headers = config.headers || {};
+                config.headers["app_key"] = appKey;
+
                 if (a.getToken()) {
                     config.headers = config.headers || {};
                     config.headers.Authorization = "bearer " + a.getToken();
