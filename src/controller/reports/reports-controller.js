@@ -4,8 +4,10 @@
 angular.module("reportsController", ["fluid", "ngResource", "datatables", "angular.filter", "flowServices"])
     .controller("reportsCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService",
         "$compile", "$filter", "sessionService", "HOST", "$timeout", "flowFrameService", "userProfile", "hasProfile",
-        function (s, dto, dtc, ms, fm, c, f, ss, h, t, ffs, up, hp) {
+        "$http",
+        function (s, dto, dtc, ms, fm, c, f, ss, h, t, ffs, up, hp, $h) {
 
+            s.task.csvDownloadUrl = undefined;
 
             s.totalProductivity = function (planned, unplanned, target) {
 
@@ -207,6 +209,94 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                     })
                 }
             };
+            s.task.export = function (type) {
+                s.task.exporting = true;
+                s.task.csvDownloadUrl = undefined;
+                t(function () {
+                    s.$apply();
+                    var url = "services/war/report_weekly_service/agents_" + type + "?";
+
+                    var agentId = (s.task.report.agent !== undefined ? s.task.report.agent.id : undefined);
+
+                    var count = 0;
+
+                    if (s.task.report.isYear) {
+                        url += "isYear=true&year=" + s.task.report.year;
+                        count++;
+                    }
+
+
+                    if (s.task.report.isMonth) {
+                        if (count > 0) {
+                            url += "&";
+                        } else {
+                            count++;
+                        }
+                        url += "isMonth=true&month=" + s.task.report.month;
+                    }
+
+                    if (s.task.report.isAgent) {
+                        if (count > 0) {
+                            url += "&"
+                        } else {
+                            count++;
+                        }
+                        url += "isAgent=true&agentId=" + agentId;
+                    }
+
+                    if (s.task.report.isRegion) {
+                        if (count > 0) {
+                            url += "&"
+                        } else {
+                            count++;
+                        }
+                        url += "isRegion=true&region=" + s.task.report.region;
+                    }
+
+
+                    if (s.task.valid() && s.task.report.closed === false) {
+                        if (count > 0) {
+                            url += "&"
+                        }
+                        if (s.task.report.size) {
+                            url += "size=" + s.task.report.size;
+                        }
+                        if (s.task.report.tag) {
+                            url += "&tag=" + s.task.report.tag;
+                        }
+
+                        if (s.task.report.start) {
+                            url += "&start=" + s.task.report.start;
+                        }
+
+                        $h({
+                            url: withHost(url), method: "get",
+                            transformResponse: function (value) {
+                                if (type === "html") {
+                                    $(value).print({
+                                        globalStyles: true,
+                                        iframe: true,
+                                        noPrintSelector: ".no-print",
+                                        manuallyCopyFormValues: true,
+                                        deferred: $.Deferred()
+                                    });
+                                }
+                                else if (type === "csv") {
+                                    var blob = new Blob([value], {type: 'text/csv'});
+                                    s.task.csvDownloadUrl = (window.URL || window.webkitURL).createObjectURL(blob);
+                                }
+                                return undefined;
+                            }
+                        }).success(function () {
+                            s.task.exporting = false;
+
+                        }).error(function (err) {
+                            s.task.exporting = false;
+                            s.flow.message.danger(err);
+                        });
+                    }
+                });
+            };
 
             s.task.valid = function () {
                 var valid = true;
@@ -314,9 +404,7 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
 
 
             s.task.page.load = function () {
-                if (this.name === s.task.pageAgent) {
-                    s.task.query();
-                }
+
             };
         }
     ])

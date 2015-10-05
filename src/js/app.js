@@ -1,5 +1,9 @@
 'use strict';
 angular.module("app", ["MAdmin", "fluid.webComponents", "war.resources", "war.session", "war.sidebar", "datatables", "datatables.bootstrap", "datatables.tabletools", "datatables.colvis", "flowServices", "flowFactories", "home", "fluid", "devControllers", "adminControllers", "flowAppDirectives", "sessionControllers", "infinite-scroll", "ngDragDrop", "rexTemplates"])
+
+    .config(function ($compileProvider) {
+        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file|blob):/);
+    })
     .run(["flowFrameService", "flowHttpService", "userProfile", "responseEvent", "userAppSetting", "HOST",
         function (f, fhp, up, re, uas, h) {
             fhp.host = h;

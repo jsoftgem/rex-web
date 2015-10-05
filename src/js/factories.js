@@ -18,7 +18,11 @@ function withHost(url) {
         url = url.substring(1, url.length - 1);
     }
     console.debug("withHost.url", url);
-    return HOST + url;
+    if (url.indexOf(HOST) > -1) {
+        return url;
+    } else {
+        return HOST + url;
+    }
 }
 
 /*add http://192.168.1.2:9080/rex-war/ when accessing via remote*/

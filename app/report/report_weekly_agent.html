@@ -62,107 +62,149 @@
         </div>
 
 
-        <div class="btn-group">
-            <button button info="button" class="dropdown-toggle" data-toggle="dropdown"
-                    aria-expanded="false">
-                <span>Toggle Columns</span>
-                <span class="caret"></span>
-                <span class="sr-only">Toggle Dropdown</span>
-            </button>
-            <ul class="dropdown-menu toggle-columns" role="menu">
-                <li ng-init="task.table.isMaterialsAdvisor = true">
-                    <flow-check disabled="false" required="false" label="Materials Advisor"
-                                model="task.table.isMaterialsAdvisor"></flow-check>
+        <div class="form-group btn-group btn-group-lg">
+            <div class="btn-group dropdown">
+                <button button info="button" class="dropdown-toggle" data-toggle="dropdown"
+                        aria-expanded="false">
+                    <span>Toggle Columns</span>
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu toggle-columns" role="menu">
+                    <li ng-init="task.table.isMaterialsAdvisor = true">
+                        <a href="#" ng-click="task.table.isMaterialsAdvisor=!task.table.isMaterialsAdvisor"><input
+                                type="checkbox" ng-model="task.table.isMaterialsAdvisor"> Materials Advisor</a>
+                    </li>
+                    <li ng-init="task.table.isWorkedWith=true">
+                        <a href="#" ng-click="task.table.isWorkedWith=!task.table.isWorkedWith">
+                            <input type="checkbox" ng-model="task.table.isWorkedWith"/> Worked with Sales/Manager
+                        </a>
+                    </li>
+                    <li ng-init="task.table.isWeek = true">
+                        <a href="#"
+                           ng-click="task.table.isWeek=!task.table.isWeek">
+                            <input type="checkbox" ng-model="task.table.isWeek"/> Week
+                        </a>
+                    </li>
 
-                </li>
-                <li ng-init="task.table.isWorkedWith=true">
-                    <flow-check disabled="false" required="false" label="Worked with Sales/Manager"
-                                model="task.table.isWorkedWith"></flow-check>
-                </li>
-                <li ng-init="task.table.isWeek = true">
-                    <flow-check disabled="false" required="false" label="Week"
-                                model="task.table.isWeek"></flow-check>
-                </li>
+                    <li ng-init="task.table.isYear = true">
+                        <a href="#"
+                           ng-click="task.table.isYear=!task.table.isYear">
+                            <input type="checkbox" ng-model="task.table.isYear"/> Year
+                        </a>
+                    </li>
 
-                <li ng-init="task.table.isYear = true">
-                    <flow-check disabled="false" required="false" label="Year"
-                                model="task.table.isYear"></flow-check>
-                </li>
+                    <li ng-init="task.table.isPlannedTarget = true">
+                        <a href="#"
+                           ng-click="task.table.isPlannedTarget=!task.table.isPlannedTarget">
+                            <input type="checkbox" ng-model="task.table.isPlannedTarget"/> Target
+                        </a>
+                    </li>
 
-                <li ng-init="task.table.isPlannedTarget = true">
-                    <flow-check disabled="false" required="false" label="Target"
-                                model="task.table.isPlannedTarget"></flow-check>
-                </li>
+                    <li ng-init="task.table.isPlannedActual = true">
+                        <a href="#"
+                           ng-click="task.table.isPlannedActual=!task.table.isPlannedActual">
+                            <input type="checkbox" ng-model="task.table.isPlannedActual"/> Actual
+                        </a>
+                    </li>
 
-                <li ng-init="task.table.isPlannedActual = true">
-                    <flow-check disabled="false" required="false" label="Actual"
-                                model="task.table.isPlannedActual"></flow-check>
-                </li>
+                    <li ng-init="task.table.isUnplannedActual = true">
+                        <a href="#"
+                           ng-click="task.table.isUnplannedActual=!task.table.isUnplannedActual">
+                            <input type="checkbox" ng-model="task.table.isUnplannedActual"/> Unplanned
+                        </a>
+                    </li>
+                    <li ng-init="task.table.isTotalCallProd = true">
+                        <a href="#"
+                           ng-click="task.table.isTotalCallProd=!task.table.isTotalCallProd">
+                            <input type="checkbox" ng-model="task.table.isTotalCallProd"/> Call Productivity
+                        </a>
+                    </li>
 
-                <li ng-init="task.table.isUnplannedActual = true">
-                    <flow-check disabled="false" required="false" label="Unplanned"
-                                model="task.table.isUnplannedActual"></flow-check>
-                </li>
-                <li ng-init="task.table.isTotalCallProd = true">
-                    <flow-check disabled="false" required="false" label="Call Productivity"
-                                model="task.table.isTotalCallProd"></flow-check>
-                </li>
+                    <li ng-init="task.table.isEcd = true">
+                        <a href="#"
+                           ng-click="task.table.isEcd=!task.table.isEcd">
+                            <input type="checkbox" ng-model="task.table.isEcd"/> Exam Copies Distribution
+                        </a>
+                    </li>
 
-                <li ng-init="task.table.isEcd = true">
-                    <flow-check disabled="false" required="false" label="Exam Copies Distribution"
-                                model="task.table.isEcd"></flow-check>
-                </li>
+                    <li ng-init="task.table.isIte = true">
+                        <a href="#"
+                           ng-click="task.table.isIte=!task.table.isIte">
+                            <input type="checkbox" ng-model="task.table.isIte"/> Invitation to Events
+                        </a>
+                    </li>
 
-                <li ng-init="task.table.isIte = true">
-                    <flow-check disabled="false" required="false" label="Invitation to Events"
-                                model="task.table.isIte"></flow-check>
-                </li>
+                    <li ng-init="task.table.isCoe = true">
+                        <a href="#"
+                           ng-click="task.table.isCoe=!task.table.isCoe">
+                            <input type="checkbox" ng-model="task.table.isCoe"/>Confirmation of Events
+                        </a>
+                    </li>
+                    <li ng-init="task.table.isFp = true">
+                        <a href="#"
+                           ng-click="task.table.isFp=!task.table.isFp">
+                            <input type="checkbox" ng-model="task.table.isFp"/>Follow up Payment
+                        </a>
+                    </li>
 
-                <li ng-init="task.table.isCoe = true">
-                    <flow-check disabled="false" required="false" label="Confirmation of Events"
-                                model="task.table.isCoe"></flow-check>
-                </li>
-                <li ng-init="task.table.isFp = true">
-                    <flow-check disabled="false" required="false" label="Follow up Payment"
-                                model="task.table.isFp"></flow-check>
-                </li>
-
-                <li ng-init="task.table.isGd = true">
-                    <flow-check disabled="false" required="false" label="Giveaways Distribution"
-                                model="task.table.isGd"></flow-check>
-                </li>
-
-
-                <li ng-init="task.table.isDoi = true">
-                    <flow-check disabled="false" required="false" label="Delivery of Incentive/Donation"
-                                model="task.table.isDoi"></flow-check>
-                </li>
-
-                <li ng-init="task.table.isPo = true">
-                    <flow-check disabled="false" required="false" label="Purchase Order"
-                                model="task.table.isPo"></flow-check>
-                </li>
-                <li ng-init="task.table.isDaotrc = true">
-                    <flow-check disabled="false" required="false"
-                                label="Delivery of Additional Order / TRM / Compli"
-                                model="task.table.isDaotrc"></flow-check>
-                </li>
-                <li ng-init="task.table.isBooklist = true">
-                    <flow-check disabled="false" required="false" label="Booklist"
-                                model="task.table.isBooklist"></flow-check>
-                </li>
+                    <li ng-init="task.table.isGd = true">
+                        <a href="#"
+                           ng-click="task.table.isGd=!task.table.isGd">
+                            <input type="checkbox" ng-model="task.table.isGd"/>Giveaways Distribution
+                        </a>
+                    </li>
 
 
-                <li ng-init="task.table.isUcis = true">
-                    <flow-check disabled="false" required="false" label="Updated Customer Info Sheet"
-                                model="task.table.isUcis"></flow-check>
-                </li>
-                <li ng-init="task.table.isIes = true">
-                    <flow-check disabled="false" required="false" label="Implemented Ex-Sem"
-                                model="task.table.isIes"></flow-check>
-                </li>
-            </ul>
+                    <li ng-init="task.table.isDoi = true">
+                        <a href="#"
+                           ng-click="task.table.isDoi=!task.table.isDoi">
+                            <input type="checkbox" ng-model="task.table.isDoi"/>Delivery of Incentive/Donation
+                        </a>
+                    </li>
 
+                    <li ng-init="task.table.isPo = true">
+                        <a href="#" ng-click="task.table.isPo=!task.table.isPo">
+                            <input type="checkbox" ng-model="task.table.isPo"/>Purchase Order
+                        </a>
+                    </li>
+                    <li ng-init="task.table.isDaotrc = true">
+                        <a href="#" ng-click="task.table.isDaotrc=!task.table.isDaotrc">
+                            <input type="checkbox" ng-model="task.table.isDaotrc"/>Delivery of Additional Order / TRM /
+                            Compli
+                        </a>
+                    </li>
+                    <li ng-init="task.table.isBooklist = true">
+                        <a href="#" ng-click="task.table.isBooklist=!task.table.isBooklist">
+                            <input type="checkbox" ng-model="task.table.isBooklist"/>Booklist
+                        </a>
+                    </li>
+
+
+                    <li ng-init="task.table.isUcis = true">
+                        <a href="#" ng-click="task.table.isUcis=!task.table.isUcis">
+                            <input type="checkbox" ng-model="task.table.isUcis"/>Updated Customer Info Sheet
+                        </a>
+                    </li>
+                    <li ng-init="task.table.isIes = true">
+                        <a href="#" ng-click="task.table.isIes=!task.table.isIes">
+                            <input type="checkbox" ng-model="task.table.isIes"/>Implemented Ex-Sem
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="btn-group btn-group-lg dropdown">
+                <button button warning="button" class="dropdown-toggle" data-toggle="dropdown">
+                    <span ng-if="!task.exporting">Export</span>
+                    <span ng-if="!task.exporting" class="caret"></span>
+                    <i ng-if="task.exporting" class="fa fa-spin fa-spinner"></i>
+                </button>
+                <ul ng-if="!task.exporting" class="dropdown-menu" role="menu">
+                    <li><a href="#" ng-click="task.export('html')"><i fluid-icon-print></i> Print</a></li>
+                    <li><a href="#" ng-click="task.export('csv')"><i class="fa fa-file-excel-o"></i> CSV</a></li>
+                </ul>
+                <a ng-if="task.csvDownloadUrl" class="btn btn-success" ng-href="{{task.csvDownloadUrl}}">Download CSV</a>
+            </div>
         </div>
 
 
