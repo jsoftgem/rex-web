@@ -1,66 +1,6 @@
 <div ng-controller="reportsCtrl" class="container-fluid">
 
     <form id="{{flow.getElementFlowId('reportFrame')}}" class="form-horizontal">
-        <div column="12">
-            <fieldset>
-                <legend>Options</legend>
-                <div column="3">
-                    <fluid-select class="width100pc" with-host="sourceUrl" fluid-disabled="!task.report.isYear" primary
-                                  model="task.report.year" label="Year"
-                                  source-url="factories/war/table_factories/years"></fluid-select>
-
-                    <div class="col-lg-1">
-                        <flow-check disabled="false" required="false" model="task.report.isYear"></flow-check>
-                    </div>
-                </div>
-
-                <div column="3">
-                    <fluid-select class="width100pc" fluid-disabled="!task.report.isMonth" with-host="sourceUrl" primary
-                                  model="task.report.month" label="Month"
-                                  source-url="factories/war/table_factories/months" required="false">
-
-                    </fluid-select>
-                    <div class="col-lg-2">
-                        <flow-check disabled="false" required="false" model="task.report.isMonth"></flow-check>
-                    </div>
-                </div>
-
-                <div ng-hide="task.hideAgentFilter" column="3">
-
-                    <div class="col-lg-10">
-                        <flow-look-up disabled="!task.report.isAgent" model="task.report.agent" task="task" flow="flow"
-                                      id="{{flow.getElementFlowId('agentLookUp')}}"
-                                      label="Materials Advisor" parent-id="{{flow.getElementFlowId('reportFrame')}}"
-                                      key-var="agent" field-label="user.flowUserDetail.fullName"
-                                      source-url="services/war/agent_query/list">
-
-                            <flow-sub-column title="Name" model="agent.user.flowUserDetail.fullName"></flow-sub-column>
-                            <flow-sub-column title="Initials" model="agent.initials"></flow-sub-column>
-                        </flow-look-up>
-                    </div>
-
-                    <div class="col-lg-2">
-                        <flow-check disabled="false" required="false" model="task.report.isAgent"></flow-check>
-                    </div>
-
-                </div>
-
-                <div ng-hide="task.hideAgentFilter" column="3">
-
-                    <fluid-select class="width100pc" fluid-disabled="!task.report.isRegion" model="task.report.region"
-                                  with-host="sourceUrl" primary
-                                  label="Region" field-label="regionCode" field-value="regionCode"
-                                  source-url="services/war/region_query/list"></fluid-select>
-
-                    <div class="col-lg-2">
-                        <flow-check disabled="false" required="false" model="task.report.isRegion"></flow-check>
-                    </div>
-
-                </div>
-
-            </fieldset>
-        </div>
-
 
         <div class="form-group btn-group btn-group-lg">
             <div class="btn-group dropdown">
@@ -203,10 +143,71 @@
                     <li><a href="#" ng-click="task.export('html')"><i fluid-icon-print></i> Print</a></li>
                     <li><a href="#" ng-click="task.export('csv')"><i class="fa fa-file-excel-o"></i> CSV</a></li>
                 </ul>
-                <a ng-if="task.csvDownloadUrl" class="btn btn-success" ng-href="{{task.csvDownloadUrl}}">Download CSV</a>
+                <a ng-if="task.csvDownloadUrl" class="btn btn-success" ng-href="{{task.csvDownloadUrl}}"
+                   download="{{task.csvDownloadName}}">Download
+                    CSV</a>
             </div>
         </div>
 
+        <div column="12">
+            <fieldset>
+                <legend>Options</legend>
+                <div column="3">
+                    <fluid-select class="width100pc" with-host="sourceUrl" fluid-disabled="!task.report.isYear" primary
+                                  model="task.report.year" label="Year"
+                                  source-url="factories/war/table_factories/years"></fluid-select>
+
+                    <div class="col-lg-1">
+                        <flow-check disabled="false" required="false" model="task.report.isYear"></flow-check>
+                    </div>
+                </div>
+
+                <div column="3">
+                    <fluid-select class="width100pc" fluid-disabled="!task.report.isMonth" with-host="sourceUrl" primary
+                                  model="task.report.month" label="Month"
+                                  source-url="factories/war/table_factories/months" required="false">
+
+                    </fluid-select>
+                    <div class="col-lg-2">
+                        <flow-check disabled="false" required="false" model="task.report.isMonth"></flow-check>
+                    </div>
+                </div>
+
+                <div ng-hide="task.hideAgentFilter" column="3">
+
+                    <div class="col-lg-10">
+                        <flow-look-up disabled="!task.report.isAgent" model="task.report.agent" task="task" flow="flow"
+                                      id="{{flow.getElementFlowId('agentLookUp')}}"
+                                      label="Materials Advisor" parent-id="{{flow.getElementFlowId('reportFrame')}}"
+                                      key-var="agent" field-label="user.flowUserDetail.fullName"
+                                      source-url="services/war/agent_query/list">
+
+                            <flow-sub-column title="Name" model="agent.user.flowUserDetail.fullName"></flow-sub-column>
+                            <flow-sub-column title="Initials" model="agent.initials"></flow-sub-column>
+                        </flow-look-up>
+                    </div>
+
+                    <div class="col-lg-2">
+                        <flow-check disabled="false" required="false" model="task.report.isAgent"></flow-check>
+                    </div>
+
+                </div>
+
+                <div ng-hide="task.hideAgentFilter" column="3">
+
+                    <fluid-select class="width100pc" fluid-disabled="!task.report.isRegion" model="task.report.region"
+                                  with-host="sourceUrl" primary
+                                  label="Region" field-label="regionCode" field-value="regionCode"
+                                  source-url="services/war/region_query/list"></fluid-select>
+
+                    <div class="col-lg-2">
+                        <flow-check disabled="false" required="false" model="task.report.isRegion"></flow-check>
+                    </div>
+
+                </div>
+
+            </fieldset>
+        </div>
 
         <div class="form-group">
             <!-- TODO: print <div class="btn-group btn-group-md">

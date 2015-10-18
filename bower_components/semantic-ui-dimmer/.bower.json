@@ -24,18 +24,14 @@
     "http://semantic-ui.mit-license.org/"
   ],
   "main": [
-    "dimmer.js",
     "dimmer.css"
   ],
-  "dependencies": {
-    "jquery": ">=1.8"
-  },
-  "version": "1.0.0",
-  "_release": "1.0.0",
+  "version": "2.1.4",
+  "_release": "2.1.4",
   "_resolution": {
     "type": "version",
-    "tag": "1.0.0",
-    "commit": "a6188168bcb7eb9ed6aded37e912984b0d565ff4"
+    "tag": "2.1.4",
+    "commit": "de644790e944210df1a3a1461c530abb8023f147"
   },
   "_source": "git://github.com/Semantic-Org/UI-Dimmer.git",
   "_target": "*",

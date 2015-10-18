@@ -51,34 +51,17 @@
 
         <div class="col-lg-12">
 
-            <!--    <flow-sub-table flow="flow" task="task" key-var="customer" title="Market segment"
-                                target-list="task.customerEdit.warCustomerMarketSchoolYears"
-                                id="{{flow.getElementFlowId('potentialTable')}}" id-field="id"
-                                create-event="addPotential" edit-event="editPotential" look-up="false">
-                    <flow-sub-column title="School Year"
-                                     model="customer.schoolYearDescription"></flow-sub-column>
-                    <flow-sub-column title="Market Potential Segment"
-                                     model="customer.marketPotentialSegment"></flow-sub-column>
-                    <flow-sub-column title="Market Potential" model="customer.marketPotential"></flow-sub-column>
-                </flow-sub-table>-->
+            <flow-sub-table flow="flow" task="task" key-var="customer" title="Market segment"
+                            target-list="task.customerEdit.warCustomerMarketSchoolYears"
+                            id="{{flow.getElementFlowId('potentialTable')}}" id-field="id"
+                            create-event="addPotential" edit-event="editPotential" look-up="false">
+                <flow-sub-column title="School Year"
+                                 model="customer.schoolYearDescription"></flow-sub-column>
+                <flow-sub-column title="Market Potential Segment"
+                                 model="customer.marketPotentialSegment"></flow-sub-column>
+                <flow-sub-column title="Market Potential" model="customer.marketPotential"></flow-sub-column>
+            </flow-sub-table>
 
-            <fluid-subtable primary key-var="customer" label="Market Segmet"
-                            model="task.customerEdit.warCustomerMarketSchoolYears">
-                <fluid-subcolumn name="schoolYear" header="School Year">
-                    <div class="column-row">
-                        {{customer.schoolYear}}
-                    </div>
-                    <div class="column-form">
-                        <div class="form-group">
-                            <fluid-subcomponent tag="fluid-select" primary with-host="sourceUrl"
-                                                source-url="services/war/school_year_query/list" label="School Year"
-                                                field-label="description" field-value="description"
-                                                model="customer.schoolYear">
-                            </fluid-subcomponent>
-                        </div>
-                    </div>
-                </fluid-subcolumn>
-            </fluid-subtable>
 
             <flow-sub-table flow="flow" task="task" key-var="contact" title="Contact Information"
                             target-list="task.customerEdit.contactDetails"

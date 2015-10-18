@@ -8,7 +8,7 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
         function (s, dto, dtc, ms, fm, c, f, ss, h, t, ffs, up, hp, $h) {
 
             s.task.csvDownloadUrl = undefined;
-
+            s.task.csvDownloadName = undefined;
             s.totalProductivity = function (planned, unplanned, target) {
 
                 var total = ((100 * (planned + unplanned)) / target);
@@ -122,13 +122,12 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
             };
             s.task.report = s.task.newReport();
 
-            hp.check("agent", s.task)
-                .success(function (valid) {
-                    s.task.hideAgentFilter = valid;
-                    s.task.report.isAgent = valid;
-                    s.task.report.agent = up.agent;
-                    console.info("profileAgent", up);
-                });
+            if (up.agent.id) {
+                s.task.hideAgentFilter = true;
+                s.task.report.isAgent = true;
+                s.task.report.agent = up.agent;
+                console.info("profileAgent", up);
+            }
 
             s.task.change = function () {
                 if (!s.task.report.isYear) {
@@ -284,6 +283,7 @@ angular.module("reportsController", ["fluid", "ngResource", "datatables", "angul
                                 else if (type === "csv") {
                                     var blob = new Blob([value], {type: 'text/csv'});
                                     s.task.csvDownloadUrl = (window.URL || window.webkitURL).createObjectURL(blob);
+                                    s.task.csvDownloadName = new Date() + ".csv";
                                 }
                                 return undefined;
                             }

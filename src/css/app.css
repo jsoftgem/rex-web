@@ -831,3 +831,23 @@ button.ColVis_Button {
         width: 100%;
     }
 }
+
+.positionFixed {
+    position: fixed;
+}
+
+.marginTop40px {
+    margin-top: 40px;
+}
+
+.nextChild100pc :first-child {
+    width: 100%;
+}
+
+.height47px input {
+    height: 47px;
+}
+
+.height47px button {
+    height: 47px;
+}
