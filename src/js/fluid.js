@@ -2478,7 +2478,7 @@ flowComponents
             }
         };
     }])
-    .directive("FluidImageUpload", ["$templateCache", "Upload", function (tc, u) {
+    .directive("fluidImageUpload", ["$templateCache", "Upload", function (tc, u) {
         return {
             restrict: "AE",
             template: tc.get("templates/fluid/fluidImageUpload.html"),

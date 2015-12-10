@@ -706,7 +706,7 @@ button.ColVis_Button {
 }
 
 .panel-login {
-    background: rgba(205, 10, 10, 0.2);
+    background: rgba(205, 10, 10, 0.2) !important;
 }
 
 .header-about {

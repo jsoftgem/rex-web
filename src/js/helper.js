@@ -90,43 +90,6 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
         .withOption("sDom", "<'top'iflp<'clear'>>rt<'bottom'iflp<'clear'>>")
         .withOption("stateSave", true)
         .withOption("serverSide", true)
-        /*.withTableTools("swf/copy_csv_xls_pdf.swf")
-         .withTableToolsOption("sRowSelect", "os")
-         .withTableToolsButtons([
-         "copy" /!*,{
-         "sExtends": "collection",
-         "sButtonText": "Edit",
-         "aButtons": ["select_all", "select_none"]
-         } TODO: report-api flow-service{
-         "sExtends": "collection",
-         "sButtonText": "Save",
-         "aButtons": ["csv", "xls", "pdf"]
-         }*!/
-         , {
-         "sExtends": "collection",
-         "sButtonText": "Print",
-         "aButtons": [{
-         "sExtends": "text",
-         "bShowAll": true,
-         "sButtonText": "All",
-         "fnClick": function (nButton, oConfig, oFlash) {
-         scope.task.flowHttpService.query({
-         method: "get",
-         data: "",
-         url: url + "/report_list",
-         transformResponse: []
-         }, scope.task)
-         .success(function (data) {
-         console.info("print-data", data);
-         $(data).print({globalStyles: true});
-         });
-         }
-         }]
-         }
-         ])
-         .withColVis()
-         .withColVisOption('aiExclude', [0])
-         .withColVisOption("buttonText", "Columns")*/
         .withPaginationType('simple_numbers');
 }
 

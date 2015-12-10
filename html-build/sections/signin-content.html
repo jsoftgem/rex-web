@@ -1,0 +1,48 @@
+<div class="header-about">
+    <div class="pull-left">Rex War++ v{{ver}}</div>
+    <div class="pull-right"><span>Powered by <a class="text-info"
+                                                href="http://www.jsofttechnologies.com">Jsofttechnologies </a>of
+                        GEM</span></div>
+</div>
+<div id="signin-page">
+    <div class="page-form panel-login">
+        <form class="form-login" class="form" method="post" ng-submit="login(user)">
+            <div class="header-login">
+                <h1><img class="img-responsive" src="images/icons/65yrs.jpg"/></h1>
+            </div>
+            <div class="body-content">
+                <flow-message id="loginMessage"></flow-message>
+                <div class="form-group">
+                    <p>Login with Rex War account:</p>
+
+                    <div class="input-icon right"><i class="fa fa-user"></i>
+                        <input type="text" placeholder="Username" name="username" class="form-control" required
+                               autofocus ng-model="user.username"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-icon right"><i class="fa fa-key"></i>
+                        <input type="password" placeholder="Password" name="password" class="form-control" required
+                               autofocus ng-model="user.password"/>
+                    </div>
+                </div>
+                <div class="form-group pull-left">
+                    <flow-check disabled="false" required="false" label="Keep me signed in"
+                                model="user.remember"></flow-check>
+                </div>
+                <div class="form-group pull-right">
+                    <flow-loader loader-class="fa fa-spin fa-spinner">
+                        <button type="submit" class="btn btn-danger">
+                            Log In
+                            &nbsp;
+                            <i class="fa fa-chevron-circle-right"></i>
+                        </button>
+                    </flow-loader>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+
+
+        </form>
+    </div>
+</div>
