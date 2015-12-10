@@ -298,10 +298,8 @@ and open the template in the editor.
 }
 
 div.flow-form label {
-    font-size: 14px;
     font-style: inherit;
     font-variant: inherit;
-    text-align: left !important;
 }
 
 .panel-control {
@@ -329,7 +327,7 @@ div.flow-form label {
 }
 
 .element-center {
-    padding: 1px;
+    padding: 4px;
     margin: auto;
 }
 
@@ -370,4 +368,15 @@ div.flow-form label {
 .fluid-modal .modal-content {
     background: transparent;
     border: transparent;
+}
+
+.fluid-panel .tools i {
+    font-size: 22px;
+}
+
+.fluid-panel .tools .btn {
+}
+
+.fluid-modal .panel-body p {
+    font-size: 17px;
 }

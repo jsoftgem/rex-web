@@ -4,8 +4,9 @@
         <button type="button" data-toggle="collapse" data-target=".sidebar-collapse" class="navbar-toggle"><span
                 class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
                 class="icon-bar"></span><span class="icon-bar"></span></button>
-        <a id="logo" href="#" class="navbar-brand"><span class="fa fa-rocket"></span><span class="logo-text">{{userProfile.group}}</span><img
-                style="display: none" ng-src="{{userProfile.groupEmblem}}" height="46" width="48"
+        <a id="logo" href="#" class="navbar-brand"><span class="fa fa-rocket"></span><span class="logo-text">{{userProfile.group.groupTitle}}</span><img
+                style="display: none" ng-src="{{userProfile.group.emblemPath}}" fallback-src="images/icons/logo.png"
+                height="46" width="48"
                 class="logo-text-icon emblem"></a>
     </div>
     <div class="topbar-main">
@@ -44,11 +45,11 @@
             </li>
             <li class="dropdown topbar-user">
                 <a data-toggle="dropdown" href="javascript:void(0);"
-                                                class="dropdown-toggle"><img
-                    ng-src="{{userProfile.avatar ? userProfile.avatar : 'images/gallery/profile_default.png'}}"
-                    alt=""
-                    class="img-responsive img-circle"/>&nbsp;<span
-                    class="hidden-xs">{{userProfile.fullName}}</span>&nbsp;<span class="caret"></span></a>
+                   class="dropdown-toggle"><img
+                        ng-src="{{userProfile.avatar}}" fallback-src="images/gallery/profile_default.png"
+                        alt=""
+                        class="img-responsive img-circle"/>&nbsp;<span
+                        class="hidden-xs">{{userProfile.fullName}}</span>&nbsp;<span class="caret"></span></a>
                 <ul class="dropdown-menu dropdown-user">
                     <li><a href="#" ng-click="editProfile()"><i class="octicon octicon-file-media"></i>My Profile</a>
                     </li>
@@ -92,45 +93,45 @@
                     <li>
                         <h4 class="mtn">Theme Colors</h4>
                         <ul id="list-color" class="list-unstyled list-inline">
-                            <li data-color="green-dark" ng-click="theme_change('green-dark')" 
+                            <li data-color="green-dark" ng-click="theme_change('green-dark')"
                                 title="Green - Dark" class="green-dark"></li>
-                            <li data-color="red-dark" ng-click="theme_change('red-dark')" 
+                            <li data-color="red-dark" ng-click="theme_change('red-dark')"
                                 title="Red - Dark" class="red-dark"></li>
-                            <li data-color="pink-dark" ng-click="theme_change('pink-dark')" 
+                            <li data-color="pink-dark" ng-click="theme_change('pink-dark')"
                                 title="Pink - Dark" class="pink-dark"></li>
-                            <li data-color="blue-dark" ng-click="theme_change('blue-dark')" 
+                            <li data-color="blue-dark" ng-click="theme_change('blue-dark')"
                                 title="Blue - Dark" class="blue-dark"></li>
-                            <li data-color="yellow-dark" ng-click="theme_change('yellow-dark')" 
+                            <li data-color="yellow-dark" ng-click="theme_change('yellow-dark')"
                                 title="Yellow - Dark" class="yellow-dark"></li>
-                            <li data-color="green-grey" ng-click="theme_change('green-grey')" 
+                            <li data-color="green-grey" ng-click="theme_change('green-grey')"
                                 title="Green - Grey" class="green-grey"></li>
-                            <li data-color="red-grey" ng-click="theme_change('red-grey')" 
+                            <li data-color="red-grey" ng-click="theme_change('red-grey')"
                                 title="Red - Grey" class="red-grey"></li>
-                            <li data-color="pink-grey" ng-click="theme_change('pink-grey')" 
+                            <li data-color="pink-grey" ng-click="theme_change('pink-grey')"
                                 title="Pink - Grey" class="pink-grey"></li>
-                            <li data-color="blue-grey" ng-click="theme_change('blue-grey')" 
+                            <li data-color="blue-grey" ng-click="theme_change('blue-grey')"
                                 title="Blue - Grey" class="blue-grey"></li>
-                            <li data-color="yellow-grey" ng-click="theme_change('yellow-grey')" 
+                            <li data-color="yellow-grey" ng-click="theme_change('yellow-grey')"
                                 title="Yellow - Grey" class="yellow-grey"></li>
-                            <li data-color="yellow-green" ng-click="theme_change('yellow-green')" 
+                            <li data-color="yellow-green" ng-click="theme_change('yellow-green')"
                                 title="Yellow - Green" class="yellow-green"></li>
-                            <li data-color="orange-grey" ng-click="theme_change('orange-grey')" 
+                            <li data-color="orange-grey" ng-click="theme_change('orange-grey')"
                                 title="Orange - Grey" class="orange-grey"></li>
-                            <li data-color="pink-blue" ng-click="theme_change('pink-blue')" 
+                            <li data-color="pink-blue" ng-click="theme_change('pink-blue')"
                                 title="Pink - Blue" class="pink-blue"></li>
-                            <li data-color="pink-violet" ng-click="theme_change('pink-violet')" 
+                            <li data-color="pink-violet" ng-click="theme_change('pink-violet')"
                                 title="Pink - Violet" class="pink-violet active"></li>
-                            <li data-color="orange-violet" ng-click="theme_change('orange-violet')" 
+                            <li data-color="orange-violet" ng-click="theme_change('orange-violet')"
                                 title="Orange - Violet" class="orange-violet"></li>
-                            <li data-color="pink-green" ng-click="theme_change('pink-green')" 
+                            <li data-color="pink-green" ng-click="theme_change('pink-green')"
                                 title="Pink - Green" class="pink-green"></li>
-                            <li data-color="pink-brown" ng-click="theme_change('pink-brown')" 
+                            <li data-color="pink-brown" ng-click="theme_change('pink-brown')"
                                 title="Pink - Brown" class="pink-brown"></li>
-                            <li data-color="orange-blue" ng-click="theme_change('orange-blue')" 
+                            <li data-color="orange-blue" ng-click="theme_change('orange-blue')"
                                 title="Orange - Blue" class="orange-blue"></li>
-                            <li data-color="yellow-blue" ng-click="theme_change('yellow-blue')" 
+                            <li data-color="yellow-blue" ng-click="theme_change('yellow-blue')"
                                 title="Yellow - Blue" class="yellow-blue"></li>
-                            <li data-color="green-blue" ng-click="theme_change('green-blue')" 
+                            <li data-color="green-blue" ng-click="theme_change('green-blue')"
                                 title="Green - Blue" class="green-blue"></li>
                         </ul>
                     </li>
@@ -147,7 +148,7 @@
            ng-repeat="task in flowFrameService.taskList | limitTo:10" ng-click="taskbar.open(task)" flow-bar-tooltip
            index="$index"
            task="task">
-            <i class="fluid-bar-icon {{task.glyph}}"></i>
+            <i class="fluid-bar-icon" ng-class="task.loaded ? task.glyph : 'fa fa-spinner fa-spin'"></i>
         </a>
 
         <div class="dropdown fluidTaskBarMore hidden-md hidden-sm hidden-xs">
@@ -170,7 +171,7 @@
                                             class="fa fa-angle-down"></i></a>
                                 </div>
                                 <a href="#" ng-click="taskbar.open(tsk)">
-                                    <i class="{{tsk.glyph}}"></i>&nbsp;&nbsp;&nbsp;<span
+                                    <i ng-class="task.loaded ? task.glyph : 'fa fa-spinner fa-spin'"></i>&nbsp;&nbsp;&nbsp;<span
                                         class="task-item">{{tsk.title}}</span></a>
                             </li>
                         </ul>
@@ -183,7 +184,7 @@
         <a href="#" class="fluidTaskBar hidden-lg hidden-xs" ng-class="task.active ? 'fluidTaskBar-icon-shown' : ''"
            style="height:47px;width:48px; margin: 1px;" ng-repeat="task in flowFrameService.taskList | limitTo:5"
            ng-click="taskbar.open(task)" flow-tooltip tooltip-title="{{task.title}}">
-            <i class="fluid-bar-icon {{task.glyph}}"></i>
+            <i class="fluid-bar-icon" ng-class="task.loaded ? task.glyph : 'fa fa-spinner fa-spin'"></i>
         </a>
 
         <div class="dropdown fluidTaskBarMore hidden-lg hidden-xs">
@@ -206,7 +207,7 @@
                                             class="fa fa-angle-down"></i></a>
                                 </div>
                                 <a href="#" ng-click="taskbar.open(tsk)">
-                                    <i class="{{tsk.glyph}}"></i>&nbsp;&nbsp;&nbsp;<span
+                                    <i ng-class="task.loaded ? task.glyph : 'fa fa-spinner fa-spin'"></i>&nbsp;&nbsp;&nbsp;<span
                                         class="task-item">{{tsk.title}}</span></a>
                             </li>
                         </ul>

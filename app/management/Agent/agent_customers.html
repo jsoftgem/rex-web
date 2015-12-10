@@ -21,23 +21,30 @@
 
                         <flow-field column="3" label="Customer" model="task.agent.selectedCustomer.school.name"
                                     disabled="true"></flow-field>
-                        <flow-select disabled="false" required="false" column="3" label="by School Year" task="task"
-                                     field-label="description"
-                                     source-url="services/war/school_year_query/list"
-                                     model="task.agent.schoolYear" change="filter()">
+                        <div column="3">
+                            <fluid-select class="width100pc" with-host="sourceUrl" primary
+                                          field-label="description" label="by School Year"
+                                          source-url="services/war/school_year_query/list"
+                                          model="task.agent.schoolYear" change="filter()">
+                        </div>
 
-                        </flow-select>
-                        <flow-select disabled="false" required="false" column="3" ng-if="task.agent.schoolYear"
-                                     model="task.agent.month" task="task"
-                                     label="by Month"
-                                     source-url="factories/war/table_factories/months" change="filter()">
-                        </flow-select>
 
-                        <flow-select disabled="false" required="false" column="3" ng-if="task.agent.month"
-                                     model="task.agent.week" task="task"
-                                     label="by Week"
-                                     values="all, 1, 2, 3, 4, 5" change="filter()">
-                        </flow-select>
+                        </fluid-select>
+                        <div column="3">
+                            <fluid-select class="width100pc" with-host="sourceUrl" primary ng-if="task.agent.schoolYear"
+                                          model="task.agent.month" task="task"
+                                          label="by Month"
+                                          source-url="factories/war/table_factories/months" change="filter()">
+                            </fluid-select>
+                        </div>
+                        <div column="3">
+                            <fluid-select class="width100pc" with-host="sourceUrl" primary ng-if="task.agent.month"
+                                          model="task.agent.week" task="task"
+                                          label="by Week"
+                                          values="all, 1, 2, 3, 4, 5" change="filter()">
+                            </fluid-select>
+                        </div>
+
                     </div>
                     <div column="12" ng-if="!task.agent.selectedCustomer">
                         <span>No customer selected.</span>

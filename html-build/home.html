@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <title>{{userProfile.group.groupTitle}} @Fluid</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="icon" href="favicon.ico">
+    <script src="js/pace/pace.min.js"></script>
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <link rel="stylesheet" href="css/pace/pace.css">
+    <![endif]-->
+    <!-- build:style libs -->
+    <!-- /build -->
+    <!-- build:style app -->
+    <!-- /build -->
+    <link ng-if="theme" rel="stylesheet" data-ng-href="css/themes/style1/{{theme}}.css"/>
+    <link rel="stylesheet" href="css/jsoftgem/fluidWebComponents/web-components.min.css"/>
+</head>
+<body ng-controller="AppController" class="bg"
+      ng-class="[header.menu_style, header.menu_collapse, header.header_topbar]">
+<!-- build:section layout.content -->
+<!-- /build -->
+
+<!-- build:script libs -->
+<!-- /build -->
+<script src="js/jsoftgem/fluidWebComponents/web-components.min.js" type="text/javascript"></script>
+<!-- build:script app -->
+<!-- /build -->
+</body>
+</html>

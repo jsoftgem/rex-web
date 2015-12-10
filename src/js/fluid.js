@@ -7,8 +7,12 @@ flowComponents.config(["$httpProvider", "localStorageServiceProvider", function 
     ls.setPrefix("fluid")
         .setStorageType("sessionStorage")
         .setNotify(true, true);
-
+    h.defaults.headers.common = {};
+    h.defaults.headers.post = {};
+    h.defaults.headers.put = {};
+    h.defaults.headers.patch = {};
     h.interceptors.push("flowInjector");
+
 }]);
 flowComponents.run(["$templateCache", function (tc) {
 }]);
@@ -23,6 +27,11 @@ flowComponents
                 link: {
                     pre: function (scope, element) {
                         /* Initialize variables*/
+
+
+                        element.ready(function () {
+                            $(".frame-content").scrollTo(element, 200);
+                        });
                         scope.pathRegexPattern = /{[\w|\d]*}/;
                         scope.generateUrl = function (url, param) {
                             if (isJson(param)) {
@@ -326,7 +335,7 @@ flowComponents
                                 var pagePanel = element.find(".flow-panel-page");
                                 console.info("page-panel", pagePanel);
                                 console.info("page-panel-task", scope.task);
-                                pagePanel.html("<fluid-include url='{{task.page.home}}' name='{{flow.getElementFlowId(task.page.name)}}' taskid='{{task.id}}'></fluid-include>");
+                                pagePanel.html("<fluid-include url=\"{{task.page.home}}\" name='{{flow.getElementFlowId(task.page.name)}}' taskid='{{task.id}}'></fluid-include>");
                                 c(pagePanel.contents())(scope);
                                 scope.onLoad = function () {
                                     if (scope.task.pinned) {
@@ -368,9 +377,6 @@ flowComponents
 
                         scope.$on(EVENT_PAGE_SUCCESS, function (event, name, taskId) {
                             var current = scope.flow.getElementFlowId(scope.task.page.name);
-                            console.debug("event-page-sucess", event);
-                            console.debug("name-page-sucess", name);
-                            console.debug("taskId-page-sucess", taskId);
                             if (taskId === scope.task.id && !scope.task.loaded) {
                                 if (scope.task.preLoaded === undefined || scope.task.preLoaded === false) {
                                     scope.task.preLoad();
@@ -382,14 +388,14 @@ flowComponents
                                 }
                                 scope.task.postLoad();
                             }
-                            ;
-
                             if (name === current) {
                                 if (scope.onLoad) {
                                     scope.onLoad();
                                 } else {
                                     scope.loadProperties();
                                 }
+
+                                scope.task.taskLoadRetryCount = 0;
                             }
                         });
 
@@ -1445,16 +1451,9 @@ flowComponents
             restrict: "AE",
             scope: {model: "=", label: "@", required: "=", disabled: "=", name: "@"},
             template: tc.get("templates/fluid/fluidCheckbox.html"),
-            link: function (scope) {
+            link: function (scope, element) {
                 if (!scope.name && scope.label) {
                     scope.name = scope.label.trim().split(" ").join("_");
-                }
-                if (scope.required === undefined) {
-                    scope.required = false;
-                }
-
-                if (scope.disabled === undefined) {
-                    scope.disabled = false;
                 }
 
                 if (scope.model === undefined) {
@@ -1466,6 +1465,27 @@ flowComponents
                         scope.model = !scope.model;
                     }
                 }
+
+
+                scope.$watch(function (scope) {
+                    return scope.disabled;
+                }, function (disabled) {
+                    if (disabled) {
+                        element.find("input").attr("disabled", "");
+                    } else {
+                        element.find("input").removeAttr("disabled");
+                    }
+                });
+                scope.$watch(function (scope) {
+                    return scope.required;
+                }, function (required) {
+                    if (required) {
+                        element.find("input").attr("required", "");
+                    } else {
+                        element.find("input").removeAttr("required");
+                    }
+                });
+
 
             },
             replace: true
@@ -1479,7 +1499,7 @@ flowComponents
 
         }
     }])
-    .directive("flowModal", ["flowFrameService", "$templateCache", function (f, tc) {
+    .directive("flowModal", ["flowFrameService", "$templateCache", "flowModalService", function (f, tc, fm) {
         return {
             restrict: "AE",
             /*  template: "<div ng-class='flowFrameService.fullScreen ? \"overlay-full\" : \"overlay\"' class='hidden animated fadeIn anim-dur'><div ng-style='style' class='flow-modal animated pulse anim-dur'><div ng-transclude></div></div></div>",*/
@@ -1497,10 +1517,14 @@ flowComponents
                 if (attr.width) {
                     scope.style.width = attr.width;
                 }
+
+                scope.hide = function () {
+                    fm.hide(attr.id);
+                }
             }
         }
     }])
-    .directive("flowSubTable", ["$compile", "flowModalService", "flowHttpService", "flowFrameService", "$rootScope", function (c, fm, f, f2, rs) {
+    .directive("flowSubTable", ["$compile", "flowModalService", "flowHttpService", "flowFrameService", "$rootScope", "$templateCache", function (c, fm, f, f2, rs, tc) {
         return {
             restrict: "AE",
             transclude: true,
@@ -1522,7 +1546,7 @@ flowComponents
 
 
             },
-            template: "<div class='form-group'><div class='panel panel-primary'><div class='panel-heading'><a href='#' class='flow-panel-heading-title' data-toggle='collapse' data-target='#{{id}}_collapse'>{{title}}</a><div class='pull-right'><div class='btn-group btn-group-xs'><button type='button' class='btn btn-info flow-sub-table-control' ng-click='create()' ng-show='createEnabled'><span class='fa fa-plus'></span></button><button ng-show=\"lookUp == 'true'\" type='button' class='btn btn-info flow-sub-table-control' ng-click='look()'><span class='fa fa-search'></span></button></div></div></div><div class='panel-collapse collapse in' id='{{id}}_collapse'><div class='panel-body' ><div ng-transclude></div><div class='container-fluid' style='overflow-y: auto'><table class='table table-responsive table-hover'></table></div></div></div></div>",
+            template: tc.get("templates/fluid/fluidSubTable.html"),
             link: function (scope, element) {
                 if (!scope.lookUp) {
                     scope.lookUp = "true";
@@ -1561,11 +1585,11 @@ flowComponents
 
                 var modalPanelHeading = $("<div>").addClass("panel-heading").appendTo(modalPanel).get();
 
-                var spanTitle = $("<span>").addClass("text-inverse").addClass("col-lg-5 col-md-5 col-sm-3 col-xs-3").html("Select " + scope.title).appendTo(modalPanelHeading).get();
+                $("<span>").addClass("text-inverse").addClass("col-lg-5 col-md-5 col-sm-3 col-xs-3").html("Select " + scope.title).appendTo(modalPanelHeading).get();
 
                 var inputGroup = $("<div>").addClass("col-lg-7 col-md-7 col-sm-9 col-xs-9").addClass("input-group").appendTo(modalPanelHeading).get();
 
-                var inputSearch = $("<input>").addClass("form-control").attr("type", "text").attr("ng-model", "search").appendTo(inputGroup).get();
+                $("<input>").addClass("form-control").attr("type", "text").attr("ng-model", "search").appendTo(inputGroup).get();
 
                 var inputSpan = $("<span>").addClass("input-group-addon").appendTo(inputGroup).get();
 
@@ -1579,7 +1603,7 @@ flowComponents
 
                 var buttonGroup = $("<div>").addClass("btn-group btn-group-sm").appendTo(pullRightFooterDiv).get();
 
-                var closeButton = $("<button>").addClass("btn btn-info").attr("ng-click", "close()").attr("type", "button").html("close").appendTo(buttonGroup).get();
+                $("<button>").addClass("btn btn-info").attr("ng-click", "close()").attr("type", "button").html("close").appendTo(buttonGroup).get();
 
                 var columns = element.find("flow-sub-column");
 
@@ -1616,10 +1640,10 @@ flowComponents
                 var buttonGroupDiv = $("<div>").addClass("btn-group").addClass("btn-group-xs").appendTo(tdAction).get();
 
                 if (scope.editEnabled) {
-                    var editButton = $("<button>").addClass("btn btn-info").addClass("glyphicon glyphicon-edit").addClass("horizontalSpace").attr("type", "button").attr("title", "edit").attr("ng-click", "edit(" + scope.keyVar + "." + scope.idField + ",$index)").appendTo(buttonGroupDiv).get();
+                    $("<button>").addClass("btn btn-info").addClass("glyphicon glyphicon-edit").addClass("horizontalSpace").attr("type", "button").attr("title", "edit").attr("ng-click", "edit(" + scope.keyVar + "." + scope.idField + ",$index)").appendTo(buttonGroupDiv).get();
                 }
 
-                var removeButton = $("<button>").addClass("btn btn-danger").addClass("glyphicon glyphicon-minus").addClass("horizontalSpace").attr("type", "button").attr("title", "remove").attr("ng-click", "remove($index)").appendTo(buttonGroupDiv).get();
+                $("<button>").addClass("btn btn-danger").addClass("glyphicon glyphicon-minus").addClass("horizontalSpace").attr("type", "button").attr("title", "remove").attr("ng-click", "remove($index)").appendTo(buttonGroupDiv).get();
 
 
                 for (var i = 0; i < columns.length; i++) {
@@ -1647,22 +1671,23 @@ flowComponents
                     } else if (scope.editEvent) {
                         rs.$broadcast(scope.editEvent + "_fp_" + scope.task.id, param, index);
                     }
-
-
                 };
 
 
                 scope.look = function () {
                     if (scope.sourceUrl) {
+                        scope.isLooking = true;
                         f.get(scope.sourceUrl, scope.task).success(function (data) {
                             scope.sourceList = data;
+                            fm.show(scope.id + "_add_tbl_mdl");
+                            $(modalContent).addClass("pulse");
+                            $(modalContent).one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
+                                $(modalContent).removeClass("pulse");
+                            });
+                            scope.isLooking = false;
                         });
                     }
-                    fm.show(scope.id + "_add_tbl_mdl");
-                    $(modalContent).addClass("pulse");
-                    $(modalContent).one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
-                        $(modalContent).removeClass("pulse");
-                    });
+
                 };
 
 
@@ -1732,14 +1757,15 @@ flowComponents
                 keyVar: "@",
                 fieldValue: "@",
                 parentId: "@",
-                name: "@"
+                name: "@",
+                changed: "&",
+                removed: "&"
             },
             link: function (scope, element) {
 
                 if (!scope.name && scope.label) {
                     scope.name = scope.label.trim().split(" ").join("_");
                 }
-                /*TODO: must return the object when model is a field value */
                 if (scope.id === undefined) {
                     var currentElement = $(element).get();
                     var index = $(currentElement).index();
@@ -1837,15 +1863,20 @@ flowComponents
 
                     scope.look = function () {
                         if (scope.sourceUrl) {
+                            scope.isLooking = true;
                             f.get(scope.sourceUrl, scope.task).success(function (data) {
                                 scope.sourceList = data;
+                                fm.show(scope.id + "_add_tbl_mdl");
+                                $(modalContent).addClass("pulse");
+                                $(modalContent).one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
+                                    $(modalContent).removeClass("pulse");
+                                });
+                                scope.isLooking = false;
+                            }).error(function () {
+                                scope.isLooking = false;
                             });
                         }
-                        fm.show(scope.id + "_add_tbl_mdl");
-                        $(modalContent).addClass("pulse");
-                        $(modalContent).one("webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend", function () {
-                            $(modalContent).removeClass("pulse");
-                        });
+
                     };
 
                 });
@@ -1871,6 +1902,16 @@ flowComponents
                     scope.model = undefined;
                 };
 
+                scope.$watch(function (scope) {
+                    return scope.model;
+                }, function (value, oldValue) {
+                    if (value) {
+                        scope.changed({item: value});
+                    } else {
+                        scope.removed({oldItem: oldValue})
+                    }
+                });
+
             },
             template: tc.get("templates/fluid/fluidLookup.html"),
             replace: true,
@@ -1894,6 +1935,9 @@ flowComponents
                 name: "@"
             },
             link: function (scope, element, attr) {
+
+                scope.templateUrl = "templates/fluid/fluidSelect.html";
+
                 if (!scope.name && scope.label) {
                     scope.name = scope.label.trim().split(" ").join("_");
                 }
@@ -1911,34 +1955,39 @@ flowComponents
                 }
 
 
-                var options = "";
+                scope.options = "";
 
                 if (scope.fieldValue === undefined) {
-                    options = "item";
+                    scope.options = "item";
                 } else {
-                    options = "item." + scope.fieldValue;
+                    scope.options = "item." + scope.fieldValue;
                 }
 
                 if (scope.fieldLabel === undefined) {
                 } else {
-                    options += " as item." + scope.fieldLabel;
+                    scope.options += " as item." + scope.fieldLabel;
                 }
 
                 if (scope.fieldGroup) {
-                    options += " group by item." + scope.fieldGroup;
+                    scope.options += " group by item." + scope.fieldGroup;
                 }
 
-                options += " for item in sourceList";
+                scope.options += " for item in sourceList";
 
-                var select = element.find("select").attr("ng-options", options).attr("ng-model", "model").get();
+                /* var select = element.find("select").attr("ng-options", options).attr("ng-model", "model").get();*/
 
+
+                var loader = $("<span>").text("Loading " + (scope.label ? scope.label : 'selection') + " ").append($("<i>").addClass("fa fa-spinner fa-spin"));
                 scope.$watch(function (scope) {
                     return scope.sourceUrl;
                 }, function (value, old) {
                     console.info("flow-select.sourceUrl", value);
                     if (value) {
+                        element.html(loader);
                         f.get(scope.sourceUrl, scope.task).success(function (sourceList) {
                             scope.sourceList = sourceList;
+                            element.html(tc.get(scope.templateUrl));
+                            c(element.contents())(scope);
                         });
                     }
                 });
@@ -1946,9 +1995,10 @@ flowComponents
                 scope.$watch(function (scope) {
                     return attr.values;
                 }, function (value, old) {
-                    console.info("flow-select.values", value);
                     if (value) {
                         scope.sourceList = value.split(",");
+                        element.html(tc.get(scope.templateUrl));
+                        c(element.contents())(scope);
                     }
                 });
 
@@ -1968,95 +2018,9 @@ flowComponents
                     scope.change({item: newValue});
                 });
 
-
-                c(element.contents())(scope);
             },
-            template: tc.get("templates/fluid/fluidSelect.html"),
+            /*   template: tc.get("templates/fluid/fluidSelect.html"),*/
             replace: true
-        }
-    }])
-    .directive("flowPermissionEnabled", ["flowHttpService", "$compile", "sessionService", function (f, c, ss) {
-        return {
-            restrict: "A",
-            scope: {task: "=", page: "="},
-            link: function (scope, element, attr) {
-
-
-                if (attr.method) {
-                    scope.method = attr.method;
-                }
-                console.info("permissionEnabled-url", f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method);
-
-                var url = f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method;
-
-                var enabled = ss.getSessionProperty(url);
-
-                console.info("permissionEnabled", enabled);
-
-                if (enabled !== null) {
-                    console.info("permissionEnabled-old", enabled);
-                    if (enabled === 'false') {
-                        element.attr("disabled", "");
-                    }
-                }
-
-                if (enabled === null) {
-                    f.get(url, scope.task)
-                        .success(function (data) {
-                            if (!data) {
-                                element.attr("disabled", "");
-                            }
-                            ss.addSessionProperty(url, data);
-                        });
-                    console.info("permissionEnabled-new");
-                }
-            }
-
-        }
-    }])
-    .directive("flowPermissionVisible", ["flowHttpService", "$compile", "sessionService", function (f, c, ss) {
-        return {
-            restrict: "A",
-            scope: {task: "=", page: "="},
-            link: function (scope, element, attr) {
-
-                if (attr.method) {
-                    scope.method = attr.method;
-                }
-                console.info("permissionVisible-url", f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method);
-
-                var url = f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method;
-
-                var visible = ss.getSessionProperty(url);
-
-                console.info("permissionVisible", visible);
-
-                if (visible !== null) {
-                    console.info("permissionVisible-old", visible);
-
-                    if (visible === 'false') {
-                        element.addClass("hidden");
-                        console.info("permissionVisible-hidden");
-                    } else {
-                        console.info("permissionVisible-visible");
-                        element.removeClass("hidden");
-                    }
-
-                }
-
-                if (visible === null) {
-                    f.get(url, scope.task)
-                        .success(function (data) {
-                            if (!data) {
-                                element.addClass("hidden");
-                            }
-                            ss.addSessionProperty(url, data);
-                        });
-
-                }
-
-            }
-
         }
     }])
     .directive("flowTooltip", [function () {
@@ -2229,9 +2193,9 @@ flowComponents
                 };
                 scope.refresh();
 
-
-                scope.onFileSelect = function (file) {
-
+                scope.onFileSelect = function ($files, $file, $event, $rejectedFiles) {
+                    console.debug("flowImage-onFileSelect", file);
+                    var file = $file;
                     if (file != null) {
                         if (scope.fileReaderSupported && file.type.indexOf('image') > -1) {
                             t(function () {
@@ -2254,7 +2218,6 @@ flowComponents
                                             method: scope.method,
                                             headers: {
                                                 "flow-container-id": "_id_fpb_" + scope.task.id,
-                                                "Authorization": ss.getSessionProperty(AUTHORIZATION),
                                                 "flowPage": scope.task.currentPage,
                                                 "flowUploadFileId": scope.model
                                             },
@@ -2262,12 +2225,10 @@ flowComponents
                                         }).progress(function (evt) {
                                             file.progress = parseInt(100.0 * evt.loaded / evt.total);
                                         }).success(function (data, status, headers, config) {
-                                            $("#_id_fpb_" + scope.task.id).loadingOverlay("remove");
                                             scope.model = data.id;
                                             scope.fileChanged();
 
                                         }).error(function (data, status, headers, config) {
-                                            $("#_id_fpb_" + scope.task.id).loadingOverlay("remove");
                                         });
                                     });
 
@@ -2462,33 +2423,124 @@ flowComponents
             }
         }
     })
-    .directive('fluidInclude', ['$http', '$compile', '$timeout', "$rootScope", function (h, c, t, r) {
+    .directive('fluidInclude', ['$http', '$compile', '$timeout', "$rootScope", "$templateCache", "$ocLazyLoad", function (h, c, t, r, tc, oc) {
         return {
             restrict: 'AE',
             link: function link($scope, elem, attrs) {
                 //if url is not empty
+                $scope.retry = 0;
+                $scope.retryCount = 10;
                 if (attrs.name) {
                     $scope.name = attrs.name;
+                }
+
+
+                if (attrs.retryCount) {
+                    scope.retryCount = attrs.retryCount;
                 }
 
                 if (attrs.taskid) {
                     $scope.taskId = attrs.taskid;
                 }
+                console.debug("fluidInclude.attrs", attrs);
+                if (tc.get(attrs.url)) {
+                    elem.append(c(angular.element(tc.get(attrs.url)))($scope));
+                    t(function () {
+                        r.$broadcast(EVENT_PAGE_SUCCESS, $scope.name, $scope.taskId);
+                    }, 1, false);
+                }
+                else if (attrs.url) {
+                    function getPage() {
+                        h({
+                            method: 'GET',
+                            url: attrs.url + "--fInclude",
+                            cache: true,
+                            headers: {"Content-Type": "text/html"}
+                        }).then(function (result) {
+                            console.debug("fluidInclude.result", result);
+                            tc.put(attrs.url, result.data);
+                            elem.append(c(angular.element(result.data))($scope));
+                            t(function () {
+                                r.$broadcast(EVENT_PAGE_SUCCESS, $scope.name, $scope.taskId);
+                            }, 1, false);
+                        }, function (response) {
+                            if ($scope.retry < $scope.retryCount) {
+                                $scope.retry++;
+                                t(getPage, 5000, false);
+                            } else {
+                                r.$broadcast(EVENT_PAGE_ERROR, $scope.name, $scope.taskId);
+                            }
+                        });
+                    }
 
-                if (attrs.url) {
-                    h({method: 'GET', url: attrs.url, cache: true}).then(function (result) {
-                        elem.append(c(angular.element(result.data))($scope));
-                        t(function () {
-                            r.$broadcast(EVENT_PAGE_SUCCESS, $scope.name, $scope.taskId);
-                        }, 1, false);
-                    }, function () {
-                        t(function () {
-                            r.$broadcast(EVENT_PAGE_ERROR, $scope.name, $scope.taskId);
-                        }, 1, false);
-                    });
+                    getPage();
                 }
             }
         };
+    }])
+    .directive("fluidImageUpload", ["$templateCache", "Upload", function (tc, u) {
+        return {
+            restrict: "AE",
+            template: tc.get("templates/fluid/fluidImageUpload.html"),
+            scope: {model: "=", url: "@", auto: "=", onLoad: "&", token: "@", width: "=", height: "="},
+            link: function (scope, element, attr) {
+                scope.height = 200;
+                scope.width = 200;
+
+                if (!scope.auto) {
+                    scope.auto = false;
+                }
+
+                scope.$watch(function (scope) {
+                    return scope.model
+                }, function (newModel) {
+                    if (newModel) {
+                        if (newModel instanceof File) {
+                            scope.data = newModel;
+                        } else {
+                            if (scope.token) {
+                                if (newModel.indexOf("?") === -1) {
+                                    scope.src = newModel + "?token=" + scope.token;
+                                } else {
+                                    scope.src = newModel + "&token=" + scope.token;
+                                }
+                            } else {
+                                scope.src = newModel;
+                            }
+                        }
+                    }
+                });
+
+
+                scope.change = function ($files, $file, $event, $rejectedFiles) {
+                    console.debug("$files", $files);
+                    console.debug("$file", $file);
+                    console.debug("$event", $event);
+                    console.debug("$rejectedFiles", $rejectedFiles);
+                    var file = $file;
+                    console.debug("file", file);
+                    if (file != null) {
+                        if (scope.auto) {
+                            u.upload({
+                                url: scope.url,
+                                file: file,
+                                fields: {size: file.size}
+                            }).success(function (uploadedFile) {
+                                if (scope.onLoad) {
+                                    scope.onLoad();
+                                }
+                                scope.model = uploadedFile.id;
+                            });
+                        } else {
+                            scope.model = file;
+                        }
+                    }
+                }
+
+
+            },
+            replace: true
+        }
     }]);
 
 
@@ -2525,7 +2577,6 @@ flowComponents
             this.taskList.push(task);
         };
         this.addTask = function (url, origin, newTask) {
-            //TODO: remove newTask
 
             var genericTask = this.createGenericTask();
 
@@ -2543,9 +2594,7 @@ flowComponents
                 this.toggleFluidscreen();
             }
 
-            t(function () {
-                $(".frame-content").scrollTo($("div.box[task]:eq(" + index + ")"), 200);
-            }, 300);
+
         };
 
         this.toggleSearch = function () {
@@ -3126,14 +3175,6 @@ flowComponents
         this.enabled = true;
         return this;
     }])
-    .service("flowNotificationService", [function () {
-
-        this.flowNotifications = [];
-
-        return this;
-
-
-    }])
     .service("sessionService", ["localStorageService", function (ls) {
 
         this.isSessionSupported = ls.isSupported;
@@ -3144,6 +3185,11 @@ flowComponents
 
         this.isSessionOpened = function () {
             return ls.get(AUTHORIZATION) !== null;
+        }
+
+
+        this.containsKey = function (key) {
+            return !(!this.getSessionProperty(key));
         }
 
         this.addSessionProperty = function (key, value) {
@@ -3160,7 +3206,7 @@ flowComponents
             } else {
                 return ls.cookie.get(key);
             }
-        }
+        };
 
         this.login = function (username, password, remember) {
             var base64 = window.btoa(username + ":" + password);
@@ -3170,7 +3216,15 @@ flowComponents
 
         this.createSession = function (base64) {
             this.addSessionProperty(AUTHORIZATION, "Basic " + base64);
-        }
+        };
+
+        this.removeSessionProperty = function (key) {
+            if (this.isSessionSupported) {
+                return ls.remove(key);
+            } else {
+                return ls.cookie.remove(key);
+            }
+        };
 
         this.logout = function () {
             if (this.isSessionSupported) {
@@ -3192,18 +3246,18 @@ flowComponents
                     fls.loaded = false;
                 }
 
-                config.headers["Access-Control-Allow-Origin"] = "*";
+                /*
+                 config.headers["Access-Control-Allow-Origin"] = "*";
 
-                console.debug("request-config", config);
-                if (config.headers['flow-container-id'] !== undefined) {
-                    // $('#' + config.headers['flow-container-id']).loadingOverlay();
-                }
-                if (ss.isSessionOpened()) {
-                    config.headers['Authorization'] = ss.getSessionProperty(AUTHORIZATION);
-                }
+                 console.debug("request-config", config);
+                 if (config.headers['flow-container-id'] !== undefined) {
+                 // $('#' + config.headers['flow-container-id']).loadingOverlay();
+                 }
+                 /!*  if (ss.isSessionOpened()) {
+                 config.headers['Authorization'] = ss.getSessionProperty(AUTHORIZATION);
+                 }*!/*/
                 return config;
-            }
-            ,
+            },
             "requestError": function (rejection) {
                 fls.loaded = true;
                 fls.enabled = true;
@@ -3292,7 +3346,7 @@ function Control() {
 var eventInterceptorId = "event_interceptor_id_";
 var goToEventID = "event_got_id_";
 var EVENT_NOT_ALLOWED = "not_allowed_";
-var AUTHORIZATION = "authorization";
+var AUTHORIZATION = "Authorization";
 
 function estimateHeight(height) {
     var _pc = window.innerWidth <= 768 ? 100 : 50;
@@ -3368,3 +3422,13 @@ function isJson(str) {
     }
     return true;
 }
+
+/*
+ * TODO:
+ * 1) flowSelect bootstrap style;
+ * 2) flowSubTable issue;
+ * 3) fix fluidImageUploader;
+ * 4) add task Note: create a standalone note taking application;
+ * 5) add task manager: for killing task; task performance summary;
+ * 6) add task portal: create an internal portlet-style portal for War applications;
+ * */

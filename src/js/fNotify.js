@@ -78,9 +78,9 @@ angular.module("fNotify", ["fluid", "truncate"])
                         t(scope.topChecks, 10000);
                     });
                 };
-
+/*
                 scope.topChecks();
-                scope.notificationPoll();
+                scope.notificationPoll();*/
 
             }
 

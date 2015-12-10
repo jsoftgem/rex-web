@@ -6,14 +6,16 @@
             <i fluid-icon-save></i>&nbsp;Update
         </button>
         <div>
-            <flow-image column="7" file-changed="fileChanged()" task="task" label="Avatar"
-                        model="task.flowUserDetail.avatar"
-                        source-url="services/download_service/getContent/"
-                        url="services/upload_service/upload_file?folder=group.user&type=avatar"
-                        method="post"></flow-image>
-            <div column="5">
-                <flow-field label="Full name" model="task.flowUserDetail.fullName"></flow-field>
+            <fluid-image-upload column="7" url="services/upload_service/upload_profile"
+                                model="task.flowUserDetail.avatar">
 
+            </fluid-image-upload>
+            <!--  <flow-image column="7" file-changed="fileChanged()" task="task" label="Avatar"
+                           model="task.flowUserDetail.avatar"
+                           source-url="services/download_service/getContent/"
+                           url="services/upload_service/upload_file?folder=group.user&type=avatar"
+                           method="post"></flow-image>-->
+            <div column="5">
                 <flow-field label="Full name" model="task.flowUserDetail.fullName"></flow-field>
 
                 <flow-field label="Question" model="task.flowUserDetail.secretQuestion"></flow-field>

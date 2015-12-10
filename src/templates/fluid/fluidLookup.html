@@ -1,6 +1,6 @@
 <div class="form-group flow-form">
     <div ng-transclude></div>
-    <label column="12" class='control-label' for="{{name}}">{{label}}
+    <label class='control-label width100pc' for="{{name}}">{{label}}
         <span class="text-danger" ng-show='required'>*</span>
 
         <div class='input-group' name="{{name}}">
@@ -8,7 +8,7 @@
                    ng-required='required' ng-click='look()' style='color:#000000;background: #ffffff'/><span
                 ng-if='isNotModeled()' class='input-group-btn'>
             <button type='button' ng-disabled='disabled' class='btn btn-info' ng-click='look()'>
-                <span class='fa fa-search'></span></button></span>
+                <span ng-class=" isLooking ? 'fa fa-spinner fa-spin' :'fa fa-search'"></span></button></span>
             <span ng-if='isModeled()' class='input-group-btn'>
             <button type='button' title='clear' class='btn btn-info' ng-disabled='disabled' ng-click='clear()'>
                 <span class='fa fa-eraser'></span></button></span></div>

@@ -6,14 +6,13 @@
                style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
 
 
-        <flow-select disabled="false"
-                     task="task"
-                     id="{{flow.getElementFlowId('educationLevelSelect')}}"
-                     model="task.levelEdit.description"
-                     label="Education Level"
-                     source-url="factories/war/table_factories/education_levels"
-                     required="true">
-        </flow-select>
+        <fluid-select primary with-host="sourceUrl"
+                      id="{{flow.getElementFlowId('educationLevelSelect')}}"
+                      model="task.levelEdit.description"
+                      label="Education Level"
+                      source-url="factories/war/table_factories/education_levels"
+                      ng-required="true">
+        </fluid-select>
 
         <flow-field model="task.levelEdit.levelCourse" label="Level course" type="text" required="true"></flow-field>
 
@@ -22,12 +21,11 @@
             <div class="panel panel-warning">
 
                 <div class="panel-heading">Warning</div>
-                <div class="panel-body">Do you want to delete {{task.levelEdit.description}}?</div>
+                <div class="panel-body"><p>Do you want to delete {{task.levelEdit.description}}?</p></div>
                 <div class="panel-footer">
-                    <div class="btn-group btn-group-xs">
-                        <button type="button" class="btn btn-warning field-margin" ng-click="deleteConfirm()">Yes
-                        </button>
-                        <button type="button" class="btn btn-info field-margin" ng-click="deleteCancel()">No</button>
+                    <div class="btn-group">
+                        <button button info="button" class="field-margin" ng-click="deleteConfirm()">Yes</button>
+                        <button button danger="button" class="field-margin" ng-click="deleteCancel()">No</button>
                     </div>
                 </div>
             </div>

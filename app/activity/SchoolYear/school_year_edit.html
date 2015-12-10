@@ -10,48 +10,36 @@
         <flow-field label="Created by" disabled="true" model="task.edit.createUserFullName"></flow-field>
         <fieldset>
             <legend>From</legend>
-            <div class="col-lg-6">
-                <flow-select disabled="false" required="false"
-                             task="task"
-                             id="{{flow.getElementFlowId('monthSelect')}}"
-                             model="task.modelEdit.periodMonth"
-                             label="Month"
-                             source-url="factories/war/table_factories/months">
-                </flow-select>
-            </div>
-            <div class="col-lg-6">
-                <flow-select disabled="false"
-                             required="true"
-                             task="task"
-                             id="{{flow.getElementFlowId('yearSelect')}}"
-                             model="task.modelEdit.periodYear"
-                             label="Year"
-                             source-url="factories/war/table_factories/years">
-                </flow-select>
-            </div>
+            <fluid-select class="col-lg-6" primary with-host="sourceUrl"
+                          id="{{flow.getElementFlowId('monthSelect')}}"
+                          model="task.modelEdit.periodMonth"
+                          label="Month"
+                          source-url="factories/war/table_factories/months">
+            </fluid-select>
+            <fluid-select class="col-lg-6" ng-required="true" primary
+                          with-host="sourceUrl"
+                          id="{{flow.getElementFlowId('yearSelect')}}"
+                          model="task.modelEdit.periodYear"
+                          label="Year"
+                          source-url="factories/war/table_factories/years">
+            </fluid-select>
         </fieldset>
 
         <fieldset>
             <legend>To</legend>
-            <div class="col-lg-6">
-                <flow-select disabled="false" required="false"
-                             task="task"
-                             id="{{flow.getElementFlowId('monthSelect2')}}"
-                             model="task.modelEdit.periodMonthTo"
-                             label="Month"
-                             source-url="factories/war/table_factories/months">
-                </flow-select>
-            </div>
-            <div class="col-lg-6">
-                <flow-select disabled="false"
-                             required="true"
-                             task="task"
-                             id="{{flow.getElementFlowId('yearSelect2')}}"
-                             model="task.modelEdit.periodYearTo"
-                             label="Year"
-                             source-url="factories/war/table_factories/years">
-                </flow-select>
-            </div>
+            <fluid-select primary class="col-lg-6" with-host="sourceUrl"
+                          id="{{flow.getElementFlowId('monthSelect2')}}"
+                          model="task.modelEdit.periodMonthTo"
+                          label="Month"
+                          source-url="factories/war/table_factories/months">
+            </fluid-select>
+            <fluid-select class="col-lg-6" primary with-host="sourceUrl"
+                          ng-required="true"
+                          id="{{flow.getElementFlowId('yearSelect2')}}"
+                          model="task.modelEdit.periodYearTo"
+                          label="Year"
+                          source-url="factories/war/table_factories/years">
+            </fluid-select>
         </fieldset>
 
 
@@ -63,11 +51,11 @@
         <div class="panel panel-warning">
 
             <div class="panel-heading">Warning</div>
-            <div class="panel-body">Do you want to delete {{task.modelEdit.description}}?</div>
+            <div class="panel-body"><p>Do you want to delete {{task.modelEdit.description}}?</p></div>
             <div class="panel-footer">
-                <div class="btn-group btn-group-xs">
-                    <button class="btn btn-warning field-margin" ng-click="task.deleteConfirm()">Yes</button>
-                    <button class="btn btn-info field-margin" ng-click="task.deleteCancel()">No</button>
+                <div class="btn-group">
+                    <button button info="button" class="field-margin" ng-click="task.deleteConfirm()">Yes</button>
+                    <button button danger="button" class="field-margin" ng-click="task.deleteCancel()">No</button>
                 </div>
             </div>
         </div>

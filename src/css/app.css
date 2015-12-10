@@ -7,20 +7,62 @@ and open the template in the editor.
     Created on : 09 20, 14, 11:44:35 AM
     Author     : Jerico
 */
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+
+* {
+    font-family: 'Montserrat', sans-serif;
+    font-style: normal;
+}
 
 body {
     /*background-color: #95a5a6;*/
-    font-family: "Tahoma";
-    font-weight: 400;
-    font-style: normal;
-    line-height: 20px;
-    font-size: 16px;
+
     /* background-color: #ecf0f1;*/
     /* background: url(../img/fancy_deboss.png);*/
     /* -webkit-background-size: cover;
      -moz-background-size: cover;
      -o-background-size: cover;
      background-size: cover;*/
+}
+
+.bg {
+    background: url(../../images/bg/1.jpg);
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.splash {
+    margin: 0 auto;
+    padding: 40px 0;
+}
+
+.splash .form {
+    margin-top: 50px;
+}
+
+.form .group {
+    background: rgba(205, 50, 10, 0.2);
+    text-align: center;
+}
+
+.form .loader {
+    padding: 15px 0;
+}
+
+.splash .splash-progress {
+    margin-top: 10px;
+}
+
+.splash-progress i {
+    margin: 5px;
+    font-size: 25px;
+}
+
+.splash .loaded {
+    color: white;
+    box-shadow: whitesmoke;
 }
 
 textarea {
@@ -124,13 +166,11 @@ textarea {
 .fluidTaskBar {
     float: left;
     padding: 15px 20px;
-    background-color: transparent;
     -webkit-transition: all 0.3s;
     transition: all 0.3s;
     height: 50px;
     border-radius: 0;
     color: #ffffff;
-    border-radius: 7px;
     text-align: center;
     display: block;
     background-color: rgba(2, 152, 210, 0.9);
@@ -184,7 +224,6 @@ textarea {
     height: 50px;
     border-radius: 0;
     color: #ffffff;
-    border-radius: 7px;
 }
 
 .fluid-task-item {
@@ -667,7 +706,7 @@ button.ColVis_Button {
 }
 
 .panel-login {
-    background: rgba(205, 10, 10, 0.2);
+    background: rgba(205, 10, 10, 0.2) !important;
 }
 
 .header-about {
@@ -699,7 +738,7 @@ button.ColVis_Button {
 
 .ndg-planner .left-panel input[type="text"],
 .ndg-planner .left-panel input[readonly],
-.ndg-planner .left-panel input[type="number"]{
+.ndg-planner .left-panel input[type="number"] {
     padding: 0;
     padding-left: 4px !important;
 }
@@ -740,7 +779,7 @@ button.ColVis_Button {
 .ndg-planner .ndg-ptable .td-drag {
     background: #468499;
     color: white;
-    border-radius: 5px;
+    border-radius: 0;
     cursor: pointer;
     padding: 15px 0;
     min-height: 44px;
@@ -753,7 +792,9 @@ button.ColVis_Button {
 
 .ndg-planner .right-panel .event-draggable {
     height: auto;
-    padding: 5px 0px 6px;
+    padding: 15px 0;
+    text-align: center;
+    min-height: 44px;
 }
 
 .ndg-calcon .fc th,
@@ -785,8 +826,37 @@ button.ColVis_Button {
     min-height: 94% !important;
 }
 
-@media (max-width:1180px){
+@media (max-width: 1180px) {
     .width300px {
-        width:  100%;
+        width: 100%;
     }
+}
+
+.positionFixed {
+    position: fixed;
+}
+
+.marginTop40px {
+    margin-top: 40px;
+}
+
+.nextChild100pc :first-child {
+    width: 100%;
+}
+
+.height47px input {
+    height: 47px;
+}
+
+.height47px button {
+    height: 47px;
+}
+
+/*
+  Allow angular.js to be loaded in body, hiding cloaked elements until
+  templates compile.  The !important is important given that there may be
+  other selectors that are more specific or come later and might alter display.
+ */
+[ng\:cloak], [ng-cloak], .ng-cloak {
+    display: none !important;
 }

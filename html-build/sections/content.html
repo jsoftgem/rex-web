@@ -1,0 +1,44 @@
+<div ng-cloak ng-if="userSessionService.isReady() && !userSessionService.isNotConnected()" ng-class="header.boxed"
+     class="default-page app-font">
+    <div id="header-topbar-option-demo" ng-include="'src/templates/app/header.html'"
+         class="page-header-topbar"></div>
+    <div id="wrapper" ng-class="header.layout_menu">
+        <nav id="sidebar" data-step="3" data-position="right"
+             ng-include="'src/templates/app/sidebar.html'" class="navbar-default navbar-static-side"></nav>
+        <div id="page-wrapper">
+            <div class="hidden-lg hidden-md hidden-sm" style="height:50px;"></div>
+            <flow-frame></flow-frame>
+        </div>
+    </div>
+</div>
+<div ng-cloak ng-if="!userSessionService.isReady() && !userSessionService.isNotConnected()" class="splash">
+    <div class="form">
+        <div class="group">
+            <img width="200" height="210" src="images/icons/logo.png">
+
+            <div class="splash-progress">
+                <i class="fa fa-home" ng-class="userSessionService.userAppSettingLoaded ?'loaded':''"></i>
+                <i class="fa fa-picture-o" ng-class="userSessionService.profileLoaded?'loaded':''"></i>
+                <i class="fa fa-gears" ng-class="userSessionService.agentLoaded?'loaded':''"></i>
+                <i class="fa fa-tasks" ng-class="userSessionService.userTasksLoaded?'loaded':''"></i>
+                <i class="fa fa-users" ng-class="userSessionService.groupLoaded?'loaded':''"></i>
+            </div>
+            <div class="loader">
+                <img width="190" height="20"
+                     src="images/loader/ajax-loader.gif">
+            </div>
+        </div>
+    </div>
+
+</div>
+<div ng-cloak class="splash" ng-if="userSessionService.isNotConnected()">
+
+    <div class="form">
+        <div class="group">
+            <p class="color-white">Error connecting to the server. Please try to <a href="#" class="text-info"
+                                                                                    ng-click="userSessionService.reload()">refresh</a>
+                the
+                page.</p>
+        </div>
+    </div>
+</div>

@@ -52,8 +52,7 @@ function CopyControl() {
 
 function FlowOptionsGET(dto, url, scope, compile, sessionService) {
     var headers = {
-        Authorization: sessionService.getSessionProperty("authorization"),
-        method: "get",
+        Authorization: "bearer " + sessionService.getSessionProperty("token"),
         flowPage: scope.task.page.name
     };
     console.info("datatables-url", url);
@@ -61,7 +60,7 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
     return new dto.newOptions()
         .withOption("ajax", {
             url: url,
-            type: "GET",
+            type: "POST",
             headers: headers,
             cache: true,
             crossDomain: true,
@@ -91,43 +90,6 @@ function FlowOptionsGET(dto, url, scope, compile, sessionService) {
         .withOption("sDom", "<'top'iflp<'clear'>>rt<'bottom'iflp<'clear'>>")
         .withOption("stateSave", true)
         .withOption("serverSide", true)
-        .withTableTools("swf/copy_csv_xls_pdf.swf")
-        .withTableToolsOption("sRowSelect", "os")
-        .withTableToolsButtons([
-            "copy" /*,{
-             "sExtends": "collection",
-             "sButtonText": "Edit",
-             "aButtons": ["select_all", "select_none"]
-             } TODO: report-api flow-service{
-             "sExtends": "collection",
-             "sButtonText": "Save",
-             "aButtons": ["csv", "xls", "pdf"]
-             }*/
-            , {
-                "sExtends": "collection",
-                "sButtonText": "Print",
-                "aButtons": [{
-                    "sExtends": "text",
-                    "bShowAll": true,
-                    "sButtonText": "All",
-                    "fnClick": function (nButton, oConfig, oFlash) {
-                        scope.task.flowHttpService.query({
-                            method: "get",
-                            data: "",
-                            url: url + "/report_list",
-                            transformResponse: []
-                        }, scope.task)
-                            .success(function (data) {
-                                console.info("print-data", data);
-                                $(data).print({globalStyles: true});
-                            });
-                    }
-                }]
-            }
-        ])
-        .withColVis()
-        .withColVisOption('aiExclude', [0])
-        .withColVisOption("buttonText", "Columns")
         .withPaginationType('simple_numbers');
 }
 
@@ -150,7 +112,11 @@ function FlowOptionGETv2(dto, options) {
 function FlowColumns(dtc, editMethod, deleteMethod, viewMethod) {
     return [dtc.newColumn(null).withTitle('Actions').notSortable().withOption("searchable", false)
         .renderWith(function (data, type, full, meta) {
-            return renderActions(data, editMethod, deleteMethod, viewMethod);
+
+
+            var scope = angular.element($(meta.settings.aoData[meta.row].anCells[meta.col])).scope();
+
+            return renderActions(data, editMethod, deleteMethod, viewMethod, scope, meta.row);
         })]
 }
 
@@ -161,12 +127,15 @@ function renderCheckbox(data) {
     }
     return "<p class='text-primary'><span class='" + span + "'></span></p>"
 }
-function renderActions(data, editMethod, deleteMethod, viewMethod) {
+function renderActions(data, editMethod, deleteMethod, viewMethod, scope, row) {
+
+    console.debug("renderActions.scope", scope);
+
     var edit = "edit";
     var del = "delete";
     var view = "view";
 
-    if (viewMethod != undefined) {
+    if (viewMethod !== undefined) {
         view = viewMethod;
     }
 
@@ -179,10 +148,17 @@ function renderActions(data, editMethod, deleteMethod, viewMethod) {
     }
 
 
+    if (scope) {
+        if (!scope.dataItem) {
+            scope.dataItem = [];
+        }
+        scope.dataItem[row] = data;
+    }
+
     return "<div class='actions btn-group btn-group-md'>" +
-        "<button ng-if=" + view + " flow-permission-visible title='View' task='task' page='task.page' method='put'  type='button' class='btn btn-warning glyphicon glyphicon-search field-margin' ng-click='" + view + "(" + JSON.stringify(data) + ")'></button>" +
-        "<button flow-permission-visible title='Edit' task='task' page='task.page' method='put'  type='button' class='btn btn-info glyphicon glyphicon-edit field-margin' ng-click='" + edit + "(" + data.id + ")'></button>" +
-        "<button flow-permission-visible title='Delete' task='task' page='task.page' method='delete' type='button' class='btn btn-danger glyphicon glyphicon-trash field-margin' ng-click='" + del + "(" + data.id + ")'> </button></div>";
+        "<button ng-if=\"" + view + "\" flow-permission-visible title='View' task='task' page='task.page' method='put'  type='button' class='btn btn-warning glyphicon glyphicon-search field-margin' ng-click='" + view + "(dataItem[" + row + "],row)'></button>" +
+        "<button flow-permission-visible title='Edit' task='task' page='task.page' method='put'  type='button' class='btn btn-info glyphicon glyphicon-edit field-margin' ng-click='" + edit + "(" + data.id + ",row)'></button>" +
+        "<button flow-permission-visible title='Delete' task='task' page='task.page' method='delete' type='button' class='btn btn-danger glyphicon glyphicon-trash field-margin' ng-click='" + del + "(dataItem[" + row + "],row)'> </button></div>";
 }
 
 
@@ -326,3 +302,102 @@ function isDayEnabled(dayDate, currentDate) {
 
     return enabled;
 }
+
+
+function setDraggable(s) {
+
+    $("#" + s.flow.getElementFlowId("event_body") + " .event-customer td div").each(function () {
+        $(this).data("eventObject", {
+            title: $.trim($(this).text()),
+            activityType: "SCHOOL"
+        });
+
+        $(this).removeClass("non-draggable").addClass("draggable");
+
+        $(this).draggable({
+            helper: function () {
+                return $("<div>").addClass("event-customer-draggable").html($(this).text()).clone();
+            },
+            zIndex: 99999,
+            revert: true,
+            revertDuration: 0
+        });
+
+    });
+
+    $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
+
+        $(this).removeAttr("disabled");
+
+        $(this).data("eventObject", {
+            title: $.trim($(this).html()),
+            activityType: $(this).attr("activity-type")
+        });
+
+        $(this).draggable({
+            zIndex: 99999,
+            revert: true,
+            revertDuration: 0
+        });
+    });
+}
+
+function disableDraggable(s) {
+
+    $("#" + s.flow.getElementFlowId("event_body") + " .event-customer td div").each(function () {
+
+        $(this).removeClass("draggable").addClass("non-draggable");
+
+        if ($(this).draggable()) {
+            $(this).draggable("destroy");
+        }
+
+    });
+
+    $("#" + s.flow.getElementFlowId("other_activities") + " td div").each(function () {
+
+        $(this).attr("disabled", "");
+
+        if ($(this).draggable()) {
+            $(this).draggable("destroy");
+        }
+    });
+}
+
+
+/*
+ * jQuery Double Tap
+ * Developer: Sergey Margaritov (sergey@margaritov.net)
+ * Date: 22.10.2013
+ * Based on jquery documentation http://learn.jquery.com/events/event-extensions/
+ */
+
+(function ($) {
+
+    $.event.special.doubletap = {
+        bindType: 'touchend',
+        delegateType: 'touchend',
+
+        handle: function (event) {
+            var handleObj = event.handleObj,
+                targetData = jQuery.data(event.target),
+                now = new Date().getTime(),
+                delta = targetData.lastTouch ? now - targetData.lastTouch : 0,
+                delay = delay == null ? 300 : delay;
+
+            if (delta < delay && delta > 30) {
+                targetData.lastTouch = null;
+                event.type = handleObj.origType;
+                ['clientX', 'clientY', 'pageX', 'pageY'].forEach(function (property) {
+                    event[property] = event.originalEvent.changedTouches[0][property];
+                })
+
+                // let jQuery handle the triggering of "doubletap" event handlers
+                handleObj.handler.apply(this, arguments);
+            } else {
+                targetData.lastTouch = now;
+            }
+        }
+    };
+
+})(jQuery);

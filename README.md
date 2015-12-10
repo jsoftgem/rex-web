@@ -1,10 +1,10 @@
 #[Rex War++ Version 1.0.15](http://war.rexpublishing.com.ph)
 ###Author Information
-Jerico G. de Guzman  
-Sr. Software Engineer  
+Jerico G. de Guzman
+Sr. Software Engineer
 [JSoft Technologies (GEM IT Solutions)](http://www.jsofttechnologies.com/ )
 
-###Date released: 
+###Date released:
 03.17.2015
 ### Web Browser Requirements:
 ```

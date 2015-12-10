@@ -1,7 +1,7 @@
 /**
  * Created by Jerico on 11/29/2014.
  */
-var directives = angular.module("flowAppDirectives", ["fluid"]);
+var directives = angular.module("flowAppDirectives", ["fluid", "ngFileUpload"]);
 
 
 /* Framework Helper */
@@ -10,7 +10,7 @@ directives.directive("addPages", ["flowHttpService", "flowModalService", "$compi
         scope: {task: "=", pageUrl: "@", targetList: "=", id: "@", disabled: "="},
         restrict: "AE",
         replace: true,
-        template: "<button ng-disabled='disabled' type='button' ng-click='look()' class='btn btn-info'>Add pages</button>",
+        template: "<button ng-disabled='disabled && isLooking' type='button' ng-click='look()' class='btn btn-info'><span>Add pages</span> <i ng-if='isLooking' class='fa fa-spinner fa-spin'></i></button>",
         link: function (scope, element) {
 
 
@@ -24,15 +24,15 @@ directives.directive("addPages", ["flowHttpService", "flowModalService", "$compi
 
             var modalContent = $("<div>").addClass("modal-dialog modal-lg").attr("id", "{{id}}_mdl_cnt").appendTo(modal).get();
 
-            var modalPanel = $("<div>").addClass("panel panel-default").appendTo(modalContent).get();
+            var modalPanel = $("<div>").addClass("panel panel-primary").appendTo(modalContent).get();
 
             var modalPanelHeading = $("<div>").addClass("panel-heading").appendTo(modalPanel).get();
 
-            var spanTitle = $("<span>").addClass("text-info").addClass("col-lg-5 col-md-5 col-sm-3 col-xs-3").html("Select a page").appendTo(modalPanelHeading).get();
+            $("<span>").addClass("text-inverse").addClass("col-lg-5 col-md-5 col-sm-3 col-xs-3").html("Select a page").appendTo(modalPanelHeading).get();
 
             var inputGroup = $("<div>").addClass("col-lg-7 col-md-7 col-sm-9 col-xs-9").addClass("input-group").appendTo(modalPanelHeading).get();
 
-            var inputSearch = $("<input>").addClass("form-control").attr("type", "text").attr("ng-model", "search").appendTo(inputGroup).get();
+            $("<input>").addClass("form-control").attr("type", "text").attr("ng-model", "search").appendTo(inputGroup).get();
 
             var inputSpan = $("<span>").addClass("input-group-addon").appendTo(inputGroup).get();
 
@@ -94,6 +94,7 @@ directives.directive("addPages", ["flowHttpService", "flowModalService", "$compi
             };
 
             scope.look = function () {
+                scope.isLooking = true;
                 f.get(scope.pageUrl, scope.task).success(function (pages) {
                     scope.pages = pages;
                     angular.forEach(scope.targetList, function (pp) {
@@ -104,6 +105,7 @@ directives.directive("addPages", ["flowHttpService", "flowModalService", "$compi
                         });
                     });
                     fm.show(scope.id + "_pge_slt_mdl");
+                    scope.isLooking = false;
                 });
             };
 
@@ -155,7 +157,7 @@ directives.directive("addAllPages", ["flowHttpService", function (f) {
         }
     }
 }]);
-directives.directive("fluidMenu", function ($parse, $compile, $timeout, flowHttpService, flowFrameService) {
+directives.directive("fluidMenu", function ($parse, $compile, $timeout, flowHttpService, flowFrameService, UserFactory) {
     return {
         link: function ($scope, element, attributes) {
             $scope._menu = {status: [], collapse: {}, hover: []};
@@ -206,46 +208,47 @@ directives.directive("fluidMenu", function ($parse, $compile, $timeout, flowHttp
             };
 
             $scope.$watch(function (scope) {
-                return attributes.fluidMenu;
-            }, function (newValue) {
-                if (newValue) {
+                return UserFactory.isAuthenticated();
+            }, function (authenticated) {
+                if (authenticated) {
                     var groupLength = 0;
-                    flowHttpService.getLocal(attributes.fluidMenu).success(function (groups) {
 
-                        groupLength = groups.length - 1;
+                    var groups = UserFactory.getUser().flowGroups;
 
-                        angular.forEach(groups, function (group, index) {
+                    groupLength = groups.length - 1;
 
-                            var groupLi = $("<li>").appendTo(element[0]).get();
+                    angular.forEach(groups, function (group, index) {
 
-                            var groupA = $("<a>").attr("href", "#").appendTo(groupLi).get();
+                        var groupLi = $("<li>").appendTo(element[0]).get();
 
-                            $("<i>").addClass(group.iconUri).appendTo(groupA).get();
+                        var groupA = $("<a>").attr("href", "#").appendTo(groupLi).get();
 
-                            $("<span>").addClass("menu-title").html(group.title).appendTo(groupA).get();
+                        $("<i>").addClass(group.iconUri).appendTo(groupA).get();
 
-                            $("<span>").addClass("fa arrow").appendTo(groupA).get();
-                            if (group.flowModules && group.flowModules.length > 0) {
-                                var moduleLength = group.flowModules.length - 1;
-                                var subUl = $("<ul>").addClass("nav nav-second-level").appendTo(groupLi).get();
-                                angular.forEach(group.flowModules, function (module, index2) {
-                                    $scope.dataMap.push({name: module.moduleName, data: module});
+                        $("<span>").addClass("menu-title").html(group.title).appendTo(groupA).get();
 
-                                    var subLi = $("<li>").appendTo(subUl).get();
+                        $("<span>").addClass("fa arrow").appendTo(groupA).get();
+                        if (group.flowModules && group.flowModules.length > 0) {
+                            var moduleLength = group.flowModules.length - 1;
+                            var subUl = $("<ul>").addClass("nav nav-second-level").appendTo(groupLi).get();
+                            angular.forEach(group.flowModules, function (module, index2) {
+                                $scope.dataMap.push({name: module.moduleName, data: module});
 
-                                    var subA = $("<a>").attr("href", "#").attr("module", module.moduleName).appendTo(subLi).get();
+                                var subLi = $("<li>").appendTo(subUl).get();
 
-                                    $("<i>").addClass(module.moduleGlyph).appendTo(subA).get();
+                                var subA = $("<a>").attr("href", "#").attr("module", module.moduleName).appendTo(subLi).get();
 
-                                    $("<span>").addClass("submenu-title").html(module.moduleTitle).appendTo(subA).get();
+                                $("<i>").addClass(module.moduleGlyph).appendTo(subA).get();
 
-                                    if (groupLength === index && moduleLength === index2) {
-                                        $scope.loaded = true;
-                                    }
-                                });
-                            }
-                        });
-                    })
+                                $("<span>").addClass("submenu-title").html(module.moduleTitle).appendTo(subA).get();
+
+                                if (groupLength === index && moduleLength === index2) {
+                                    $scope.loaded = true;
+                                }
+                            });
+                        }
+                    });
+
                 } else {
                     $scope.loaded = true;
                 }
@@ -261,7 +264,7 @@ directives.directive("fluidMenu", function ($parse, $compile, $timeout, flowHttp
                 }, $scope.data);
 
                 if ($scope.data && $scope.data.task) {
-                    var task = flowFrameService.addTask($scope.data.task);
+                    flowFrameService.addTask($scope.data.task);
                 }
             };
 
@@ -294,15 +297,13 @@ directives.directive("fluidMenu", function ($parse, $compile, $timeout, flowHttp
                                 'ng-class': '_menu.hover[' + index + ']'
                             });
                         });
-
-                        element.html($compile(element.html())($scope));
-
+                        $compile(element.contents())($scope);
 
                     } else {
                         $scope.reload();
                     }
                 });
-            }
+            };
 
             $scope.reload();
         }
@@ -504,8 +505,8 @@ directives.directive("flowBarTooltip", ["$timeout", "flowFrameService", "flowHtt
                         angular.forEach(scope.task.pages, function (page) {
                             if (page.pageLinkEnabled !== undefined && page.pageLinkEnabled === true) {
                                 content += "<li page='" + page.name + "'>" +
-                                "<a href='#' class='color-white' >" + page.title + "</a>" +
-                                "</li>"
+                                    "<a href='#' class='color-white' >" + page.title + "</a>" +
+                                    "</li>"
                             }
                         });
                     }
@@ -628,7 +629,165 @@ directives.directive('flowProfileVisible', ["flowHttpService", function (f) {
         }
     };
 }]);
+directives.directive('fallbackSrc', function () {
+    var fallbackSrc = {
+        link: function postLink(scope, iElement, iAttrs) {
+            iElement.bind('error', function () {
+                angular.element(this).attr("src", iAttrs.fallbackSrc);
+            });
+        }
+    };
+    return fallbackSrc;
+});
+directives.directive("flowPermissionEnabled", ["flowHttpService", "$compile", "sessionService", "UserFactory", function (f, c, ss, uf) {
+    return {
+        restrict: "A",
+        scope: {task: "=", page: "="},
+        link: function (scope, element, attr) {
+            if (attr.method) {
+                scope.method = attr.method;
+            }
 
+            console.info("permissionEnabled-url", f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method);
+
+            var url = "pageName=" + scope.page.name + "&method=" + scope.method;
+
+            var enabled = ss.getSessionProperty(url);
+
+            console.debug("permissionEnabled", enabled);
+
+            if (enabled != null) {
+                console.debug("permissionEnabled-old", enabled);
+                if (enabled === false) {
+                    element.attr("disabled", "");
+                }
+            } else {
+                var profiles = uf.getUser().flowUserProfiles;
+
+                if (profiles) {
+
+                    if (enabled == null && enabled !== false) {
+                        enabled = false;
+                        var profileLength = profiles.length - 1;
+                        angular.forEach(profiles, function (profile, $index) {
+                            if (!enabled) {
+                                var flowProfilePermissionList = profile.flowProfilePermissions;
+                                var nestedProfileLength = flowProfilePermissionList.length - 1;
+                                angular.forEach(flowProfilePermissionList, function (permission, $index2) {
+                                    if (!enabled) {
+                                        if (scope.page.name === permission.flowPageName) {
+                                            if (scope.method.toLocaleLowerCase() === "put") {
+                                                enabled = permission.put;
+                                            } else if (scope.method.toLocaleLowerCase() === "get") {
+                                                enabled = permission.get;
+                                            } else if (scope.method.toLocaleLowerCase() === "post") {
+                                                enabled = permission.post;
+                                            } else if (scope.method.toLocaleLowerCase() === "delete") {
+                                                enabled = permission.del;
+                                            }
+                                        }
+                                    }
+                                    if (profileLength === $index && nestedProfileLength === $index2) {
+                                        console.debug("permission end", enabled);
+                                        if (enabled === false) {
+                                            element.attr("disabled", "");
+                                        } else if (element.attr("disabled")) {
+                                            element.removeAttr("disabled");
+                                        }
+
+                                        ss.addSessionProperty(url, enabled);
+                                    }
+                                });
+                            }
+
+                        });
+                    }
+                }
+
+            }
+
+
+        }
+
+    }
+}]);
+directives.directive("flowPermissionVisible", ["flowHttpService", "$compile", "sessionService", "UserFactory", function (f, c, ss, uf) {
+    return {
+        restrict: "A",
+        scope: {task: "=", page: "="},
+        link: function (scope, element, attr) {
+            if (attr.method) {
+                scope.method = attr.method;
+            }
+
+
+            console.info("permissionVisible-url", f.permissionUrl + "?pageName=" + scope.page.name + "&method=" + scope.method);
+
+            var url = "pageName=" + scope.page.name + "&method=" + scope.method;
+
+            var enabled = ss.getSessionProperty(url);
+            console.debug("permissionVisible-method", scope.method);
+            console.debug("permissionVisible", enabled);
+
+            if (enabled != null) {
+                console.debug("permissionVisible-old", enabled);
+                if (enabled === "false") {
+                    console.debug("permissionVisible-end.hidden", enabled);
+                    element.addClass("hidden");
+                }
+            } else {
+                var profiles = uf.getUser().flowUserProfiles;
+                if (profiles) {
+
+                    if (enabled == null && enabled !== false) {
+                        enabled = false;
+                        var profileLength = profiles.length - 1;
+                        angular.forEach(profiles, function (profile, $index) {
+                            if (!enabled) {
+                                var flowProfilePermissionList = profile.flowProfilePermissions;
+                                var nestedProfileLength = flowProfilePermissionList.length - 1;
+                                angular.forEach(flowProfilePermissionList, function (permission, $index2) {
+                                    if (!enabled) {
+                                        if (scope.page.name === permission.flowPageName) {
+                                            if (scope.method.toLocaleLowerCase() === "put") {
+                                                enabled = permission.put;
+                                            } else if (scope.method.toLocaleLowerCase() === "get") {
+                                                enabled = permission.get;
+                                            } else if (scope.method.toLocaleLowerCase() === "post") {
+                                                enabled = permission.post;
+                                            } else if (scope.method.toLocaleLowerCase() === "delete") {
+                                                enabled = permission.del;
+                                            }
+                                        }
+                                    }
+                                    console.debug("profileLength", profileLength);
+                                    console.debug("$index", $index);
+                                    console.debug("nestedProfileLength", nestedProfileLength);
+                                    console.debug("$index2", $index2);
+                                    if (profileLength === $index && nestedProfileLength === $index2) {
+                                        console.debug("permissionVisible-end", enabled);
+                                        if (enabled === "false") {
+                                            console.debug("permissionVisible-end.hidden", enabled);
+                                            element.addClass("hidden");
+                                        } else if (element.hasClass("hidden")) {
+                                            element.removeClass("hidden");
+                                        }
+                                        ss.addSessionProperty(url, enabled);
+                                    }
+                                });
+                            }
+
+                        });
+                    }
+                }
+
+            }
+
+
+        }
+
+    }
+}]);
 /*UI Helper*/
 
 directives.directive("offset", [function () {
@@ -654,7 +813,9 @@ directives.directive("button", [function () {
     return {
         restrict: 'A',
         link: function (scope, iElement, iAttrs) {
-
+            if (iAttrs.sizeClass) {
+                iElement.addClass(iAttrs.sizeClass);
+            }
             iElement.addClass("btn");
             if (iAttrs.info) {
                 iElement.attr("type", iAttrs.info);
@@ -673,6 +834,7 @@ directives.directive("button", [function () {
                 iElement.addClass("btn-default");
             }
 
+            iElement.addClass("btn-lg");
 
         }
     };
@@ -1071,6 +1233,34 @@ directives.directive("fluidPrintReport", ["$compile", function (c) {
     }
 }])
 
+directives.directive("getHeight", [function () {
+
+    return {
+        restrict: "A",
+        link: function (scope, element, attr) {
+
+            if (attr.elementId) {
+
+                var copyElement = angular.element($("#" + attr.elementId));
+
+            }
+
+
+        }
+    }
+
+}]);
+
+directives.directive("withHost", ["$parse", function (p) {
+    return {
+        restrict: "A",
+        link: function (scope, element, attr) {
+            if (attr[attr.withHost]) {
+                attr[attr.withHost] = withHost(attr[attr.withHost]);
+            }
+        }
+    }
+}]);
 
 
 

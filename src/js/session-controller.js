@@ -1,22 +1,23 @@
 /**
  * Created by Jerico on 12/15/2014.
  */
-angular.module("sessionControllers", ["fluid", "ngResource", "datatables", "flowServices", "truncate",
+angular.module("sessionControllers", ["fluid", "ngResource", "flowServices", "truncate", "flowAppDirectives",
     "ngCookies"])
-    .controller("editProfileCtrl", ["$scope", "userProfile", function (s, u) {
+    .controller("editProfileCtrl", ["$scope", "userProfile", "UserFactory", function (s, u, uf) {
         s.task.page.load = function (data) {
+            console.debug("editProfile-page.data", data);
             this.title = u.fullName;
             s.task.password = {};
             s.task.flowUserDetail = data;
             s.task.tempData = {};
             s.task.updatePassword = false;
             angular.copy(data, s.task.tempData);
-        }
+        };
 
 
         s.task.validatePassword = function () {
             if (s.task.password.current) {
-                s.http.post("session/password_service/validate/", s.task.password.current, u.username)
+                s.http.post("session/password_service/validate/", s.task.password.current, uf.getUser().username)
                     .success(function (valid) {
                         s.task.showChangePasswordField = valid;
                         s.task.showInvalidPassword = !valid;
@@ -30,13 +31,13 @@ angular.module("sessionControllers", ["fluid", "ngResource", "datatables", "flow
             s.task.updatePassword = !s.task.updatePassword;
             s.task.showChangePasswordField = false;
             s.task.password = {};
-        }
+        };
 
         s.task.update = function () {
             console.info("update", s.task.updatePassword);
             if (s.task.updatePassword) {
                 if (s.task.password.new) {
-                    s.http.post("session/password_service/change_password/", s.task.password.new, u.username).
+                    s.http.post("session/password_service/change_password/", s.task.password.new, uf.getUser().username).
                         success(function (data) {
                             s.flow.message.success("Password has been changed.");
                             s.task.changePassword();
@@ -63,8 +64,6 @@ angular.module("sessionControllers", ["fluid", "ngResource", "datatables", "flow
                 u.updateProfile(s.task.flowUserDetail);
                 s.task.tempData = {};
             }
-
-
         });
 
 

@@ -1,0 +1,17 @@
+.image-upload {
+}
+
+.image-upload img {
+}
+
+.image-upload .img-group {
+    display: block;
+    padding: 0;
+    margin: auto 0;
+}
+
+.image-upload .img-group img{
+    border: 5px dashed #DDD;
+}
+.image-upload .btn {
+}
