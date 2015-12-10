@@ -1,4 +1,4 @@
-<div ng-if="userSessionService.isReady() && !userSessionService.isNotConnected()" ng-class="header.boxed"
+<div ng-cloak ng-if="userSessionService.isReady() && !userSessionService.isNotConnected()" ng-class="header.boxed"
      class="default-page app-font">
     <div id="header-topbar-option-demo" ng-include="'src/templates/app/header.html'"
          class="page-header-topbar"></div>
@@ -11,7 +11,7 @@
         </div>
     </div>
 </div>
-<div ng-if="!userSessionService.isReady() && !userSessionService.isNotConnected()" class="splash">
+<div ng-cloak ng-if="!userSessionService.isReady() && !userSessionService.isNotConnected()" class="splash">
     <div class="form">
         <div class="group">
             <img width="200" height="210" src="images/icons/logo.png">
@@ -31,7 +31,7 @@
     </div>
 
 </div>
-<div class="splash" ng-if="userSessionService.isNotConnected()">
+<div ng-cloak class="splash" ng-if="userSessionService.isNotConnected()">
 
     <div class="form">
         <div class="group">
