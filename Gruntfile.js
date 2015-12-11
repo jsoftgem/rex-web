@@ -9,7 +9,7 @@ var vendorsJS = ['bower_components/jquery/dist/jquery.js', 'bower_components/ang
     'bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js', 'bower_components/datatables/media/js/jquery.dataTables.js',
     'bower_components/datatables/media/js/dataTables.bootstrap.js', 'bower_components/datatables.net-responsive/js/dataTables.responsive.js',
     'bower_components/angular-datatables/dist/angular-datatables.js', 'bower_components/angular-datatables/dist/plugins/bootstrap/angular-datatables.bootstrap.js',
-    'bower_components/angular-bootstrap/ui-bootstrap.js', 'bower_components/jquery-migrate/jquery-migrate.js',
+    'bower_components/angular-bootstrap/ui-bootstrap.js',
     'bower_components/jquery-ui/jquery-ui.js', 'bower_components/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js',
     'bower_components/jqueryui-touch-punch/jquery.ui.touch-punch.js', 'bower_components/metisMenu/dist/metisMenu.js',
     'bower_components/jquery.scrollTo/jquery.scrollTo.js', 'bower_components/qtip2/jquery.qtip.js',

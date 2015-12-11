@@ -1310,7 +1310,7 @@ flowComponents
             }
         };
     }])
-    .directive("flowTool", ["$rootScope", "$compile", "$templateCache", function (r, c, tc) {
+    .directive("flowTool", ["$rootScope", "$compile", "$templateCache", '$timeout', function (r, c, tc, $timeout) {
 
         return {
             scope: {task: '=', controls: '=', pages: '=', flow: "=", size: "@"},
@@ -1333,9 +1333,8 @@ flowComponents
 
 
                 scope.runEvent = function (control) {
-                    console.info("control", control);
                     if (control.action) {
-                        control.action();
+                        $timeout(control.action);
                     } else {
                         var event = control.id + "_fp_" + scope.task.id;
                         r.$broadcast(event);

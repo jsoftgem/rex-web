@@ -1,6 +1,10 @@
 (function () {
     'use strict';
 
+    $(document).delegate('form', 'submit', function (event) {
+        event.preventDefault();
+    });
+
     angular.module('app', ['MAdmin', 'fluid.webComponents', 'war.resources', 'war.session', 'war.sidebar', 'datatables', 'datatables.bootstrap', 'flowServices', 'flowFactories', 'home', 'fluid', 'devControllers', 'adminControllers', 'flowAppDirectives', 'sessionControllers', 'infinite-scroll', 'ngDragDrop', 'rexTemplates'])
 
         .config(function ($compileProvider) {
