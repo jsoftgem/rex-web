@@ -36,6 +36,6 @@
     "requirejs": "^2.1.22"
   },
   "scripts": {
-    "postinstall": "bower update -V && node_modules/grunt-cli/bin/grunt build-prod"
+    "postinstall": "bower update -V && grunt build-prod"
   }
 }
