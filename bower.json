@@ -1,6 +1,6 @@
 {
   "name": "rex-web",
-  "version": "0.1.0",
+  "version": "0.1.4",
   "resolutions": {
     "angular": "~1.4.8"
   },

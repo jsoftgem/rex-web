@@ -18,7 +18,7 @@ var vendorsJS = ['bower_components/jquery/dist/jquery.js', 'bower_components/ang
 var vendorCSS = ['bower_components/bootstrap/dist/css/bootstrap.css',
     'bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css',
     'bower_components/font-awesome/css/font-awesome.css', 'bower_components/octicons/octicons/octicons.css',
-    'bower_components/angular-datatables/dist/plugins/bootstrap/datatables.bootstrap.css',
+    'bower_components/datatables/media/css/dataTables.bootstrap.css',
     'bower_components/fullcalendar/dist/fullcalendar.css'
 ];
 
@@ -170,10 +170,8 @@ module.exports = function (grunt) {
             compress: {
                 dist: {
                     options: {
-                        archive: 'dist/<%= pkg.name %>-<%= pkg.version %>.zip',
                         mangle: false
-                    }
-                    ,
+                    },
                     files: [{
                         src: ['dist/**'],
                         dest: 'dist/'
@@ -324,7 +322,6 @@ module.exports = function (grunt) {
     grunt.registerTask('build-prod', ['clean:temp', 'html2js:dist', 'concat:app', 'concat:vendor', 'uglify',
         'compress:dist', 'concat_css:app', 'concat_css:vendor', 'cssmin', 'build-copy', 'prod-html']);
     grunt.registerTask('build-dev', ['html2js:dist', 'concat:vendor', 'concat_css:vendor', 'build-copy', 'dev-html']);
-
 
 
 }

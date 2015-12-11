@@ -5,3 +5,4 @@ bower_components
 /home.html
 /signin.html
 dist
+tmp
