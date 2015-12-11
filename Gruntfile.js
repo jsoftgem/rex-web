@@ -35,6 +35,13 @@ var sections = {
         signin_content: 'html-build/sections/signin-content.html'
     }
 };
+
+var devSections = {
+    layout: {
+        content: 'html-build/sections/dev-content.html',
+        signin_content: 'html-build/sections/signin-content.html'
+    }
+};
 var homeBuildFile = 'html-build/home.html';
 var homeBuildFileDest = 'home.html';
 var indexBuildFile = 'html-build/index.html';
@@ -225,7 +232,7 @@ module.exports = function (grunt) {
                             libs: 'dist/css/vendor.css',
                             app: appCSS
                         },
-                        sections: sections
+                        sections: devSections
                     }
                 },
                 dev_index: {
@@ -311,11 +318,8 @@ module.exports = function (grunt) {
                     }]
                 }
             }
-        }
-    )
-    ;
+        });
     require('load-grunt-tasks')(grunt);
-
     grunt.registerTask('dev-html', ['htmlbuild:dev_home', 'htmlbuild:dev_index', 'htmlbuild:dev_signin']);
     grunt.registerTask('prod-html', ['htmlbuild:prod_home', 'htmlbuild:prod_index', 'htmlbuild:prod_signin']);
     grunt.registerTask('build-copy', ['copy:main', 'copy:css']);
