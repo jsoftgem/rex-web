@@ -1,9 +1,9 @@
 (function () {
     'use strict';
 
-    angular.module('war.app', ['datatables', 'datatables.bootstrap', 'ngResource', 'infinite-scroll', 'ngDragDrop', 'rexTemplates',
+    angular.module('war.app', ['datatables', 'datatables.bootstrap', 'ngResource', 'infinite-scroll', 'ngDragDrop',
             'ngFileUpload', 'oc.lazyLoad', 'LocalStorageModule',
-            'war.commons', 'war.services', 'war,admin', 'war.dev', 'war.session'])
+            'war.commons', 'war.services', 'war,admin', 'war.dev', 'war.session', 'war.sidebar'])
         .run(WarModuleRunner);
 
     WarModuleRunner.$inject = ['vendors', '$document', 'flowHttpService', 'responseEvent', 'HOST'];

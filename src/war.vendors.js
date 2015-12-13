@@ -3,7 +3,8 @@
 
     angular.module('war.module')
         .constant('vendors', {
-            jQuery: $
+            jQuery: $,
+            Chart: Chart
         });
 
 })();

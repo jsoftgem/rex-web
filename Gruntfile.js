@@ -13,7 +13,7 @@ var vendorsJS = ['bower_components/jquery/dist/jquery.js', 'bower_components/ang
     'bower_components/jquery-ui/jquery-ui.js', 'bower_components/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js',
     'bower_components/jqueryui-touch-punch/jquery.ui.touch-punch.js', 'bower_components/metisMenu/dist/metisMenu.js',
     'bower_components/jquery.scrollTo/jquery.scrollTo.js', 'bower_components/qtip2/jquery.qtip.js',
-    'bower_components/angular-dragdrop/src/angular-dragdrop.js'];
+    'bower_components/angular-dragdrop/src/angular-dragdrop.js', 'bower_components/jquery-timeago/jquery.timeago.js'];
 
 var vendorCSS = ['bower_components/bootstrap/dist/css/bootstrap.css',
     'bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css',
@@ -82,7 +82,7 @@ module.exports = function (grunt) {
         html2js: {
             options: {
                 singleModule: true,
-                module: 'rexTemplates',
+                module: 'war.app',
                 htmlmin: {
                     collapseBooleanAttributes: true,
                     collapseWhitespace: true,
@@ -90,7 +90,7 @@ module.exports = function (grunt) {
                 }
             },
             dist: {
-                src: ['src/templates/**/*.html'],
+                src: ['src/**/*.html'],
                 dest: 'tmp/templates.js'
             }
         },

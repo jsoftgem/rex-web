@@ -45,6 +45,7 @@
     "jquery.scrollTo": "~2.1.2",
     "qtip2": "~2.2.1",
     "oclazyload": "~1.0.9",
-    "angular-local-storage": "~0.2.3"
+    "angular-local-storage": "~0.2.3",
+    "jquery-timeago": "~1.4.3"
   }
 }
