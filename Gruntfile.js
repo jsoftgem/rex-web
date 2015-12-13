@@ -19,7 +19,7 @@ var vendorCSS = ['bower_components/bootstrap/dist/css/bootstrap.css',
     'bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css',
     'bower_components/font-awesome/css/font-awesome.css', 'bower_components/octicons/octicons/octicons.css',
     'bower_components/datatables/media/css/dataTables.bootstrap.css',
-    'bower_components/fullcalendar/dist/fullcalendar.css'
+    'bower_components/fullcalendar/dist/fullcalendar.css', 'bower_components/qtip2/jquery.qtip.css'
 ];
 
 var vendorFonts = ['bower_components/bootstrap/fonts/*', 'bower_components/font-awesome/fonts/*'];
@@ -325,8 +325,8 @@ module.exports = function (grunt) {
     grunt.registerTask('dev-html', ['htmlbuild:dev_home', 'htmlbuild:dev_index', 'htmlbuild:dev_signin']);
     grunt.registerTask('prod-html', ['htmlbuild:prod_home', 'htmlbuild:prod_index', 'htmlbuild:prod_signin']);
     grunt.registerTask('build-copy', ['copy:main', 'copy:css']);
-    grunt.registerTask('build-prod', ['clean:temp', 'html2js:dist', 'concat:app', 'concat:vendor', 'uglify',
-        'compress:dist', 'concat_css:app', 'concat_css:vendor', 'cssmin', 'build-copy', 'prod-html']);
+    grunt.registerTask('build-prod', ['clean:temp', 'html2js:dist', 'concat:app', 'strip:main', 'concat:vendor', 'uglify',
+        'concat_css:app', 'concat_css:vendor', 'cssmin', 'build-copy', 'prod-html']);
     grunt.registerTask('build-dev', ['html2js:dist', 'concat:vendor', 'concat_css:vendor', 'build-copy', 'dev-html']);
 
 
