@@ -789,7 +789,6 @@ directives.directive("flowPermissionVisible", ["flowHttpService", "$compile", "s
     }
 }]);
 /*UI Helper*/
-
 directives.directive("offset", [function () {
 
     return {
@@ -842,190 +841,6 @@ directives.directive("button", [function () {
 
 
 /* icons */
-
-directives.directive("fluidIconSave", function () {
-    return {
-        restrict: "A",
-        link: function (scope, element) {
-            element.addClass("fa fa-save");
-        }
-    }
-});
-
-directives.directive("fluidIconAttach", function () {
-    return {
-        restrict: "A",
-        link: function (scope, element) {
-            element.addClass("fa fa-paperclip");
-        }
-    }
-});
-
-directives.directive("fluidIconEdit", function () {
-    return {
-        restrict: "A",
-        link: function (scope, element) {
-            element.addClass("fa fa-edit");
-        }
-    }
-});
-
-directives.directive("fluidIconNew", function () {
-    return {
-        restrict: "A",
-        link: function (scope, element) {
-            element.addClass("fa fa-plus");
-        }
-    }
-});
-
-directives.directive("fluidIconSearch", function () {
-    return {
-        restrict: "A",
-        link: function (scope, element) {
-            element.addClass("fa fa-search");
-        }
-    }
-});
-
-directives.directive("fluidIconTrash", function () {
-    return {
-        restrict: "A",
-        link: function (scope, element) {
-            element.addClass("fa fa-trash-o");
-        }
-    }
-});
-
-directives.directive("fluidIconDownload", function () {
-    return {
-        restrict: "A",
-        link: function (scope, element) {
-            element.addClass("fa fa-download");
-        }
-    }
-});
-
-directives.directive("fluidIconClose", function () {
-    return {
-        restrict: "A",
-        link: function (scope, element) {
-            element.addClass("fa fa-close");
-        }
-    }
-});
-
-
-directives.directive("fluidIconPrint", function () {
-    return {
-        restrict: "A",
-        link: function (scope, element) {
-            element.addClass("fa fa-print");
-        }
-    }
-});
-
-directives.directive("fluidIconClear", function () {
-    return {
-        restrict: "A",
-        link: function (scope, element) {
-            element.addClass("fa fa-eraser");
-        }
-    }
-});
-
-directives.directive("fluidIconNext", function () {
-    return {
-        restrict: "A",
-        link: function (scope, element) {
-            element.addClass("fa fa-step-forward");
-        }
-    }
-});
-
-directives.directive("fluidIconBack", function () {
-    return {
-        restrict: "A",
-        link: function (scope, element) {
-            element.addClass("fa fa-step-backward");
-        }
-    }
-});
-
-directives.directive("fluidIconNext", function () {
-    return {
-        restrict: "A",
-        link: function (scope, element) {
-            element.addClass("fa fa-forward");
-        }
-    }
-})
-
-directives.directive("fluidIconCheck", function () {
-    return {
-        restrict: "A",
-        link: function (scope, element) {
-            element.addClass("fa fa-check text-success");
-        }
-    }
-})
-
-
-directives.directive("fluidIconRefresh", function () {
-    return {
-        restrict: "A",
-        link: function (scope, element, attr) {
-            element.addClass("fa fa-refresh");
-
-            scope.$watch(function () {
-                return attr.loading;
-            }, function (loading) {
-                if (loading) {
-                    if (loading === 'true') {
-                        element.addClass("fa-spin");
-                    } else {
-                        element.removeClass("fa-spin");
-                    }
-                }
-            })
-
-        }
-    }
-});
-
-directives.directive("fluidIconSpinner", function () {
-    return {
-        restrict: "A",
-        link: function (scope, element, attr) {
-            element.addClass("fa fa-spinner");
-
-            scope.$watch(function () {
-                return attr.loading;
-            }, function (loading) {
-                if (loading) {
-                    if (loading === 'true') {
-                        element.addClass("fa-spin");
-                    } else {
-                        element.removeClass("fa-spin");
-                    }
-                }
-            })
-
-        }
-    }
-});
-
-
-directives.directive("fluidIconTag", function () {
-    return {
-        restrict: "A",
-        link: function (scope, element) {
-            element.addClass("fa fa-tag");
-        }
-    }
-})
-
-
 directives.directive("bgWeek1", function () {
     return {
         restrict: "A",
@@ -1043,7 +858,6 @@ directives.directive("bgWeek1", function () {
         template: "<div><div bg-div></div><span style='text-align:center'>Week 1</span></div>"
     }
 });
-
 directives.directive("bgWeek2", function () {
     return {
         restrict: "A",
@@ -1061,7 +875,6 @@ directives.directive("bgWeek2", function () {
         template: "<div><div bg-div></div><span style='text-align:center'>Week 2</span></div>"
     }
 });
-
 directives.directive("bgWeek3", function () {
     return {
         restrict: "A",
@@ -1096,7 +909,6 @@ directives.directive("bgWeek4", function () {
         template: "<div><div bg-div></div><span style='text-align:center'>Week 4</span></div>"
     }
 });
-
 directives.directive("bgWeek5", function () {
     return {
         restrict: "A",
@@ -1114,19 +926,6 @@ directives.directive("bgWeek5", function () {
         template: "<div><div bg-div></div><span style='text-align:center'>Week 5</span></div>"
     }
 });
-
-
-directives.directive("barChart", function () {
-    return {
-        restrict: "A",
-
-        link: function (scope, element, attr) {
-
-
-        }
-    }
-})
-
 directives.directive("fluidPrintReport", ["$compile", function (c) {
     return {
         restrict: "A",
@@ -1230,35 +1029,6 @@ directives.directive("fluidPrintReport", ["$compile", function (c) {
 
         }
 
-    }
-}])
-
-directives.directive("getHeight", [function () {
-
-    return {
-        restrict: "A",
-        link: function (scope, element, attr) {
-
-            if (attr.elementId) {
-
-                var copyElement = angular.element($("#" + attr.elementId));
-
-            }
-
-
-        }
-    }
-
-}]);
-
-directives.directive("withHost", ["$parse", function (p) {
-    return {
-        restrict: "A",
-        link: function (scope, element, attr) {
-            if (attr[attr.withHost]) {
-                attr[attr.withHost] = withHost(attr[attr.withHost]);
-            }
-        }
     }
 }]);
 

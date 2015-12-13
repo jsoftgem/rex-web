@@ -1,7 +1,7 @@
 /**Flow Components v0.0.1
  * Created by Jerico de Guzman
  * October 2014**/
-var flowComponents = angular.module("fluid", ["ngFileUpload", "oc.lazyLoad", "LocalStorageModule"]);
+var flowComponents = angular.module("war.fluid", []);
 var EVENT_PAGE_SUCCESS = "$onPageSuccess", EVENT_PAGE_ERROR = "$onPageFailed";
 flowComponents.config(["$httpProvider", "localStorageServiceProvider", function (h, ls) {
     ls.setPrefix("fluid")

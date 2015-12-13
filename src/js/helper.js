@@ -8,7 +8,7 @@ var monthNames = ["January", "February", "March", "April", "May", "June",
 var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
     'Thursday', 'Friday', 'Saturday'];
 
-var VIEWER_PATH = "ViewerJS/#../"
+var VIEWER_PATH = "ViewerJS/#../";
 
 var REG_NUM = /^[0-9]+$/;
 
@@ -174,10 +174,6 @@ function renderDate(data, filter) {
 
 function renderDateSmall(data, filter) {
     return "<span>" + filter('date')(data, 'MM/dd/yyyy') + "</span>";
-}
-
-function getPageFromTaskPages(name, task) {
-
 }
 
 function getHomePageFromTaskPages(task) {
@@ -390,7 +386,7 @@ function disableDraggable(s) {
                 event.type = handleObj.origType;
                 ['clientX', 'clientY', 'pageX', 'pageY'].forEach(function (property) {
                     event[property] = event.originalEvent.changedTouches[0][property];
-                })
+                });
 
                 // let jQuery handle the triggering of "doubletap" event handlers
                 handleObj.handler.apply(this, arguments);

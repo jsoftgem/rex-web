@@ -87,7 +87,6 @@ App.controller('AppController', function ($scope, $rootScope, $location, userApp
     $('#news-ticker-close').click(function (e) {
         $('.news-ticker').remove();
     });
-
     $scope.$watch(function () {
         return UserFactory.isAuthenticated();
     }, function (session) {
