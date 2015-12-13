@@ -504,7 +504,7 @@ angular.module("plannerModule", ["fluid", "ngResource", "datatables", "ngFileUpl
                 }
 
                 s.task.plannerCalendar.fullCalendar("render");
-            }
+            };
 
             s.calendar.getCurrentDate = function () {
                 return s.task.plannerCalendar.fullCalendar("getDate").toDate();

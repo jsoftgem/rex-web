@@ -19,7 +19,7 @@ var vendorCSS = ['bower_components/bootstrap/dist/css/bootstrap.css',
     'bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css',
     'bower_components/font-awesome/css/font-awesome.css', 'bower_components/octicons/octicons/octicons.css',
     'bower_components/datatables/media/css/dataTables.bootstrap.css',
-    'bower_components/fullcalendar/dist/fullcalendar.css'
+    'bower_components/fullcalendar/dist/fullcalendar.css', 'bower_components/qtip2/jquery.qtip.css'
 ];
 
 var vendorFonts = ['bower_components/bootstrap/fonts/*', 'bower_components/font-awesome/fonts/*'];
@@ -50,275 +50,275 @@ var signinBuildFile = 'html-build/signin.html';
 var signinBuildFileDest = 'signin.html';
 module.exports = function (grunt) {
     grunt.initConfig({
-            pkg: grunt.file.readJSON("package.json"),
-            bower: {
-                install: {
-                    options: {
-                        install: true,
-                        copy: false,
-                        targetDir: './libs',
-                        cleanTargetDir: true
-                    }
-                }
-            },
-            jshint: {
-                all: ['Gruntfile.js', 'src/js/**/*.js', '**/*.js']
-            },
-            karma: {
+        pkg: grunt.file.readJSON("package.json"),
+        bower: {
+            install: {
                 options: {
-                    configFile: 'test/config/karma.conf.js'
-                },
-                unit: {
-                    singleRun: true
-                },
-
-                continuous: {
-                    singleRun: false,
-                    autoWatch: true
-                }
-            },
-            html2js: {
-                options: {
-                    singleModule: true,
-                    module: 'rexTemplates',
-                    htmlmin: {
-                        collapseBooleanAttributes: true,
-                        collapseWhitespace: true,
-                        removeComments: true
-                    }
-                },
-                dist: {
-                    src: ['src/templates/**/*.html'],
-                    dest: 'tmp/templates.js'
-                }
-            },
-            concat: {
-                options: {
-                    separator: ';'
-                },
-                app: {
-                    src: appJS,
-                    dest: 'dist/js/app.js'
-                },
-                vendor: {
-                    src: vendorsJS,
-                    dest: 'dist/js/vendor.js'
-                }
-            },
-            uglify: {
-                dist: {
-                    files: [
-                        {
-                            'dist/js/app.min.js': ['dist/js/app.js'],
-                            'dist/js/vendor.min.js': ['dist/js/vendor.js'],
-                            'js/controller/rex/activity/customer-summary-controller.js': ['src/controller/activity/customer-summary-controller.js'],
-                            'js/controller/rex/activity/daily-controller.js': ['src/controller/activity/daily-controller.js'],
-                            'js/controller/rex/activity/planner.js': ['src/controller/activity/planner.js'],
-                            'js/controller/rex/activity/school-year-controller.js': ['src/controller/activity/school-year-controller.js'],
-                            'js/controller/rex/data/level-controller.js': ['src/controller/data/level-controller.js'],
-                            'js/controller/rex/data/position-controller.js': ['src/controller/data/position-controller.js'],
-                            'js/controller/rex/data/region-controller.js': ['src/controller/data/region-controller.js'],
-                            'js/controller/rex/data/school-controller.js': ['src/controller/data/school-controller.js'],
-                            'js/controller/rex/management/agent-controller.js': ['src/controller/management/agent-controller.js'],
-                            'js/controller/rex/management/customer-controller.js': ['src/controller/management/customer-controller.js'],
-                            'js/controller/rex/management/region-manager-controller.js': ['src/controller/management/region-manager-controller.js'],
-                            'js/controller/rex/reports/reports-controller.js': ['src/controller/reports/reports-controller.js']
-                        }
-                    ],
-                    options: {
-                        mangle: false
-                    }
-                }
-            },
-            cssmin: {
-                target: {
-                    files: [
-                        {
-                            expand: true,
-                            cwd: 'dist/css',
-                            src: ['**/*.css'],
-                            dest: 'dist/css',
-                            ext: '.min.css'
-                        }]
-                }
-            },
-            concat_css: {
-                app: {
-                    src: appCSS,
-                    dest: "dist/css/app.css"
-                },
-                vendor: {
-                    src: vendorCSS,
-                    dest: 'dist/css/vendor.css'
-                }
-            },
-            clean: {
-                temp: {
-                    src: ['tmp', 'dist/css/*.css']
-                }
-            },
-            watch: {
-                dev: {
-                    files: ['Gruntfile.js', 'src/js/*.js', '*.html'],
-                    tasks: ['jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'clean:temp'],
-                    options: {
-                        atBegin: true
-                    }
-                }
-                ,
-                min: {
-                    files: ['Gruntfile.js', 'app/*.js', '*.html'],
-                    tasks: ['jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'clean:temp', 'uglify:dist'],
-                    options: {
-                        atBegin: true
-                    }
-                }
-            },
-            compress: {
-                dist: {
-                    options: {
-                        mangle: false
-                    },
-                    files: [{
-                        src: ['dist/**'],
-                        dest: 'dist/'
-                    }]
-                }
-            },
-            strip: {
-                main: {
-                    src: 'dist/js/app.js',
-                    dest: 'dist/js/app.js',
-                    nodes: ['console', 'debug', 'info', 'log']
-                }
-            },
-            sass: {
-                dist: {
-                    options: {
-                        style: 'expanded'
-                    },
-                    files: {
-                        'src/css/sass.css': 'src/sass/**/*.scss'
-                    }
-                }
-            },
-            htmlbuild: {
-                prod_home: {
-                    src: homeBuildFile,
-                    dest: homeBuildFileDest,
-                    options: {
-                        beautify: true,
-                        scripts: {
-                            libs: 'dist/js/vendor.min.js',
-                            app: 'dist/js/app.min.js'
-                        },
-                        styles: {
-                            libs: 'dist/css/vendor.min.css',
-                            app: 'dist/css/app.min.css'
-                        },
-                        sections: sections
-                    }
-                },
-                dev_home: {
-                    src: homeBuildFile,
-                    dest: homeBuildFileDest,
-                    options: {
-                        beautify: true,
-                        scripts: {
-                            libs: 'dist/js/vendor.js',
-                            app: appJS
-                        },
-                        styles: {
-                            libs: 'dist/css/vendor.css',
-                            app: appCSS
-                        },
-                        sections: devSections
-                    }
-                },
-                dev_index: {
-                    src: indexBuildFile,
-                    dest: indexBuildFileDest,
-                    options: {
-                        beautify: true,
-                        scripts: {
-                            libs: 'dist/js/vendor.js',
-                            app: appJS
-                        },
-                        styles: {
-                            libs: 'dist/css/vendor.css',
-                            app: appCSS
-                        }
-                    }
-                },
-                prod_index: {
-                    src: indexBuildFile,
-                    dest: indexBuildFileDest,
-                    options: {
-                        beautify: true,
-                        scripts: {
-                            libs: 'dist/js/vendor.min.js',
-                            app: 'dist/js/app.min.js'
-                        },
-                        styles: {
-                            libs: 'dist/css/vendor.min.css',
-                            app: 'dist/css/app.min.css'
-                        }
-                    }
-                },
-                dev_signin: {
-                    src: signinBuildFile,
-                    dest: signinBuildFileDest,
-                    options: {
-                        beautify: true,
-                        scripts: {
-                            libs: 'dist/js/vendor.js',
-                            app: appJS
-                        },
-                        styles: {
-                            libs: 'dist/css/vendor.css',
-                            app: appCSS
-                        },
-                        sections: sections
-                    }
-                },
-                prod_signin: {
-                    src: signinBuildFile,
-                    dest: signinBuildFileDest,
-                    options: {
-                        beautify: true,
-                        scripts: {
-                            libs: 'dist/js/vendor.min.js',
-                            app: 'dist/js/app.min.js'
-                        },
-                        styles: {
-                            libs: 'dist/css/vendor.min.css',
-                            app: 'dist/css/app.min.css'
-                        },
-                        sections: sections
-                    }
-                }
-            },
-            copy: {
-                main: {
-                    files: [
-                        {
-                            expand: true, flatten: true,
-                            src: vendorFonts,
-                            dest: 'dist/fonts/',
-                            filter: 'isFile'
-                        }
-                    ]
-                },
-                css: {
-                    files: [{
-                        expand: true, flatten: true,
-                        src: vendorCSSResource,
-                        dest: 'dist/css',
-                        filter: 'isFile'
-                    }]
+                    install: true,
+                    copy: false,
+                    targetDir: './libs',
+                    cleanTargetDir: true
                 }
             }
-        });
+        },
+        jshint: {
+            all: ['Gruntfile.js', 'src/js/**/*.js', '**/*.js']
+        },
+        karma: {
+            options: {
+                configFile: 'test/config/karma.conf.js'
+            },
+            unit: {
+                singleRun: true
+            },
+
+            continuous: {
+                singleRun: false,
+                autoWatch: true
+            }
+        },
+        html2js: {
+            options: {
+                singleModule: true,
+                module: 'rexTemplates',
+                htmlmin: {
+                    collapseBooleanAttributes: true,
+                    collapseWhitespace: true,
+                    removeComments: true
+                }
+            },
+            dist: {
+                src: ['src/templates/**/*.html'],
+                dest: 'tmp/templates.js'
+            }
+        },
+        concat: {
+            options: {
+                separator: ';'
+            },
+            app: {
+                src: appJS,
+                dest: 'dist/js/app.js'
+            },
+            vendor: {
+                src: vendorsJS,
+                dest: 'dist/js/vendor.js'
+            }
+        },
+        uglify: {
+            dist: {
+                files: [
+                    {
+                        'dist/js/app.min.js': ['dist/js/app.js'],
+                        'dist/js/vendor.min.js': ['dist/js/vendor.js'],
+                        'js/controller/rex/activity/customer-summary-controller.js': ['src/controller/activity/customer-summary-controller.js'],
+                        'js/controller/rex/activity/daily-controller.js': ['src/controller/activity/daily-controller.js'],
+                        'js/controller/rex/activity/planner.js': ['src/controller/activity/planner.js'],
+                        'js/controller/rex/activity/school-year-controller.js': ['src/controller/activity/school-year-controller.js'],
+                        'js/controller/rex/data/level-controller.js': ['src/controller/data/level-controller.js'],
+                        'js/controller/rex/data/position-controller.js': ['src/controller/data/position-controller.js'],
+                        'js/controller/rex/data/region-controller.js': ['src/controller/data/region-controller.js'],
+                        'js/controller/rex/data/school-controller.js': ['src/controller/data/school-controller.js'],
+                        'js/controller/rex/management/agent-controller.js': ['src/controller/management/agent-controller.js'],
+                        'js/controller/rex/management/customer-controller.js': ['src/controller/management/customer-controller.js'],
+                        'js/controller/rex/management/region-manager-controller.js': ['src/controller/management/region-manager-controller.js'],
+                        'js/controller/rex/reports/reports-controller.js': ['src/controller/reports/reports-controller.js']
+                    }
+                ],
+                options: {
+                    mangle: false
+                }
+            }
+        },
+        cssmin: {
+            target: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: 'dist/css',
+                        src: ['**/*.css'],
+                        dest: 'dist/css',
+                        ext: '.min.css'
+                    }]
+            }
+        },
+        concat_css: {
+            app: {
+                src: appCSS,
+                dest: "dist/css/app.css"
+            },
+            vendor: {
+                src: vendorCSS,
+                dest: 'dist/css/vendor.css'
+            }
+        },
+        clean: {
+            temp: {
+                src: ['tmp', 'dist/css/*.css']
+            }
+        },
+        watch: {
+            dev: {
+                files: ['Gruntfile.js', 'src/js/*.js', '*.html'],
+                tasks: ['jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'clean:temp'],
+                options: {
+                    atBegin: true
+                }
+            }
+            ,
+            min: {
+                files: ['Gruntfile.js', 'app/*.js', '*.html'],
+                tasks: ['jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'clean:temp', 'uglify:dist'],
+                options: {
+                    atBegin: true
+                }
+            }
+        },
+        compress: {
+            dist: {
+                options: {
+                    mangle: false
+                },
+                files: [{
+                    src: ['dist/**'],
+                    dest: 'dist/'
+                }]
+            }
+        },
+        strip: {
+            main: {
+                src: 'dist/js/app.js',
+                dest: 'dist/js/app.js',
+                nodes: ['console', 'debug', 'info', 'log']
+            }
+        },
+        sass: {
+            dist: {
+                options: {
+                    style: 'expanded'
+                },
+                files: {
+                    'src/css/sass.css': 'src/sass/**/*.scss'
+                }
+            }
+        },
+        htmlbuild: {
+            prod_home: {
+                src: homeBuildFile,
+                dest: homeBuildFileDest,
+                options: {
+                    beautify: true,
+                    scripts: {
+                        libs: 'dist/js/vendor.min.js',
+                        app: 'dist/js/app.min.js'
+                    },
+                    styles: {
+                        libs: 'dist/css/vendor.min.css',
+                        app: 'dist/css/app.min.css'
+                    },
+                    sections: sections
+                }
+            },
+            dev_home: {
+                src: homeBuildFile,
+                dest: homeBuildFileDest,
+                options: {
+                    beautify: true,
+                    scripts: {
+                        libs: 'dist/js/vendor.js',
+                        app: appJS
+                    },
+                    styles: {
+                        libs: 'dist/css/vendor.css',
+                        app: appCSS
+                    },
+                    sections: devSections
+                }
+            },
+            dev_index: {
+                src: indexBuildFile,
+                dest: indexBuildFileDest,
+                options: {
+                    beautify: true,
+                    scripts: {
+                        libs: 'dist/js/vendor.js',
+                        app: appJS
+                    },
+                    styles: {
+                        libs: 'dist/css/vendor.css',
+                        app: appCSS
+                    }
+                }
+            },
+            prod_index: {
+                src: indexBuildFile,
+                dest: indexBuildFileDest,
+                options: {
+                    beautify: true,
+                    scripts: {
+                        libs: 'dist/js/vendor.min.js',
+                        app: 'dist/js/app.min.js'
+                    },
+                    styles: {
+                        libs: 'dist/css/vendor.min.css',
+                        app: 'dist/css/app.min.css'
+                    }
+                }
+            },
+            dev_signin: {
+                src: signinBuildFile,
+                dest: signinBuildFileDest,
+                options: {
+                    beautify: true,
+                    scripts: {
+                        libs: 'dist/js/vendor.js',
+                        app: appJS
+                    },
+                    styles: {
+                        libs: 'dist/css/vendor.css',
+                        app: appCSS
+                    },
+                    sections: sections
+                }
+            },
+            prod_signin: {
+                src: signinBuildFile,
+                dest: signinBuildFileDest,
+                options: {
+                    beautify: true,
+                    scripts: {
+                        libs: 'dist/js/vendor.min.js',
+                        app: 'dist/js/app.min.js'
+                    },
+                    styles: {
+                        libs: 'dist/css/vendor.min.css',
+                        app: 'dist/css/app.min.css'
+                    },
+                    sections: sections
+                }
+            }
+        },
+        copy: {
+            main: {
+                files: [
+                    {
+                        expand: true, flatten: true,
+                        src: vendorFonts,
+                        dest: 'dist/fonts/',
+                        filter: 'isFile'
+                    }
+                ]
+            },
+            css: {
+                files: [{
+                    expand: true, flatten: true,
+                    src: vendorCSSResource,
+                    dest: 'dist/css',
+                    filter: 'isFile'
+                }]
+            }
+        }
+    });
     require('load-grunt-tasks')(grunt);
     grunt.registerTask('dev-html', ['htmlbuild:dev_home', 'htmlbuild:dev_index', 'htmlbuild:dev_signin']);
     grunt.registerTask('prod-html', ['htmlbuild:prod_home', 'htmlbuild:prod_index', 'htmlbuild:prod_signin']);
