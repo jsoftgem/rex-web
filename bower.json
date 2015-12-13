@@ -2,7 +2,7 @@
   "name": "rex-web",
   "version": "0.1.4",
   "resolutions": {
-    "angular": "~1.4.6"
+    "angular": "~1.4.8"
   },
   "ignore": [
     "**/.*",
@@ -15,9 +15,9 @@
     "Jerico <jerico@jsofttechnologies.com>"
   ],
   "dependencies": {
-    "angular": "~1.4.6",
-    "angular-cookies": "~1.4.6",
-    "angular-resource": "~1.4.6",
+    "angular": "~1.4.8",
+    "angular-cookies": "~1.4.8",
+    "angular-resource": "~1.4.8",
     "angular-notify": "~2.5.0",
     "bootstrap": "~3.3.6",
     "font-awesome": "~4.5.0",
