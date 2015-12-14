@@ -1,7 +1,7 @@
 /**Flow Components v0.0.1
  * Created by Jerico de Guzman
  * October 2014**/
-var flowComponents = angular.module("war.fluid", []);
+var flowComponents = angular.module("fluid", []);
 var EVENT_PAGE_SUCCESS = "$onPageSuccess", EVENT_PAGE_ERROR = "$onPageFailed";
 flowComponents.config(["$httpProvider", "localStorageServiceProvider", function (h, ls) {
     ls.setPrefix("fluid")
@@ -22,12 +22,11 @@ flowComponents
             return {
                 scope: {task: '='},
                 restrict: "E",
-                template: tc.get("templates/fluid/fluidPanel.html"),
+                templateUrl: 'src/templates/fluid/fluidPanel.html',
                 replace: true,
                 link: {
                     pre: function (scope, element) {
                         /* Initialize variables*/
-
 
                         element.ready(function () {
                             $(".frame-content").scrollTo(element, 200);
@@ -97,7 +96,6 @@ flowComponents
                                 }
                             }
                         ];
-
 
                         /* Page Event */
                         scope.flow.event = {};
@@ -1227,7 +1225,7 @@ flowComponents
             restrict: "E",
             transclude: true,
             scope: true,
-            template: tc.get("templates/fluid/fluidFrame.html"),
+            templateUrl: 'src/templates/fluid/fluidFrame.html',
             replace: true,
             link: function (scope, element) {
 
@@ -1316,7 +1314,7 @@ flowComponents
             scope: {task: '=', controls: '=', pages: '=', flow: "=", size: "@"},
             restrict: "E",
             replace: true,
-            template: tc.get("templates/fluid/fluidToolbar.html"),
+            templateUrl: "src/templates/fluid/fluidToolbar.html",
             link: function (scope, element, attr) {
 
                 if (attr.size) {
@@ -1396,7 +1394,7 @@ flowComponents
                 }
             },
             replace: true,
-            template: tc.get("templates/fluid/fluidBar2.html")
+            templateUrl: "src/templates/fluid/fluidBar2.html"
         };
     }])
     .directive("flowField", ["$templateCache", function (tc) {
@@ -1411,7 +1409,7 @@ flowComponents
                 disabled: "=",
                 blur: "&"
             },
-            template: tc.get("templates/fluid/fluidField.html"),
+            templateUrl: "src/templates/fluid/fluidField.html",
             replace: true,
             link: function (scope, elem, attr) {
 
@@ -1436,7 +1434,7 @@ flowComponents
                 rows: "=",
                 cols: "="
             },
-            template: tc.get("templates/fluid/fluidTextArea.html"),
+            templateUrl: "src/templates/fluid/fluidTextArea.html",
             replace: true,
             link: function (scope, elem, attr) {
                 if (!scope.name && scope.label) {
@@ -1449,7 +1447,7 @@ flowComponents
         return {
             restrict: "AE",
             scope: {model: "=", label: "@", required: "=", disabled: "=", name: "@"},
-            template: tc.get("templates/fluid/fluidCheckbox.html"),
+            templateUrl: "src/templates/fluid/fluidCheckbox.html",
             link: function (scope, element) {
                 if (!scope.name && scope.label) {
                     scope.name = scope.label.trim().split(" ").join("_");
@@ -1502,7 +1500,7 @@ flowComponents
         return {
             restrict: "AE",
             /*  template: "<div ng-class='flowFrameService.fullScreen ? \"overlay-full\" : \"overlay\"' class='hidden animated fadeIn anim-dur'><div ng-style='style' class='flow-modal animated pulse anim-dur'><div ng-transclude></div></div></div>",*/
-            template: tc.get("templates/fluid/fluidModal.html"),
+            templateUrl: "src/templates/fluid/fluidModal.html",
             replace: true,
             transclude: true,
             link: function (scope, element, attr) {
@@ -1545,7 +1543,7 @@ flowComponents
 
 
             },
-            template: tc.get("templates/fluid/fluidSubTable.html"),
+            templateUrl: "src/templates/fluid/fluidSubTable.html",
             link: function (scope, element) {
                 if (!scope.lookUp) {
                     scope.lookUp = "true";
@@ -1912,7 +1910,7 @@ flowComponents
                 });
 
             },
-            template: tc.get("templates/fluid/fluidLookup.html"),
+            templateUrl: "src/templates/fluid/fluidLookup.html",
             replace: true,
             transclude: true
         }
@@ -1935,7 +1933,7 @@ flowComponents
             },
             link: function (scope, element, attr) {
 
-                scope.templateUrl = "templates/fluid/fluidSelect.html";
+                scope.templateUrl = "src/templates/fluid/fluidSelect.html";
 
                 if (!scope.name && scope.label) {
                     scope.name = scope.label.trim().split(" ").join("_");
@@ -2018,7 +2016,7 @@ flowComponents
                 });
 
             },
-            /*   template: tc.get("templates/fluid/fluidSelect.html"),*/
+            /*   templateUrl:"src/templates/fluid/fluidSelect.html",*/
             replace: true
         }
     }])
@@ -2060,7 +2058,7 @@ flowComponents
 
 
                 if (!scope.tooltipPosition) {
-                    scope.tooltipPosition = "{\"my\":\"top center\",\"at\":\"bottom center\"}";
+                    scope.tooltipPosition = '{"my":"top center","at":"bottom center"}';
                 }
 
 
@@ -2147,7 +2145,7 @@ flowComponents
                 defaultImage: "@",
                 disabled: "="
             },
-            template: tc.get("templates/fluid/fluidImage.html"),
+            templateUrl: "src/templates/fluid/fluidImage.html",
             replace: true,
             link: function (scope) {
                 scope.fileReaderSupported = window.FileReader != null && (window.FileAPI == null || FileAPI.html5 != false);
@@ -2283,7 +2281,7 @@ flowComponents
                 required: "=",
                 disabled: "="
             },
-            template: tc.get("templates/fluid/fluidDatePicker.html"),
+            templateUrl: "src/templates/fluid/fluidDatePicker.html",
             replace: true,
             link: function (scope, elem, attr) {
 
@@ -2329,7 +2327,7 @@ flowComponents
             },
             restrict: "AE",
             replace: true,
-            template: tc.get("templates/fluid/fluidRadio.html"),
+            templateUrl: 'src/templates/fluid/fluidRadio.html',
             link: function (scope, element) {
                 if (!scope.name && scope.label) {
                     scope.name = scope.label.trim().split(" ").join("_");
@@ -2402,7 +2400,7 @@ flowComponents
             restict: "AE",
             link: function (scope, element, attr) {
             },
-            template: tc.get("templates/fluid/fluidUploader.html")
+            templateUrl: 'src/templates/fluid/fluidUploader.html'
         }
     }])
     .directive("column", function () {
@@ -2480,7 +2478,7 @@ flowComponents
     .directive("fluidImageUpload", ["$templateCache", "Upload", function (tc, u) {
         return {
             restrict: "AE",
-            template: tc.get("templates/fluid/fluidImageUpload.html"),
+            templateUrl: 'src/templates/fluid/fluidImageUpload.html',
             scope: {model: "=", url: "@", auto: "=", onLoad: "&", token: "@", width: "=", height: "="},
             link: function (scope, element, attr) {
                 scope.height = 200;

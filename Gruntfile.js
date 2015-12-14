@@ -84,6 +84,7 @@ module.exports = function (grunt) {
             options: {
                 singleModule: true,
                 module: 'war.app',
+                base: '/',
                 htmlmin: {
                     collapseBooleanAttributes: true,
                     collapseWhitespace: true,

@@ -1,10 +1,9 @@
 (function () {
-    'use strict'
+    'use strict';
     angular.module('war.admin')
         .controller('usrMgrCtrl', UsrMgrCtrl);
 
-    UsrMgrCtrl.$inject = [' $scope', ' DTOptionsBuilder', ' DTColumnBuilder', ' flowMessageService', ' flowModalService', ' $compile', ' $filter', 'sessionService'];
-
+    UsrMgrCtrl.$inject = ['$scope', 'DTOptionsBuilder', 'DTColumnBuilder', 'flowMessageService', 'flowModalService', '$compile', '$filter', 'sessionService'];
     function UsrMgrCtrl(s, dto, dtc, ms, fm, c, f, ss) {
 
         s.task.editPassword = false;
