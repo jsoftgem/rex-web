@@ -5,7 +5,7 @@
 
     AuthFactory.$inject = ['sessionService'];
 
-    function AuthFactory() {
+    function AuthFactory(ss) {
 
         return {
             setToken: setToken,

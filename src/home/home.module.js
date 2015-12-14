@@ -1,4 +1,4 @@
 (function () {
     'use strict';
-    angular.module('war.commons', []);
+    angular.module('war.home', []);
 })();

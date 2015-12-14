@@ -1,12 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+(function () {
+    'use strict';
+    angular.module('war.home')
+        .controller('homeCtrl', HomeCtrl);
+    HomeCtrl.$inject = ['$scope', 'flowMessageService', 'flowFrameService', 'flowHttpService',
+        'userProfile', 'UserFactory', 'userSessionService'];
 
-
-angular.module("home", ["flowServices", "fluid", "flowFactories", "war.session"])
-    .controller("homeCtrl", function ($scope, sessionService, $http, flowMessageService, flowFrameService, flowHttpService, $timeout, userProfile, UserFactory, userSessionService) {
+    function HomeCtrl($scope, flowMessageService, flowFrameService, flowHttpService, userProfile, UserFactory, userSessionService) {
         $scope.userSessionService = userSessionService;
         $scope.userProfile = userProfile;
         $scope.flowFrameService = flowFrameService;
@@ -66,27 +65,5 @@ angular.module("home", ["flowServices", "fluid", "flowFactories", "war.session"]
         $scope.editProfile = function () {
             flowFrameService.addTask($scope.userProfile.editTaskUrl);
         }
-    })
-    .controller("signinCtrl", function ($scope, $http, sessionService, flowMessageService, userSessionService, HOST, REX_VERSION, UserFactory) {
-
-        $scope.ver = REX_VERSION;
-
-        $scope.login = function (user) {
-
-            UserFactory.login(user)
-                .success(function (data) {
-                    window.location = "home.html";
-                }).error(function (data) {
-                    flowMessageService.danger("loginMessage", data, 3000).open();
-                });
-        }
-    })
-    .controller("indexCtrl", function (sessionService, UserFactory) {
-        if (UserFactory.isAuthenticated()) {
-            window.location = "home.html";
-        } else {
-            window.location = "signin.html";
-        }
-
-    });
-
+    }
+})();

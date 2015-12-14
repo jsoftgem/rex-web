@@ -2,7 +2,7 @@ var HOST = "http://war.rexpublishing.com.ph:8080/rex-services/";
 
 (function () {
     'use strict';
-    angular.module('war.module')
+    angular.module('war.app')
         .constant('HOST', HOST)
         .constant('VIEWER', 'vendors/ViewerJS/#')
         .constant('REX_VERSION', '1.3')

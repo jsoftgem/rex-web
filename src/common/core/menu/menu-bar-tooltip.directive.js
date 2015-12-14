@@ -38,7 +38,7 @@
                 }
 
                 if (!scope.tooltipPosition) {
-                    scope.tooltipPosition = '{\'my\':\'top center\',\'at\':\'bottom center\'}';
+                    scope.tooltipPosition = '{"my":"top center","at":"bottom center"}';
                 }
 
                 if (!scope.tooltipEvent) {

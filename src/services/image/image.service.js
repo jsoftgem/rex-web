@@ -1,6 +1,6 @@
 (function () {
     'use strict';
-    angualar.module('war.services')
+    angular.module('war.services')
         .service('imageService', ImageService);
 
     ImageService.$inject = ['flowHttpService'];

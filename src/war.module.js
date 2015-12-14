@@ -2,18 +2,6 @@
     'use strict';
 
     angular.module('war.app', ['datatables', 'datatables.bootstrap', 'ngResource', 'infinite-scroll', 'ngDragDrop',
-            'ngFileUpload', 'oc.lazyLoad', 'LocalStorageModule',
-            'war.commons', 'war.services', 'war,admin', 'war.dev', 'war.session', 'war.sidebar'])
-        .run(WarModuleRunner);
-
-    WarModuleRunner.$inject = ['vendors', '$document', 'flowHttpService', 'responseEvent', 'HOST'];
-
-    function WarModuleRunner(vendors, $document, fhp, re, h) {
-        vendors.jQuery($document).delegate('form', 'submit', function (event) {
-            event.preventDefault();
-        });
-        fhp.host = h;
-        re.addResponse(undefined, 401, true, 'signin.html');
-        re.addResponse('NOT_AUTHENTICATED', 401);
-    }
+        'ngFileUpload', 'oc.lazyLoad', 'LocalStorageModule', 'truncate', 'war.fluid', 'war.core',
+        'war.commons', 'war.services', 'war.resource', 'war.admin', 'war.dev', 'war.session', 'war.sidebar', 'war.home'])
 })();

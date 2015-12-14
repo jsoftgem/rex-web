@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    angular.module('war.module')
+    angular.module('war.app')
         .constant('vendors', {
             jQuery: $,
             Chart: Chart
