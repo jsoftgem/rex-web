@@ -2,9 +2,11 @@
     'use strict';
     angular.module('war.app')
         .controller('AppController', AppController);
-    AppController.$inject = ['$scope', '$rootScope', '$location', 'userAppSetting', 'sessionService', 'userProfile',
-        'userSessionService', 'UserFactory', 'FlowUserDetail', 'WarAgent', 'TaskResource', 'GroupResource', 'flowFrameService'];
-    function AppController($scope, $rootScope, $location, userAppSetting, sessionService, userProfile, userSessionService, UserFactory, FlowUserDetail, WarAgent, TaskResource, GroupResource, flowFrameService) {
+    AppController.$inject = ['$scope', '$rootScope', 'userAppSetting', 'userProfile',
+        'userSessionService', 'UserFactory', 'FlowUserDetail', 'WarAgent', 'TaskResource', 'GroupResource',
+        'flowFrameService', 'vendors'];
+    function AppController($scope, $rootScope, userAppSetting, userProfile, userSessionService, UserFactory,
+                           FlowUserDetail, WarAgent, TaskResource, GroupResource, flowFrameService, vendors) {
         $scope.userSessionService = userSessionService;
         $scope.data = {};
         $scope.effect = '';
@@ -75,28 +77,28 @@
             userAppSetting.theme = t;
             userAppSetting.updateSetting("theme");
         };
-        $(window).scroll(function () {
-            if ($(this).scrollTop() > 0) {
-                $('.quick-sidebar').css('top', '0');
+        vendors.jQuery(window).scroll(function () {
+            if (vendors.jQuery(this).scrollTop() > 0) {
+                vendors.jQuery('.quick-sidebar').css('top', '0');
             } else {
-                $('.quick-sidebar').css('top', '50px');
+                vendors.jQuery('.quick-sidebar').css('top', '50px');
             }
         });
-        $('.quick-sidebar > .header-quick-sidebar').slimScroll({
-            "height": $(window).height() - 50,
+        vendors.jQuery('.quick-sidebar > .header-quick-sidebar').slimScroll({
+            "height": vendors.jQuery(window).height() - 50,
             'width': '280px',
             "wheelStep": 30
         });
-        $('#news-ticker-close').click(function (e) {
-            $('.news-ticker').remove();
+        vendors.jQuery('#news-ticker-close').click(function (e) {
+            vendors.jQuery('.news-ticker').remove();
         });
+
         $scope.$watch(function () {
             return UserFactory.isAuthenticated();
         }, function (session) {
             if (session) {
                 console.debug("session-opened", session);
                 console.debug("getUser", UserFactory.getUser());
-
                 $scope.userSessionService.userAppSettingLoaded = undefined;
                 userSessionService.profileLoaded = undefined;
                 userSessionService.agentLoaded = undefined;
