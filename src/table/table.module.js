@@ -1,4 +1,4 @@
 (function () {
     'use strict';
-    angular.module('war.admin', []);
+    angular.module('war.table', []);
 })();

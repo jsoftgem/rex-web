@@ -1,13 +1,17 @@
-angular.module("customerController", ["fluid", "ngResource", "datatables"])
-    .controller("customerCtrl", ["$scope", "DTOptionsBuilder", "DTColumnBuilder", "flowMessageService", "flowModalService", "$compile", "$filter", "sessionService", "userProfile", function (s, dto, dtc, ms, fm, c, f, ss, up) {
+(function () {
+    'use strict';
+    angular.module('war.management')
+        .controller('customerCtrl', CustomerCtrl);
+    CustomerCtrl.$inject = ['$scope', 'DTOptionsBuilder', 'DTColumnBuilder', 'flowMessageService',
+        'flowModalService', '$compile', 'sessionService', 'userProfile'];
+    function CustomerCtrl(s, dto, dtc, ms, fm, c, ss, up) {
         s.userProfile = up;
-        s.deleleModalId = "customerDeleteModal";
-        s.create_name = "customer_create";
-        s.edit_name = "customer_edit";
-        s.home = "customer";
-        s.submit_button = "customer_submit";
-        s.getPositionName = "services/war/position_query/position_name?id=";
-
+        s.deleleModalId = 'customerDeleteModal';
+        s.create_name = 'customer_create';
+        s.edit_name = 'customer_edit';
+        s.home = 'customer';
+        s.submit_button = 'customer_submit';
+        s.getPositionName = 'services/war/position_query/position_name?id=';
         s.task.contactTemp = {};
         s.task.levelTemp = {};
         s.task.publisherTemp = {};
@@ -19,7 +23,7 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
         s.task.create = {};
         s.task.create.agent = undefined;
         var create = new CreateControl();
-        create.id = "customer_create_ctl";
+        create.id = 'customer_create_ctl';
 
         create.action = function () {
             s.flow.goTo(s.create_name);
@@ -27,13 +31,13 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
         create.pages = s.home;
 
         var save = new SaveControl();
-        save.id = "customer_save_ctl";
+        save.id = 'customer_save_ctl';
         save.action = function () {
-            $("#" + s.flow.getElementFlowId(s.submit_button)).trigger("click");
+            $('#' + s.flow.getElementFlowId(s.submit_button)).trigger('click');
         };
         save.pages = [s.edit_name, s.create_name];
         var delCtl = new DeleteControl();
-        delCtl.id = "customer_del_ctl";
+        delCtl.id = 'customer_del_ctl';
         delCtl.action = function () {
             fm.show(s.flow.getElementFlowId(s.deleleModalId));
         };
@@ -44,21 +48,21 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
         s.dtOptions = new FlowOptionsGET(dto, s.flow.getHomeUrl(), s, c, ss);
         s.dtColumns = FlowColumns(dtc);
 
-        s.dtColumns.push(dtc.newColumn("customerCode").withTitle("Customer code").withOption("searchable", true));
-        s.dtColumns.push(dtc.newColumn("school.name").withTitle("Name").withOption("searchable", true));
-        s.dtColumns.push(dtc.newColumn("regionCode").withTitle("Region").withOption("searchable", true));
-        s.dtColumns.push(dtc.newColumn("ownerName").withTitle("Material Advisor").withOption("searchable", true));
+        s.dtColumns.push(dtc.newColumn('customerCode').withTitle('Customer code').withOption('searchable', true));
+        s.dtColumns.push(dtc.newColumn('school.name').withTitle('Name').withOption('searchable', true));
+        s.dtColumns.push(dtc.newColumn('regionCode').withTitle('Region').withOption('searchable', true));
+        s.dtColumns.push(dtc.newColumn('ownerName').withTitle('Material Advisor').withOption('searchable', true));
 
         s.edit = function (id) {
             s.flow.goTo(s.edit_name, id);
         };
 
         s.view = function (customer) {
-            console.info("customer", customer);
+            console.info('customer', customer);
             if (customer) {
                 var param = customer.id;
-                s.flow.openTask("customer_agent_task", "customer_agent_summary", param, false, {
-                    source: "customer",
+                s.flow.openTask('customer_agent_task', 'customer_agent_summary', param, false, {
+                    source: 'customer',
                     agent: {id: customer.ownerAgentId, fullName: customer.ownerName}
                 });
             }
@@ -73,23 +77,23 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
         s.save = function () {
             if (s.task.page.name === s.edit_name) {
                 if (!angular.equals(s.task.customerEdit, s.task.tempEdit)) {
-                    s.flow.action("put", s.task.customerEdit, s.task.customerEdit.id);
+                    s.flow.action('put', s.task.customerEdit, s.task.customerEdit.id);
                 } else {
                     s.flow.message.info(UI_MESSAGE_NO_CHANGE);
                 }
             } else if (s.task.page.name === s.create_name) {
-                s.flow.action("put", s.task.customerCreate);
+                s.flow.action('put', s.task.customerCreate);
             }
         };
 
 
         s.$on(s.flow.event.getSuccessEventId(), function (event, data, method) {
 
-            if (method === "put") {
+            if (method === 'put') {
                 if (s.task.page.name === s.edit_name) {
                     s.task.customerEdit = {};
                     angular.copy(s.task.customerEdit, s.task.tempEdit);
-                    console.info("customer-success-origin", s.task.origin);
+                    console.info('customer-success-origin', s.task.origin);
                     if (!s.task.origin) {
                         s.flow.goToHome();
                     } else {
@@ -115,7 +119,7 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
         s.task.page.load = function (data, source) {
 
             if (this.name === s.edit_name) {
-                if (!s.task.customerEdit.id || (source && source === "refresh")) {
+                if (!s.task.customerEdit.id || (source && source === 'refresh')) {
                     if (s.task.origin) {
                         s.task.tempEdit = {};
                     }
@@ -152,11 +156,11 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
                 }
 
             }
-        }
+        };
 
         s.deleteConfirm = function () {
-            s.flow.action("delete", s.task.customerEdit, s.task.customerEdit.id);
-            fm.hide(s.flow.getElementFlowId("customerDeleteModal"));
+            s.flow.action('delete', s.task.customerEdit, s.task.customerEdit.id);
+            fm.hide(s.flow.getElementFlowId('customerDeleteModal'));
             if (s.task.page.name !== s.home) {
                 s.flow.goToHome();
             }
@@ -166,11 +170,11 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
         };
 
         s.deleteCancel = function () {
-            fm.hide(s.flow.getElementFlowId("customerDeleteModal"));
+            fm.hide(s.flow.getElementFlowId('customerDeleteModal'));
         };
 
 
-        s.$on(s.flow.getEventId("createContactEvent"), function (event) {
+        s.$on(s.flow.getEventId('createContactEvent'), function (event) {
             s.task.contact = {};
             s.task.contactManaged = false;
             if (s.task.page.name === s.create_name) {
@@ -187,11 +191,11 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
                 s.task.contactIndex = s.task.customerEdit.contactDetails.length - 1;
             }
 
-            fm.show(s.flow.getElementFlowId("contactsModal"));
-            console.debug("createContactEvent", event);
+            fm.show(s.flow.getElementFlowId('contactsModal'));
+            console.debug('createContactEvent', event);
         });
 
-        s.$on(s.flow.getEventId("editContactEvent"),
+        s.$on(s.flow.getEventId('editContactEvent'),
             function (event, id, index) {
                 if (s.task.page.name === s.create_name) {
                     angular.copy(s.task.customerCreate.contactDetails[index], s.task.contactTemp);
@@ -200,7 +204,7 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
                 }
                 s.task.contactManaged = true;
                 s.task.contactIndex = index;
-                fm.show(s.flow.getElementFlowId("contactsModal"));
+                fm.show(s.flow.getElementFlowId('contactsModal'));
             });
 
         s.closeContactModal = function () {
@@ -221,8 +225,9 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
                 s.task.contactManaged = false;
             }
 
-            fm.hide(s.flow.getElementFlowId("contactsModal"), s.flow.getElementFlowId('contactDetailsSubTable'));
-        }
+            fm.hide(s.flow.getElementFlowId('contactsModal'), s.flow.getElementFlowId('contactDetailsSubTable'));
+        };
+
         s.saveContactModal = function () {
             var valid = true;
 
@@ -237,17 +242,17 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
 
             if (contact.level === undefined) {
                 valid = false;
-                s.flow.message.danger("Education level is required.");
+                s.flow.message.danger('Education level is required.');
             }
 
 
             if (contact.description === undefined) {
                 valid = false;
-                s.flow.message.danger("Contact person is required.");
+                s.flow.message.danger('Contact person is required.');
             }
 
             if (contact.position) {
-                s.http.get("services/war/position_query/getInstance/", contact.position)
+                s.http.get('services/war/position_query/getInstance/', contact.position)
                     .success(function (data) {
                         if (s.task.page.name === s.create_name) {
                             s.task.customerCreate.contactDetails[s.task.contactIndex].positionDesc = data.description;
@@ -257,15 +262,15 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
                     });
             } else {
                 valid = false;
-                s.flow.message.danger("Position is required.");
+                s.flow.message.danger('Position is required.');
             }
 
             if (valid === true) {
-                fm.hide(s.flow.getElementFlowId("contactsModal"), s.flow.getElementFlowId('contactDetailsSubTable'));
+                fm.hide(s.flow.getElementFlowId('contactsModal'), s.flow.getElementFlowId('contactDetailsSubTable'));
             }
-        }
+        };
 
-        s.$on(s.flow.getEventId("createLevelEvent"), function () {
+        s.$on(s.flow.getEventId('createLevelEvent'), function () {
             s.task.level = {};
             s.task.levelManaged = false;
             if (s.task.page.name === s.create_name) {
@@ -282,11 +287,11 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
                 s.task.levelIndex = s.task.customerEdit.customerLevels.length - 1;
             }
 
-            fm.show(s.flow.getElementFlowId("levelModal"));
+            fm.show(s.flow.getElementFlowId('levelModal'));
         });
 
 
-        s.$on(s.flow.getEventId("editLevelEvent"),
+        s.$on(s.flow.getEventId('editLevelEvent'),
             function (event, id, index) {
                 if (s.task.page.name === s.create_name) {
                     angular.copy(s.task.customerCreate.customerLevels[index], s.task.levelTemp);
@@ -295,7 +300,7 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
                 }
                 s.task.levelManaged = true;
                 s.task.levelIndex = index;
-                fm.show(s.flow.getElementFlowId("levelModal"));
+                fm.show(s.flow.getElementFlowId('levelModal'));
             });
 
         s.closeLevelModal = function () {
@@ -316,8 +321,8 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
                 s.task.levelManaged = false;
             }
 
-            fm.hide(s.flow.getElementFlowId("levelModal"), s.flow.getElementFlowId('customerLevelsSubTable'));
-        }
+            fm.hide(s.flow.getElementFlowId('levelModal'), s.flow.getElementFlowId('customerLevelsSubTable'));
+        };
 
         s.saveLevelModal = function () {
 
@@ -332,7 +337,7 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
             var valid = true;
 
             if (customerLevel.level) {
-                s.http.get("services/war/level_query/getInstance/", customerLevel.level).success(function (data) {
+                s.http.get('services/war/level_query/getInstance/', customerLevel.level).success(function (data) {
                     if (s.task.page.name === s.create_name) {
                         s.task.customerCreate.customerLevels[s.task.levelIndex].educationLevel = data.description;
                         s.task.customerCreate.customerLevels[s.task.levelIndex].levelCourse = data.levelCourse;
@@ -343,15 +348,15 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
                 });
             } else {
                 valid = false;
-                s.flow.message.danger("Level is required");
+                s.flow.message.danger('Level is required');
             }
 
             if (valid) {
-                fm.hide(s.flow.getElementFlowId("levelModal"), s.flow.getElementFlowId('customerLevelsSubTable'));
+                fm.hide(s.flow.getElementFlowId('levelModal'), s.flow.getElementFlowId('customerLevelsSubTable'));
             }
-        }
+        };
 
-        s.$on(s.flow.getEventId("createPublisherEvent"), function () {
+        s.$on(s.flow.getEventId('createPublisherEvent'), function () {
             s.task.publisher = {};
             s.task.publisherManaged = false;
             if (s.task.page.name === s.create_name) {
@@ -368,11 +373,11 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
                 s.task.publisherIndex = s.task.customerEdit.publisher.length - 1;
             }
 
-            fm.show(s.flow.getElementFlowId("publisherModal"));
+            fm.show(s.flow.getElementFlowId('publisherModal'));
         });
 
 
-        s.$on(s.flow.getEventId("editPublisherEvent"),
+        s.$on(s.flow.getEventId('editPublisherEvent'),
             function (event, id, index) {
                 if (s.task.page.name === s.create_name) {
                     angular.copy(s.task.customerCreate.publisher[index], s.task.publisherTemp);
@@ -381,7 +386,7 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
                 }
                 s.task.publisherManaged = true;
                 s.task.publisherIndex = index;
-                fm.show(s.flow.getElementFlowId("publisherModal"));
+                fm.show(s.flow.getElementFlowId('publisherModal'));
             });
 
 
@@ -403,13 +408,13 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
                 s.task.publisherManaged = false;
             }
 
-            fm.hide(s.flow.getElementFlowId("publisherModal"), s.flow.getElementFlowId('customerPublisherSubTable'));
-        }
+            fm.hide(s.flow.getElementFlowId('publisherModal'), s.flow.getElementFlowId('customerPublisherSubTable'));
+        };
         s.savePublisherModal = function () {
-            fm.hide(s.flow.getElementFlowId("publisherModal"), s.flow.getElementFlowId('customerPublisherSubTable'));
-        }
+            fm.hide(s.flow.getElementFlowId('publisherModal'), s.flow.getElementFlowId('customerPublisherSubTable'));
+        };
 
-        s.$on(s.flow.getEventId("createSupportEvent"), function () {
+        s.$on(s.flow.getEventId('createSupportEvent'), function () {
             s.task.support = {};
             s.task.supportManaged = false;
             if (s.task.page.name === s.create_name) {
@@ -426,11 +431,11 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
                 s.task.supportIndex = s.task.customerEdit.supportGivens.length - 1;
             }
 
-            fm.show(s.flow.getElementFlowId("supportModal"));
+            fm.show(s.flow.getElementFlowId('supportModal'));
         });
 
 
-        s.$on(s.flow.getEventId("editSupportEvent"),
+        s.$on(s.flow.getEventId('editSupportEvent'),
             function (event, id, index) {
                 if (s.task.page.name === s.create_name) {
                     angular.copy(s.task.customerCreate.supportGivens[index], s.task.supportTemp);
@@ -439,7 +444,7 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
                 }
                 s.task.supportManaged = true;
                 s.task.supportIndex = index;
-                fm.show(s.flow.getElementFlowId("supportModal"));
+                fm.show(s.flow.getElementFlowId('supportModal'));
             });
 
 
@@ -461,15 +466,15 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
                 s.task.supportManaged = false;
             }
 
-            fm.hide(s.flow.getElementFlowId("supportModal"), s.flow.getElementFlowId('customerSupportSubTable'));
-        }
+            fm.hide(s.flow.getElementFlowId('supportModal'), s.flow.getElementFlowId('customerSupportSubTable'));
+        };
 
         s.saveSupportModal = function () {
-            fm.hide(s.flow.getElementFlowId("supportModal"), s.flow.getElementFlowId('customerSupportSubTable'));
-        }
+            fm.hide(s.flow.getElementFlowId('supportModal'), s.flow.getElementFlowId('customerSupportSubTable'));
+        };
 
 
-        s.$on(s.flow.getEventId("addPotential"), function (event) {
+        s.$on(s.flow.getEventId('addPotential'), function (event) {
 
             s.task.potential = {};
             s.task.potentialManaged = false;
@@ -498,14 +503,13 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
                     s.task.customerEdit.warCustomerMarketSchoolYears[s.task.potentialIndex].schoolYearDescription = item.description;
                     s.task.customerEdit.warCustomerMarketSchoolYears[s.task.potentialIndex].schoolYear = item.id;
                 }
+            };
 
-            }
-
-            fm.show(s.flow.getElementFlowId("potentialModal"));
+            fm.show(s.flow.getElementFlowId('potentialModal'));
         });
 
 
-        s.$on(s.flow.getEventId("editPotential"), function (event, id, index) {
+        s.$on(s.flow.getEventId('editPotential'), function (event, id, index) {
 
             if (s.task.page.name === s.create_name) {
                 angular.copy(s.task.customerCreate.warCustomerMarketSchoolYears[index], s.task.potentialTemp);
@@ -522,7 +526,7 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
             }
             s.task.potentialManaged = true;
             s.task.potentialIndex = index;
-            fm.show(s.flow.getElementFlowId("potentialModal"));
+            fm.show(s.flow.getElementFlowId('potentialModal'));
         });
 
 
@@ -532,9 +536,9 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
 
         }];
 
-        s.natureOfPurchaseOptions = [{label: 'Outright', value: "OUTRIGHT"}, {label: "Rental", value: "RENTAL"}];
+        s.natureOfPurchaseOptions = [{label: 'Outright', value: 'OUTRIGHT'}, {label: 'Rental', value: 'RENTAL'}];
 
-        s.ownershipOptions = [{label: "Public", value: "PUBLIC"}, {label: "Private", value: "PRIVATE"}];
+        s.ownershipOptions = [{label: 'Public', value: 'PUBLIC'}, {label: 'Private', value: 'PRIVATE'}];
 
 
         s.selectAgent = function (item, full, index) {
@@ -545,52 +549,28 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
             }
         };
 
-
-        /*s.$watch(function (scope) {
-         if (!scope.task.edit) return;
-         return scope.task.edit.agent;
-         }, function (newValue, oldValue) {
-         if (newValue) {
-         s.task.customerEdit.ownerAgentId = newValue.id;
-         s.task.customerEdit.regionCode = newValue.region;
-         }
-         });
-
-
-         s.$watch(function (scope) {
-         if (!scope.task.create)return;
-         return scope.task.create.agent;
-         }, function (newValue, oldValue) {
-         if (newValue) {
-         s.task.customerCreate.ownerAgentId = newValue.id;
-         s.task.customerCreate.regionCode = newValue.region;
-         }
-         });*/
-
-
         s.validPotential = function (warCustomerMarketSchoolYear) {
             var valid = true;
 
             if (!s.task.potentialManaged) {
                 if (!warCustomerMarketSchoolYear.schoolYear) {
-                    ms.danger(s.flow.getElementFlowId('potentialInfoMessage'), "Please select a school year.", 3000).open();
+                    ms.danger(s.flow.getElementFlowId('potentialInfoMessage'), 'Please select a school year.', 3000).open();
                     valid = false;
                 }
 
                 if (!warCustomerMarketSchoolYear.marketPotential) {
-                    ms.danger(s.flow.getElementFlowId('potentialInfoMessage'), "Please input a market potential.", 3000).open();
+                    ms.danger(s.flow.getElementFlowId('potentialInfoMessage'), 'Please input a market potential.', 3000).open();
                     valid = false;
                 }
             } else {
                 if (!warCustomerMarketSchoolYear.marketPotential) {
-                    ms.danger(s.flow.getElementFlowId('potentialInfoMessage'), "Please input a market potential.", 3000).open();
+                    ms.danger(s.flow.getElementFlowId('potentialInfoMessage'), 'Please input a market potential.', 3000).open();
                     valid = false;
                 }
             }
 
             return valid;
-
-        }
+        };
 
         s.savePotential = function () {
             var wcmsy = undefined;
@@ -604,14 +584,14 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
 
             var valid = s.validPotential(wcmsy);
 
-            console.info("valid", valid);
+            console.info('valid', valid);
 
             if (valid) {
-                console.info("wcmsy", wcmsy);
+                console.info('wcmsy', wcmsy);
                 wcmsy.marketPotentialSegment = getMarketSegment(wcmsy.marketPotential);
                 fm.hide(s.flow.getElementFlowId('potentialModal'));
             }
-        }
+        };
 
 
         s.cancelPotential = function () {
@@ -635,29 +615,6 @@ angular.module("customerController", ["fluid", "ngResource", "datatables"])
         }
 
 
-    }])
-    .filter("position", ["flowHttpService", function (f) {
+    }
 
-        return function (input) {
-            if (input) {
-                return f.getGlobal(s.getPositionName + input, false).success(function (data) {
-                    console.log(data);
-                    return data;
-                }).error(function () {
-                    return "none"
-                })
-                return "none";
-            } else {
-                return "none";
-            }
-
-        };
-    }])
-    .filter("decision", [function () {
-        return function (input) {
-            if (input) {
-                return input ? "yes" : "no";
-            }
-            return "no";
-        }
-    }]);
+})();

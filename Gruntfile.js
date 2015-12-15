@@ -28,6 +28,8 @@ var appJS = ['src/war-helper.js', 'src/war.module.js', 'src/war.constants.js',
     'src/js/admin/admin.module.js', 'src/dev/dev.module.js', 'src/services/services.module.js',
     'src/session/session.module.js', 'src/common/core/core.module.js', 'src/home/home.module.js',
     'src/services/resource/resource.module.js', 'src/sidebar/sidebar.module.js',
+    'src/activity/activity.module.js', 'src/table/table.module.js',
+    'src/management/management.module.js', 'src/reports/reports.module.js',
     'src/**/*.js', '!src/controller/**/*.js'];
 var appCSS = ['src/css/**/*.css'];
 
