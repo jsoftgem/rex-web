@@ -4,7 +4,8 @@
     angular.module('war.app')
         .constant('vendors', {
             jQuery: $,
-            Chart: Chart
+            Chart: Chart,
+            lodash: _
         });
 
 })();

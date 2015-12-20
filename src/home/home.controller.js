@@ -10,9 +10,11 @@
         $scope.userProfile = userProfile;
         $scope.flowFrameService = flowFrameService;
         $scope.taskbar = {};
+
         $scope.taskbar.getExcessCount = function (limit) {
             return $scope.flowFrameService.taskList.length - limit;
         };
+
         $scope.taskbar.open = function (task) {
             console.info("open", task);
             console.info("open-frame-service", flowFrameService);
@@ -29,7 +31,6 @@
                         $scope.userTask.active = task.active;
                         $scope.userTask.flowId = task.flowId;
                         flowHttpService.post("services/flow_user_task_crud/save_task_state?field=active", $scope.userTask, task);
-
                     }
                 }
             }
@@ -44,6 +45,7 @@
             flowHttpService.post("services/flow_user_task_crud/save_task_state?field=close", userTask, task);
             flowFrameService.taskList.splice(index, 1);
         };
+
         $scope.taskbar.hide = function (task) {
             task.active = false;
             var userTask = {};
@@ -52,16 +54,20 @@
             userTask.flowId = task.flowId;
             flowHttpService.post("services/flow_user_task_crud/save_task_state?field=close", userTask, task);
         };
+
         $scope.logout = function () {
             flowHttpService.postGlobal("services/logout_service/logoff")
                 .success(function () {
                     UserFactory.logout();
+                    userProfile.destroyUserProfile();
                 });
         };
+
         $scope.$on("NOT_AUTHENTICATED", function (event, msg) {
             window.location = "signin.html";
             flowMessageService.danger("mainMessage", msg, 2000);
         });
+
         $scope.editProfile = function () {
             flowFrameService.addTask($scope.userProfile.editTaskUrl);
         }

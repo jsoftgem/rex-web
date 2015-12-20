@@ -21,17 +21,13 @@
                 if (data) {
                     a.setToken(data.token);
                     var info = btoa(JSON.stringify(data.info));
-                    console.debug("session.info", data.info);
-                    console.debug("session.encrypted", info);
                     a.setInfo(info);
-                    //navigate to home
                 }
             });
         }
 
         function logout() {
             a.removeToken().removeInfo();
-            // navigate to login  screen
         }
 
         function getUser() {

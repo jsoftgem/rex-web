@@ -4,7 +4,6 @@
         .service('userProfile', UserProfile);
 
     function UserProfile() {
-
         this.createUserProfile = function (userDetail) {
             console.debug("createUserProfile", userDetail);
             this.fullName = userDetail.fullName;
@@ -30,6 +29,18 @@
         this.updateProfile = function (userDetail) {
             this.fullName = userDetail.fullName;
             this.avatar = withHost("services/download_service/getContent/" + userDetail.avatar);
+        };
+
+        this.isAgent = function () {
+            return this.agent && this.agent.id;
+        };
+
+        this.isManager = function () {
+            return this.isAgent() && this.agent.isManager;
+        };
+
+        this.getRegionCode = function () {
+            return this.isAgent() ? this.agent.region : null;
         };
 
         return this;

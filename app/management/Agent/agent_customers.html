@@ -21,22 +21,36 @@
 
                         <flow-field column="3" label="Customer" model="task.agent.selectedCustomer.school.name"
                                     disabled="true"></flow-field>
-                        <div column="3">
-                            <fluid-select class="width100pc" with-host="sourceUrl" primary
-                                          field-label="description" label="by School Year"
-                                          source-url="services/war/school_year_query/list"
-                                          model="task.agent.schoolYear" change="filter()">
-                        </div>
 
+                        <label column="3">
+                            <span>School year</span>
+                            <ui-select id="schoolYear" ng-model="task.agent.schoolYear" ng-change="filter()">
+                                <ui-select-match
+                                        placeholder="{{task.customerSummary.schoolYearsLoaded ?'':'Loading school years...'}}">
+                                    {{$select.selected.description}}
+                                </ui-select-match>
+                                <ui-select-choices
+                                        repeat="schoolYear in task.customerSummary.schoolYears | filter : {description:$select.search}"
+                                        refresh="task.customerSummary.getSchoolYears">
+                                    {{schoolYear.description}}
+                                </ui-select-choices>
+                            </ui-select>
+                        </label>
 
-                        </fluid-select>
-                        <div column="3">
-                            <fluid-select class="width100pc" with-host="sourceUrl" primary ng-if="task.agent.schoolYear"
-                                          model="task.agent.month" task="task"
-                                          label="by Month"
-                                          source-url="factories/war/table_factories/months" change="filter()">
-                            </fluid-select>
-                        </div>
+                        <label column="3" ng-if="task.agent.schoolYear">
+                            <span>Month</span>
+                            <ui-select id="month" ng-model="task.agent.month" ng-change="filter()">
+                                <ui-select-match>
+                                    {{$select.selected.label}}
+                                </ui-select-match>
+                                <ui-select-choices
+                                        repeat="month in task.customerSummary.months | filter : {label:$select.search}"
+                                        refresh="task.customerSummary.getMonths">
+                                    {{months.label}}
+                                </ui-select-choices>
+                            </ui-select>
+                        </label>
+
                         <div column="3">
                             <fluid-select class="width100pc" with-host="sourceUrl" primary ng-if="task.agent.month"
                                           model="task.agent.week" task="task"

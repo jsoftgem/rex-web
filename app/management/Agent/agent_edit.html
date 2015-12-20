@@ -12,11 +12,19 @@
 
             <flow-field model="task.agentEdit.initials" label="Initials" type="text"
                         required="true"></flow-field>
-
-            <flow-select disabled="false" required="false"
-                         label="Region" task="task" model="task.agentEdit.region"
-                         source-url="services/war/region_query/list" field-label="regionName"
-                         field-value="regionCode"></flow-select>
+            <label class="width100pc">
+                <span>Region</span>
+                <ui-select ng-model="task.agent.region"
+                           ng-change="task.agentEdit.region=task.agent.region.regionCode">
+                    <ui-select-match placeholder="{{task.agent.regionLoaded ? '':'Loading regions'}}">
+                        {{task.agent.getRegion($select.selected).regionName}}
+                    </ui-select-match>
+                    <ui-select-choices repeat="region in task.agent.regions | filter: $select.search"
+                                       refresh="task.agent.getRegions()">
+                        {{region.regionName}}
+                    </ui-select-choices>
+                </ui-select>
+            </label>
             <div class="form-group">
                 <div offset="3">
                     <flow-check disabled="false" required="false" model="task.agentEdit.isManager"

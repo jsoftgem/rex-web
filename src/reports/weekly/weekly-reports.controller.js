@@ -3,30 +3,23 @@
     angular.module('war.reports')
         .controller('reportsCtrl', ReportsCtrl);
     ReportsCtrl.$inject = ['$scope', '$timeout', 'userProfile',
-        '$http'];
-    function ReportsCtrl(s, t, up, $h) {
+        '$http', 'commonFactories', 'resourceApiService'];
+    function ReportsCtrl(s, t, up, $h, commonFactories, resourceApiService) {
+        activate();
 
         s.task.csvDownloadUrl = undefined;
         s.task.csvDownloadName = undefined;
         s.totalProductivity = function (planned, unplanned, target) {
-
             var total = ((100 * (planned + unplanned)) / target);
-
             if (total > 125) {
                 total = 125;
             }
-
             return total;
         };
-
         s.task.pageAgent = 'report_weekly_agent';
-
         s.task.service = 'services/war/report_weekly_service'
-
         s.task.serviceCustomer = s.task.service + '/agent_customer';
-
         s.task.hideAgentFilter = false;
-
         s.task.getCustomers = function (report) {
             report.view = !report.view;
             if (report.view) {
@@ -85,15 +78,11 @@
             }
 
         };
-
         s.task.getDayName = function (dayOfWeek) {
             return getDayName(dayOfWeek);
         };
-
         s.task.reportTable = $('#' + s.flow.getElementFlowId('reportTable'));
-
         s.task.print = {};
-
         s.task.print.current = function () {
             s.task.reportTable.print({
                 globalStyles: true,
@@ -103,7 +92,6 @@
                 deferred: $.Deferred()
             })
         };
-
         s.flow.onRefreshed = function () {
             s.task.query();
         };
@@ -120,30 +108,6 @@
             return report;
         };
         s.task.report = s.task.newReport();
-
-        if (up.agent.id) {
-            s.task.hideAgentFilter = true;
-            s.task.report.isAgent = true;
-            s.task.report.agent = up.agent;
-            console.info('profileAgent', up);
-        }
-
-        s.task.change = function () {
-            if (!s.task.report.isYear) {
-                s.task.report.year = undefined;
-            }
-            if (!s.task.report.isMonth) {
-                s.task.report.month = undefined;
-            }
-            if (!s.task.report.isAgent) {
-                s.task.report.agent = undefined;
-            }
-            if (!s.task.report.isRegion) {
-                s.task.report.region = undefined;
-            }
-
-        };
-
         s.task.query = function () {
             var url = 'services/war/report_weekly_service/agents?';
 
@@ -155,7 +119,6 @@
                 url += 'isYear=true&year=' + s.task.report.year;
                 count++;
             }
-
 
             if (s.task.report.isMonth) {
                 if (count > 0) {
@@ -183,7 +146,6 @@
                 }
                 url += 'isRegion=true&region=' + s.task.report.region;
             }
-
 
             if (s.task.valid() && s.task.report.closed === false) {
                 if (count > 0) {
@@ -297,111 +259,96 @@
             });
         };
 
-        s.task.valid = function () {
-            var valid = true;
-
-            if (s.task.report.isYear) {
-                if (s.task.report.year === undefined) {
-                    s.flow.message.danger('Please select a year.');
-                    valid = false;
-                }
+        function activate() {
+            s.$on('$destroy', destroy);
+            s.task.agentReport = {};
+            s.task.agentReport.isAgent = up.isAgent();
+            s.task.agentReport.isManager = up.isManager();
+            s.task.agentReport.getYears = getYears;
+            s.task.agentReport.getMonths = getMonths;
+            s.task.agentReport.getAgents = getAgents;
+            s.task.agentReport.getRegions = getRegions;
+            s.task.agentReport.agentFilterChange = agentFilterChange;
+            s.task.agentReport.regionFilterChange = regionFilterChange;
+            s.task.agentReport.yearFilterChange = yearFilterChange;
+            s.task.agentReport.monthFilterChange = monthFilterChange;
+            if (up.isAgent()) {
+                s.task.report.agentFilter = up.agent;
+                s.task.report.regionFilter = {regionCode: up.getRegionCode()};
             }
+        }
 
-            if (s.task.report.isMonth) {
-                if (s.task.report.month === undefined) {
-                    s.flow.message.danger('Please select a month.');
-                    valid = false;
-                }
+        function getYears() {
+            commonFactories.yearService.getYears(function (years) {
+                s.task.agentReport.years = years;
+            }, function () {
+                s.task.agentReport.years = [];
+            });
+        }
+
+        function getMonths() {
+            commonFactories.monthService.getMonths(function (months) {
+                s.task.agentReport.months = months;
+            }, function () {
+                s.task.agentReport.months = [];
+            });
+        }
+
+        function getAgents() {
+            s.task.loadAgent = false;
+            resourceApiService.WarAgent.getList(function (agents) {
+                s.task.agentReport.agents = agents;
+                s.task.loadAgent = true;
+            }, function () {
+                s.task.agentReport.agents = [];
+                s.task.loadAgent = true;
+            });
+        }
+
+        function getRegions() {
+            s.task.loadRegion = false;
+            resourceApiService.RegionResource.getList(function (regions) {
+                s.task.agentReport.regions = regions;
+                s.task.loadRegion = true;
+            }, function () {
+                s.task.agentReport.regions = [];
+                s.task.loadRegion = true;
+            });
+        }
+
+        function getAgentsByRegionCode(regionCode) {
+            s.task.loadAgent = false;
+            resourceApiService.WarAgent.getByRegionCode(regionCode, function (agents) {
+                s.task.agentReport.agents = agents;
+                s.task.loadAgent = true;
+            }, function () {
+                s.task.agentReport.agents = [];
+                s.task.loadAgent = true;
+            });
+        }
+
+        function agentFilterChange(agent) {
+            s.task.agentReport.regionFilter = {regionCode: agent.region};
+        }
+
+        function regionFilterChange(region) {
+            if (s.task.agentReport.agentFilter && s.task.agentReport.agentFilter.region !== region.regionCode) {
+                s.task.agentReport.agentFilter = undefined;
             }
+            getAgentsByRegionCode(region.regionCode);
+        }
 
-            if (s.task.report.isAgent) {
-                if (s.task.report.agent === undefined) {
-                    s.flow.message.danger('Please select an agent.');
-                    valid = false;
-                }
-            }
+        function yearFilterChange(year) {
 
-            if (s.task.report.isRegion) {
-                if (s.task.report.region === undefined) {
-                    s.flow.message.danger('Please select a region.');
-                    valid = false;
-                }
-            }
+        }
 
-            return valid;
-        };
+        function monthFilterChange(month) {
 
-        s.$watch(function (scope) {
-            return scope.task.report.isYear
-        }, function (newValue, oldValue) {
-            if (newValue !== oldValue) {
-                s.task.change();
-            }
-        });
+        }
 
-        s.$watch(function (scope) {
-            return scope.task.report.isMonth
-        }, function (newValue, oldValue) {
-            if (newValue !== oldValue) {
-                s.task.change();
-            }
-        });
+        function destroy() {
+            s.task.agentReport = undefined;
+        }
 
-        s.$watch(function (scope) {
-            return scope.task.report.isAgent
-        }, function (newValue, oldValue) {
-            if (newValue !== oldValue) {
-                s.task.change();
-            }
-        });
-
-        s.$watch(function (scope) {
-            return scope.task.report.isRegion
-        }, function (newValue, oldValue) {
-            if (newValue !== oldValue) {
-                s.task.change();
-            }
-        });
-
-        s.$watch(function (scope) {
-            return scope.task.report.year
-        }, function (newValue, oldValue) {
-            if (newValue !== oldValue) {
-                s.task.report.closed = false;
-                s.task.query();
-            }
-        });
-
-        s.$watch(function (scope) {
-            return scope.task.report.month
-        }, function (newValue, oldValue) {
-            if (newValue !== oldValue) {
-                s.task.report.closed = false;
-                s.task.query();
-            }
-        });
-
-        s.$watch(function (scope) {
-            return scope.task.report.agent
-        }, function (newValue, oldValue) {
-            if (newValue !== oldValue) {
-                s.task.report.closed = false;
-                s.task.query();
-            }
-        });
-
-        s.$watch(function (scope) {
-            return scope.task.report.region
-        }, function (newValue, oldValue) {
-            if (newValue !== oldValue) {
-                s.task.report.closed = false;
-                s.task.query();
-            }
-        });
-
-
-        s.task.page.load = function () {
-
-        };
     }
 })();

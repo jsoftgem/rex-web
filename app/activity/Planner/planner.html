@@ -2,36 +2,47 @@
 
     <form id="{{flow.getElementFlowId('planner')}}" class="form-horizontal" role="form" novalidate>
         <div class="form-group">
-            <fluid-select change="selectYear(item)" with-host="sourceUrl" class="col-lg-3 col-md-12 col-sm-12 col-xs-12"
-                          primary
-                          id="{{flow.getElementFlowId('schoolYearSelect')}}"
-                          label="School Year"
-                          source-url="services/war/school_year_query/list" model="task.schoolYear"
-                          field-label="description">
-            </fluid-select>
-            <div class="col-lg-3">
-                <flow-look-up changed="changeAgent(item)" removed="flow.onRefreshed()"
-                              ng-if="task.schoolYear != undefined && !task.hideAgentFilter"
-                              task="task"
-                              id="{{flow.getElementFlowId('agentLookUp')}}"
-                              field-label="user.flowUserDetail.fullName"
-                              parent-id="{{flow.getElementFlowId('planner')}}"
-                              label="Agent" model="task.agent"
-                              source-url="services/war/agent_query/find_agent_by_current_user_level"
-                              key-var="agent">
+            <label column="3">
+                <span>School year</span>
+                <ui-select ng-change="selectYear(task.plannerFilter.schoolYearFilter)"
+                           ng-model="task.plannerFilter.schoolYearFilter" id="schoolYearFilter">
+                    <ui-select-match
+                            placeholder="{{task.plannerFilter.schoolYearLoaded ? '':'Loading school years...'}}">
+                        {{$select.selected.description}}
+                    </ui-select-match>
+                    <ui-select-choices
+                            repeat="schoolYear in task.plannerFilter.schoolYears | filter : {description: $select.search}"
+                            refresh="task.plannerFilter.getSchoolYears()">
+                        {{schoolYear.description}}
+                    </ui-select-choices>
+                </ui-select>
+            </label>
+            <label column="3" ng-if="task.schoolYear != undefined && !task.hideAgentFilter">
+                <span>Agents</span>
+                <ui-select ng-change="changeAgent(task.plannerFilter.agentFilter)"
+                           ng-model="task.plannerFilter.agentFilter" id="agentFilter">
+                    <ui-select-match placeholder="{{task.plannerFilter.agentLoaded ? '':'Loading agents...'}}">
+                        {{$select.selected.user.flowUserDetail.fullName}}
+                    </ui-select-match>
+                    <ui-select-choices
+                            repeat="agent in task.plannerFilter.agents | filter : {user:{flowUserDetail:{fullName: $select.search}}}"
+                            refresh="task.plannerFilter.getAgentsByCurrentLevel()">
+                        {{agent.user.flowUserDetail.fullName}}
+                    </ui-select-choices>
+                </ui-select>
+            </label>
 
-                    <flow-sub-column title="Agent" model="agent.user.flowUserDetail.fullName"></flow-sub-column>
-                </flow-look-up>
-            </div>
-            <div class="col-lg-3">
-                <flow-field label="Monthly Planned Target" ng-if="task.agent != undefined && task.view == 'month'"
-                            type="number"
-                            disabled="true" model="calendar.plannedCount"></flow-field>
-            </div>
-            <div class="col-lg-3">
-                <flow-field label="Weekly Planned Target" ng-if="task.agent != undefined && task.view == 'basicWeek'"
-                            type="number" disabled="true" model="calendar.plannedCount"></flow-field>
-            </div>
+            <label column="3" ng-if="task.agent != undefined && task.view == 'month'">
+                <span>Monthly Planned Target</span>
+                <input class="form-control" type="number" disabled ng-model="calendar.plannedCount">
+            </label>
+            <label column="3">
+
+            </label>
+            <label class="col-lg-3" ng-if="task.agent != undefined && task.view == 'basicWeek'">
+                <span>Weekly Planned Target</span>
+                <input class="form-control" ng-model="calendar.plannedCount" type="number" disabled>
+            </label>
         </div>
         <div class="form-group">
             <div class="col-lg-3 col-md-4 col-sm-5 left-panel">

@@ -21,14 +21,20 @@
             <div column="12">
                 <flow-field column="3" label="School Year" model="task.agent.schoolYear.description" disabled="true"
                             ng-if="task.origin == 'planner'"></flow-field>
-                <div column="3">
-                    <fluid-select primary with-host="sourceUrl" class="width100pc"
-                                  ng-if="task.origin.source != 'planner'" label="School year"
-                                  field-label="description"
-                                  model="task.agent.schoolYear"
-                                  source-url="services/war/school_year_query/list"
-                                  change="task.querySummary()"></fluid-select>
-                </div>
+                <label column="3" ng-if="task.origin.source != 'planner'">
+                    <span>School year</span>
+                    <ui-select ng-change="task.querySummary()" ng-model="task.agent.schoolYear">
+                        <ui-select-match
+                                placeholder="{{task.customerInfo.schoolYearLoaded ? '':'Loading school years...'}}">
+                            {{$select.selected.description}}
+                        </ui-select-match>
+                        <ui-select-choices
+                                repeat="schoolYear in task.customerInfo.schoolYears | filter : {description:$select.search}"
+                                refresh="task.customerInfo.getSchoolYears()">
+                            {{schoolYear.description}}
+                        </ui-select-choices>
+                    </ui-select>
+                </label>
 
                 <div column="3">
                     <flow-field class="width100pc" label="Market detail"

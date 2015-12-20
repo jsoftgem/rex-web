@@ -1,12 +1,28 @@
 (function () {
     'use strict';
+
+    var NAME_HOME = "planner"
+    var BASIC_WEEK = "basicWeek";
+    var MONTH = "month";
+    var QUERY_CUSTOMER_MARKET = "services/war/war_customer_market_query/";
+    var QUERY_CUSTOMER_MARKET_BY_SCHOOL_YEAR = QUERY_CUSTOMER_MARKET + "find_by_school_year?schoolYear=";
+    var QUERY_PLANNER = "services/war/planner_query/get_planner";
+    var QUERY_ACTIVITY = "services/flow_task_service/getTask?name=daily_task&active=true&size=100&page=daily_edit&page-path=";
+    var CRUD_ACTIVITY = "services/war/activity_crud/";
+    var PLANNER_CUSTOMERS = "session/war/planner_service/customers";
+    var SCHOOL = "SCHOOL";
+    var OFFICE = "OFFICE";
+    var LEAVE = "LEAVE";
+    var SEMINAR = "SEMINAR";
+
     angular.module('war.activity')
         .controller('plannerCtrl', PlannerCtrl);
 
     PlannerCtrl.$inject = ['$scope', 'flowMessageService', 'flowModalService',
-        'HOST', '$timeout', 'Upload', 'userProfile', 'flowHttpService', 'VIEWER'];
+        'HOST', '$timeout', 'Upload', 'userProfile', 'flowHttpService', 'VIEWER', 'resourceApiService'];
 
-    function PlannerCtrl(s, ms, fm, h, t, u, up, fh, v) {
+    function PlannerCtrl(s, ms, fm, h, t, u, up, fh, v, resourceApiService) {
+        activate();
         s.submitActivitiesConfirmation = function () {
             fm.show(s.flow.getElementFlowId("submitConfirm"));
         };
@@ -940,6 +956,34 @@
                 }
             }
 
+        }
+
+        function activate() {
+            s.task.plannerFilter = {};
+            s.task.plannerFilter.getSchoolYears = getSchoolYears;
+            s.task.plannerFilter.getAgentsByCurrentLevel = getAgentsByCurrentLevel;
+        }
+
+        function getSchoolYears() {
+            s.task.plannerFilter.schoolYearLoaded = false;
+            resourceApiService.SchoolYearResource.getList(function (schoolYears) {
+                s.task.plannerFilter.schoolYears = schoolYears;
+                s.task.plannerFilter.schoolYearLoaded = true;
+            }, function () {
+                s.task.plannerFilter.schoolYears = [];
+                s.task.plannerFilter.schoolYearLoaded = true;
+            });
+        }
+
+        function getAgentsByCurrentLevel() {
+            s.task.plannerFilter.agentLoaded = false;
+            resourceApiService.WarAgent.getByCurrentLevel(function (agents) {
+                s.task.plannerFilter.agents = agents;
+                s.task.plannerFilter.agentLoaded = true;
+            }, function () {
+                s.task.plannerFilter.agents = [];
+                s.task.plannerFilter.agentLoaded = true;
+            });
         }
 
     }

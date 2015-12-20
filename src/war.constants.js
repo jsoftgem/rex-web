@@ -1,4 +1,4 @@
-var HOST = "http://war.rexpublishing.com.ph:8080/rex-services/";
+var HOST = "http://localhost:9080/rex-services/";
 
 (function () {
     'use strict';
@@ -7,7 +7,9 @@ var HOST = "http://war.rexpublishing.com.ph:8080/rex-services/";
         .constant('VIEWER', 'vendors/ViewerJS/#')
         .constant('REX_VERSION', '1.3')
         .constant('FLUID_VERSION', '1.2c')
-        .constant('APP_KEY', 'Zmx1aWRfcGxhdGZvcm1fc3VwZXJfYXBwbGljYXRpb25fYnlfamVyaWNvX2RlZ3V6bWFu');
+        .constant('APP_KEY', 'Zmx1aWRfcGxhdGZvcm1fc3VwZXJfYXBwbGljYXRpb25fYnlfamVyaWNvX2RlZ3V6bWFu')
+        .constant('YEAR_START', 2000)
+        .constant('YEAR_PERIOD', 10);
 })();
 
 function withHost(url) {

@@ -3,9 +3,10 @@
     angular.module('war.app')
         .config(WarConfig);
 
-    WarConfig.$inject = ['$compileProvider'];
+    WarConfig.$inject = ['$compileProvider', 'uiSelectConfig'];
 
-    function WarConfig($compileProvider) {
+    function WarConfig($compileProvider, uiSelectConfig) {
+        uiSelectConfig.theme = 'bootstrap';
         $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file|blob):/);
     }
 

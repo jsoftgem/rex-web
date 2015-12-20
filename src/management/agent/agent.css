@@ -3,7 +3,7 @@ div.customer-table table{
 }
 
 .customer-table table{
-    max-height: 200;
+    max-height: 200px;
     overflow: auto;
 }
 

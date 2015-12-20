@@ -26,28 +26,24 @@
                             <input type="checkbox" ng-model="task.table.isWeek"/> Week
                         </a>
                     </li>
-
                     <li ng-init="task.table.isYear = true">
                         <a href="#"
                            ng-click="task.table.isYear=!task.table.isYear">
                             <input type="checkbox" ng-model="task.table.isYear"/> Year
                         </a>
                     </li>
-
                     <li ng-init="task.table.isPlannedTarget = true">
                         <a href="#"
                            ng-click="task.table.isPlannedTarget=!task.table.isPlannedTarget">
                             <input type="checkbox" ng-model="task.table.isPlannedTarget"/> Target
                         </a>
                     </li>
-
                     <li ng-init="task.table.isPlannedActual = true">
                         <a href="#"
                            ng-click="task.table.isPlannedActual=!task.table.isPlannedActual">
                             <input type="checkbox" ng-model="task.table.isPlannedActual"/> Actual
                         </a>
                     </li>
-
                     <li ng-init="task.table.isUnplannedActual = true">
                         <a href="#"
                            ng-click="task.table.isUnplannedActual=!task.table.isUnplannedActual">
@@ -60,21 +56,18 @@
                             <input type="checkbox" ng-model="task.table.isTotalCallProd"/> Call Productivity
                         </a>
                     </li>
-
                     <li ng-init="task.table.isEcd = true">
                         <a href="#"
                            ng-click="task.table.isEcd=!task.table.isEcd">
                             <input type="checkbox" ng-model="task.table.isEcd"/> Exam Copies Distribution
                         </a>
                     </li>
-
                     <li ng-init="task.table.isIte = true">
                         <a href="#"
                            ng-click="task.table.isIte=!task.table.isIte">
                             <input type="checkbox" ng-model="task.table.isIte"/> Invitation to Events
                         </a>
                     </li>
-
                     <li ng-init="task.table.isCoe = true">
                         <a href="#"
                            ng-click="task.table.isCoe=!task.table.isCoe">
@@ -87,22 +80,18 @@
                             <input type="checkbox" ng-model="task.table.isFp"/>Follow up Payment
                         </a>
                     </li>
-
                     <li ng-init="task.table.isGd = true">
                         <a href="#"
                            ng-click="task.table.isGd=!task.table.isGd">
                             <input type="checkbox" ng-model="task.table.isGd"/>Giveaways Distribution
                         </a>
                     </li>
-
-
                     <li ng-init="task.table.isDoi = true">
                         <a href="#"
                            ng-click="task.table.isDoi=!task.table.isDoi">
                             <input type="checkbox" ng-model="task.table.isDoi"/>Delivery of Incentive/Donation
                         </a>
                     </li>
-
                     <li ng-init="task.table.isPo = true">
                         <a href="#" ng-click="task.table.isPo=!task.table.isPo">
                             <input type="checkbox" ng-model="task.table.isPo"/>Purchase Order
@@ -119,8 +108,6 @@
                             <input type="checkbox" ng-model="task.table.isBooklist"/>Booklist
                         </a>
                     </li>
-
-
                     <li ng-init="task.table.isUcis = true">
                         <a href="#" ng-click="task.table.isUcis=!task.table.isUcis">
                             <input type="checkbox" ng-model="task.table.isUcis"/>Updated Customer Info Sheet
@@ -150,67 +137,65 @@
         </div>
 
         <div column="12">
-            <fieldset>
-                <legend>Options</legend>
-                <div column="3">
-                    <fluid-select class="width100pc" with-host="sourceUrl" fluid-disabled="!task.report.isYear" primary
-                                  model="task.report.year" label="Year"
-                                  source-url="factories/war/table_factories/years"></fluid-select>
 
-                    <div class="col-lg-1">
-                        <flow-check disabled="false" required="false" model="task.report.isYear"></flow-check>
-                    </div>
-                </div>
+            <label column="3">
+                <span>Year</span>
+                <ui-select ng-change="task.agentReport.yearFilterChange(task.agentReport.yearFilter)"
+                           ng-model="task.agentReport.yearFilter" id="yearFilter">
+                    <ui-select-match>{{$select.selected}}</ui-select-match>
+                    <ui-select-choices repeat="year in task.agentReport.years | filter : $select.search"
+                                       refresh="task.agentReport.getYears()">
+                        {{year}}
+                    </ui-select-choices>
+                </ui-select>
+            </label>
 
-                <div column="3">
-                    <fluid-select class="width100pc" fluid-disabled="!task.report.isMonth" with-host="sourceUrl" primary
-                                  model="task.report.month" label="Month"
-                                  source-url="factories/war/table_factories/months" required="false">
+            <label column="3">
+                <span>Month</span>
+                <ui-select ng-change="task.agentReport.monthFilterChange(task.agentReport.monthFilterChange)"
+                           ng-model="task.agentReport.monthFilter" id="monthFilter">
+                    <ui-select-match>{{$select.selected.label}}</ui-select-match>
+                    <ui-select-choices repeat="month in task.agentReport.months | filter : {label:$select.search}"
+                                       refresh="task.agentReport.getMonths()">
+                        {{month.label}}
+                    </ui-select-choices>
+                </ui-select>
+            </label>
 
-                    </fluid-select>
-                    <div class="col-lg-2">
-                        <flow-check disabled="false" required="false" model="task.report.isMonth"></flow-check>
-                    </div>
-                </div>
+            <label column="3">
+                <span>Agent</span>
+                <ui-select ng-change="task.agentReport.agentFilterChange(task.agentReport.agentFilter)"
+                           ng-model="task.agentReport.agentFilter" id="agentFilter">
+                    <ui-select-match placeholder="{{task.loadAgent ? '': 'Loading agents...'}}">
+                        {{$select.selected.user.flowUserDetail.fullName}}
+                    </ui-select-match>
+                    <ui-select-choices
+                            repeat="agent in task.agentReport.agents | filter : {user:{flowUserDetail:{fullName:$select.search}}}"
+                            refresh="task.agentReport.getAgents()">
+                        {{agent.user.flowUserDetail.fullName}}
+                    </ui-select-choices>
+                </ui-select>
+            </label>
 
-                <div ng-hide="task.hideAgentFilter" column="3">
+            <label column="3">
+                <span>Region</span>
+                <ui-select ng-change="task.agentReport.regionFilterChange(task.agentReport.regionFilter)"
+                           ng-model="task.agentReport.regionFilter" id="regionFilter">
+                    <ui-select-match placeholder="{{task.loadRegion ? '': 'Loading regions...'}}">
+                        {{$select.selected.regionCode}}
+                    </ui-select-match>
+                    <ui-select-choices
+                            repeat="region in task.agentReport.regions | filter : {regionCode:$select.search}"
+                            refresh="task.agentReport.getRegions()">
+                        {{region.regionCode}}
+                    </ui-select-choices>
+                </ui-select>
+            </label>
 
-                    <div class="col-lg-10">
-                        <flow-look-up disabled="!task.report.isAgent" model="task.report.agent" task="task" flow="flow"
-                                      id="{{flow.getElementFlowId('agentLookUp')}}"
-                                      label="Materials Advisor" parent-id="{{flow.getElementFlowId('reportFrame')}}"
-                                      key-var="agent" field-label="user.flowUserDetail.fullName"
-                                      source-url="services/war/agent_query/list">
-
-                            <flow-sub-column title="Name" model="agent.user.flowUserDetail.fullName"></flow-sub-column>
-                            <flow-sub-column title="Initials" model="agent.initials"></flow-sub-column>
-                        </flow-look-up>
-                    </div>
-
-                    <div class="col-lg-2">
-                        <flow-check disabled="false" required="false" model="task.report.isAgent"></flow-check>
-                    </div>
-
-                </div>
-
-                <div ng-hide="task.hideAgentFilter" column="3">
-
-                    <fluid-select class="width100pc" fluid-disabled="!task.report.isRegion" model="task.report.region"
-                                  with-host="sourceUrl" primary
-                                  label="Region" field-label="regionCode" field-value="regionCode"
-                                  source-url="services/war/region_query/list"></fluid-select>
-
-                    <div class="col-lg-2">
-                        <flow-check disabled="false" required="false" model="task.report.isRegion"></flow-check>
-                    </div>
-
-                </div>
-
-            </fieldset>
         </div>
 
-        <div class="form-group">
-            <!-- TODO: print <div class="btn-group btn-group-md">
+        <!--<div class="form-group">
+            &lt;!&ndash; TODO: print <div class="btn-group btn-group-md">
                 <button class="btn dropdown-toggle" data-toggle="dropdown" button info="button"><i fluid-icon-print></i>
                     Print <span class="caret"></span>
                 </button>
@@ -220,7 +205,7 @@
                     <li><a href="#" ng-click="task.print.current()">Current</a></li>
                 </ul>
 
-            </div>-->
+            </div>&ndash;&gt;
             <table id="{{flow.getElementFlowId('reportTable')}}" class="table table-condensed table-striped"
                    ng-init="rep = []">
                 <thead>
@@ -472,7 +457,7 @@
                 </tbody>
             </table>
 
-        </div>
+        </div>-->
 
     </form>
 
