@@ -12,6 +12,7 @@
             s.task.customerSummary = {};
             s.task.customerSummary.getSchoolYears = getSchoolYears;
             s.task.customerSummary.getMonths = getMonths;
+            s.task.customerSummary.getWeeks = getWeeks;
             s.imageService = is;
             s.flow.openTaskBaseUrl = 'services/flow_task_service/getTask?showToolBar=false&size=100&';
             s.editCustomer = function (customerId) {
@@ -140,6 +141,11 @@
                 s.task.customerSummary.months = [];
             })
         }
+
+        function getWeeks() {
+            s.task.customerSummary.weeks = ['all', '1', '2', '3', '4', '5'];
+        }
+
 
         function destroy() {
             s.task.customerSummary = undefined;

@@ -11,15 +11,18 @@
                 <flow-field model="task.customerCreate.customerCode" label="Customer code" required="true"
                             type="text"></flow-field>
 
-                <fluid-select primary with-host="sourceUrl" class="width100pc"
-                              id="{{flow.getElementFlowId('ownershipAgentSelect')}}"
-                              label="Materials Advisor"
-                              field-value="id"
-                              field-label="user.flowUserDetail.fullName"
-                              model="task.customerCreate.ownerAgentId"
-                              source-url="services/war/agent_query/list"
-                              change="selectAgent(item,full,$index)">
-                </fluid-select>
+                <label class="width100pc">
+                    <span>Material's adviser <span class="required">*</span></span>
+                    <ui-select ng-required="true" ng-model="task.customer.agent" ng-change="onAgentChange(task.customer.agent)">
+                        <ui-select-match placeholder="{{task.customer.agentsLoaded ? '':'Loading agents...'}}">
+                            {{$select.selected.user.flowUserDetail.fullName}}
+                        </ui-select-match>
+                        <ui-select-choices refresh="task.customer.getAgents()"
+                                           repeat="agent in task.customer.agents | filter:{user:{flowUserDetail:{fullName:$select.search}}}">
+                            {{agent.user.flowUserDetail.fullName}}
+                        </ui-select-choices>
+                    </ui-select>
+                </label>
 
                 <flow-field disabled="true" model="task.customerCreate.regionCode" label="Region"></flow-field>
 
@@ -296,8 +299,6 @@
         </div>
 
     </form>
-
-
     <flow-modal id="{{flow.getElementFlowId('supportModal')}}">
         <div class="panel panel-primary">
 
@@ -323,8 +324,6 @@
 
         </div>
     </flow-modal>
-
-
     <flow-modal id="{{flow.getElementFlowId('publisherModal')}}">
         <div class="panel panel-primary">
             <div class="panel-heading">
@@ -344,7 +343,6 @@
             </div>
         </div>
     </flow-modal>
-
     <flow-modal id="{{flow.getElementFlowId('levelModal')}}">
         <div class="panel panel-primary">
             <div class="panel-heading">
@@ -384,7 +382,6 @@
             </div>
         </div>
     </flow-modal>
-
     <flow-modal id="{{flow.getElementFlowId('contactsModal')}}">
 
         <div class="panel panel-primary">
@@ -474,8 +471,6 @@
 
         </div>
     </flow-modal>
-
-
     <flow-modal id="{{flow.getElementFlowId('potentialModal')}}">
 
         <div class="panel panel-primary">
@@ -511,6 +506,4 @@
         </div>
 
     </flow-modal>
-
-
 </div>

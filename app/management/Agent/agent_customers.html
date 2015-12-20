@@ -51,13 +51,19 @@
                             </ui-select>
                         </label>
 
-                        <div column="3">
-                            <fluid-select class="width100pc" with-host="sourceUrl" primary ng-if="task.agent.month"
-                                          model="task.agent.week" task="task"
-                                          label="by Week"
-                                          values="all, 1, 2, 3, 4, 5" change="filter()">
-                            </fluid-select>
-                        </div>
+                        <label column="3" ng-if="task.agent.month">
+                            <span>Week</span>
+                            <ui-select id="month" ng-model="task.agent.week" ng-change="filter()">
+                                <ui-select-match>
+                                    {{$select.selected}}
+                                </ui-select-match>
+                                <ui-select-choices
+                                        repeat="week in task.customerSummary.weeks | filter : $select.search"
+                                        refresh="task.customerSummary.getWeeks()">
+                                    {{week}}
+                                </ui-select-choices>
+                            </ui-select>
+                        </label>
 
                     </div>
                     <div column="12" ng-if="!task.agent.selectedCustomer">
