@@ -3,7 +3,7 @@
     angular.module('war.management')
         .controller('customerCtrl', CustomerCtrl);
     CustomerCtrl.$inject = ['$scope', 'DTOptionsBuilder', 'DTColumnBuilder', 'flowMessageService',
-        'flowModalService', '$compile', 'sessionService', 'userProfile', 'resourceApiService', 'commonFactories'];
+        'flowModalService', '$compile', 'sessionService', 'userProfile', 'resourceApiService', 'commonFactories', 'vendors'];
     function CustomerCtrl(s, dto, dtc, ms, fm, c, ss, up, resourceApiService, commonFactories, vendors) {
         activate();
 
@@ -13,6 +13,7 @@
             s.task.customer.getAgents = getAgents;
             s.task.customer.getAgent = getAgent;
             s.task.customer.onAgentChange = onAgentChange;
+            s.task.customer.getMonths = getMonths;
             s.userProfile = up;
             s.deleleModalId = 'customerDeleteModal';
             s.create_name = 'customer_create';
@@ -594,6 +595,14 @@
             } else {
                 return selected;
             }
+        }
+
+        function getMonths() {
+            commonFactories.monthService.getMonths(function (months) {
+                s.task.customer.months = months;
+            }, function () {
+                s.task.customer.months = [];
+            })
         }
 
         function onAgentChange(agent) {

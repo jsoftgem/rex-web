@@ -13,7 +13,8 @@
 
                 <label class="width100pc">
                     <span>Material's adviser <span class="required">*</span></span>
-                    <ui-select ng-required="true" ng-model="task.customer.agent" ng-change="onAgentChange(task.customer.agent)">
+                    <ui-select ng-required="true" ng-model="task.customer.agent"
+                               ng-change="onAgentChange(task.customer.agent)">
                         <ui-select-match placeholder="{{task.customer.agentsLoaded ? '':'Loading agents...'}}">
                             {{$select.selected.user.flowUserDetail.fullName}}
                         </ui-select-match>
@@ -41,16 +42,12 @@
             </div>
 
             <div class="col-lg-6">
-
                 <flow-field model="task.customerCreate.school.email" type="email" label="Email"
                             required="true"></flow-field>
-
                 <flow-field model="task.customerCreate.school.landline" label="Landline" required="true"></flow-field>
-
 
                 <flow-field model="task.customerCreate.school.addressLine1" label="Address line 1"
                             required="true"></flow-field>
-
                 <flow-field model="task.customerCreate.school.addressLine2" label="Address line 2"></flow-field>
 
             </div>
@@ -127,95 +124,63 @@
             <div class="col-lg-6">
 
                 <fieldset>
-
                     <legend>Buying Cycle</legend>
-                    <div class="form-group">
-                        <div column="12">
-                            <fluid-select primary column="6" label="Evaluation" with-host="sourceUrl"
-                                          id="{{flow.getElementFlowId('evalSelect')}}"
-                                          model="task.customerCreate.evaluation"
-                                          source-url="factories/war/table_factories/months">
-                            </fluid-select>
+                    <div class="width100pc">
+
+                        <div class="form-group">
+                            <war-select-months column="5" ng-model="task.customerCreate.evaluation"
+                                               label="Evaluation"></war-select-months>
 
                             <div column="1">
                                 <flow-check disabled="false" required="false" model="task.isCreateEvaluationTo"
-                                            label=" to"></flow-check>
+                                            label=""></flow-check>
                             </div>
-                            <fluid-select primary column="5" with-host="sourceUrl" ng-if="task.isCreateEvaluationTo"
-                                          change="changeEval()"
-                                          id="{{flow.getElementFlowId('evalSelect2')}}"
-                                          model="task.customerCreate.evaluationTo"
-                                          label=""
-                                          source-url="factories/war/table_factories/months">
-                            </fluid-select>
-
+                            <war-select-months ng-if="task.isCreateEvaluationTo" column="6"
+                                               ng-model="task.customerCreate.evaluationTo"
+                                               label="To"></war-select-months>
                         </div>
 
+                        <div class="form-group">
+                            <war-select-months column="5" ng-model="task.customerCreate.ordering"
+                                               label="Ordering"></war-select-months>
 
-                        <div column="12">
-                            <fluid-select primary column="6" with-host="sourceUrl"
-                                          id="{{flow.getElementFlowId('orderSelect')}}"
-                                          model="task.customerCreate.ordering"
-                                          label="Ordering"
-                                          source-url="factories/war/table_factories/months">
-                            </fluid-select>
                             <div column="1">
                                 <flow-check disabled="false" required="false" model="task.isCreateOrderingTo"
-                                            label=" to"></flow-check>
+                                            label=""></flow-check>
                             </div>
-                            <fluid-select primary column="5" ng-if="task.isCreateOrderingTo"
-                                          with-host="sourceUrl"
-                                          id="{{flow.getElementFlowId('orderSelect2')}}"
-                                          model="task.customerCreate.orderingTo"
-                                          label=""
-                                          source-url="factories/war/table_factories/months">
-                            </fluid-select>
 
+                            <war-select-months ng-if="task.isCreateOrderingTo" column="6"
+                                               ng-model="task.customerCreate.orderingTo"
+                                               label="To"></war-select-months>
                         </div>
 
-                        <div column="12">
-                            <fluid-select primary column="6" with-host="sourceUrl"
-                                          id="{{flow.getElementFlowId('deliverySelect')}}"
-                                          model="task.customerCreate.delivery"
-                                          label="Delivery"
-                                          source-url="factories/war/table_factories/months">
-                            </fluid-select>
+                        <div class="form-group">
+                            <war-select-months column="5" ng-model="task.customerCreate.delivery"
+                                               label="Delivery"></war-select-months>
                             <div column="1">
                                 <flow-check disabled="false" required="false" model="task.isCreateDeliveryTo"
-                                            label=" to"></flow-check>
+                                            label=""></flow-check>
                             </div>
-                            <fluid-select primary column="5" with-host="sourceUrl" ng-if="task.isCreateDeliveryTo"
-                                          id="{{flow.getElementFlowId('deliverySelect2')}}"
-                                          model="task.customerCreate.deliveryTo"
-                                          label=""
-                                          source-url="factories/war/table_factories/months">
-                            </fluid-select>
-
+                            <war-select-months ng-if="task.isCreateDeliveryTo" column="6"
+                                               ng-model="task.customerCreate.deliveryTo"
+                                               label="To"></war-select-months>
                         </div>
 
-
-                        <div column="12">
-                            <fluid-select primary with-host="sourceUrl" column="6"
-                                          id="{{flow.getElementFlowId('collectionSelect')}}"
-                                          model="task.customerCreate.collection"
-                                          label="Collection"
-                                          source-url="factories/war/table_factories/months">
-                            </fluid-select>
+                        <div class="form-group">
+                            <war-select-months column="5" ng-model="task.customerCreate.collection"
+                                               label="Collection"></war-select-months>
                             <div column="1">
                                 <flow-check disabled="false" required="false" model="task.isCreateCollectionTo"
-                                            label=" to"></flow-check>
+                                            label=""></flow-check>
                             </div>
-                            <fluid-select primary with-host="sourceUrl" column="5" ng-if="task.isCreateCollectionTo"
-                                          id="{{flow.getElementFlowId('collectionSelect2')}}"
-                                          model="task.customerCreate.collectionTo"
-                                          label=""
-                                          source-url="factories/war/table_factories/months">
-                            </fluid-select>
+
+                            <war-select-months ng-if="task.isCreateCollectionTo" column="6"
+                                               ng-model="task.customerCreate.collectionTo"
+                                               label="To"></war-select-months>
 
                         </div>
 
                     </div>
-
                 </fieldset>
             </div>
         </div>

@@ -13,7 +13,8 @@
             <legend>From</legend>
             <label column="6">
                 <span>Month</span>
-                <ui-select ng-model="task.modelCreate.periodMonth">
+                <ui-select ng-model="task.schoolYear.periodMonth"
+                           ng-change="task.modelCreate.periodMonth=task.schoolYear.periodMonth.enumForm">
                     <ui-select-match placeholder="{{task.schoolYear.monthLoaded ? '':'Loading months...'}}">
                         {{$select.selected.label}}
                     </ui-select-match>
@@ -41,7 +42,8 @@
             <legend>To</legend>
             <label column="6">
                 <span>Month</span>
-                <ui-select ng-model="task.modelCreate.periodMonthTo">
+                <ui-select ng-model="task.schoolYear.periodMonthTo"
+                           ng-change="task.modelCreate.periodMonthTo=task.schoolYear.periodMonthTo.enumForm">
                     <ui-select-match placeholder="{{task.schoolYear.monthLoaded ? '':'Loading months...'}}">
                         {{$select.selected.label}}
                     </ui-select-match>

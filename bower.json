@@ -49,6 +49,7 @@
     "jquery-timeago": "~1.4.3",
     "ui-select": "angular-ui-select#~0.13.2",
     "angular-sanitize": "~1.4.8",
-    "lodash": "~3.10.1"
+    "lodash": "~3.10.1",
+    "fluid-web-components": "~0.1.2"
   }
 }

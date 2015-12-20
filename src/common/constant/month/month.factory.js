@@ -71,6 +71,7 @@
                     foundMonth = searchMonth;
                 }
             }
+            console.debug('foundMonth', searchMonth);
             console.debug('foundMonth', foundMonth);
             return foundMonth;
         }
@@ -81,7 +82,8 @@
         return {
             calendar: calendar,
             label: label,
-            shortLabel: shortLabel
+            shortLabel: shortLabel,
+            enumForm: label.toUpperCase()
         };
     }
 

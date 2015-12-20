@@ -12,7 +12,8 @@
             <legend>From</legend>
             <label column="6">
                 <span>Month</span>
-                <ui-select ng-model="task.modelEdit.periodMonth">
+                <ui-select ng-model="task.schoolYear.periodMonth"
+                           ng-change="task.modelEdit.periodMonth=task.schoolYear.periodMonth.enumForm">
                     <ui-select-match placeholder="{{task.schoolYear.monthLoaded ? '':'Loading months...'}}">
                         {{task.schoolYear.getMonth($select.selected).label}}
                     </ui-select-match>
@@ -40,9 +41,10 @@
             <legend>To</legend>
             <label column="6">
                 <span>Month</span>
-                <ui-select ng-model="task.modelEdit.periodMonthTo">
+                <ui-select ng-model="task.schoolYear.periodMonthTo"
+                           ng-change="task.modelEdit.periodMonthTo = task.schoolYear.periodMonthTo.enumForm">
                     <ui-select-match placeholder="{{task.schoolYear.monthLoaded ? '':'Loading months...'}}">
-                        {{task.schoolYear.getMonth($select.selected).label}}
+                        {{task.schoolYear.getMonthTo($select.selected).label}}
                     </ui-select-match>
                     <ui-select-choices refresh="task.schoolYear.getMonths()"
                                        repeat="month in task.schoolYear.months | filter : {enumForm: $select.search.toUpperCase()}">
