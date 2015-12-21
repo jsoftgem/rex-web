@@ -55,8 +55,27 @@
         </div>
 
 
-        <div class="col-lg-12">
-            <flow-sub-table flow="flow" task="task" key-var="customer" title="Market segment"
+        <div column="12">
+            <fluid-subtable primary label="Market segment" key-var="marketSegment" key-var="margetSegment"
+                            ng-model="task.customerCreate.warCustomerMarketSchoolYears">
+                <fluid-subcolumn name="schoolYearDescription" header="School Year">
+                    <div class="column-row">
+                        {{margetSegment.schoolYearDescription}}
+                    </div>
+                </fluid-subcolumn>
+                <fluid-subcolumn name="marketPotentialSegment" header="Market Potential Segment">
+                    <div class="column-row">
+                        {{margetSegment.marketPotentialSegment}}
+                    </div>
+                </fluid-subcolumn>
+                <fluid-subcolumn name="marketPotential" header="Market Potential">
+                    <div class="column-row">
+                        {{margetSegment.marketPotential}}
+                    </div>
+                </fluid-subcolumn>
+            </fluid-subtable>
+
+            <!--<flow-sub-table flow="flow" task="task" key-var="customer" title="Market segment"
                             target-list="task.customerCreate.warCustomerMarketSchoolYears"
                             id="{{flow.getElementFlowId('potentialTable')}}" id-field="id"
                             create-event="addPotential" edit-event="editPotential" look-up="false">
@@ -65,7 +84,7 @@
                 <flow-sub-column title="Market Potential Segment"
                                  model="customer.marketPotentialSegment"></flow-sub-column>
                 <flow-sub-column title="Market Potential" model="customer.marketPotential"></flow-sub-column>
-            </flow-sub-table>
+            </flow-sub-table>-->
         </div>
 
         <div class="col-lg-12">
@@ -236,17 +255,12 @@
         <div class="col-lg-12">
 
             <fieldset>
-
                 <legend>Business Terms</legend>
-
                 <flow-field model="task.customerCreate.standardOutrightDiscount" type="number"
                             label="Standard/Outright Discount"></flow-field>
-
                 <flow-field model="task.customerCreate.additionalDiscount" type="number"
                             label="Additional Discount"></flow-field>
-
                 <flow-field model="task.customerCreate.incentives" type="number" label="Incentives"></flow-field>
-
 
             </fieldset>
 
@@ -271,9 +285,7 @@
                 <span class="heading-title">Add support</span>
             </div>
             <div class="panel-body">
-
                 <div class="container-fluid form-horizontal">
-
                     <flow-field label="Description"
                                 model="task.customerCreate.supportGivens[task.supportIndex].description"></flow-field>
                     <flow-field label="Amount" type="number"
@@ -319,7 +331,7 @@
                     <fluid-select primary class="width100pc"
                                   with-host="sourceUrl"
                                   id="{{flow.getElementFlowId('educationLevelSelect')}}"
-                                  model="task.customerCreate.customerLevels[task.levelIndex].level"
+                                  ng-model="task.customerCreate.customerLevels[task.levelIndex].level"
                                   label="Education Level"
                                   source-url="services/war/level_query/list"
                                   field-label="levelCourse"
@@ -358,7 +370,7 @@
                     <div class="col-lg-6">
                         <fluid-select primary with-host="sourceUrl" class="width100pc"
                                       id="{{flow.getElementFlowId('levelSelect')}}"
-                                      model="task.customerCreate.contactDetails[task.contactIndex].level"
+                                      ng-model="task.customerCreate.contactDetails[task.contactIndex].level"
                                       label="Education Level"
                                       source-url="factories/war/table_factories/education_levels"
                                       ng-required="true">
@@ -369,7 +381,7 @@
 
                         <fluid-select primary with-host="sourceUrl" class="width100pc"
                                       id="{{flow.getElementFlowId('positionSelect')}}"
-                                      model="task.customerCreate.contactDetails[task.contactIndex].position"
+                                      ng-model="task.customerCreate.contactDetails[task.contactIndex].position"
                                       field-label="description"
                                       field-value="id"
                                       label="Position"
@@ -386,7 +398,7 @@
                         <fluid-select primary
                                       with-host="sourceUrl" class="width100pc"
                                       id="{{flow.getElementFlowId('relationshipTypeSelect')}}"
-                                      model="task.customerCreate.contactDetails[task.contactIndex].relationshipType"
+                                      ng-model="task.customerCreate.contactDetails[task.contactIndex].relationshipType"
                                       label="Relationship type"
                                       source-url="factories/war/table_factories/relationship_types"
                                       ng-required="true">
@@ -449,8 +461,8 @@
                     <fluid-select primary class="width100pc" fluid-disabled="s.task.potentialManaged"
                                   with-host="sourceUrl"
                                   label="School Year"
-                                  field-label="description" model="task.tempSchoolYear"
-                                  change="onChangeSchoolYear(item)"
+                                  field-label="description" ng-model="task.tempSchoolYear"
+                                  ng-change="onChangeSchoolYear(item)"
                                   source-url="services/war/school_year_query/list"></fluid-select>
 
                     <flow-field label="Market Potential" type="number"
