@@ -15,13 +15,27 @@
         };
 
         function WarSelectMonthsLink(scope, element, attr, ngModel) {
-            if (attr.label) {
-                element.find('.select-month-label').text(attr.label);
+            activate();
+
+            function activate() {
+                if (attr.label) {
+                    element.find('.select-month-label').text(attr.label);
+                }
+                scope.$on('$destroy', destroy);
+                scope.$watch('selectMonth.month', setModelValue);
+                scope.selectMonth.getMonth = getMonth;
+                ngModel.$render = render;
             }
-            scope.$watch('selectMonth.month', setModelValue);
-            scope.selectMonth.getMonth = getMonth;
-            function setModelValue(newValue) {
-                ngModel.$setViewValue(newValue ? newValue.enumForm : newValue);
+
+
+            function render() {
+                scope.selectMonth.month = ngModel.$modelValue;
+            }
+
+            function setModelValue(newValue, oldValue) {
+                if (newValue !== oldValue) {
+                    ngModel.$setViewValue(newValue ? newValue.enumForm : newValue);
+                }
             }
 
             function getMonth(selected) {
@@ -30,6 +44,10 @@
                 } else {
                     return selected;
                 }
+            }
+
+            function destroy() {
+                scope.selectMonth.destroy();
             }
         }
 

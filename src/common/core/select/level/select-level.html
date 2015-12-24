@@ -1,0 +1,12 @@
+<label class="width100pc">
+    <span class="select-level-label">{{label}}</span>
+    <ui-select ng-model="selectLevel.level">
+        <ui-select-match placeholder="{{selectLevel.levelLoaded ? '':'Loading levels...'}}">
+            {{$select.selected.levelCourse}}
+        </ui-select-match>
+        <ui-select-choices refresh="selectLevel.getLevels()"
+                           repeat="level in selectLevel.levels | filter:{levelCourse:$select.search}">
+            {{level.levelCourse}}
+        </ui-select-choices>
+    </ui-select>
+</label>

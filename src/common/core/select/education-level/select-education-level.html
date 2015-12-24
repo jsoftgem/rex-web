@@ -1,0 +1,12 @@
+<label class="width100pc">
+    <span>{{label}}</span>
+    <ui-select ng-model="selectEducationLevel.educationLevel">
+        <ui-select-match>
+            {{$select.selected}}
+        </ui-select-match>
+        <ui-select-choices refresh="selectEducationLevel.getEducationLevels()"
+                           repeat="educationLevel in selectEducationLevel.educationLevels | filter: $select.search">
+            {{educationLevel}}
+        </ui-select-choices>
+    </ui-select>
+</label>

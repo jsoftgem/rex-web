@@ -14,6 +14,11 @@
             s.task.customer.getAgent = getAgent;
             s.task.customer.onAgentChange = onAgentChange;
             s.task.customer.getMonths = getMonths;
+            s.task.customer.addPotential = addPotential;
+            s.task.customer.addContact = addContact;
+            s.task.customer.addLevel = addLevel;
+            s.task.customer.addPublisher = addPublisher;
+            s.task.customer.addSupport = addSupport;
             s.userProfile = up;
             s.deleleModalId = 'customerDeleteModal';
             s.create_name = 'customer_create';
@@ -163,26 +168,6 @@
             s.deleteCancel = function () {
                 fm.hide(s.flow.getElementFlowId('customerDeleteModal'));
             };
-            s.$on(s.flow.getEventId('createContactEvent'), function (event) {
-                s.task.contact = {};
-                s.task.contactManaged = false;
-                if (s.task.page.name === s.create_name) {
-                    if (s.task.customerCreate.contactDetails === undefined) {
-                        s.task.customerCreate.contactDetails = [];
-                    }
-                    s.task.customerCreate.contactDetails.push(s.task.contact);
-                    s.task.contactIndex = s.task.customerCreate.contactDetails.length - 1;
-                } else if (s.task.page.name === s.edit_name) {
-                    if (s.task.customerEdit.contactDetails === undefined) {
-                        s.task.customerEdit.contactDetails = [];
-                    }
-                    s.task.customerEdit.contactDetails.push(s.task.contact);
-                    s.task.contactIndex = s.task.customerEdit.contactDetails.length - 1;
-                }
-
-                fm.show(s.flow.getElementFlowId('contactsModal'));
-                console.debug('createContactEvent', event);
-            });
             s.$on(s.flow.getEventId('editContactEvent'),
                 function (event, id, index) {
                     if (s.task.page.name === s.create_name) {
@@ -255,25 +240,6 @@
                     fm.hide(s.flow.getElementFlowId('contactsModal'), s.flow.getElementFlowId('contactDetailsSubTable'));
                 }
             };
-            s.$on(s.flow.getEventId('createLevelEvent'), function () {
-                s.task.level = {};
-                s.task.levelManaged = false;
-                if (s.task.page.name === s.create_name) {
-                    if (s.task.customerCreate.customerLevels === undefined) {
-                        s.task.customerCreate.customerLevels = [];
-                    }
-                    s.task.customerCreate.customerLevels.push(s.task.level);
-                    s.task.levelIndex = s.task.customerCreate.customerLevels.length - 1;
-                } else if (s.task.page.name === s.edit_name) {
-                    if (s.task.customerEdit.customerLevels === undefined) {
-                        s.task.customerEdit.customerLevels = [];
-                    }
-                    s.task.customerEdit.customerLevels.push(s.task.level);
-                    s.task.levelIndex = s.task.customerEdit.customerLevels.length - 1;
-                }
-
-                fm.show(s.flow.getElementFlowId('levelModal'));
-            });
             s.$on(s.flow.getEventId('editLevelEvent'),
                 function (event, id, index) {
                     if (s.task.page.name === s.create_name) {
@@ -336,25 +302,6 @@
                     fm.hide(s.flow.getElementFlowId('levelModal'), s.flow.getElementFlowId('customerLevelsSubTable'));
                 }
             };
-            s.$on(s.flow.getEventId('createPublisherEvent'), function () {
-                s.task.publisher = {};
-                s.task.publisherManaged = false;
-                if (s.task.page.name === s.create_name) {
-                    if (s.task.customerCreate.publisher === undefined) {
-                        s.task.customerCreate.publisher = [];
-                    }
-                    s.task.customerCreate.publisher.push(s.task.publisher);
-                    s.task.publisherIndex = s.task.customerCreate.publisher.length - 1;
-                } else if (s.task.page.name === s.edit_name) {
-                    if (s.task.customerEdit.publisher === undefined) {
-                        s.task.customerEdit.publisher = [];
-                    }
-                    s.task.customerEdit.publisher.push(s.task.publisher);
-                    s.task.publisherIndex = s.task.customerEdit.publisher.length - 1;
-                }
-
-                fm.show(s.flow.getElementFlowId('publisherModal'));
-            });
             s.$on(s.flow.getEventId('editPublisherEvent'),
                 function (event, id, index) {
                     if (s.task.page.name === s.create_name) {
@@ -389,25 +336,6 @@
             s.savePublisherModal = function () {
                 fm.hide(s.flow.getElementFlowId('publisherModal'), s.flow.getElementFlowId('customerPublisherSubTable'));
             };
-            s.$on(s.flow.getEventId('createSupportEvent'), function () {
-                s.task.support = {};
-                s.task.supportManaged = false;
-                if (s.task.page.name === s.create_name) {
-                    if (s.task.customerCreate.supportGivens === undefined) {
-                        s.task.customerCreate.supportGivens = [];
-                    }
-                    s.task.customerCreate.supportGivens.push(s.task.support);
-                    s.task.supportIndex = s.task.customerCreate.supportGivens.length - 1;
-                } else if (s.task.page.name === s.edit_name) {
-                    if (s.task.customerEdit.supportGivens === undefined) {
-                        s.task.customerEdit.supportGivens = [];
-                    }
-                    s.task.customerEdit.supportGivens.push(s.task.support);
-                    s.task.supportIndex = s.task.customerEdit.supportGivens.length - 1;
-                }
-
-                fm.show(s.flow.getElementFlowId('supportModal'));
-            });
             s.$on(s.flow.getEventId('editSupportEvent'),
                 function (event, id, index) {
                     if (s.task.page.name === s.create_name) {
@@ -442,39 +370,6 @@
             s.saveSupportModal = function () {
                 fm.hide(s.flow.getElementFlowId('supportModal'), s.flow.getElementFlowId('customerSupportSubTable'));
             };
-            s.$on(s.flow.getEventId('addPotential'), function (event) {
-
-                s.task.potential = {};
-                s.task.potentialManaged = false;
-
-                if (s.task.page.name === s.create_name) {
-
-                    if (s.task.customerCreate.warCustomerMarketSchoolYears === undefined) {
-                        s.task.customerCreate.warCustomerMarketSchoolYears = [];
-                    }
-
-                    s.task.customerCreate.warCustomerMarketSchoolYears.push(s.task.potential);
-                    s.task.potentialIndex = s.task.customerCreate.warCustomerMarketSchoolYears.length - 1;
-                } else if (s.task.page.name === s.edit_name) {
-                    if (s.task.customerEdit.warCustomerMarketSchoolYears === undefined) {
-                        s.task.customerEdit.warCustomerMarketSchoolYears = [];
-                    }
-                    s.task.customerEdit.warCustomerMarketSchoolYears.push(s.task.potential);
-                    s.task.potentialIndex = s.task.customerEdit.warCustomerMarketSchoolYears.length - 1;
-                }
-
-                s.onChangeSchoolYear = function (item) {
-                    if (s.task.page.name === s.create_name) {
-                        s.task.customerCreate.warCustomerMarketSchoolYears[s.task.potentialIndex].schoolYearDescription = item.description;
-                        s.task.customerCreate.warCustomerMarketSchoolYears[s.task.potentialIndex].schoolYear = item.id;
-                    } else if (s.task.page.name === s.edit_name) {
-                        s.task.customerEdit.warCustomerMarketSchoolYears[s.task.potentialIndex].schoolYearDescription = item.description;
-                        s.task.customerEdit.warCustomerMarketSchoolYears[s.task.potentialIndex].schoolYear = item.id;
-                    }
-                };
-
-                fm.show(s.flow.getElementFlowId('potentialModal'));
-            });
             s.$on(s.flow.getEventId('editPotential'), function (event, id, index) {
 
                 if (s.task.page.name === s.create_name) {
@@ -615,6 +510,118 @@
             }
         }
 
+        function addPotential() {
+            s.task.potential = {};
+            s.task.potentialManaged = false;
+
+            if (s.task.page.name === s.create_name) {
+
+                if (s.task.customerCreate.warCustomerMarketSchoolYears === undefined) {
+                    s.task.customerCreate.warCustomerMarketSchoolYears = [];
+                }
+
+                s.task.customerCreate.warCustomerMarketSchoolYears.push(s.task.potential);
+                s.task.potentialIndex = s.task.customerCreate.warCustomerMarketSchoolYears.length - 1;
+            } else if (s.task.page.name === s.edit_name) {
+                if (s.task.customerEdit.warCustomerMarketSchoolYears === undefined) {
+                    s.task.customerEdit.warCustomerMarketSchoolYears = [];
+                }
+                s.task.customerEdit.warCustomerMarketSchoolYears.push(s.task.potential);
+                s.task.potentialIndex = s.task.customerEdit.warCustomerMarketSchoolYears.length - 1;
+            }
+
+            s.onChangeSchoolYear = function (item) {
+                if (s.task.page.name === s.create_name) {
+                    s.task.customerCreate.warCustomerMarketSchoolYears[s.task.potentialIndex].schoolYearDescription = item.description;
+                    s.task.customerCreate.warCustomerMarketSchoolYears[s.task.potentialIndex].schoolYear = item.id;
+                } else if (s.task.page.name === s.edit_name) {
+                    s.task.customerEdit.warCustomerMarketSchoolYears[s.task.potentialIndex].schoolYearDescription = item.description;
+                    s.task.customerEdit.warCustomerMarketSchoolYears[s.task.potentialIndex].schoolYear = item.id;
+                }
+            };
+
+            fm.show(s.flow.getElementFlowId('potentialModal'));
+        }
+
+        function addContact() {
+            s.task.contact = {};
+            s.task.contactManaged = false;
+            if (s.task.page.name === s.create_name) {
+                if (s.task.customerCreate.contactDetails === undefined) {
+                    s.task.customerCreate.contactDetails = [];
+                }
+                s.task.customerCreate.contactDetails.push(s.task.contact);
+                s.task.contactIndex = s.task.customerCreate.contactDetails.length - 1;
+            } else if (s.task.page.name === s.edit_name) {
+                if (s.task.customerEdit.contactDetails === undefined) {
+                    s.task.customerEdit.contactDetails = [];
+                }
+                s.task.customerEdit.contactDetails.push(s.task.contact);
+                s.task.contactIndex = s.task.customerEdit.contactDetails.length - 1;
+            }
+
+            fm.show(s.flow.getElementFlowId('contactsModal'));
+        }
+
+        function addLevel() {
+            s.task.level = {};
+            s.task.levelManaged = false;
+            if (s.task.page.name === s.create_name) {
+                if (s.task.customerCreate.customerLevels === undefined) {
+                    s.task.customerCreate.customerLevels = [];
+                }
+                s.task.customerCreate.customerLevels.push(s.task.level);
+                s.task.levelIndex = s.task.customerCreate.customerLevels.length - 1;
+            } else if (s.task.page.name === s.edit_name) {
+                if (s.task.customerEdit.customerLevels === undefined) {
+                    s.task.customerEdit.customerLevels = [];
+                }
+                s.task.customerEdit.customerLevels.push(s.task.level);
+                s.task.levelIndex = s.task.customerEdit.customerLevels.length - 1;
+            }
+
+            fm.show(s.flow.getElementFlowId('levelModal'));
+        }
+
+        function addPublisher() {
+            s.task.publisher = {};
+            s.task.publisherManaged = false;
+            if (s.task.page.name === s.create_name) {
+                if (s.task.customerCreate.publisher === undefined) {
+                    s.task.customerCreate.publisher = [];
+                }
+                s.task.customerCreate.publisher.push(s.task.publisher);
+                s.task.publisherIndex = s.task.customerCreate.publisher.length - 1;
+            } else if (s.task.page.name === s.edit_name) {
+                if (s.task.customerEdit.publisher === undefined) {
+                    s.task.customerEdit.publisher = [];
+                }
+                s.task.customerEdit.publisher.push(s.task.publisher);
+                s.task.publisherIndex = s.task.customerEdit.publisher.length - 1;
+            }
+
+            fm.show(s.flow.getElementFlowId('publisherModal'));
+        }
+
+        function addSupport() {
+            s.task.support = {};
+            s.task.supportManaged = false;
+            if (s.task.page.name === s.create_name) {
+                if (s.task.customerCreate.supportGivens === undefined) {
+                    s.task.customerCreate.supportGivens = [];
+                }
+                s.task.customerCreate.supportGivens.push(s.task.support);
+                s.task.supportIndex = s.task.customerCreate.supportGivens.length - 1;
+            } else if (s.task.page.name === s.edit_name) {
+                if (s.task.customerEdit.supportGivens === undefined) {
+                    s.task.customerEdit.supportGivens = [];
+                }
+                s.task.customerEdit.supportGivens.push(s.task.support);
+                s.task.supportIndex = s.task.customerEdit.supportGivens.length - 1;
+            }
+
+            fm.show(s.flow.getElementFlowId('supportModal'));
+        }
 
     }
 

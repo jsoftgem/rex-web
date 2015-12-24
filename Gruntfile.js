@@ -15,7 +15,7 @@ var vendorsJS = ['bower_components/jquery/dist/jquery.js', 'bower_components/ang
     'bower_components/jqueryui-touch-punch/jquery.ui.touch-punch.js', 'bower_components/metisMenu/dist/metisMenu.js',
     'bower_components/jquery.scrollTo/jquery.scrollTo.js', 'bower_components/qtip2/jquery.qtip.js',
     'bower_components/angular-dragdrop/src/angular-dragdrop.js', 'bower_components/jquery-timeago/jquery.timeago.js',
-    'bower_components/lodash/lodash.js', 'bower_components/fluid-web-components/dist/js/web-components.js',
+    'bower_components/lodash/lodash.js',
     'bower_components/ui-select/dist/select.js'];
 
 var vendorCSS = ['bower_components/bootstrap/dist/css/bootstrap.css',
@@ -23,7 +23,7 @@ var vendorCSS = ['bower_components/bootstrap/dist/css/bootstrap.css',
     'bower_components/font-awesome/css/font-awesome.css', 'bower_components/octicons/octicons/octicons.css',
     'bower_components/datatables/media/css/dataTables.bootstrap.css',
     'bower_components/fullcalendar/dist/fullcalendar.css', 'bower_components/qtip2/jquery.qtip.css',
-    'bower_components/ui-select/dist/select.css', 'bower_components/fluid-web-components/dist/css/web-components.css'
+    'bower_components/ui-select/dist/select.css'
 ];
 
 var vendorFonts = ['bower_components/bootstrap/fonts/*', 'bower_components/font-awesome/fonts/*'];

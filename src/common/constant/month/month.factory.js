@@ -71,8 +71,6 @@
                     foundMonth = searchMonth;
                 }
             }
-            console.debug('foundMonth', searchMonth);
-            console.debug('foundMonth', foundMonth);
             return foundMonth;
         }
 
