@@ -44,7 +44,7 @@
         }
 
         function disabled() {
-            return !userProfile.isGeneralManager() || !userProfile.isManager();
+            return !(userProfile.isGeneralManager() || userProfile.isManager() || userProfile.isAdmin());
         }
 
         function destroy() {

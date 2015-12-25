@@ -17,21 +17,9 @@
                     </ui-select-choices>
                 </ui-select>
             </label>
-            <label column="3" ng-if="task.schoolYear != undefined && !task.hideAgentFilter">
-                <span>Agents</span>
-                <ui-select ng-change="changeAgent(task.plannerFilter.agentFilter)"
-                           ng-model="task.plannerFilter.agentFilter" id="agentFilter">
-                    <ui-select-match placeholder="{{task.plannerFilter.agentLoaded ? '':'Loading agents...'}}">
-                        {{$select.selected.user.flowUserDetail.fullName}}
-                    </ui-select-match>
-                    <ui-select-choices
-                            repeat="agent in task.plannerFilter.agents | filter : {user:{flowUserDetail:{fullName: $select.search}}}"
-                            refresh="task.plannerFilter.getAgentsByCurrentLevel()">
-                        {{agent.user.flowUserDetail.fullName}}
-                    </ui-select-choices>
-                </ui-select>
-            </label>
-
+            <war-agent-select label="Agents" ng-change="task.plannerFilter.onAgentChange(task.plannerFilter.agentFilter)" column="3"
+                              ng-if="task.schoolYear != undefined && !task.hideAgentFilter"
+                              ng-model="task.plannerFilter.agentFilter"></war-agent-select>
             <label column="3" ng-if="task.agent != undefined && task.view == 'month'">
                 <span>Monthly Planned Target</span>
                 <input class="form-control" type="number" disabled ng-model="calendar.plannedCount">
@@ -267,9 +255,7 @@
 
         </div>
     </form>
-
     <flow-modal id="{{flow.getElementFlowId('activity_modal')}}">
-
         <div class="panel panel-primary">
 
             <div class="panel-heading">
@@ -377,14 +363,12 @@
                 </div>
 
             </div>
-
             <div class="panel-footer">
                 <button class="btn btn-sm btn-info" type="button" ng-click="hangingActivity.update()">Update</button>
                 <button class="btn btn-sm btn-danger" type="button" ng-click="hangingActivity.cancel()">Cancel</button>
             </div>
 
         </div>
-
     </flow-modal>
     <flow-modal id="{{flow.getElementFlowId('other_activity')}}">
         <div class="panel panel-primary">

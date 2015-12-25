@@ -1,6 +1,6 @@
 <label class="width100pc">
     <span class="select-agent-label">{{label}}</span>
-    <ui-select ng-model="selectAgent.agent">
+    <ui-select ng-model="selectAgent.agent" ng-disabled="selectAgent.disabled()">
         <ui-select-match placeholder="{{selectAgent.agentLoaded ? '':'Loading agents...'}}">
             {{(selectAgent.agents | selectAgent : $select).user.flowUserDetail.fullName}}
         </ui-select-match>
