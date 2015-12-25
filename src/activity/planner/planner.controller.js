@@ -198,68 +198,74 @@
 
                         var currentDate = s.task.plannerCalendar.fullCalendar("getDate");
 
-                        var originalEventObject = $(this).data("eventObject");
+                        if (!isPastDate(date._d)) {
+                            var originalEventObject = $(this).data("eventObject");
 
-                        var copiedEventObject = $.extend({}, originalEventObject);
+                            var copiedEventObject = $.extend({}, originalEventObject);
 
-                        var customer = undefined;
+                            var customer = undefined;
 
-                        var activity = {};
+                            var activity = {};
 
-                        activity.startDt = date.toDate().getTime();
+                            activity.startDt = date.toDate().getTime();
 
-                        activity.type = copiedEventObject.activityType;
+                            activity.type = copiedEventObject.activityType;
 
-                        var type = activity.type;
+                            var type = activity.type;
 
-                        if (SCHOOL === type) {
-                            customer = JSON.parse($(this).attr("customer"));
-                            copiedEventObject.title = customer.name + " - " + customer.marketSegment;
-                            console.info("customer-drop", customer);
-                            activity.customerMarketId = customer.id;
-                            activity.description = customer.name + " - " + customer.marketSegment;
-                            copiedEventObject.id = "event_id_" + s.flow.getElementFlowId(activity.customerMarketId) + "_" + date.toDate().getTime();
-                        } else {
-                            activity.customerMarketId = 0;
-                            copiedEventObject.id = "event_id_" + s.flow.getElementFlowId(type) + "_" + date.toDate().getTime();
-                        }
+                            if (SCHOOL === type) {
+                                customer = JSON.parse($(this).attr("customer"));
+                                copiedEventObject.title = customer.name + " - " + customer.marketSegment;
+                                console.info("customer-drop", customer);
+                                activity.customerMarketId = customer.id;
+                                activity.description = customer.name + " - " + customer.marketSegment;
+                                copiedEventObject.id = "event_id_" + s.flow.getElementFlowId(activity.customerMarketId) + "_" + date.toDate().getTime();
+                            } else {
+                                activity.customerMarketId = 0;
+                                copiedEventObject.id = "event_id_" + s.flow.getElementFlowId(type) + "_" + date.toDate().getTime();
+                            }
 
-                        activity.schoolYear = s.task.schoolYear.id;
+                            activity.schoolYear = s.task.schoolYear.id;
 
-                        copiedEventObject.start = date;
+                            copiedEventObject.start = date;
 
-                        copiedEventObject.editable = true;
+                            copiedEventObject.editable = true;
 
-                        copiedEventObject.activity = activity;
+                            copiedEventObject.activity = activity;
 
-                        copiedEventObject.durationEditable = false;
+                            copiedEventObject.durationEditable = false;
 
-                        copiedEventObject.startEditable = false;
+                            copiedEventObject.startEditable = false;
 
-                        var evt = scope.task.plannerCalendar.fullCalendar("clientEvents", copiedEventObject.id);
+                            var evt = scope.task.plannerCalendar.fullCalendar("clientEvents", copiedEventObject.id);
 
-                        if (evt.length === 0) {
-                            if (isDayEnabled(date.toDate(), currentDate.toDate())) {
-                                if (type === SCHOOL) {
-                                    t(function () {
-                                        scope.task.plannerCalendar.fullCalendar("renderEvent", copiedEventObject, true);
-                                        console.debug("planner.drop.SCHOOL", copiedEventObject);
-                                    });
-                                } else {
-                                    t(function () {
-                                        scope.otherActivity.hangingEventObject = copiedEventObject;
-                                        console.debug("planner.drop.otherActivities", scope.otherActivity.hangingEventObject);
-                                        fm.show(scope.flow.getElementFlowId("other_activity"));
-                                    });
+                            if (evt.length === 0) {
+                                if (isDayEnabled(date.toDate(), currentDate.toDate())) {
+                                    if (type === SCHOOL) {
+                                        t(function () {
+                                            scope.task.plannerCalendar.fullCalendar("renderEvent", copiedEventObject, true);
+                                            console.debug("planner.drop.SCHOOL", copiedEventObject);
+                                        });
+                                    } else {
+                                        t(function () {
+                                            scope.otherActivity.hangingEventObject = copiedEventObject;
+                                            console.debug("planner.drop.otherActivities", scope.otherActivity.hangingEventObject);
+                                            fm.show(scope.flow.getElementFlowId("other_activity"));
+                                        });
+                                    }
+
                                 }
 
+                            } else {
+                                if (customer) {
+                                    scope.flow.message.danger("Customer " + customer.customerName + " is already set for " + date.toDate());
+                                }
                             }
-
                         } else {
-                            if (customer) {
-                                scope.flow.message.danger("Customer " + customer.customerName + " is already set for " + date.toDate());
-                            }
+                            scope.flow.message.danger("Cannot add activity to past dates.");
                         }
+
+
                     },
                     eventRender: function (event, element) {
                         var currentDate = s.task.plannerCalendar.fullCalendar("getDate").toDate();
@@ -930,6 +936,12 @@
                 });
             }
             return data;
+        }
+
+        function isPastDate(date) {
+            console.debug('isPastDate', date);
+            var now = new Date();
+            return date < now;
         }
 
     }
