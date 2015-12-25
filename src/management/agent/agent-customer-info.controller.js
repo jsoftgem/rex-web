@@ -16,15 +16,16 @@
                 console.info(this.name, data);
                 if (this.name === s.task.summaryPage) {
                     if (s.task.origin) {
-                        console.info('origin', s.task.origin);
                         s.task.agent = s.task.origin.agent;
                         s.task.agent.schoolYear = s.task.origin.schoolYear;
                     } else {
                         s.task.agent.schoolYear = data.schoolYear;
                     }
-                    if (up.agent.id) {
+
+                    if (up.isAgent() && !up.isManager()) {
                         s.task.agent = up.agent;
                     }
+
                     s.task.summary = data;
                     s.task.title = s.task.summary.customer.school.name;
                     this.title = s.task.agent.fullName;
