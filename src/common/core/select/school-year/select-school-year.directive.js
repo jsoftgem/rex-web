@@ -6,7 +6,7 @@
     function WarSchoolyearSelect() {
         return {
             restrict: 'E',
-            scope: true,
+            scope: {label: '@', schoolyearModel: '='},
             require: 'ngModel',
             controller: 'selectSchoolYearCtrl',
             controllerAs: 'selectSchoolYear',
@@ -22,22 +22,27 @@
                 scope.$watch('selectSchoolYear.schoolYear', setModelValue);
                 scope.$on('$destroy', destroy);
                 ngModel.$render = render;
-                if (attr.label) {
-                    element.find('.select-schoolYear-label').text(attr.label);
-                }
             }
 
             function render() {
-                setSchoolYear();
+                scope.selectSchoolYear.schoolYear = {id: ngModel.$modelValue};
             }
 
             function setModelValue(newValue, oldValue) {
-                if (newValue !== oldValue) {
-                    ngModel.$setViewValue(newValue);
+                if (oldValue) {
+                    if (newValue && (newValue.id !== oldValue.id)) {
+                        ngModel.$setViewValue(newValue.id);
+                    }
+                } else {
+                    ngModel.$setViewValue(newValue.id);
                 }
+
+                setSchoolYearModel(newValue);
             }
-            function setSchoolYear() {
-                scope.selectSchoolYear.schoolYear = ngModel.$modelValue;
+
+            function setSchoolYearModel(schoolYear) {
+                scope.schoolyearModel = schoolYear;
+                console.debug('setSchoolYearModel', schoolYear);
             }
 
             function destroy() {

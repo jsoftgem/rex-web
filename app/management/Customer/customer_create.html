@@ -282,7 +282,7 @@
             <div class="panel-body">
                 <div class="form-horizontal">
 
-                    <war-level-select class="width100pc" required="true" label="Education level course"
+                    <war-level-select class="width100pc" ng-required="true" label="Education level course"
                                       ng-model="task.customerCreate.customerLevels[task.levelIndex].level">
                     </war-level-select>
 
@@ -316,10 +316,14 @@
 
                 <div class="form-horizontal">
                     <flow-message id="{{flow.getElementFlowId('potentialInfoMessage')}}"></flow-message>
+
                     <war-schoolyear-select class="width100pc" label="School Year"
-                                           ng-model="task.customer.tempSchoolYear"
-                                           fluid-disabled="task.potentialManaged"
-                                           ng-change="onChangeSchoolYear(task.customer.tempSchoolYear)"></war-schoolyear-select>
+                                           ng-model="task.customerCreate.warCustomerMarketSchoolYears[task.potentialIndex].schoolYear"
+                                           ng-disabled="task.potentialManaged"
+                                           schoolyear-model="task.customer.schoolYear"
+                                           ng-change="task.customer.onChangeSchoolYear(task.customer.schoolYear)">
+                    </war-schoolyear-select>
+
                     <flow-field label="Market Potential" type="number"
                                 model="task.customerCreate.warCustomerMarketSchoolYears[task.potentialIndex].marketPotential"></flow-field>
 
@@ -382,7 +386,7 @@
                                 <flow-field model="task.customerCreate.contactDetails[task.contactIndex].homePhone"
                                             label="Home"></flow-field>
 
-                                <flow-field model="task.customerCreate.contactDetails[task.contactIndex].homePhone"
+                                <flow-field model="task.customerCreate.contactDetails[task.contactIndex].workPhone"
                                             label="Work"></flow-field>
 
                                 <flow-field model="task.customerCreate.contactDetails[task.contactIndex].mobile"

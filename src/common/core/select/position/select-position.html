@@ -2,7 +2,7 @@
     <span class="select-position-label">{{label}}</span>
     <ui-select ng-model="selectPosition.position">
         <ui-select-match placeholder="{{selectPosition.positionLoaded ? '':'Loading positions...'}}">
-            {{$select.selected.description}}
+            {{(selectPosition.positions| selectPosition:$select).description}}
         </ui-select-match>
         <ui-select-choices refresh="selectPosition.getPositions()"
                            repeat="position in selectPosition.positions | filter:{description:$select.search}">

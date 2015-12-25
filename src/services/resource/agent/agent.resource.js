@@ -22,7 +22,8 @@
             current: current,
             getByRegionCode: getByRegionCode,
             getList: getList,
-            getByCurrentLevel: getByCurrentLevel
+            getByCurrentLevel: getByCurrentLevel,
+            getById: resource.getById
         };
 
         function current(fn, errfn) {

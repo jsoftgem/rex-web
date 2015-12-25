@@ -27,6 +27,7 @@
             link: function (scope, element, attr) {
                 var createButton;
                 activate();
+
                 function setCreateButton() {
                     createButton = element.find('button.create');
                     createButton.unbind('click');
@@ -45,7 +46,9 @@
                     } else {
                         scope.createEnabled = false;
                     }
-                    if (scope.editEvent || scope.editUrl) {
+                    ;
+
+                    if (scope.editEvent || scope.editUrl || attr.edit) {
                         scope.editEnabled = true;
                     } else {
                         scope.editEnabled = false;
@@ -146,17 +149,16 @@
                             $("<td>").addClass(col.attr("column-class")).html("{{" + col.attr("model") + "}}").appendTo(mTr);
                         }
 
-
                     }
 
                     scope.edit = function (param, index) {
                         if (scope.editUrl) {
                             f2.addTask(scope.editUrl + param, scope.task, true);
                         } else if (scope.editEvent) {
+                            console.debug('fluidSubTable.editEven', scope.editEvent);
                             rs.$broadcast(scope.editEvent + "_fp_" + scope.task.id, param, index);
                         }
                     };
-
 
                     scope.look = function () {
                         if (scope.sourceUrl) {
@@ -176,6 +178,7 @@
 
 
                     scope.remove = function (index) {
+                        console.debug('fluidSubTable.remove', index);
                         scope.targetList.splice(index, 1);
                     };
 
@@ -226,7 +229,16 @@
                             rs.$broadcast(scope.createEvent + "_fp_" + scope.task.id);
                         });
                     }
+                }
 
+                function edit() {
+                    if (attr.edit) {
+                        scope.$eval(attr.edit);
+                    } else {
+                        $timeout(function () {
+                            rs.$broadcast(scope.editEvent + "_fp_" + scope.task.id);
+                        })
+                    }
                 }
 
                 function destroy() {

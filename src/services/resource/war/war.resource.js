@@ -13,6 +13,10 @@
             rs.getList = function (callBack, error) {
                 rs.query({path: "list"}, callBack, error);
             };
+            rs.getById = function (id, callBack, error) {
+                rs.get({path: id}, callBack, error);
+            };
+
             return rs;
         };
     }

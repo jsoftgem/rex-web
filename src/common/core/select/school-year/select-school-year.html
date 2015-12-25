@@ -1,8 +1,8 @@
 <label class="width100pc">
-    <span class="select-schoolYear-label"></span>
+    <span class="select-schoolYear-label">{{label}}</span>
     <ui-select ng-model="selectSchoolYear.schoolYear">
         <ui-select-match placeholder="{{selectSchoolYear.schoolYearLoaded ? '':'Loading school years...'}}">
-            {{$select.selected.description}}
+            {{(selectSchoolYear.schoolYears | selectSchoolYear : $select).description}}
         </ui-select-match>
         <ui-select-choices refresh="selectSchoolYear.getSchoolYears()"
                            repeat="schoolYear in selectSchoolYear.schoolYears | filter:{description:$select.search}">

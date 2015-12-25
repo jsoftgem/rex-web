@@ -1,0 +1,12 @@
+<label class="width100pc">
+    <span class="select-agent-label">{{label}}</span>
+    <ui-select ng-model="selectAgent.agent">
+        <ui-select-match placeholder="{{selectAgent.agentLoaded ? '':'Loading agents...'}}">
+            {{(selectAgent.agents | selectAgent : $select).user.flowUserDetail.fullName}}
+        </ui-select-match>
+        <ui-select-choices refresh="selectAgent.getAgents()"
+                           repeat="agent in selectAgent.agents | filter:{user:{flowUserDetail:{fullName:$select.search}}}">
+            {{agent.user.flowUserDetail.fullName}}
+        </ui-select-choices>
+    </ui-select>
+</label>

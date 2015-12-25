@@ -1725,7 +1725,7 @@ flowComponents
             if (onShown) {
                 $("#" + id).on('shown.bs.modal', $timeout(onShown));
             }
-            $(".frame-content").scrollTo($("#" + id), 800);
+            /* $(".frame-content").scrollTo($("#" + id), 800);*/
         };
 
         flowModalService.hide = function (id, sourceId, onHidden) {
@@ -1734,7 +1734,7 @@ flowComponents
                 $("#" + id).on('hidden.bs.modal', $timeout(onHidden));
             }
             if (sourceId) {
-                $(".frame-content").scrollTo($("#" + sourceId), 800);
+               /* $(".frame-content").scrollTo($("#" + sourceId), 800);*/
             }
         };
 

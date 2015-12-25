@@ -26,14 +26,16 @@
             }
 
             function render() {
-                scope.selectLevel.level = {
-                    id: (ngModel.$modelValue && ngModel.$modelValue.id ? ngModel.$modelValue.id : ngModel.$modelValue)
-                }
+                scope.selectLevel.level = {id: ngModel.$modelValue};
             }
 
             function setModelValue(newValue, oldValue) {
-                if (newValue !== oldValue) {
-                    ngModel.$setViewValue(newValue && newValue.id ? newValue.id : newValue);
+                if (oldValue) {
+                    if (newValue && (newValue.id !== oldValue.id)) {
+                        ngModel.$setViewValue(newValue.id);
+                    }
+                } else {
+                    ngModel.$setViewValue(newValue.id);
                 }
             }
 

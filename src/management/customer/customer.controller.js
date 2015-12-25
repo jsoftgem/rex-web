@@ -19,6 +19,7 @@
             s.task.customer.addLevel = addLevel;
             s.task.customer.addPublisher = addPublisher;
             s.task.customer.addSupport = addSupport;
+            s.task.customer.onChangeSchoolYear = onChangeSchoolYear;
             s.userProfile = up;
             s.deleleModalId = 'customerDeleteModal';
             s.create_name = 'customer_create';
@@ -126,6 +127,7 @@
                         this.title = s.task.customerEdit.school.name;
 
                         angular.copy(s.task.customerEdit, s.task.tempEdit);
+
                         if (s.task.customerEdit.evaluationTo) {
                             s.task.isEditEvaluationTo = true;
                         }
@@ -251,6 +253,7 @@
                     s.task.levelIndex = index;
                     fm.show(s.flow.getElementFlowId('levelModal'));
                 });
+
             s.closeLevelModal = function () {
                 if (s.task.levelManaged === false) {
                     if (s.task.page.name === s.create_name) {
@@ -347,6 +350,7 @@
                     s.task.supportIndex = index;
                     fm.show(s.flow.getElementFlowId('supportModal'));
                 });
+
             s.closeSupportModal = function () {
                 if (s.task.supportManaged === false) {
                     if (s.task.page.name === s.create_name) {
@@ -371,7 +375,7 @@
                 fm.hide(s.flow.getElementFlowId('supportModal'), s.flow.getElementFlowId('customerSupportSubTable'));
             };
             s.$on(s.flow.getEventId('editPotential'), function (event, id, index) {
-
+                s.task.potentialTemp = {};
                 if (s.task.page.name === s.create_name) {
                     angular.copy(s.task.customerCreate.warCustomerMarketSchoolYears[index], s.task.potentialTemp);
                     s.task.tempSchoolYear = {
@@ -505,8 +509,27 @@
                 s.task.customerCreate.regionCode = agent.region;
                 s.task.customerCreate.ownerAgentId = agent.id;
             } else if (s.task.page.name === s.edit_name) {
-                s.task.customerEdit.regionCode = agent.region;
-                s.task.customerEdit.ownerAgentId = agent.id;
+                if (agent && agent.region) {
+                    s.task.customerEdit.regionCode = agent.region;
+                } else {
+                    resourceApiService.WarAgent.getById(agent.id, function (agent) {
+                        s.task.customerEdit.regionCode = agent.region;
+                    });
+                }
+            }
+        }
+
+        function onChangeSchoolYear(item) {
+            if (s.task.page.name === s.create_name) {
+                s.task.customerCreate.warCustomerMarketSchoolYears[s.task.potentialIndex].schoolYearDescription = item.description;
+            } else if (s.task.page.name === s.edit_name) {
+                if (item && item.description) {
+                    s.task.customerEdit.warCustomerMarketSchoolYears[s.task.potentialIndex].schoolYearDescription = item.description;
+                } else {
+                    resourceApiService.SchoolYearResource.getById(item.id, function (schoolYear) {
+                        s.task.customerEdit.warCustomerMarketSchoolYears[s.task.potentialIndex].schoolYearDescription = schoolYear.description;
+                    });
+                }
             }
         }
 
@@ -529,16 +552,6 @@
                 s.task.customerEdit.warCustomerMarketSchoolYears.push(s.task.potential);
                 s.task.potentialIndex = s.task.customerEdit.warCustomerMarketSchoolYears.length - 1;
             }
-
-            s.onChangeSchoolYear = function (item) {
-                if (s.task.page.name === s.create_name) {
-                    s.task.customerCreate.warCustomerMarketSchoolYears[s.task.potentialIndex].schoolYearDescription = item.description;
-                    s.task.customerCreate.warCustomerMarketSchoolYears[s.task.potentialIndex].schoolYear = item.id;
-                } else if (s.task.page.name === s.edit_name) {
-                    s.task.customerEdit.warCustomerMarketSchoolYears[s.task.potentialIndex].schoolYearDescription = item.description;
-                    s.task.customerEdit.warCustomerMarketSchoolYears[s.task.potentialIndex].schoolYear = item.id;
-                }
-            };
 
             fm.show(s.flow.getElementFlowId('potentialModal'));
         }

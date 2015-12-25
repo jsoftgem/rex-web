@@ -9,6 +9,7 @@
         selectMonth.getMonths = getMonths;
         selectMonth.getSearchMonth = monthService.getMonth;
         selectMonth.destroy = destroy;
+
         function getMonths() {
             monthService.getMonths(function (months) {
                 selectMonth.months = months;

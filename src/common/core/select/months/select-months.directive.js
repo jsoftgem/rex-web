@@ -23,26 +23,17 @@
                 }
                 scope.$on('$destroy', destroy);
                 scope.$watch('selectMonth.month', setModelValue);
-                scope.selectMonth.getMonth = getMonth;
                 ngModel.$render = render;
             }
 
 
             function render() {
-                scope.selectMonth.month = ngModel.$modelValue;
+                scope.selectMonth.month = {enumForm: ngModel.$modelValue};
             }
 
             function setModelValue(newValue, oldValue) {
                 if (newValue !== oldValue) {
-                    ngModel.$setViewValue(newValue ? newValue.enumForm : newValue);
-                }
-            }
-
-            function getMonth(selected) {
-                if (!selected) {
-                    scope.selectMonth.month = scope.selectMonth.getSearchMonth(ngModel.$viewValue);
-                } else {
-                    return selected;
+                    ngModel.$setViewValue(newValue && newValue.enumForm ? newValue.enumForm : newValue);
                 }
             }
 

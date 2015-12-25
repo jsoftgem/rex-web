@@ -112,7 +112,7 @@ function FlowColumns(dtc, editMethod, deleteMethod, viewMethod) {
             var scope = angular.element($(meta.settings.aoData[meta.row].anCells[meta.col])).scope();
 
             return renderActions(data, editMethod, deleteMethod, viewMethod, scope, meta.row);
-        })]
+        })];
 }
 
 function renderCheckbox(data) {

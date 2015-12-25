@@ -22,6 +22,11 @@
             function activate() {
                 scope.$on('$destroy', destroy);
                 scope.$watch('selectEducationLevel.educationLevel', setModelValue);
+                ngModel.$render = render;
+            }
+
+            function render() {
+                scope.selectEducationLevel.educationLevel = ngModel.$modelValue;
             }
 
             function setModelValue(newValue, oldValue) {

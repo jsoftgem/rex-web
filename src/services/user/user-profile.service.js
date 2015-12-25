@@ -3,7 +3,9 @@
     angular.module('war.services')
         .service('userProfile', UserProfile);
 
-    function UserProfile() {
+    UserProfile.$inject = ['userGroupService'];
+
+    function UserProfile(userGroupService) {
         this.createUserProfile = function (userDetail) {
             console.debug("createUserProfile", userDetail);
             this.fullName = userDetail.fullName;
@@ -41,6 +43,13 @@
 
         this.getRegionCode = function () {
             return this.isAgent() ? this.agent.region : null;
+        };
+
+        this.isGeneralManager = function () {
+            return this.group == userGroupService.getGeneralManager().name;
+        };
+        this.isAdmin = function () {
+            return this.group === userGroupService.getAdmin().name;
         };
 
         return this;
