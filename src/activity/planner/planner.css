@@ -17,7 +17,7 @@
 }
 
 .event-customer-draggable {
-    background: #468499;
+    background: #639F89;
     color: white;
     border-radius: 0;
     margin-bottom: 1px;
@@ -28,7 +28,7 @@
 
 .event-draggable {
     opacity: 0.9;
-    background: #468499;
+    background: #639F89;
     color: white;
     border-radius: 0;
     text-align: center;
@@ -39,11 +39,11 @@
 }
 
 .planned {
-    background: #468499;
+    background: #639F89;
 }
 
 .unplanned {
-    background: #639F89;
+    background: rgb(255, 153, 102);
 }
 
 .footer-group {
