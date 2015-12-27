@@ -34,7 +34,14 @@ var appJS = ['src/war-helper.js', 'src/war.module.js', 'src/war.constants.js',
     'src/home/home.module.js', 'src/services/resource/resource.module.js', 'src/sidebar/sidebar.module.js',
     'src/activity/activity.module.js', 'src/table/table.module.js',
     'src/management/management.module.js', 'src/reports/reports.module.js',
-    'src/**/*.js', '!src/controller/**/*.js'];
+    'src/**/*.js', '!src/war.template.js'];
+var appDevJS = ['src/war-helper.js', 'src/war.module.js', 'src/war.constants.js',
+    'src/js/admin/admin.module.js', 'src/dev/dev.module.js', 'src/services/services.module.js',
+    'src/session/session.module.js', 'src/common/commons.module.js', 'src/common/core/core.module.js',
+    'src/home/home.module.js', 'src/services/resource/resource.module.js', 'src/sidebar/sidebar.module.js',
+    'src/activity/activity.module.js', 'src/table/table.module.js',
+    'src/management/management.module.js', 'src/reports/reports.module.js',
+    'src/**/*.js'];
 var appCSS = ['src/**/*.css'];
 
 // HTML Build section config
@@ -88,7 +95,7 @@ module.exports = function (grunt) {
         },
         html2js: {
             options: {
-                module: 'war.template',
+                module: 'war.templates',
                 singleModule: true,
                 existingModule: true,
                 base: './',
@@ -225,7 +232,7 @@ module.exports = function (grunt) {
                     beautify: true,
                     scripts: {
                         libs: 'dist/js/vendor.js',
-                        app: appJS
+                        app: appDevJS
                     },
                     styles: {
                         libs: 'dist/css/vendor.css',
@@ -241,7 +248,7 @@ module.exports = function (grunt) {
                     beautify: true,
                     scripts: {
                         libs: 'dist/js/vendor.js',
-                        app: appJS
+                        app: appDevJS
                     },
                     styles: {
                         libs: 'dist/css/vendor.css',
@@ -271,7 +278,7 @@ module.exports = function (grunt) {
                     beautify: true,
                     scripts: {
                         libs: 'dist/js/vendor.js',
-                        app: appJS
+                        app: appDevJS
                     },
                     styles: {
                         libs: 'dist/css/vendor.css',
