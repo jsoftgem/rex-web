@@ -17,7 +17,8 @@
                     </ui-select-choices>
                 </ui-select>
             </label>
-            <war-agent-select label="Agents" ng-change="task.plannerFilter.onAgentChange(task.plannerFilter.agentFilter)" column="3"
+            <war-agent-select label="Agents"
+                              ng-change="task.plannerFilter.onAgentChange(task.plannerFilter.agentFilter)" column="3"
                               ng-if="task.schoolYear != undefined && !task.hideAgentFilter"
                               ng-model="task.plannerFilter.agentFilter"></war-agent-select>
             <label column="3" ng-if="task.agent != undefined && task.view == 'month'">
@@ -442,10 +443,29 @@
 
             <div class="panel-footer">
                 <button button info="button" ng-click="calendar.submit()">Yes</button>
-                <button button danger="button" ng-click="hide()">No, wait a minute!</button>
+                <button button danger="button" ng-click="hide()">No!</button>
             </div>
 
         </div>
     </flow-modal>
+    <flow-modal id="{{flow.getElementFlowId('activityDeleteConfirm')}}">
+        <div class="panel panel-warning">
+            <div class="panel-heading">
+                    <span class="panel-title">
+                        Delete Confirmation
+                    </span>
 
+            </div>
+            <div class="panel-body">
+                <p>Do you want to delete this activity?</p>
+            </div>
+
+            <div class="panel-footer">
+                <button button info="button" ng-click="calendar.deleteActivity(hangingActivity.activity.id)">Yes
+                </button>
+                <button button danger="button" ng-click="calendar.cancelDeleteActivity()">No</button>
+            </div>
+
+        </div>
+    </flow-modal>
 </div>

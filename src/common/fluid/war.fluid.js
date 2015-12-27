@@ -293,31 +293,6 @@ flowComponents
 
         }
     }])
-    .directive("flowModal", ["flowFrameService", "$templateCache", "flowModalService", function (f, tc, fm) {
-        return {
-            restrict: "AE",
-            /*  template: "<div ng-class='flowFrameService.fullScreen ? \"overlay-full\" : \"overlay\"' class='hidden animated fadeIn anim-dur'><div ng-style='style' class='flow-modal animated pulse anim-dur'><div ng-transclude></div></div></div>",*/
-            templateUrl: "src/templates/fluid/fluidModal.html",
-            replace: true,
-            transclude: true,
-            link: function (scope, element, attr) {
-                scope.flowFrameService = f;
-                scope.style = {};
-
-                if (attr.height) {
-                    scope.style.height = attr.height;
-                }
-
-                if (attr.width) {
-                    scope.style.width = attr.width;
-                }
-
-                scope.hide = function () {
-                    fm.hide(attr.id);
-                }
-            }
-        }
-    }])
     .directive("flowSubColumn", [function () {
         return {
             restrict: "AE",
@@ -1713,32 +1688,6 @@ flowComponents
         };
 
         return flowMessageService;
-    }])
-    .service("flowModalService", ['$timeout', function ($timeout) {
-        var flowModalService = {};
-
-        flowModalService.show = function (id, onShown, backdrop) {
-            if (!backdrop) {
-                backdrop = false;
-            }
-            $("#" + id).modal({show: true, backdrop: backdrop});
-            if (onShown) {
-                $("#" + id).on('shown.bs.modal', $timeout(onShown));
-            }
-            /* $(".frame-content").scrollTo($("#" + id), 800);*/
-        };
-
-        flowModalService.hide = function (id, sourceId, onHidden) {
-            $("#" + id).modal("toggle");
-            if (onHidden) {
-                $("#" + id).on('hidden.bs.modal', $timeout(onHidden));
-            }
-            if (sourceId) {
-               /* $(".frame-content").scrollTo($("#" + sourceId), 800);*/
-            }
-        };
-
-        return flowModalService;
     }])
     .service("flowLoaderService", [function () {
         this.loaded = true;

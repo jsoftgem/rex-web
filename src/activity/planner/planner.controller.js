@@ -17,9 +17,6 @@
         activate();
         function activate() {
             s.task.plannerFilter = {};
-            s.task.plannerFilter.onAgentChange = onAgentChange;
-            s.task.plannerFilter.getSchoolYears = getSchoolYears;
-            s.submitActivitiesConfirmation = submitActivitiesConfirmation;
             s.otherActivity = {};
             s.refreshCustomer = false;
             s.hangingActivity = {};
@@ -44,7 +41,12 @@
             s.task.showNotes = false;
             s.task.showAttach = false;
             s.task.plannerCalendar = $("#" + s.flow.getElementFlowId("plannerCal"));
+            s.submitActivitiesConfirmation = submitActivitiesConfirmation;
             s.task.onWindowOpened = onWindowOpened;
+            s.task.plannerFilter.onAgentChange = onAgentChange;
+            s.task.plannerFilter.getSchoolYears = getSchoolYears;
+            s.calendar.deleteActivity = deleteActivity;
+            s.calendar.cancelDeleteActivity = cancelDeleteActivity;
             s.$on(s.flow.event.getSuccessEventId(), function (event, rv, method) {
                 if (method === "put") {
                     s.task.activities = [];
@@ -55,7 +57,7 @@
             });
             s.flow.onRefreshed = function () {
                 getPlanner();
-                var promise = s.reFetchCustomer();
+                var promise = reFetchCustomer();
                 if (promise) {
                     promise.success(function () {
                         s.task.plannerCalendar.fullCalendar("refetchEvents");
@@ -191,28 +193,17 @@
 
                     },
                     drop: function (date) {
-
                         var scope = angular.element($(this)).scope();
-
                         console.debug("planner.drop.scope", scope);
-
                         var currentDate = s.task.plannerCalendar.fullCalendar("getDate");
-
                         if (!isPastDate(date._d)) {
                             var originalEventObject = $(this).data("eventObject");
-
                             var copiedEventObject = $.extend({}, originalEventObject);
-
                             var customer = undefined;
-
                             var activity = {};
-
                             activity.startDt = date.toDate().getTime();
-
                             activity.type = copiedEventObject.activityType;
-
                             var type = activity.type;
-
                             if (SCHOOL === type) {
                                 customer = JSON.parse($(this).attr("customer"));
                                 copiedEventObject.title = customer.name + " - " + customer.marketSegment;
@@ -224,19 +215,12 @@
                                 activity.customerMarketId = 0;
                                 copiedEventObject.id = "event_id_" + s.flow.getElementFlowId(type) + "_" + date.toDate().getTime();
                             }
-
                             activity.schoolYear = s.task.schoolYear.id;
-
                             copiedEventObject.start = date;
-
                             copiedEventObject.editable = true;
-
                             copiedEventObject.activity = activity;
-
                             copiedEventObject.durationEditable = false;
-
                             copiedEventObject.startEditable = false;
-
                             var evt = scope.task.plannerCalendar.fullCalendar("clientEvents", copiedEventObject.id);
 
                             if (evt.length === 0) {
@@ -253,9 +237,7 @@
                                             fm.show(scope.flow.getElementFlowId("other_activity"));
                                         });
                                     }
-
                                 }
-
                             } else {
                                 if (customer) {
                                     scope.flow.message.danger("Customer " + customer.customerName + " is already set for " + date.toDate());
@@ -264,8 +246,6 @@
                         } else {
                             scope.flow.message.danger("Cannot add activity to past dates.");
                         }
-
-
                     },
                     eventRender: function (event, element) {
                         var currentDate = s.task.plannerCalendar.fullCalendar("getDate").toDate();
@@ -299,7 +279,6 @@
                             else {
                                 if (event.activity.type === SCHOOL) {
                                     element.click(function () {
-                                        var buttonId = "edit_button" + "_" + event.id;
                                         var tooltip = element.qtip({
                                             style: 'qtip-light',
                                             show: false,
@@ -316,20 +295,18 @@
                                                     text: event.title,
                                                     button: true
                                                 },
-                                                text: "<div><ul><li><b>Marterial Adviser: " + event.activity.materialAdviser + "</b></li>" +
-                                                "<li>Worked with the manager: " + (event.activity.workedWith === true ? " Yes" : "No") + "</li>" +
-                                                "<li>Exam Copies Distribution: " + (event.activity.ecd === true ? " Yes" : "No") + "</li>" +
-                                                "<li>Invitation to Events: " + (event.activity.ite === true ? " Yes" : "No") + "</li>" +
-                                                "<li>Confirmation of Events: " + (event.activity.coe === true ? " Yes" : "No") + "</li>" +
-                                                "<li>Follow up Payment: " + (event.activity.fp === true ? " Yes" : "No") + "</li>" +
-                                                "<li>Giveaways Distribution: " + (event.activity.gd === true ? " Yes" : "No") + "</li>" +
-                                                "<li>Delivery of Incentive/Donation: " + (event.activity.doi === true ? " Yes" : "No") + "</li>" +
-                                                "<li>Purchase Order: " + (event.activity.po === true ? " Yes" : "No") + "</li>" +
-                                                "<li>Delivery of Add'l Order / TRM / Compli...: " + (event.activity.daotrc === true ? " Yes" : "No") + "</li>" +
-                                                "<li>Booklist: " + (event.activity.bookList === true ? " Yes" : "No") + "</li>" +
-                                                "</ul></div>" +
-                                                "<div class='btn-group btn-group-xs'>" +
-                                                "<button style='display:" + (s.task.agent !== undefined ? "block" : "none") + "' id='" + buttonId + "' type='button' class='btn btn-info'>Update</button></div>"
+                                                text: '<div><ul><li><b>Marterial Adviser: ' + event.activity.materialAdviser + '</b></li>' +
+                                                '<li>Worked with the manager: ' + (event.activity.workedWith === true ? 'Yes' : 'No') + '</li>' +
+                                                '<li>Exam Copies Distribution: ' + (event.activity.ecd === true ? 'Yes' : 'No') + '</li>' +
+                                                '<li>Invitation to Events: ' + (event.activity.ite === true ? 'Yes' : 'No') + '</li>' +
+                                                '<li>Confirmation of Events: ' + (event.activity.coe === true ? 'Yes' : 'No') + '</li>' +
+                                                '<li>Follow up Payment: ' + (event.activity.fp === true ? 'Yes' : 'No') + '</li>' +
+                                                '<li>Giveaways Distribution: ' + (event.activity.gd === true ? 'Yes' : 'No') + '</li>' +
+                                                '<li>Delivery of Incentive/Donation: ' + (event.activity.doi === true ? 'Yes' : 'No') + '</li>' +
+                                                '<li>Purchase Order: ' + (event.activity.po === true ? 'Yes' : 'No') + '</li>' +
+                                                '<li>Delivery of Add\'l Order / TRM / Compli...: ' + (event.activity.daotrc === true ? 'Yes' : 'No') + '</li>' +
+                                                '<li>Booklist: ' + (event.activity.bookList === true ? 'Yes' : 'No') + '</li>' +
+                                                '</ul></div>' + getTooltipButtons()
                                             },
                                             hide: {
                                                 event: 'click',
@@ -337,15 +314,7 @@
                                             },
                                             events: {
                                                 show: function (evt, api) {
-                                                    api.elements.tooltip.find("#" + buttonId).click(function () {
-                                                        api.toggle(false);
-                                                        t(function () {
-                                                            s.hangingActivity.activity = event.activity;
-                                                            angular.copy(s.hangingActivity.activity, s.tempActivity);
-                                                            fm.show(s.flow.getElementFlowId('activity_modal'))
-                                                        });
-                                                    });
-
+                                                    setTooltipButtonsEvent(event, api);
                                                 }
                                             }
                                         });
@@ -355,7 +324,6 @@
                                 }
                                 else if (event.activity.type === LEAVE) {
                                     element.click(function () {
-                                        var buttonId = "edit_button" + "_" + event.id;
                                         var tooltip = element.qtip({
                                             style: 'qtip-light',
                                             show: false,
@@ -374,9 +342,7 @@
                                                 },
                                                 text: "<div><ul><li><b>Agent: " + event.activity.materialAdviser + "</b></li>" +
                                                 "<li>Reason for leave: " + (event.activity.description != undefined || event.activity.description != null ? event.activity.description : 'N/A' ) + "</li>" +
-                                                "</ul></div>" +
-                                                "<div class='btn-group btn-group-xs'>" +
-                                                "<button style='display:" + (s.task.agent !== undefined ? "block" : "none") + "' id='" + buttonId + "' type='button' class='btn btn-info'>Update</button></div>"
+                                                "</ul></div>" + getTooltipButtons()
                                             },
                                             hide: {
                                                 event: 'click',
@@ -384,27 +350,16 @@
                                             },
                                             events: {
                                                 show: function (evt, api) {
-                                                    api.elements.tooltip.find("#" + buttonId).click(function () {
-                                                        api.toggle(false);
-                                                        t(function () {
-                                                            s.hangingActivity.activity = event.activity;
-                                                            angular.copy(s.hangingActivity, s.task.tempActivity);
-                                                            fm.show(s.flow.getElementFlowId('activity_modal'))
-
-                                                        });
-                                                    });
-
+                                                    setTooltipButtonsEvent(event, api);
                                                 }
                                             }
                                         });
-
                                         var api = tooltip.qtip("api");
                                         api.toggle(true);
 
                                     });
                                 } else {
                                     element.click(function () {
-                                        var buttonId = "edit_button" + "_" + event.id;
                                         var tooltip = element.qtip({
                                             style: 'qtip-light',
                                             show: false,
@@ -424,8 +379,7 @@
                                                 text: "<div><ul><li><b>Agent: " + event.activity.materialAdviser + "</b></li>" +
                                                 "<li>Description: " + (event.activity.description != undefined || event.activity.description != null ? event.activity.description : 'N/A' ) + "</li>" +
                                                 "</ul></div>" +
-                                                "<div class='btn-group btn-group-xs'>" +
-                                                "<button style='display:" + (s.task.agent !== undefined ? "block" : "none") + "' id='" + buttonId + "' type='button' class='btn btn-info'>Update</button></div>"
+                                                getTooltipButtons()
                                             },
                                             hide: {
                                                 event: 'click',
@@ -433,16 +387,7 @@
                                             },
                                             events: {
                                                 show: function (evt, api) {
-                                                    api.elements.tooltip.find("#" + buttonId).click(function () {
-                                                        api.toggle(false);
-                                                        t(function () {
-                                                            s.hangingActivity.activity = event.activity;
-                                                            angular.copy(s.hangingActivity, s.task.tempActivity);
-                                                            fm.show(s.flow.getElementFlowId('activity_modal'))
-
-                                                        });
-                                                    });
-
+                                                    setTooltipButtonsEvent(event, api);
                                                 }
                                             }
                                         });
@@ -462,9 +407,9 @@
                 s.task.plannerCalendar.fullCalendar(s.task.calendar);
                 if (up.agent.id) {
                     console.debug("planner-loaded.profile", up);
-                    s.task.hideAgentFilter = !up.agent.isManager;
+                    s.task.hideAgentFilter = !up.isManager();
                     s.task.page.title = up.agent.initials;
-                    if (!up.agent.isManager) {
+                    if (!up.isManager()) {
                         s.changeAgent(up.agent);
                     } else {
                         s.task.agent = up.agent;
@@ -472,7 +417,6 @@
                 }
                 s.task.plannerCalendar.fullCalendar("render");
             };
-
             s.calendar.getCurrentDate = function () {
                 return s.task.plannerCalendar.fullCalendar("getDate").toDate();
             };
@@ -569,7 +513,7 @@
                         s.http.put(CRUD_ACTIVITY, s.hangingActivity.activity, s.hangingActivity.activity.id)
                             .success(function () {
                                 fm.hide(s.task.activityModalId);
-                                s.reFetchCustomer();
+                                reFetchCustomer();
                             })
                             .error(function (msg) {
                                 ms.warning(s.flow.getElementFlowId("activity_messages"), msg, 3000).open();
@@ -600,7 +544,7 @@
                             s.http.put(CRUD_ACTIVITY, s.hangingActivity.activity, s.hangingActivity.activity.id)
                                 .success(function (msg) {
                                     fm.hide(s.task.activityModalId);
-                                    s.reFetchCustomer();
+                                    reFetchCustomer();
                                 })
                                 .error(function (msg) {
                                     ms.warning(s.flow.getElementFlowId("activity_messages"), msg, 3000).open();
@@ -647,36 +591,6 @@
                     setDraggable(s);
                 }
             };
-            s.getCustomerMarket = function () {
-                if (s.task.agent && s.task.agent.id) {
-                    var promise = s.http.get(s.buildCustomerQuery());
-
-                    promise.success(function (customer) {
-                        s.customer = customer;
-
-                        if (!s.customer.customers) {
-                            s.customer = s.newCustomer();
-                            disableDraggable(s);
-                        } else {
-                            setDraggable(s);
-                        }
-                    });
-
-                    promise.error(function () {
-                        s.customer = s.newCustomer();
-                    });
-
-                    return promise;
-                } else {
-                    s.customer.customers = undefined;
-                }
-            };
-            s.reFetchCustomer = function () {
-                if (s.customer.previous !== undefined) {
-                    s.customer.start = s.customer.previous;
-                }
-                return s.getCustomerMarket();
-            };
             s.changeAgent = function (item) {
                 console.debug("planner-changeAgent.item", item);
                 s.task.agent = item;
@@ -688,25 +602,25 @@
                 if (tag === "All") {
                     s.changeSize(25);
                 } else {
-                    s.reFetchCustomer();
+                    reFetchCustomer();
                 }
             };
             s.changeSize = function (size) {
                 s.customer.size = size;
                 s.customer.start = 0;
                 s.customer.page = 1;
-                s.reFetchCustomer();
+                reFetchCustomer();
             };
             s.next = function () {
                 s.customer.page++;
                 s.customer.start += s.customer.next ? s.customer.next : 0;
-                s.getCustomerMarket();
+                getCustomerMarket();
 
             };
             s.prev = function () {
                 s.customer.page--;
                 s.customer.start -= s.customer.previous ? s.customer.previous : 0;
-                s.getCustomerMarket();
+                getCustomerMarket();
             };
             s.openCustomerSummary = function (customerId) {
                 if (s.task.schoolYear && s.task.agent) {
@@ -786,22 +700,22 @@
                         s.task.refreshAttach();
                     });
                 });
-            }
+            };
             s.task.download = function (uploadFieldId) {
                 return fh.host + "services/download_service/getContent/" + uploadFieldId;
-            }
+            };
             s.task.downloadInfo = function (uploadFieldId) {
                 return s.http.get("services/download_service/getInfo/", uploadFieldId)
-            }
+            };
             s.task.deleteAttach = function (attachment) {
                 s.task.deleteAttachId = attachment.id;
                 s.task.attachPrompt = true;
-            }
+            };
             s.task.deleteAttachCancel = function () {
                 s.task.attachPrompt = false;
                 s.task.deleteAttachId = undefined;
                 s.task.refreshAttach();
-            }
+            };
             s.task.deleteAttachConfirmed = function () {
                 s.http.delete(s.task.attachmentCrud, s.task.deleteAttachId)
                     .then(function () {
@@ -827,7 +741,7 @@
                 var date = new Date(item.date);
                 s.task.plannerCalendar.fullCalendar("gotoDate", date);
                 s.task.plannerCalendar.fullCalendar("refetchEvents");
-                s.reFetchCustomer();
+                reFetchCustomer();
                 if (s.task.showAttach) {
                     s.http.post(s.task.attachmentQuery, undefined, s.task.schoolYear.id)
                         .success(function (attachments) {
@@ -860,6 +774,38 @@
                 }
 
             }
+        }
+
+        function getCustomerMarket() {
+            if (s.task.agent && s.task.agent.id) {
+                var promise = s.http.get(s.buildCustomerQuery());
+
+                promise.success(function (customer) {
+                    s.customer = customer;
+
+                    if (!s.customer.customers) {
+                        s.customer = s.newCustomer();
+                        disableDraggable(s);
+                    } else {
+                        setDraggable(s);
+                    }
+                });
+
+                promise.error(function () {
+                    s.customer = s.newCustomer();
+                });
+
+                return promise;
+            } else {
+                s.customer.customers = undefined;
+            }
+        }
+
+        function reFetchCustomer() {
+            if (s.customer.previous !== undefined) {
+                s.customer.start = s.customer.previous;
+            }
+            return getCustomerMarket();
         }
 
         function onWindowOpened() {
@@ -942,6 +888,75 @@
             console.debug('isPastDate', date);
             var now = new Date();
             return date < now;
+        }
+
+        function isDeleteVisible(date) {
+            return isPastWeek(date) || up.isAdmin() || up.isManager() || up.isGeneralManager();
+        }
+
+        function isUpdateVisible(date) {
+            return isPastWeek(date) || up.isAdmin() || up.isManager() || up.isGeneralManager();
+        }
+
+        function isPastWeek(date) {
+            var current = new Date();
+            return getWeekOfYear(date) < getWeekOfYear(current);
+        }
+
+        function getWeekOfYear(d) {
+            d = new Date(+d);
+            d.setHours(0, 0, 0);
+            d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+            var yearStart = new Date(d.getFullYear(), 0, 1);
+            var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1) / 7);
+            return [d.getFullYear(), weekNo];
+        }
+
+        function getTooltipButtons() {
+            return '<div class="btn-group btn-group-xs">' +
+                '<button style="display:' + (isUpdateVisible(event._d) ? 'block' : 'none') + '" type="button" class="btn btn-info update">Update</button>' +
+                '<button style="display:' + (isDeleteVisible(event._d) ? 'block' : 'none') + '" class="btn btn-danger delete" type="button">Delete</button>' +
+                '</div>';
+        }
+
+        function setTooltipButtonsEvent(event, api) {
+            api.elements.tooltip.find('button.update').unbind('click');
+            api.elements.tooltip.find('button.delete').unbind('click');
+            api.elements.tooltip.find('button.update').click(function () {
+                api.toggle(false);
+                t(function () {
+                    s.hangingActivity.activity = event.activity;
+                    angular.copy(s.hangingActivity.activity, s.tempActivity);
+                    fm.show(s.flow.getElementFlowId('activity_modal'));
+                });
+            });
+            api.elements.tooltip.find('button.delete').click(function () {
+                api.toggle(false);
+                t(function () {
+                    s.hangingActivity.activity = event.activity;
+                    fm.show(s.flow.getElementFlowId('activityDeleteConfirm'));
+                });
+            });
+        }
+
+        function deleteActivity(id) {
+            resourceApiService.ActivityResource.deleteActivity(id, function () {
+                var promise = reFetchCustomer();
+                if (promise) {
+                    promise.success(function () {
+                        s.task.plannerCalendar.fullCalendar("refetchEvents");
+                        fm.hide(s.flow.getElementFlowId('activityDeleteConfirm'));
+                    });
+                }
+                s.hangingActivity = {};
+            }, function () {
+                s.hangingActivity = {};
+            });
+        }
+
+        function cancelDeleteActivity() {
+            s.hangingActivity = {};
+            fm.hide(s.flow.getElementFlowId('activityDeleteConfirm'));
         }
 
     }
