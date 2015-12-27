@@ -1,8 +1,8 @@
 (function () {
     'use strict';
     angular.module('war.resource').factory('resourceApiService', ResourceApiService);
-    ResourceApiService.$inject = ['WarAgent', 'FlowUserDetail', 'GroupResource', 'SchoolYearResource', 'RegionResource', 'TaskResource', 'PositionResource', 'LevelResource', 'ActivityResource'];
-    function ResourceApiService(WarAgent, FlowUserDetail, GroupResource, SchoolYearResource, RegionResource, TaskResource, PositionResource, LevelResource, ActivityResource) {
+    ResourceApiService.$inject = ['WarAgent', 'FlowUserDetail', 'GroupResource', 'SchoolYearResource', 'RegionResource', 'TaskResource', 'PositionResource', 'LevelResource', 'ActivityResource', 'CustomerResource'];
+    function ResourceApiService(WarAgent, FlowUserDetail, GroupResource, SchoolYearResource, RegionResource, TaskResource, PositionResource, LevelResource, ActivityResource, CustomerResource) {
         return {
             WarAgent: WarAgent,
             FlowUserDetail: FlowUserDetail,
@@ -12,7 +12,8 @@
             TaskResource: TaskResource,
             PositionResource: PositionResource,
             LevelResource: LevelResource,
-            ActivityResource: ActivityResource
+            ActivityResource: ActivityResource,
+            CustomerResource: CustomerResource
         };
     }
 })();

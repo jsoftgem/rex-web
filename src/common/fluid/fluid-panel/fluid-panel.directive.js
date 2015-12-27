@@ -123,7 +123,7 @@
 
                     scope.flow.openTaskBaseUrl = 'services/flow_task_service/getTask?';
 
-                    scope.flow.openTask = function (name, page, param, newTask, origin, size) {
+                    scope.flow.openTask = function (name, page, param, newTask, origin, size, options) {
 
                         var url = scope.flow.openTaskBaseUrl;
 
@@ -132,19 +132,23 @@
                         } else {
                             url += 'size=100&'
                         }
-
                         url += 'active=true&name=' + name;
                         if (page) {
-
                             url += '&page=' + page;
                         }
                         if (param) {
                             url += '&page-path=' + param;
                         }
-
                         if (newTask) {
                             url += '&newTask=' + newTask;
                         }
+
+                        if (options) {
+                            if (options.toolbar !== undefined) {
+                                url += '&showToolBar=' + options.toolbar;
+                            }
+                        }
+
                         console.info('openTask', url);
 
                         f.addTask(url, origin ? origin : scope.task, true);

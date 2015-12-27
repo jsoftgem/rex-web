@@ -93,7 +93,7 @@
             })
         };
         s.flow.onRefreshed = function () {
-            s.task.query();
+            query();
         };
         s.task.newReport = function () {
             var report = {};
@@ -108,46 +108,50 @@
             return report;
         };
         s.task.report = s.task.newReport();
-        s.task.query = function () {
-            var url = 'services/war/report_weekly_service/agents?';
 
-            var agentId = (s.task.report.agent !== undefined ? s.task.report.agent.id : undefined);
+        s.task.export = function (type) {
+            s.task.exporting = true;
+            s.task.csvDownloadUrl = undefined;
+            t(function () {
+                s.$apply();
+                var url = 'services/war/report_weekly_service/agents_' + type + '?';
 
-            var count = 0;
+                var agentId = (s.task.report.agent !== undefined ? s.task.report.agent.id : undefined);
 
-            if (s.task.report.isYear) {
-                url += 'isYear=true&year=' + s.task.report.year;
-                count++;
-            }
+                var count = 0;
 
-            if (s.task.report.isMonth) {
-                if (count > 0) {
-                    url += '&';
-                } else {
+                if (s.task.agentReport.yearFilter) {
+                    url += 'isYear=true&year=' + s.task.report.year;
                     count++;
                 }
-                url += 'isMonth=true&month=' + s.task.report.month;
-            }
 
-            if (s.task.report.isAgent) {
-                if (count > 0) {
-                    url += '&'
-                } else {
-                    count++;
+                if (s.task.agentReport.monthFilter) {
+                    if (count > 0) {
+                        url += '&';
+                    } else {
+                        count++;
+                    }
+                    url += 'isMonth=true&month=' + s.task.report.month;
                 }
-                url += 'isAgent=true&agentId=' + agentId;
-            }
 
-            if (s.task.report.isRegion) {
-                if (count > 0) {
-                    url += '&'
-                } else {
-                    count++;
+                if (s.task.agentReport.agentFilter) {
+                    if (count > 0) {
+                        url += '&'
+                    } else {
+                        count++;
+                    }
+                    url += 'isAgent=true&agentId=' + agentId;
                 }
-                url += 'isRegion=true&region=' + s.task.report.region;
-            }
 
-            if (s.task.valid() && s.task.report.closed === false) {
+                if (s.task.agentReport.regionFilter) {
+                    if (count > 0) {
+                        url += '&'
+                    } else {
+                        count++;
+                    }
+                    url += 'isRegion=true&region=' + s.task.report.region;
+                }
+
                 if (count > 0) {
                     url += '&'
                 }
@@ -162,103 +166,35 @@
                     url += '&start=' + s.task.report.start;
                 }
 
-                s.http.get(url).success(function (data) {
-                    s.task.report.size = data.size;
-                    s.task.report.tag = data.tag;
-                    s.task.report.weeklyReports = data.weeklyReports;
-                })
-            }
-        };
-        s.task.export = function (type) {
-            s.task.exporting = true;
-            s.task.csvDownloadUrl = undefined;
-            t(function () {
-                s.$apply();
-                var url = 'services/war/report_weekly_service/agents_' + type + '?';
-
-                var agentId = (s.task.report.agent !== undefined ? s.task.report.agent.id : undefined);
-
-                var count = 0;
-
-                if (s.task.report.isYear) {
-                    url += 'isYear=true&year=' + s.task.report.year;
-                    count++;
-                }
-
-
-                if (s.task.report.isMonth) {
-                    if (count > 0) {
-                        url += '&';
-                    } else {
-                        count++;
-                    }
-                    url += 'isMonth=true&month=' + s.task.report.month;
-                }
-
-                if (s.task.report.isAgent) {
-                    if (count > 0) {
-                        url += '&'
-                    } else {
-                        count++;
-                    }
-                    url += 'isAgent=true&agentId=' + agentId;
-                }
-
-                if (s.task.report.isRegion) {
-                    if (count > 0) {
-                        url += '&'
-                    } else {
-                        count++;
-                    }
-                    url += 'isRegion=true&region=' + s.task.report.region;
-                }
-
-
-                if (s.task.valid() && s.task.report.closed === false) {
-                    if (count > 0) {
-                        url += '&'
-                    }
-                    if (s.task.report.size) {
-                        url += 'size=' + s.task.report.size;
-                    }
-                    if (s.task.report.tag) {
-                        url += '&tag=' + s.task.report.tag;
-                    }
-
-                    if (s.task.report.start) {
-                        url += '&start=' + s.task.report.start;
-                    }
-
-                    $h({
-                        url: withHost(url), method: 'get',
-                        transformResponse: function (value) {
-                            if (type === 'html') {
-                                $(value).print({
-                                    globalStyles: true,
-                                    iframe: true,
-                                    noPrintSelector: '.no-print',
-                                    manuallyCopyFormValues: true,
-                                    deferred: $.Deferred()
-                                });
-                            }
-                            else if (type === 'csv') {
-                                var blob = new Blob([value], {type: 'text/csv'});
-                                s.task.csvDownloadUrl = (window.URL || window.webkitURL).createObjectURL(blob);
-                                s.task.csvDownloadName = new Date() + '.csv';
-                            }
-                            return undefined;
+                $h({
+                    url: withHost(url), method: 'get',
+                    transformResponse: function (value) {
+                        if (type === 'html') {
+                            $(value).print({
+                                globalStyles: true,
+                                iframe: true,
+                                noPrintSelector: '.no-print',
+                                manuallyCopyFormValues: true,
+                                deferred: $.Deferred()
+                            });
                         }
-                    }).success(function () {
-                        s.task.exporting = false;
+                        else if (type === 'csv') {
+                            var blob = new Blob([value], {type: 'text/csv'});
+                            s.task.csvDownloadUrl = (window.URL || window.webkitURL).createObjectURL(blob);
+                            s.task.csvDownloadName = new Date() + '.csv';
+                        }
+                        return undefined;
+                    }
+                }).success(function () {
+                    s.task.exporting = false;
 
-                    }).error(function (err) {
-                        s.task.exporting = false;
-                        s.flow.message.danger(err);
-                    });
-                }
+                }).error(function (err) {
+                    s.task.exporting = false;
+                    s.flow.message.danger(err);
+                });
+
             });
         };
-
         function activate() {
             s.$on('$destroy', destroy);
             s.task.agentReport = {};
@@ -272,10 +208,73 @@
             s.task.agentReport.regionFilterChange = regionFilterChange;
             s.task.agentReport.yearFilterChange = yearFilterChange;
             s.task.agentReport.monthFilterChange = monthFilterChange;
+            s.task.agentReport.query = query;
             if (up.isAgent()) {
                 s.task.report.agentFilter = up.agent;
                 s.task.report.regionFilter = {regionCode: up.getRegionCode()};
             }
+        }
+
+        function query() {
+            var url = 'services/war/report_weekly_service/agents?';
+
+            var agentId = (s.task.report.agent !== undefined ? s.task.report.agent.id : undefined);
+
+            var count = 0;
+
+            if (s.task.agentReport.yearFilter) {
+                url += 'isYear=true&year=' + s.task.report.year;
+                count++;
+            }
+
+            if (s.task.agentReport.monthFilter) {
+                if (count > 0) {
+                    url += '&';
+                } else {
+                    count++;
+                }
+                url += 'isMonth=true&month=' + s.task.report.month;
+            }
+
+            if (s.task.agentReport.agentFilter) {
+                if (count > 0) {
+                    url += '&'
+                } else {
+                    count++;
+                }
+                url += 'isAgent=true&agentId=' + agentId;
+            }
+
+            if (s.task.agentReport.regionFilter) {
+                if (count > 0) {
+                    url += '&'
+                } else {
+                    count++;
+                }
+                url += 'isRegion=true&region=' + s.task.report.region;
+            }
+
+
+            if (count > 0) {
+                url += '&'
+            }
+            if (s.task.report.size) {
+                url += 'size=' + s.task.report.size;
+            }
+            if (s.task.report.tag) {
+                url += '&tag=' + s.task.report.tag;
+            }
+
+            if (s.task.report.start) {
+                url += '&start=' + s.task.report.start;
+            }
+
+            s.http.get(url).success(function (data) {
+                s.task.report.size = data.size;
+                s.task.report.tag = data.tag;
+                s.task.report.weeklyReports = data.weeklyReports;
+            });
+
         }
 
         function getYears() {
@@ -327,23 +326,28 @@
             });
         }
 
-        function agentFilterChange(agent) {
-            s.task.agentReport.regionFilter = {regionCode: agent.region};
-        }
-
         function regionFilterChange(region) {
+            s.task.report.region = region.regionCode;
             if (s.task.agentReport.agentFilter && s.task.agentReport.agentFilter.region !== region.regionCode) {
                 s.task.agentReport.agentFilter = undefined;
             }
             getAgentsByRegionCode(region.regionCode);
+            console.debug('regionFilterChange', region);
+        }
+
+        function agentFilterChange(agent) {
+            s.task.agentReport.regionFilter = {regionCode: agent.region};
+            s.task.report.agent = agent;
+            s.task.report.region = agent.region;
         }
 
         function yearFilterChange(year) {
-
+            s.task.report.year = year;
         }
 
         function monthFilterChange(month) {
-
+            s.task.report.month = month.enumForm;
+            console.debug('monthFilterChange', month);
         }
 
         function destroy() {

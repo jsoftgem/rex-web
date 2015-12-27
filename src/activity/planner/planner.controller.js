@@ -914,6 +914,7 @@
 
         function getTooltipButtons() {
             return '<div class="btn-group btn-group-xs">' +
+                    /*  '<button type="button" class="btn btn-warning view">View</button>' +*/
                 '<button style="display:' + (isUpdateVisible(event._d) ? 'block' : 'none') + '" type="button" class="btn btn-info update">Update</button>' +
                 '<button style="display:' + (isDeleteVisible(event._d) ? 'block' : 'none') + '" class="btn btn-danger delete" type="button">Delete</button>' +
                 '</div>';
@@ -922,6 +923,7 @@
         function setTooltipButtonsEvent(event, api) {
             api.elements.tooltip.find('button.update').unbind('click');
             api.elements.tooltip.find('button.delete').unbind('click');
+            api.elements.tooltip.find('button.view').unbind('click');
             api.elements.tooltip.find('button.update').click(function () {
                 api.toggle(false);
                 t(function () {
@@ -935,6 +937,12 @@
                 t(function () {
                     s.hangingActivity.activity = event.activity;
                     fm.show(s.flow.getElementFlowId('activityDeleteConfirm'));
+                });
+            });
+            api.elements.tooltip.find('button.view').click(function () {
+                api.toggle(false);
+                t(function () {
+                    s.flow.openTask('daily_task', 'daily_view', event.activity.id, false, undefined, 100, {toolbar: false});
                 });
             });
         }

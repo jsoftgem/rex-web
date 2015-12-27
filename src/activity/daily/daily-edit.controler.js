@@ -4,6 +4,7 @@
         .controller('dailyEditCtl', DailyEditCtl);
     DailyEditCtl.$inject = ['$scope'];
     function DailyEditCtl(s) {
+
         if (s.task.origin) {
             s.task.tempEdit = {};
             s.flow.pageCallBack = function (page, data, source) {
@@ -17,6 +18,7 @@
                 }
             };
         }
+
         s.save = function () {
             if (!angular.equals(s.task.modelEdit, s.task.tempEdit)) {
                 s.flow.action('put', s.task.modelEdit, s.task.modelEdit.id);

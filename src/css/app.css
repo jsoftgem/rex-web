@@ -860,3 +860,19 @@ button.ColVis_Button {
 [ng\:cloak], [ng-cloak], .ng-cloak {
     display: none !important;
 }
+
+.height7px {
+    height: 7px;
+}
+
+.padding0 {
+    padding: 0;
+}
+
+.paddingL0 {
+    padding-left: 0;
+}
+
+.paddingR0 {
+    padding-right: 0;
+}
