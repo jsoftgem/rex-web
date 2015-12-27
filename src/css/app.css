@@ -777,7 +777,7 @@ button.ColVis_Button {
 }
 
 .ndg-planner .ndg-ptable .td-drag {
-    background: #468499;
+    background: #639F89;
     color: white;
     border-radius: 0;
     cursor: pointer;
@@ -859,4 +859,20 @@ button.ColVis_Button {
  */
 [ng\:cloak], [ng-cloak], .ng-cloak {
     display: none !important;
+}
+
+.height7px {
+    height: 7px;
+}
+
+.padding0 {
+    padding: 0;
+}
+
+.paddingL0 {
+    padding-left: 0;
+}
+
+.paddingR0 {
+    padding-right: 0;
 }

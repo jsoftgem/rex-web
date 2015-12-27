@@ -2,36 +2,36 @@
 
     <form id="{{flow.getElementFlowId('planner')}}" class="form-horizontal" role="form" novalidate>
         <div class="form-group">
-            <fluid-select change="selectYear(item)" with-host="sourceUrl" class="col-lg-3 col-md-12 col-sm-12 col-xs-12"
-                          primary
-                          id="{{flow.getElementFlowId('schoolYearSelect')}}"
-                          label="School Year"
-                          source-url="services/war/school_year_query/list" model="task.schoolYear"
-                          field-label="description">
-            </fluid-select>
-            <div class="col-lg-3">
-                <flow-look-up changed="changeAgent(item)" removed="flow.onRefreshed()"
+            <label column="3">
+                <span>School year</span>
+                <ui-select ng-change="selectYear(task.plannerFilter.schoolYearFilter)"
+                           ng-model="task.plannerFilter.schoolYearFilter" id="schoolYearFilter">
+                    <ui-select-match
+                            placeholder="{{task.plannerFilter.schoolYearLoaded ? '':'Loading school years...'}}">
+                        {{$select.selected.description}}
+                    </ui-select-match>
+                    <ui-select-choices
+                            repeat="schoolYear in task.plannerFilter.schoolYears | filter : {description: $select.search}"
+                            refresh="task.plannerFilter.getSchoolYears()">
+                        {{schoolYear.description}}
+                    </ui-select-choices>
+                </ui-select>
+            </label>
+            <war-agent-select label="Agents"
+                              ng-change="task.plannerFilter.onAgentChange(task.plannerFilter.agentFilter)" column="3"
                               ng-if="task.schoolYear != undefined && !task.hideAgentFilter"
-                              task="task"
-                              id="{{flow.getElementFlowId('agentLookUp')}}"
-                              field-label="user.flowUserDetail.fullName"
-                              parent-id="{{flow.getElementFlowId('planner')}}"
-                              label="Agent" model="task.agent"
-                              source-url="services/war/agent_query/find_agent_by_current_user_level"
-                              key-var="agent">
+                              ng-model="task.plannerFilter.agentFilter"></war-agent-select>
+            <label column="3" ng-if="task.agent != undefined && task.view == 'month'">
+                <span>Monthly Planned Target</span>
+                <input class="form-control" type="number" disabled ng-model="calendar.plannedCount">
+            </label>
+            <label column="3">
 
-                    <flow-sub-column title="Agent" model="agent.user.flowUserDetail.fullName"></flow-sub-column>
-                </flow-look-up>
-            </div>
-            <div class="col-lg-3">
-                <flow-field label="Monthly Planned Target" ng-if="task.agent != undefined && task.view == 'month'"
-                            type="number"
-                            disabled="true" model="calendar.plannedCount"></flow-field>
-            </div>
-            <div class="col-lg-3">
-                <flow-field label="Weekly Planned Target" ng-if="task.agent != undefined && task.view == 'basicWeek'"
-                            type="number" disabled="true" model="calendar.plannedCount"></flow-field>
-            </div>
+            </label>
+            <label class="col-lg-3" ng-if="task.agent != undefined && task.view == 'basicWeek'">
+                <span>Weekly Planned Target</span>
+                <input class="form-control" ng-model="calendar.plannedCount" type="number" disabled>
+            </label>
         </div>
         <div class="form-group">
             <div class="col-lg-3 col-md-4 col-sm-5 left-panel">
@@ -256,9 +256,7 @@
 
         </div>
     </form>
-
     <flow-modal id="{{flow.getElementFlowId('activity_modal')}}">
-
         <div class="panel panel-primary">
 
             <div class="panel-heading">
@@ -366,14 +364,12 @@
                 </div>
 
             </div>
-
             <div class="panel-footer">
                 <button class="btn btn-sm btn-info" type="button" ng-click="hangingActivity.update()">Update</button>
                 <button class="btn btn-sm btn-danger" type="button" ng-click="hangingActivity.cancel()">Cancel</button>
             </div>
 
         </div>
-
     </flow-modal>
     <flow-modal id="{{flow.getElementFlowId('other_activity')}}">
         <div class="panel panel-primary">
@@ -447,10 +443,29 @@
 
             <div class="panel-footer">
                 <button button info="button" ng-click="calendar.submit()">Yes</button>
-                <button button danger="button" ng-click="hide()">No, wait a minute!</button>
+                <button button danger="button" ng-click="hide()">No!</button>
             </div>
 
         </div>
     </flow-modal>
+    <flow-modal id="{{flow.getElementFlowId('activityDeleteConfirm')}}">
+        <div class="panel panel-warning">
+            <div class="panel-heading">
+                    <span class="panel-title">
+                        Delete Confirmation
+                    </span>
 
+            </div>
+            <div class="panel-body">
+                <p>Do you want to delete this activity?</p>
+            </div>
+
+            <div class="panel-footer">
+                <button button info="button" ng-click="calendar.deleteActivity(hangingActivity.activity.id)">Yes
+                </button>
+                <button button danger="button" ng-click="calendar.cancelDeleteActivity()">No</button>
+            </div>
+
+        </div>
+    </flow-modal>
 </div>

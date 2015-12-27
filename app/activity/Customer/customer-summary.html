@@ -1,15 +1,23 @@
 <div ng-controller="customerSummaryCtrl" class="container-fluid">
 
     <div class="panel panel-info">
-
         <div class="panel-heading">
-
             <div class="panel-title">
-                <fluid-select primary label="School year" field-label="description" with-host="sourceUrl"
-                              source-url="services/war/school_year_query/list"></fluid-select>
-
+                <label>
+                    <span>School year</span>
+                    <ui-select id="schoolYear">
+                        <ui-select-match
+                                placeholder="{{task.customerSummary.schoolYearsLoaded ?'':'Loading school years...'}}">
+                            {{$select.selected.description}}
+                        </ui-select-match>
+                        <ui-select-choices
+                                repeat="schoolYear in task.customerSummary.schoolYears | filter : {description:$select.search}"
+                                refresh="task.customerSummary.getSchoolYears">
+                            {{schoolYear.description}}
+                        </ui-select-choices>
+                    </ui-select>
+                </label>
             </div>
-
         </div>
 
     </div>

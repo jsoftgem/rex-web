@@ -11,35 +11,60 @@
 
         <fieldset>
             <legend>From</legend>
-            <fluid-select class="col-lg-6" with-host="sourceUrl" primary
-                          id="{{flow.getElementFlowId('monthSelect')}}"
-                          model="task.modelCreate.periodMonth"
-                          label="Month"
-                          source-url="factories/war/table_factories/months">
-            </fluid-select>
-            <fluid-select class="col-lg-6" primary with-host="sourceUrl" ng-required="true"
-                          id="{{flow.getElementFlowId('yearSelect')}}"
-                          model="task.modelCreate.periodYear"
-                          label="Year"
-                          source-url="factories/war/table_factories/years">
-            </fluid-select>
+            <label column="6">
+                <span>Month</span>
+                <ui-select ng-model="task.schoolYear.periodMonth"
+                           ng-change="task.modelCreate.periodMonth=task.schoolYear.periodMonth.enumForm">
+                    <ui-select-match placeholder="{{task.schoolYear.monthLoaded ? '':'Loading months...'}}">
+                        {{$select.selected.label}}
+                    </ui-select-match>
+                    <ui-select-choices refresh="task.schoolYear.getMonths()"
+                                       repeat="month in task.schoolYear.months | filter : {label:$select.search}">
+                        {{month.label}}
+                    </ui-select-choices>
+                </ui-select>
+            </label>
+            <label column="6">
+                <span>Year</span>
+                <ui-select ng-required="true" ng-model="task.modelCreate.periodYear">
+                    <ui-select-match placeholder="{{task.schoolYear.yearLoaded ? '':'Loading years...'}}">
+                        {{$select.selected}}
+                    </ui-select-match>
+                    <ui-select-choices refresh="task.schoolYear.getYears()"
+                                       repeat="year in task.schoolYear.years | filter : select.search">
+                        {{year}}
+                    </ui-select-choices>
+                </ui-select>
+            </label>
         </fieldset>
 
         <fieldset>
             <legend>To</legend>
-            <fluid-select class="col-lg-6" with-host="sourceUrl" primary
-                          id="{{flow.getElementFlowId('monthSelect2')}}"
-                          model="task.modelCreate.periodMonthTo"
-                          label="Month"
-                          source-url="factories/war/table_factories/months">
-            </fluid-select>
-
-            <fluid-select class="col-lg-6" primary ng-required="true" with-host="sourceUrl"
-                          id="{{flow.getElementFlowId('yearSelect2')}}"
-                          model="task.modelCreate.periodYearTo"
-                          label="Year"
-                          source-url="factories/war/table_factories/years">
-            </fluid-select>
+            <label column="6">
+                <span>Month</span>
+                <ui-select ng-model="task.schoolYear.periodMonthTo"
+                           ng-change="task.modelCreate.periodMonthTo=task.schoolYear.periodMonthTo.enumForm">
+                    <ui-select-match placeholder="{{task.schoolYear.monthLoaded ? '':'Loading months...'}}">
+                        {{$select.selected.label}}
+                    </ui-select-match>
+                    <ui-select-choices refresh="task.schoolYear.getMonths()"
+                                       repeat="month in task.schoolYear.months | filter : {label:$select.search}">
+                        {{month.label}}
+                    </ui-select-choices>
+                </ui-select>
+            </label>
+            <label column="6">
+                <span>Year</span>
+                <ui-select ng-required="true" ng-model="task.modelCreate.periodYearTo">
+                    <ui-select-match placeholder="{{task.schoolYear.yearLoaded ? '':'Loading years...'}}">
+                        {{$select.selected}}
+                    </ui-select-match>
+                    <ui-select-choices refresh="task.schoolYear.getYears()"
+                                       repeat="year in task.schoolYear.years | filter : select.search">
+                        {{year}}
+                    </ui-select-choices>
+                </ui-select>
+            </label>
         </fieldset>
     </form>
 

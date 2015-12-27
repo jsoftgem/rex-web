@@ -1,0 +1,12 @@
+<label class="width100pc">
+    <span class="select-month-label"></span>
+    <ui-select ng-model="selectMonth.month">
+        <ui-select-match>
+            {{(selectMonth.months | selectMonth:$select).label}}
+        </ui-select-match>
+        <ui-select-choices refresh="selectMonth.getMonths()"
+                           repeat="month in selectMonth.months | filter:{enumForm:$select.search.toUpperCase()}">
+            {{month.label}}
+        </ui-select-choices>
+    </ui-select>
+</label>

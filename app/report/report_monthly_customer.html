@@ -1,30 +1,45 @@
 <div ng-controller="reportCustomerSummary" class="container-fluid">
 
     <form id="{{flow.getElementFlowId('reportFrame')}}" class="form-horizontal" role="form">
-
-        <!-- <flow-select column="3" id="{{flow.getElementFlowId('viewSelect')}}" task="task" label="View"
-                      model="task.view"
-                      values="Table, Bar Chart">
-         </flow-select>-->
         <div class="form-group">
-            <fluid-select with-host="sourceUrl" primary
-                          column="3" id="{{flow.getElementFlowId('schoolYearSelect')}}" label="School Year"
-                          source-url="services/war/school_year_query/list" model="task.schoolYear"
-                          field-label="description" change="task.selectSchoolYear(item)">
-            </fluid-select>
-            <fluid-select with-host="sourceUrl" primary
-                          ng-if="task.schoolYear && !task.isAgent" column="3"
-                          id="{{flow.getElementFlowId('regionSelect')}}"
-                          label="Region"
-                          source-url="services/war/region_query/list" model="task.region"
-                          field-label="regionCode" change="task.selectRegion(item)">
-            </fluid-select>
+            <label column="3">
+                <span>School year</span>
+                <ui-select ng-model="task.reportCustomer.schoolYearFilter" id="schoolYearFilter"
+                           ng-change="task.selectSchoolYear(task.reportCustomer.schoolYearFilter)">
+                    <ui-select-match>{{$select.selected.description}}</ui-select-match>
+                    <ui-select-choices
+                            repeat="school in task.reportCustomer.schools | filter: {description:$select.search}"
+                            refresh="task.reportCustomer.getSchools()">
+                        {{school.description}}
+                    </ui-select-choices>
+                </ui-select>
+            </label>
 
-            <fluid-select with-host="sourceUrl" primary
-                          ng-if="task.region && !task.isAgent" column="3" id="{{flow.getElementById('agentSelect')}}"
-                          field-label="initials" model="task.agent" label="Agent"
-                          source-url="services/war/agent_query/find_by_region/{{task.region.regionCode}}"
-                          change="task.selectAgent(item)"></fluid-select>
+            <label column="3" ng-if="task.reportCustomer.schoolYearFilter && !task.isAgent">
+                <span>Region</span>
+                <ui-select ng-model="task.reportCustomer.regionSelectFilter" id="regionSelectFilter"
+                           ng-change="task.selectRegion(task.reportCustomer.regionSelectFilter)">
+                    <ui-select-match>{{$select.selected.regionCode}}</ui-select-match>
+                    <ui-select-choices
+                            repeat="region in task.reportCustomer.regions | filter: {regionCode:$select.search}"
+                            refresh="task.reportCustomer.getRegions()">
+                        {{region.regionCode}}
+                    </ui-select-choices>
+                </ui-select>
+            </label>
+
+            <label column="3" ng-if="task.reportCustomer.regionSelectFilter && !task.isAgent" id="agentSelectFilter">
+                <span>Agent</span>
+                <ui-select ng-model="task.reportCustomer.agentSelectFilter" id="regionSelectFilter"
+                           ng-change="task.selectAgent(task.reportCustomer.agentSelectFilter)">
+                    <ui-select-match>{{$select.selected.user.flowUserDetail.fullName}}</ui-select-match>
+                    <ui-select-choices
+                            repeat="agent in task.reportCustomer.agents | filter: {user:{flowUserDetail:{fullName:$select.search}}}"
+                            refresh="task.reportCustomer.getAgentsByRegionCode(task.reportCustomer.regionSelectFilter.regionCode)">
+                        {{agent.user.flowUserDetail.fullName}}
+                    </ui-select-choices>
+                </ui-select>
+            </label>
 
         </div>
 
