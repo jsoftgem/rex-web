@@ -5,4 +5,6 @@
         'ngFileUpload', 'ngCookies', 'oc.lazyLoad', 'LocalStorageModule', 'truncate', 'ui.select', 'ngSanitize', 'angular.filter',
         'war.core', 'war.commons', 'war.services', 'war.resource', 'war.admin', 'war.dev', 'war.session', 'war.sidebar', 'war.home',
         'war.activity', 'war.table', 'war.management', 'war.reports'])
+
+    angular.module('war.template', []);
 })();

@@ -30,8 +30,8 @@ var vendorFonts = ['bower_components/bootstrap/fonts/*', 'bower_components/font-
 var vendorCSSResource = ['bower_components/octicons/octicons/*.woff', 'bower_components/octicons/octicons/*.ttf'];
 var appJS = ['src/war-helper.js', 'src/war.module.js', 'src/war.constants.js',
     'src/js/admin/admin.module.js', 'src/dev/dev.module.js', 'src/services/services.module.js',
-    'src/session/session.module.js', 'src/common/commons.module.js', 'src/common/core/core.module.js', 'src/home/home.module.js',
-    'src/services/resource/resource.module.js', 'src/sidebar/sidebar.module.js',
+    'src/session/session.module.js', 'src/common/commons.module.js', 'src/common/core/core.module.js',
+    'src/home/home.module.js', 'src/services/resource/resource.module.js', 'src/sidebar/sidebar.module.js',
     'src/activity/activity.module.js', 'src/table/table.module.js',
     'src/management/management.module.js', 'src/reports/reports.module.js',
     'src/**/*.js', '!src/controller/**/*.js'];
@@ -88,9 +88,10 @@ module.exports = function (grunt) {
         },
         html2js: {
             options: {
+                module: 'war.template',
                 singleModule: true,
-                module: 'war.app',
-                base: '/',
+                existingModule: true,
+                base: './',
                 htmlmin: {
                     collapseBooleanAttributes: true,
                     collapseWhitespace: true,
@@ -119,7 +120,7 @@ module.exports = function (grunt) {
             dist: {
                 files: [
                     {
-                        'dist/js/app.min.js': ['dist/js/app.js'],
+                        'dist/js/app.min.js': ['tmp/templates.js', 'dist/js/app.js'],
                         'dist/js/vendor.min.js': ['dist/js/vendor.js']
                     }
                 ],
@@ -323,7 +324,5 @@ module.exports = function (grunt) {
     grunt.registerTask('build-copy', ['copy:main', 'copy:css']);
     grunt.registerTask('build-prod', ['clean:temp', 'html2js:dist', 'concat:app', 'strip:main', 'concat:vendor', 'uglify',
         'concat_css:app', 'concat_css:vendor', 'cssmin', 'build-copy', 'prod-html']);
-    grunt.registerTask('build-dev', ['html2js:dist', 'concat:vendor', 'concat_css:vendor', 'build-copy', 'dev-html']);
-
-
-}
+    grunt.registerTask('build-dev', ['concat:vendor', 'concat_css:vendor', 'build-copy', 'dev-html']);
+};
