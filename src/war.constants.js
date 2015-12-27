@@ -1,4 +1,4 @@
-var HOST = "http://localhost:9080/rex-services/";
+var HOST = "http://war.rexpublishing.com.ph:8080/rex-services/";
 
 (function () {
     'use strict';
