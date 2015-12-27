@@ -891,11 +891,11 @@
         }
 
         function isDeleteVisible(date) {
-            return isPastWeek(date) || up.isAdmin() || up.isManager() || up.isGeneralManager();
+            return !isPastWeek(date) || up.isAdmin() || up.isManager() || up.isGeneralManager();
         }
 
         function isUpdateVisible(date) {
-            return isPastWeek(date) || up.isAdmin() || up.isManager() || up.isGeneralManager();
+            return !isPastWeek(date) || up.isAdmin() || up.isManager() || up.isGeneralManager();
         }
 
         function isPastWeek(date) {
