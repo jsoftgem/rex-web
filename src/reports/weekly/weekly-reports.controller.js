@@ -6,198 +6,11 @@
         '$http', 'commonFactories', 'resourceApiService'];
     function ReportsCtrl(s, t, up, $h, commonFactories, resourceApiService) {
         activate();
-
-        s.task.csvDownloadUrl = undefined;
-        s.task.csvDownloadName = undefined;
-        s.totalProductivity = function (planned, unplanned, target) {
-            var total = ((100 * (planned + unplanned)) / target);
-            if (total > 125) {
-                total = 125;
-            }
-            return total;
-        };
-        s.task.pageAgent = 'report_weekly_agent';
-        s.task.service = 'services/war/report_weekly_service'
-        s.task.serviceCustomer = s.task.service + '/agent_customer';
-        s.task.hideAgentFilter = false;
-        s.task.getCustomers = function (report) {
-            report.view = !report.view;
-            if (report.view) {
-                report.loaded = false;
-                var url = s.task.serviceCustomer;
-
-                var count = 0;
-
-                if (report.year) {
-                    url += '?year=' + report.year;
-                    count++;
-                }
-
-                if (report.reportMonth) {
-                    if (count > 0) {
-                        url += '&'
-                    } else {
-                        count++;
-                    }
-
-                    url += 'month=' + report.reportMonth.label.toUpperCase();
-                }
-
-
-                if (report.week) {
-                    if (count > 0) {
-                        url += '&';
-                    } else {
-                        count++;
-                    }
-
-                    url += 'week=' + report.week;
-                }
-
-
-                if (report.agentId) {
-                    if (count > 0) {
-                        url += '&';
-                    }
-                    url += 'agent=' + report.agentId;
-                }
-
-                if (report.region) {
-                    if (count > 0) {
-                        url += '&';
-                    }
-                    url += 'region=' + report.region;
-                }
-
-
-                s.http.get(url).success(function (data) {
-                    report.customers = data;
-                    report.loaded = true;
-                });
-
-            }
-
-        };
-        s.task.getDayName = function (dayOfWeek) {
-            return getDayName(dayOfWeek);
-        };
-        s.task.reportTable = $('#' + s.flow.getElementFlowId('reportTable'));
-        s.task.print = {};
-        s.task.print.current = function () {
-            s.task.reportTable.print({
-                globalStyles: true,
-                iframe: true,
-                noPrintSelector: '.no-print',
-                manuallyCopyFormValues: true,
-                deferred: $.Deferred()
-            })
-        };
-        s.flow.onRefreshed = function () {
-            query();
-        };
-        s.task.newReport = function () {
-            var report = {};
-            report.tag = 'all';
-            report.size = 25;
-            report.start = 0;
-            report.isAgent = false;
-            report.isYear = false;
-            report.isMonth = false;
-            report.isRegion = false;
-
-            return report;
-        };
-        s.task.report = s.task.newReport();
-
-        s.task.export = function (type) {
-            s.task.exporting = true;
-            s.task.csvDownloadUrl = undefined;
-            t(function () {
-                s.$apply();
-                var url = 'services/war/report_weekly_service/agents_' + type + '?';
-
-                var agentId = (s.task.report.agent !== undefined ? s.task.report.agent.id : undefined);
-
-                var count = 0;
-
-                if (s.task.agentReport.yearFilter) {
-                    url += 'isYear=true&year=' + s.task.report.year;
-                    count++;
-                }
-
-                if (s.task.agentReport.monthFilter) {
-                    if (count > 0) {
-                        url += '&';
-                    } else {
-                        count++;
-                    }
-                    url += 'isMonth=true&month=' + s.task.report.month;
-                }
-
-                if (s.task.agentReport.agentFilter) {
-                    if (count > 0) {
-                        url += '&'
-                    } else {
-                        count++;
-                    }
-                    url += 'isAgent=true&agentId=' + agentId;
-                }
-
-                if (s.task.agentReport.regionFilter) {
-                    if (count > 0) {
-                        url += '&'
-                    } else {
-                        count++;
-                    }
-                    url += 'isRegion=true&region=' + s.task.report.region;
-                }
-
-                if (count > 0) {
-                    url += '&'
-                }
-                if (s.task.report.size) {
-                    url += 'size=' + s.task.report.size;
-                }
-                if (s.task.report.tag) {
-                    url += '&tag=' + s.task.report.tag;
-                }
-
-                if (s.task.report.start) {
-                    url += '&start=' + s.task.report.start;
-                }
-
-                $h({
-                    url: withHost(url), method: 'get',
-                    transformResponse: function (value) {
-                        if (type === 'html') {
-                            $(value).print({
-                                globalStyles: true,
-                                iframe: true,
-                                noPrintSelector: '.no-print',
-                                manuallyCopyFormValues: true,
-                                deferred: $.Deferred()
-                            });
-                        }
-                        else if (type === 'csv') {
-                            var blob = new Blob([value], {type: 'text/csv'});
-                            s.task.csvDownloadUrl = (window.URL || window.webkitURL).createObjectURL(blob);
-                            s.task.csvDownloadName = new Date() + '.csv';
-                        }
-                        return undefined;
-                    }
-                }).success(function () {
-                    s.task.exporting = false;
-
-                }).error(function (err) {
-                    s.task.exporting = false;
-                    s.flow.message.danger(err);
-                });
-
-            });
-        };
         function activate() {
             s.$on('$destroy', destroy);
+            s.task.report = newReport();
             s.task.agentReport = {};
+            s.task.agentReport.clearFilter = clearFilter;
             s.task.agentReport.isAgent = up.isAgent();
             s.task.agentReport.isManager = up.isManager();
             s.task.agentReport.getYears = getYears;
@@ -210,9 +23,186 @@
             s.task.agentReport.monthFilterChange = monthFilterChange;
             s.task.agentReport.query = query;
             if (up.isAgent()) {
-                s.task.report.agentFilter = up.agent;
-                s.task.report.regionFilter = {regionCode: up.getRegionCode()};
+                s.task.agentReport.disableAgentFilter = !(up.isManager() || up.isAdmin() || up.isGeneralManager());
+                s.task.agentReport.agentFilter = up.agent;
+                s.task.agentReport.regionFilter = {regionCode: up.getRegionCode()};
+                s.task.report.agent = up.agent;
+                s.task.report.region = s.task.agentReport.regionFilter.regionCode;
             }
+            s.task.csvDownloadUrl = undefined;
+            s.task.csvDownloadName = undefined;
+            s.totalProductivity = function (planned, unplanned, target) {
+                var total = ((100 * (planned + unplanned)) / target);
+                if (total > 125) {
+                    total = 125;
+                }
+                return total;
+            };
+            s.task.pageAgent = 'report_weekly_agent';
+            s.task.service = 'services/war/report_weekly_service'
+            s.task.serviceCustomer = s.task.service + '/agent_customer';
+            s.task.hideAgentFilter = false;
+            s.task.getCustomers = function (report) {
+                report.view = !report.view;
+                if (report.view) {
+                    report.loaded = false;
+                    var url = s.task.serviceCustomer;
+
+                    var count = 0;
+
+                    if (report.year) {
+                        url += '?year=' + report.year;
+                        count++;
+                    }
+
+                    if (report.reportMonth) {
+                        if (count > 0) {
+                            url += '&'
+                        } else {
+                            count++;
+                        }
+
+                        url += 'month=' + report.reportMonth.label.toUpperCase();
+                    }
+
+
+                    if (report.week) {
+                        if (count > 0) {
+                            url += '&';
+                        } else {
+                            count++;
+                        }
+
+                        url += 'week=' + report.week;
+                    }
+
+
+                    if (report.agentId) {
+                        if (count > 0) {
+                            url += '&';
+                        }
+                        url += 'agent=' + report.agentId;
+                    }
+
+                    if (report.region) {
+                        if (count > 0) {
+                            url += '&';
+                        }
+                        url += 'region=' + report.region;
+                    }
+
+
+                    s.http.get(url).success(function (data) {
+                        report.customers = data;
+                        report.loaded = true;
+                    });
+
+                }
+
+            };
+            s.task.getDayName = function (dayOfWeek) {
+                return getDayName(dayOfWeek);
+            };
+            s.task.reportTable = $('#' + s.flow.getElementFlowId('reportTable'));
+            s.task.print = {};
+            s.task.print.current = function () {
+                s.task.reportTable.print({
+                    globalStyles: true,
+                    iframe: true,
+                    noPrintSelector: '.no-print',
+                    manuallyCopyFormValues: true,
+                    deferred: $.Deferred()
+                })
+            };
+            s.flow.onRefreshed = function () {
+                query();
+            };
+            s.task.export = function (type) {
+                s.task.exporting = true;
+                s.task.csvDownloadUrl = undefined;
+                t(function () {
+                    s.$apply();
+                    var url = 'services/war/report_weekly_service/agents_' + type + '?';
+
+                    var agentId = (s.task.report.agent !== undefined ? s.task.report.agent.id : undefined);
+
+                    var count = 0;
+
+                    if (s.task.agentReport.yearFilter) {
+                        url += 'isYear=true&year=' + s.task.report.year;
+                        count++;
+                    }
+
+                    if (s.task.agentReport.monthFilter) {
+                        if (count > 0) {
+                            url += '&';
+                        } else {
+                            count++;
+                        }
+                        url += 'isMonth=true&month=' + s.task.report.month;
+                    }
+
+                    if (s.task.agentReport.agentFilter) {
+                        if (count > 0) {
+                            url += '&'
+                        } else {
+                            count++;
+                        }
+                        url += 'isAgent=true&agentId=' + agentId;
+                    }
+
+                    if (s.task.agentReport.regionFilter) {
+                        if (count > 0) {
+                            url += '&'
+                        } else {
+                            count++;
+                        }
+                        url += 'isRegion=true&region=' + s.task.report.region;
+                    }
+
+                    if (count > 0) {
+                        url += '&'
+                    }
+                    if (s.task.report.size) {
+                        url += 'size=' + s.task.report.size;
+                    }
+                    if (s.task.report.tag) {
+                        url += '&tag=' + s.task.report.tag;
+                    }
+
+                    if (s.task.report.start) {
+                        url += '&start=' + s.task.report.start;
+                    }
+
+                    $h({
+                        url: withHost(url), method: 'get',
+                        transformResponse: function (value) {
+                            if (type === 'html') {
+                                $(value).print({
+                                    globalStyles: true,
+                                    iframe: true,
+                                    noPrintSelector: '.no-print',
+                                    manuallyCopyFormValues: true,
+                                    deferred: $.Deferred()
+                                });
+                            }
+                            else if (type === 'csv') {
+                                var blob = new Blob([value], {type: 'text/csv'});
+                                s.task.csvDownloadUrl = (window.URL || window.webkitURL).createObjectURL(blob);
+                                s.task.csvDownloadName = new Date() + '.csv';
+                            }
+                            return undefined;
+                        }
+                    }).success(function () {
+                        s.task.exporting = false;
+
+                    }).error(function (err) {
+                        s.task.exporting = false;
+                        s.flow.message.danger(err);
+                    });
+
+                });
+            };
         }
 
         function query() {
@@ -275,6 +265,18 @@
                 s.task.report.weeklyReports = data.weeklyReports;
             });
 
+        }
+
+        function newReport() {
+            var report = {};
+            report.tag = 'all';
+            report.size = 25;
+            report.start = 0;
+            report.isAgent = false;
+            report.isYear = false;
+            report.isMonth = false;
+            report.isRegion = false;
+            return report;
         }
 
         function getYears() {
@@ -350,7 +352,20 @@
             console.debug('monthFilterChange', month);
         }
 
+        function clearFilter() {
+            if (up.isAgent() && !(up.isManager() || up.isAdmin() || up.isGeneralManager())) {
+                s.task.agentReport.yearFilter = undefined;
+                s.task.agentReport.monthFilter = undefined;
+            } else {
+                s.task.agentReport.agentFilter = undefined;
+                s.task.agentReport.regionFilter = undefined;
+                s.task.agentReport.yearFilter = undefined;
+                s.task.agentReport.monthFilter = undefined;
+            }
+        }
+
         function destroy() {
+            s.task.report = undefined;
             s.task.agentReport = undefined;
         }
 
