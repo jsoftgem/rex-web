@@ -306,7 +306,7 @@
                                                 '<li>Purchase Order: ' + (event.activity.po === true ? 'Yes' : 'No') + '</li>' +
                                                 '<li>Delivery of Add\'l Order / TRM / Compli...: ' + (event.activity.daotrc === true ? 'Yes' : 'No') + '</li>' +
                                                 '<li>Booklist: ' + (event.activity.bookList === true ? 'Yes' : 'No') + '</li>' +
-                                                '</ul></div>' + getTooltipButtons()
+                                                '</ul></div>' + getTooltipButtons(event)
                                             },
                                             hide: {
                                                 event: 'click',
@@ -342,7 +342,7 @@
                                                 },
                                                 text: "<div><ul><li><b>Agent: " + event.activity.materialAdviser + "</b></li>" +
                                                 "<li>Reason for leave: " + (event.activity.description != undefined || event.activity.description != null ? event.activity.description : 'N/A' ) + "</li>" +
-                                                "</ul></div>" + getTooltipButtons()
+                                                "</ul></div>" + getTooltipButtons(event)
                                             },
                                             hide: {
                                                 event: 'click',
@@ -379,7 +379,7 @@
                                                 text: "<div><ul><li><b>Agent: " + event.activity.materialAdviser + "</b></li>" +
                                                 "<li>Description: " + (event.activity.description != undefined || event.activity.description != null ? event.activity.description : 'N/A' ) + "</li>" +
                                                 "</ul></div>" +
-                                                getTooltipButtons()
+                                                getTooltipButtons(event)
                                             },
                                             hide: {
                                                 event: 'click',
@@ -891,15 +891,19 @@
         }
 
         function isDeleteVisible(date) {
-            return !isPastWeek(date) || up.isAdmin() || up.isManager() || up.isGeneralManager();
+            return !isPastWeek(date) || (up.isAdmin() || up.isManager() || up.isGeneralManager());
         }
 
         function isUpdateVisible(date) {
-            return !isPastWeek(date) || up.isAdmin() || up.isManager() || up.isGeneralManager();
+            return !isPastWeek(date) || (up.isAdmin() || up.isManager() || up.isGeneralManager());
         }
 
         function isPastWeek(date) {
             var current = new Date();
+            var sampleD = getWeekOfYear(date);
+            var sampleC = getWeekOfYear(current);
+            console.debug("isPastWeek.d", sampleD);
+            console.debug('isPastWeek.c', sampleC);
             return getWeekOfYear(date) < getWeekOfYear(current);
         }
 
@@ -912,11 +916,12 @@
             return [d.getFullYear(), weekNo];
         }
 
-        function getTooltipButtons() {
+        function getTooltipButtons(event) {
+            console.debug('getTooltipButtons', event);
             return '<div class="btn-group btn-group-xs">' +
                     /*  '<button type="button" class="btn btn-warning view">View</button>' +*/
-                '<button style="display:' + (isUpdateVisible(event._d) ? 'block' : 'none') + '" type="button" class="btn btn-info update">Update</button>' +
-                '<button style="display:' + (isDeleteVisible(event._d) ? 'block' : 'none') + '" class="btn btn-danger delete" type="button">Delete</button>' +
+                '<button style="display:' + (isUpdateVisible(event.start._d) ? 'block' : 'none') + '" type="button" class="btn btn-info update">Update</button>' +
+                '<button style="display:' + (isDeleteVisible(event.start._d) ? 'block' : 'none') + '" class="btn btn-danger delete" type="button">Delete</button>' +
                 '</div>';
         }
 
