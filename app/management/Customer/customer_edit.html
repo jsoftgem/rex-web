@@ -16,19 +16,16 @@
                 <flow-field disabled="task.origin && task.origin.agent" model="task.customerEdit.customerCode"
                             label="Customer code" required="true"
                             type="text"></flow-field>
-                <fluid-select primary fluid-disabled="userProfile.group.groupName != 'agent_general_manager'"
-                              class="width100pc"
-                              with-host="sourceUrl"
-                              id="{{flow.getElementFlowId('ownershipAgentSelect')}}"
-                              label="Materials Advisor"
-                              field-value="id"
-                              field-label="user.flowUserDetail.fullName"
-                              model="task.customerEdit.ownerAgentId"
-                              source-url="services/war/agent_query/list"
-                              change="selectAgent(item,full,$index)">
-                </fluid-select>
 
-                <flow-field model="task.customerEdit.regionCode" label="Region" disabled="true"></flow-field>
+                <war-agent-select class="width100pc"
+                                  label="Materials Advisor"
+                                  agent-model="task.customer.agent"
+                                  ng-change="task.customer.onAgentChange(task.customer.agent)"
+                                  ng-model="task.customerEdit.ownerAgentId">
+                </war-agent-select>
+
+                <flow-field model="task.customerEdit.regionCode"
+                            label="Region" disabled="true"></flow-field>
                 <flow-field model="task.customerEdit.school.name" label="School" disabled="true"></flow-field>
             </div>
 
@@ -54,7 +51,7 @@
             <flow-sub-table flow="flow" task="task" key-var="customer" title="Market segment"
                             target-list="task.customerEdit.warCustomerMarketSchoolYears"
                             id="{{flow.getElementFlowId('potentialTable')}}" id-field="id"
-                            create-event="addPotential" edit-event="editPotential" look-up="false">
+                            create="task.customer.addPotential()" edit-event="editPotential" look-up="false">
                 <flow-sub-column title="School Year"
                                  model="customer.schoolYearDescription"></flow-sub-column>
                 <flow-sub-column title="Market Potential Segment"
@@ -66,7 +63,7 @@
             <flow-sub-table flow="flow" task="task" key-var="contact" title="Contact Information"
                             target-list="task.customerEdit.contactDetails"
                             id="{{flow.getElementFlowId('contactDetailsSubTable')}}" id-field="id"
-                            create-event="createContactEvent" edit-event="editContactEvent" look-up="false">
+                            create="task.customer.addContact()" edit-event="editContactEvent" look-up="false">
                 <flow-sub-column title="Education level" model="contact.level"></flow-sub-column>
                 <flow-sub-column title="Contact person" model="contact.description"></flow-sub-column>
                 <flow-sub-column title="Home phone" model="contact.homePhone"></flow-sub-column>
@@ -78,12 +75,11 @@
                 <flow-sub-column title="Relationship type" model="contact.relationshipType"></flow-sub-column>
             </flow-sub-table>
 
-
             <flow-sub-table flow="flow" task="task" key-var="level"
                             title="Education Levels offered, population and tuition fee details."
                             target-list="task.customerEdit.customerLevels"
                             id="{{flow.getElementFlowId('customerLevelsSubTable')}}" id-field="id"
-                            create-event="createLevelEvent" edit-event="editLevelEvent" look-up="false">
+                            create="task.customer.addLevel()" edit-event="editLevelEvent" look-up="false">
                 <flow-sub-column title="Education Level" model="level.educationLevel"></flow-sub-column>
                 <flow-sub-column title="Level course" model="level.levelCourse"></flow-sub-column>
                 <flow-sub-column title="Population per YEAR LEVEL" model="level.population"></flow-sub-column>
@@ -97,11 +93,8 @@
             <flow-text-area label="Other enrollment information" model="task.customerEdit.informationOnEnrollment">
             </flow-text-area>
 
-
             <div class="col-lg-6">
-
                 <fieldset>
-
                     <legend>Other Pertinent Information</legend>
 
                     <flow-field model="task.customerEdit.diocese" label="Diocese"></flow-field>
@@ -119,115 +112,57 @@
                 <fieldset>
 
                     <legend>Buying Cycle</legend>
-                    <div class="form-group">
-
-                        <div column="12">
-                            <div column="6">
-                                <fluid-select primary with-host="sourceUrl" class="width100pc"
-                                              id="{{flow.getElementFlowId('evalSelect')}}"
-                                              model="task.customerEdit.evaluation"
-                                              label="Evaluation"
-                                              source-url="factories/war/table_factories/months">
-                                </fluid-select>
-
-                            </div>
+                    <div class="width100pc">
+                        <div class="form-group">
+                            <war-select-months column="5" ng-model="task.customerEdit.evaluation"
+                                               label="Evaluation"></war-select-months>
                             <div column="1">
-                                <flow-check disabled="false" required="false" model="task.isEditEvaluationTo"
-                                            label=" to"></flow-check>
+                                <flow-check disabled="false" required="false" model="task.isCreateEvaluationTo"
+                                            label=""></flow-check>
                             </div>
-                            <div column="5">
-                                <fluid-select primary with-host="sourceUrl" class="width100pc"
-                                              ng-if="task.isEditEvaluationTo"
-                                              id="{{flow.getElementFlowId('evalSelect2')}}"
-                                              model="task.customerEdit.evaluationTo"
-                                              label=""
-                                              source-url="factories/war/table_factories/months">
-                                </fluid-select>
-                            </div>
-
+                            <war-select-months ng-if="task.isCreateEvaluationTo" column="6"
+                                               ng-model="task.customerEdit.evaluationTo"
+                                               label="To"></war-select-months>
                         </div>
 
+                        <div class="form-group">
+                            <war-select-months column="5" ng-model="task.customerEdit.ordering"
+                                               label="Ordering"></war-select-months>
 
-                        <div column="12">
-                            <div column="6">
-                                <fluid-select primary with-host="sourceUrl" class="width100pc"
-                                              id="{{flow.getElementFlowId('orderSelect')}}"
-                                              model="task.customerEdit.ordering"
-                                              label="Ordering"
-                                              source-url="factories/war/table_factories/months">
-                                </fluid-select>
-                            </div>
                             <div column="1">
-                                <flow-check disabled="false" required="false" model="task.isEditOrderingTo"
-                                            label=" to"></flow-check>
-                            </div>
-                            <div column="5">
-                                <fluid-select primary with-host="sourceUrl" class="width100pc"
-                                              ng-if="task.isEditOrderingTo"
-                                              id="{{flow.getElementFlowId('orderSelect2')}}"
-                                              model="task.customerEdit.orderingTo"
-                                              label=" "
-                                              source-url="factories/war/table_factories/months">
-                                </fluid-select>
+                                <flow-check disabled="false" required="false" model="task.isCreateOrderingTo"
+                                            label=""></flow-check>
                             </div>
 
+                            <war-select-months ng-if="task.isCreateOrderingTo" column="6"
+                                               ng-model="task.customerEdit.orderingTo"
+                                               label="To"></war-select-months>
                         </div>
 
-                        <div column="12">
-                            <div column="6">
-                                <fluid-select primary with-host="sourceUrl" class="width100pc"
-                                              id="{{flow.getElementFlowId('deliverySelect')}}"
-                                              model="task.customerEdit.delivery"
-                                              label="Delivery"
-                                              source-url="factories/war/table_factories/months">
-                                </fluid-select>
-
-                            </div>
+                        <div class="form-group">
+                            <war-select-months column="5" ng-model="task.customerEdit.delivery"
+                                               label="Delivery"></war-select-months>
                             <div column="1">
-                                <flow-check disabled="false" required="false" model="task.isEditDeliveryTo"
-                                            label=" to"></flow-check>
+                                <flow-check disabled="false" required="false" model="task.isCreateDeliveryTo"
+                                            label=""></flow-check>
                             </div>
-                            <div column="5">
-                                <fluid-select primary with-host="sourceUrl" class="width100pc"
-                                              ng-if="task.isEditDeliveryTo"
-                                              id="{{flow.getElementFlowId('deliverySelect2')}}"
-                                              model="task.customerEdit.deliveryTo"
-                                              label=" "
-                                              source-url="factories/war/table_factories/months"
-                                        >
-                                </fluid-select>
-                            </div>
-
+                            <war-select-months ng-if="task.isCreateDeliveryTo" column="6"
+                                               ng-model="task.customerEdit.deliveryTo"
+                                               label="To"></war-select-months>
                         </div>
 
-                        <div column="12">
-                            <div column="6">
-                                <fluid-select primary with-host="sourceUrl" class="width100pc"
-                                              id="{{flow.getElementFlowId('collectionSelect')}}"
-                                              model="task.customerEdit.collection"
-                                              label="Collection"
-                                              source-url="factories/war/table_factories/months">
-                                </fluid-select>
-
-                            </div>
+                        <div class="form-group">
+                            <war-select-months column="5" ng-model="task.customerEdit.collection"
+                                               label="Collection"></war-select-months>
                             <div column="1">
-                                <flow-check disabled="false" required="false" model="task.isEditCollectionTo"
-                                            label=" to"></flow-check>
-                            </div>
-                            <div column="5">
-                                <fluid-select primary with-host="sourceUrl" class="width100pc"
-                                              ng-if="task.isEditCollectionTo"
-                                              id="{{flow.getElementFlowId('collectionSelect2')}}"
-                                              model="task.customerEdit.collectionTo"
-                                              label=" "
-                                              source-url="factories/war/table_factories/months"
-                                        >
-                                </fluid-select>
+                                <flow-check disabled="false" required="false" model="task.isCreateCollectionTo"
+                                            label=""></flow-check>
                             </div>
 
+                            <war-select-months ng-if="task.isCreateCollectionTo" column="6"
+                                               ng-model="task.customerEdit.collectionTo"
+                                               label="To"></war-select-months>
                         </div>
-
-
                     </div>
 
                 </fieldset>
@@ -273,7 +208,7 @@
                 <flow-sub-table flow="flow" task="task" key-var="publisher" title="Other publishers present"
                                 target-list="task.customerEdit.publisher"
                                 id="{{flow.getElementFlowId('customerPublisherSubTable')}}" id-field="id"
-                                create-event="createPublisherEvent" edit-event="editPublisherEvent" look-up="false">
+                                create="task.customer.addPublisher()" edit-event="editPublisherEvent" look-up="false">
                     <flow-sub-column title="Publisher" model="publisher.description"></flow-sub-column>
                 </flow-sub-table>
 
@@ -305,7 +240,7 @@
             <flow-sub-table flow="flow" task="task" key-var="support" title="Other Support Given"
                             target-list="task.customerEdit.supportGivens"
                             id="{{flow.getElementFlowId('customerSupportSubTable')}}" id-field="id"
-                            create-event="createSupportEvent" edit-event="editSupportEvent" look-up="false">
+                            create="task.customer.addSupport()" edit-event="editSupportEvent" look-up="false">
                 <flow-sub-column title="Description" model="support.description"></flow-sub-column>
                 <flow-sub-column title="Amount" model="support.amount"></flow-sub-column>
             </flow-sub-table>
@@ -368,16 +303,9 @@
             </div>
             <div class="panel-body">
                 <div class="form-horizontal">
-
-                    <fluid-select primary with-host="sourceUrl" class="width100pc"
-                                  id="{{flow.getElementFlowId('educationLevelSelect')}}"
-                                  model="task.customerEdit.customerLevels[task.levelIndex].level"
-                                  label="Education Level"
-                                  source-url="services/war/level_query/list"
-                                  field-label="levelCourse"
-                                  field-value="id"
-                                  required="true">
-                    </fluid-select>
+                    <war-level-select class="width100pc" ng-required="true" label="Education level course"
+                                      ng-model="task.customerEdit.customerLevels[task.levelIndex].level">
+                    </war-level-select>
 
                     <flow-field model="task.customerEdit.customerLevels[task.levelIndex].population"
                                 label="Population"
@@ -410,26 +338,17 @@
                 <div class="form-horizontal">
 
                     <div class="col-lg-6">
-                        <fluid-select primary with-host="sourceUrl" class="width100pc"
-                                      id="{{flow.getElementFlowId('levelSelect')}}"
-                                      model="task.customerEdit.contactDetails[task.contactIndex].level"
-                                      label="Education Level"
-                                      source-url="factories/war/table_factories/education_levels"
-                                      required="true">
-                        </fluid-select>
+                        <war-educationlevel-select
+                                ng-model="task.customerEdit.contactDetails[task.contactIndex].level"
+                                ng-required="true" class="width100pc" label="Education Level">
+                        </war-educationlevel-select>
 
                         <flow-field model="task.customerEdit.contactDetails[task.contactIndex].description"
                                     label="Contact person" required="true"></flow-field>
 
-                        <fluid-select primary with-host="sourceUrl" class="width100pc"
-                                      id="{{flow.getElementFlowId('positionSelect')}}"
-                                      model="task.customerEdit.contactDetails[task.contactIndex].position"
-                                      field-label="description"
-                                      field-value="id"
-                                      label="Position"
-                                      source-url="services/war/position_query/list"
-                                      required="true">
-                        </fluid-select>
+                        <war-position-select class="width100pc" label="Position"
+                                             ng-model="task.customerEdit.contactDetails[task.contactIndex].position"
+                                             ng-required="true"></war-position-select>
                     </div>
 
                     <div class="col-lg-6">
@@ -437,14 +356,9 @@
                         <flow-date-picker model="task.customerEdit.contactDetails[task.contactIndex].birthdate"
                                           label="Birth date"></flow-date-picker>
 
-                        <fluid-select primary with-host="sourceUrl" class="width100pc"
-                                      id="{{flow.getElementFlowId('relationshipTypeSelect')}}"
-                                      model="task.customerEdit.contactDetails[task.contactIndex].relationshipType"
-                                      label="Relationship type"
-                                      source-url="factories/war/table_factories/relationship_types"
-                                      required="true">
-                        </fluid-select>
-
+                        <war-relationshiptype-select class="width100pc" label="Relationship type"
+                                                     ng-required="true"
+                                                     ng-model="task.customerEdit.contactDetails[task.contactIndex].relationshipType"></war-relationshiptype-select>
                         <div class="form-group">
                             <flow-check disabled="false" required="false"
                                         model="task.customerEdit.contactDetails[task.contactIndex].decisionMaker"
@@ -459,7 +373,7 @@
                                 <flow-field model="task.customerEdit.contactDetails[task.contactIndex].homePhone"
                                             label="Home"></flow-field>
 
-                                <flow-field model="task.customerEdit.contactDetails[task.contactIndex].homePhone"
+                                <flow-field model="task.customerEdit.contactDetails[task.contactIndex].workPhone"
                                             label="Work"></flow-field>
 
                                 <flow-field model="task.customerEdit.contactDetails[task.contactIndex].mobile"
@@ -518,18 +432,19 @@
 
                 <div class="form-horizontal">
                     <flow-message id="{{flow.getElementFlowId('potentialInfoMessage')}}"></flow-message>
-                    <fluid-select primary with-host="sourceUrl" class="width100pc"
-                                  fluid-disabled="s.task.potentialManaged" label="School Year"
-                                  field-label="description" model="task.tempSchoolYear"
-                                  change="onChangeSchoolYear(item)"
-                                  source-url="services/war/school_year_query/list"></fluid-select>
+
+                    <war-schoolyear-select class="width100pc" label="School Year"
+                                           ng-model="task.customerEdit.warCustomerMarketSchoolYears[task.potentialIndex].schoolYear"
+                                           ng-disabled="task.potentialManaged"
+                                           schoolyear-model="task.customer.schoolYear"
+                                           ng-change="task.customer.onChangeSchoolYear(task.customer.schoolYear)">
+                    </war-schoolyear-select>
 
                     <flow-field label="Market Potential" type="number"
                                 model="task.customerEdit.warCustomerMarketSchoolYears[task.potentialIndex].marketPotential"></flow-field>
 
                 </div>
             </div>
-
 
             <div class="panel-footer">
                 <div class="btn-group btn-group-md">

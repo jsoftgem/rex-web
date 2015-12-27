@@ -1,4 +1,5 @@
 var vendorsJS = ['bower_components/jquery/dist/jquery.js', 'bower_components/angular/angular.js',
+    'bower_components/angular-sanitize/angular-sanitize.js',
     'bower_components/ng-file-upload/ng-file-upload.js', 'bower_components/oclazyload/dist/ocLazyLoad.js',
     'bower_components/angular-local-storage/dist/angular-local-storage.js', 'bower_components/Chart.js/Chart.js',
     'bower_components/moment/moment.js', 'bower_components/fullcalendar/dist/fullcalendar.js',
@@ -13,20 +14,28 @@ var vendorsJS = ['bower_components/jquery/dist/jquery.js', 'bower_components/ang
     'bower_components/jquery-ui/jquery-ui.js', 'bower_components/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js',
     'bower_components/jqueryui-touch-punch/jquery.ui.touch-punch.js', 'bower_components/metisMenu/dist/metisMenu.js',
     'bower_components/jquery.scrollTo/jquery.scrollTo.js', 'bower_components/qtip2/jquery.qtip.js',
-    'bower_components/angular-dragdrop/src/angular-dragdrop.js'];
+    'bower_components/angular-dragdrop/src/angular-dragdrop.js', 'bower_components/jquery-timeago/jquery.timeago.js',
+    'bower_components/lodash/lodash.js',
+    'bower_components/ui-select/dist/select.js'];
 
 var vendorCSS = ['bower_components/bootstrap/dist/css/bootstrap.css',
     'bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css',
     'bower_components/font-awesome/css/font-awesome.css', 'bower_components/octicons/octicons/octicons.css',
     'bower_components/datatables/media/css/dataTables.bootstrap.css',
-    'bower_components/fullcalendar/dist/fullcalendar.css', 'bower_components/qtip2/jquery.qtip.css'
+    'bower_components/fullcalendar/dist/fullcalendar.css', 'bower_components/qtip2/jquery.qtip.css',
+    'bower_components/ui-select/dist/select.css'
 ];
 
 var vendorFonts = ['bower_components/bootstrap/fonts/*', 'bower_components/font-awesome/fonts/*'];
 var vendorCSSResource = ['bower_components/octicons/octicons/*.woff', 'bower_components/octicons/octicons/*.ttf'];
-var appJS = ['src/js/rex-template.module.js', 'src/js/app.js',
-    'src/js/**/*.js', 'tmp/*.js'];
-var appCSS = ['src/css/**/*.css'];
+var appJS = ['src/war-helper.js', 'src/war.module.js', 'src/war.constants.js',
+    'src/js/admin/admin.module.js', 'src/dev/dev.module.js', 'src/services/services.module.js',
+    'src/session/session.module.js', 'src/common/commons.module.js', 'src/common/core/core.module.js',
+    'src/home/home.module.js', 'src/services/resource/resource.module.js', 'src/sidebar/sidebar.module.js',
+    'src/activity/activity.module.js', 'src/table/table.module.js',
+    'src/management/management.module.js', 'src/reports/reports.module.js',
+    'src/**/*.js', '!src/controller/**/*.js'];
+var appCSS = ['src/**/*.css'];
 
 // HTML Build section config
 var sections = {
@@ -79,8 +88,10 @@ module.exports = function (grunt) {
         },
         html2js: {
             options: {
+                module: 'war.template',
                 singleModule: true,
-                module: 'rexTemplates',
+                existingModule: true,
+                base: './',
                 htmlmin: {
                     collapseBooleanAttributes: true,
                     collapseWhitespace: true,
@@ -88,7 +99,7 @@ module.exports = function (grunt) {
                 }
             },
             dist: {
-                src: ['src/templates/**/*.html'],
+                src: ['src/**/*.html'],
                 dest: 'tmp/templates.js'
             }
         },
@@ -109,20 +120,8 @@ module.exports = function (grunt) {
             dist: {
                 files: [
                     {
-                        'dist/js/app.min.js': ['dist/js/app.js'],
-                        'dist/js/vendor.min.js': ['dist/js/vendor.js'],
-                        'js/controller/rex/activity/customer-summary-controller.js': ['src/controller/activity/customer-summary-controller.js'],
-                        'js/controller/rex/activity/daily-controller.js': ['src/controller/activity/daily-controller.js'],
-                        'js/controller/rex/activity/planner.js': ['src/controller/activity/planner.js'],
-                        'js/controller/rex/activity/school-year-controller.js': ['src/controller/activity/school-year-controller.js'],
-                        'js/controller/rex/data/level-controller.js': ['src/controller/data/level-controller.js'],
-                        'js/controller/rex/data/position-controller.js': ['src/controller/data/position-controller.js'],
-                        'js/controller/rex/data/region-controller.js': ['src/controller/data/region-controller.js'],
-                        'js/controller/rex/data/school-controller.js': ['src/controller/data/school-controller.js'],
-                        'js/controller/rex/management/agent-controller.js': ['src/controller/management/agent-controller.js'],
-                        'js/controller/rex/management/customer-controller.js': ['src/controller/management/customer-controller.js'],
-                        'js/controller/rex/management/region-manager-controller.js': ['src/controller/management/region-manager-controller.js'],
-                        'js/controller/rex/reports/reports-controller.js': ['src/controller/reports/reports-controller.js']
+                        'dist/js/app.min.js': ['tmp/templates.js', 'dist/js/app.js'],
+                        'dist/js/vendor.min.js': ['dist/js/vendor.js']
                     }
                 ],
                 options: {
@@ -325,7 +324,5 @@ module.exports = function (grunt) {
     grunt.registerTask('build-copy', ['copy:main', 'copy:css']);
     grunt.registerTask('build-prod', ['clean:temp', 'html2js:dist', 'concat:app', 'strip:main', 'concat:vendor', 'uglify',
         'concat_css:app', 'concat_css:vendor', 'cssmin', 'build-copy', 'prod-html']);
-    grunt.registerTask('build-dev', ['html2js:dist', 'concat:vendor', 'concat_css:vendor', 'build-copy', 'dev-html']);
-
-
-}
+    grunt.registerTask('build-dev', ['concat:vendor', 'concat_css:vendor', 'build-copy', 'dev-html']);
+};

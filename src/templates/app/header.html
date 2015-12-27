@@ -148,7 +148,7 @@
            ng-repeat="task in flowFrameService.taskList | limitTo:10" ng-click="taskbar.open(task)" flow-bar-tooltip
            index="$index"
            task="task">
-            <i class="fluid-bar-icon" ng-class="task.loaded ? task.glyph : 'fa fa-spinner fa-spin'"></i>
+            <i class="fluid-bar-icon" ng-class="task.loaded || !task.active ? task.glyph : 'fa fa-spinner fa-spin'"></i>
         </a>
 
         <div class="dropdown fluidTaskBarMore hidden-md hidden-sm hidden-xs">
@@ -171,7 +171,7 @@
                                             class="fa fa-angle-down"></i></a>
                                 </div>
                                 <a href="#" ng-click="taskbar.open(tsk)">
-                                    <i ng-class="task.loaded ? task.glyph : 'fa fa-spinner fa-spin'"></i>&nbsp;&nbsp;&nbsp;<span
+                                    <i ng-class="task.loaded || !task.active ? task.glyph : 'fa fa-spinner fa-spin'"></i>&nbsp;&nbsp;&nbsp;<span
                                         class="task-item">{{tsk.title}}</span></a>
                             </li>
                         </ul>
@@ -184,7 +184,7 @@
         <a href="#" class="fluidTaskBar hidden-lg hidden-xs" ng-class="task.active ? 'fluidTaskBar-icon-shown' : ''"
            style="height:47px;width:48px; margin: 1px;" ng-repeat="task in flowFrameService.taskList | limitTo:5"
            ng-click="taskbar.open(task)" flow-tooltip tooltip-title="{{task.title}}">
-            <i class="fluid-bar-icon" ng-class="task.loaded ? task.glyph : 'fa fa-spinner fa-spin'"></i>
+            <i class="fluid-bar-icon" ng-class="task.loaded || !task.active ? task.glyph : 'fa fa-spinner fa-spin'"></i>
         </a>
 
         <div class="dropdown fluidTaskBarMore hidden-lg hidden-xs">
@@ -207,7 +207,7 @@
                                             class="fa fa-angle-down"></i></a>
                                 </div>
                                 <a href="#" ng-click="taskbar.open(tsk)">
-                                    <i ng-class="task.loaded ? task.glyph : 'fa fa-spinner fa-spin'"></i>&nbsp;&nbsp;&nbsp;<span
+                                    <i ng-class="task.loaded || !task.active ? task.glyph : 'fa fa-spinner fa-spin'"></i>&nbsp;&nbsp;&nbsp;<span
                                         class="task-item">{{tsk.title}}</span></a>
                             </li>
                         </ul>

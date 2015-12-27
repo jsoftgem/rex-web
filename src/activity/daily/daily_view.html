@@ -1,0 +1,16 @@
+<div class="container-fluid daily-view" ng-controller="dailyViewCtrl as dailyView">
+
+    <div ng-if="dailyView.type =='SCHOOL'">
+        <div class="pull-left">
+            <h2>{{dailyView.customerName}}</h2>
+            <h5>{{dailyView.customerCode}}</h5>
+        </div>
+
+    </div>
+    <div>
+        <label class="width100pc">
+            <span>Material adivisor: </span>
+            <span class="field">{{dailyView.agentFullName}}</span>
+        </label>
+    </div>
+</div>

@@ -10,10 +10,20 @@
                         required="true"></flow-field>
             <flow-field model="task.agentCreate.initials" label="Initials" type="text"
                         required="true"></flow-field>
-            <flow-select label="Region" task="task" model="task.agentCreate.region"
-                         disabled="false" required="false"
-                         source-url="services/war/region_query/list" field-label="regionName"
-                         field-value="regionCode"></flow-select>
+            <label class="width100pc">
+                <span>Region</span>
+                <ui-select ng-model="task.agent.region"
+                           ng-change="task.agentCreate.region=task.agent.region.regionCode">
+                    <ui-select-match placeholder="{{task.agent.regionLoaded ? '':'Loading regions'}}">
+                        {{$select.selected.regionName}}
+                    </ui-select-match>
+                    <ui-select-choices
+                            repeat="region in task.agent.regions | filter:{regionName:$select.search, regionCode: $select.search}"
+                            refresh="task.agent.getRegions()">
+                        {{region.regionName}}
+                    </ui-select-choices>
+                </ui-select>
+            </label>
             <div class="form-group">
                 <div offset="3">
                     <flow-check disabled="false" required="false" model="task.agentCreate.isManager"

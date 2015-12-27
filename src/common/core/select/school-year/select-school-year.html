@@ -1,0 +1,12 @@
+<label class="width100pc">
+    <span class="select-schoolYear-label">{{label}}</span>
+    <ui-select ng-model="selectSchoolYear.schoolYear">
+        <ui-select-match placeholder="{{selectSchoolYear.schoolYearLoaded ? '':'Loading school years...'}}">
+            {{(selectSchoolYear.schoolYears | selectSchoolYear : $select).description}}
+        </ui-select-match>
+        <ui-select-choices refresh="selectSchoolYear.getSchoolYears()"
+                           repeat="schoolYear in selectSchoolYear.schoolYears | filter:{description:$select.search}">
+            {{schoolYear.description}}
+        </ui-select-choices>
+    </ui-select>
+</label>

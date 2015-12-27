@@ -1,0 +1,12 @@
+<label class="width100pc">
+    <span class="select-relationshipType-label">{{label}}</span>
+    <ui-select ng-model="selectRelationshipType.relationshipType">
+        <ui-select-match>
+            {{$select.selected}}
+        </ui-select-match>
+        <ui-select-choices refresh="selectRelationshipType.getRelationshipTypes()"
+                           repeat="relationshipType in selectRelationshipType.relationshipTypes | filter:$select.search">
+            {{relationshipType}}
+        </ui-select-choices>
+    </ui-select>
+</label>

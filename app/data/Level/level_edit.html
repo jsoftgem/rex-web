@@ -5,16 +5,26 @@
         <input id="{{flow.getElementFlowId('level_submit')}}" type="submit"
                style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
 
+        <label column="6">
+            <span>
+                Education level
+            </span>
+            <ui-select ng-model="task.levelEdit.description">
+                <ui-select-match placeholder="{{task.level.educationLoaded ? '':'Loading education levels...'}}">
+                    {{$select.selected}}
+                </ui-select-match>
+                <ui-select-choices
+                        repeat="education in task.level.educationLevels | filter : $select.search"
+                        refresh="task.level.getEducationLevels()">
+                    {{education}}
+                </ui-select-choices>
+            </ui-select>
+        </label>
 
-        <fluid-select primary with-host="sourceUrl"
-                      id="{{flow.getElementFlowId('educationLevelSelect')}}"
-                      model="task.levelEdit.description"
-                      label="Education Level"
-                      source-url="factories/war/table_factories/education_levels"
-                      ng-required="true">
-        </fluid-select>
-
-        <flow-field model="task.levelEdit.levelCourse" label="Level course" type="text" required="true"></flow-field>
+        <label column="6">
+            <span>Level course <span class="required">*</span></span>
+            <input class="form-control" required ng-model="task.levelEdit.levelCourse">
+        </label>
 
         <flow-modal id="{{flow.getElementFlowId('levelDeleteModal')}}">
 
