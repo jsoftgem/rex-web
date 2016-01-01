@@ -47,6 +47,7 @@
             s.task.plannerFilter.getSchoolYears = getSchoolYears;
             s.calendar.deleteActivity = deleteActivity;
             s.calendar.cancelDeleteActivity = cancelDeleteActivity;
+            s.calendar.isUpdateVisible = isUpdateVisible;
             s.$on(s.flow.event.getSuccessEventId(), function (event, rv, method) {
                 if (method === "put") {
                     s.task.activities = [];
@@ -920,7 +921,7 @@
             console.debug('getTooltipButtons', event);
             return '<div class="btn-group btn-group-xs">' +
                 '<button type="button" class="btn btn-warning view">View</button>' +
-                '<button style="display:' + (isUpdateVisible(event.start._d) ? 'block' : 'none') + '" type="button" class="btn btn-info update">Update</button>' +
+                '<button style="display:' + (isUpdateVisible(event.start._d) || !event.activity.actual ? 'block' : 'none') + '" type="button" class="btn btn-info update">Update</button>' +
                 '<button style="display:' + (isDeleteVisible(event.start._d) ? 'block' : 'none') + '" class="btn btn-danger delete" type="button">Delete</button>' +
                 '</div>';
         }
@@ -961,14 +962,14 @@
                         fm.hide(s.flow.getElementFlowId('activityDeleteConfirm'));
                     });
                 }
-                s.hangingActivity = {};
+                s.hangingActivity.activity = undefined;
             }, function () {
-                s.hangingActivity = {};
+                s.hangingActivity.activity = undefined;
             });
         }
 
         function cancelDeleteActivity() {
-            s.hangingActivity = {};
+            s.hangingActivity.activity = undefined;
             fm.hide(s.flow.getElementFlowId('activityDeleteConfirm'));
         }
 

@@ -267,7 +267,8 @@
                 <div ng-show="hangingActivity.activity.type == 'SCHOOL'">
                     <flow-field model="hangingActivity.activity.description" disabled="true"
                                 label="Description"></flow-field>
-                    <div class="form-group" style="margin:auto">
+                    <div ng-if="calendar.isUpdateVisible(hangingActivity.activity.createdDt)" class="form-group"
+                         style="margin:auto">
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
@@ -349,7 +350,8 @@
                             </div>
                         </div>
                     </div>
-                    <flow-text-area label="CUSTOMER SPECIFIC ACTIVITY"
+                    <flow-text-area ng-if="calendar.isUpdateVisible(hangingActivity.activity.createdDt)"
+                                    label="CUSTOMER SPECIFIC ACTIVITY"
                                     model="hangingActivity.activity.customerSpecificActivity"></flow-text-area>
                     <flow-text-area label="REASON FOR NON-COVERAGE / ACTUAL DATE COVERED"
                                     model="hangingActivity.activity.reasonForNonCoverage"></flow-text-area>
