@@ -7,3 +7,4 @@ bower_components
 dist
 tmp
 /src/war.host.js
+/src/css/sass.css

@@ -13,4 +13,58 @@
             <span class="field">{{dailyView.agentFullName}}</span>
         </label>
     </div>
+    <div class="panel panel-default">
+        <div class="panel-heading"
+             ng-class="dailyView.planned ? 'planned' :'unplanned'">
+            <span class="heading-title">
+                Activity
+                <span class="pull-right">{{dailyView.planned ? 'Planned': 'Unplanned'}}</span>
+            </span>
+        </div>
+        <div class="panel-body" ng-if="dailyView.isNonCoveraged && dailyView.type =='SCHOOL'">
+            <div class="form-group" ng-if="!dailyView.actual">
+                <label class="width100pc">
+                    Reason for non coverage
+                    <textarea disabled class="form-control" ng-model="dailyView.reasonForNonCoverage"></textarea>
+                </label>
+            </div>
+            <div class="form-group" ng-if="dailyView.actual">
+                <label class="width100pc">
+                    Customer specific activity
+                    <textarea disabled class="form-control" ng-model="dailyView.customerSpecificActivity"></textarea>
+                </label>
+            </div>
+        </div>
+        <table class="table panel-body" ng-if="!dailyView.isNonCoveraged && dailyView.type =='SCHOOL'">
+            <tr ng-repeat="activity in dailyView.activities">
+                <td ng-class="activity.param ? 'bg-success' : 'bg-danger'">{{activity.label}}</td>
+                <td class="activity-param"><i
+                        ng-class="activity.param ? 'fa fa-check text-success' : 'fa fa-close text-danger'"></i></td>
+            </tr>
+        </table>
+        <div ng-if="dailyView.type == 'SEMINAR'" class="panel-body">
+            <div class="form-group">
+                <label class="width100pc">
+                    Seminar
+                    <textarea disabled class="form-control" ng-model="dailyView.description"></textarea>
+                </label>
+            </div>
+        </div>
+        <div ng-if="dailyView.type == 'OFFICE'" class="panel-body">
+            <div class="form-group">
+                <label class="width100pc">
+                    Office
+                    <textarea disabled class="form-control" ng-model="dailyView.description"></textarea>
+                </label>
+            </div>
+        </div>
+        <div ng-if="dailyView.type == 'LEAVE'" class="panel-body">
+            <div class="form-group">
+                <label class="width100pc">
+                    Leave
+                    <textarea disabled class="form-control" ng-model="dailyView.description"></textarea>
+                </label>
+            </div>
+        </div>
+    </div>
 </div>

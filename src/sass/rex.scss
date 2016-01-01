@@ -1,7 +1,8 @@
 @import "mixin";
 @import "variables";
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
-
+@import "../activity/planner/planner";
+@import "../activity/daily/daily";
 
 * {
   @include border-radius($border-radius);

@@ -1,0 +1,19 @@
+.daily-view {
+
+}
+
+.daily-view .field {
+  border-bottom: #2e6da4 solid 1px;
+}
+
+.daily-view .planned {
+  background: lighten($planner-planned, 1.0);
+}
+
+.daily-view .unplanned {
+  background: lighten($planner-unplanned, 1.0);
+}
+
+.daily-view .activity-param {
+  background: whitesmoke;
+}

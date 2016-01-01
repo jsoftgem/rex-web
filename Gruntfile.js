@@ -170,14 +170,10 @@ module.exports = function (grunt) {
                 options: {
                     atBegin: true
                 }
-            }
-            ,
-            min: {
-                files: ['Gruntfile.js', 'app/*.js', '*.html'],
-                tasks: ['jshint', 'karma:unit', 'html2js:dist', 'concat:dist', 'clean:temp', 'uglify:dist'],
-                options: {
-                    atBegin: true
-                }
+            },
+            sass: {
+                files: ['src/**/*.scss'],
+                tasks: ['build-sass']
             }
         },
         compress: {
@@ -332,4 +328,5 @@ module.exports = function (grunt) {
     grunt.registerTask('build-prod', ['clean:temp', 'html2js:dist', 'concat:app', 'strip:main', 'concat:vendor', 'uglify',
         'sass:dist', 'concat_css:app', 'concat_css:vendor', 'cssmin', 'build-copy', 'prod-html']);
     grunt.registerTask('build-dev', ['concat:vendor', 'sass:dist', 'concat_css:vendor', 'build-copy', 'dev-html']);
+    grunt.registerTask('build-sass', ['sass:dist', 'watch:sass']);
 };
