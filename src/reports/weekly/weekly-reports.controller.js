@@ -10,6 +10,8 @@
             s.$on('$destroy', destroy);
             s.task.report = newReport();
             s.task.agentReport = {};
+            s.task.agentReport.updateActivity = updateActivity;
+            s.task.agentReport.isUpdateActivity = isUpdateActivity;
             s.task.agentReport.clearFilter = clearFilter;
             s.task.agentReport.isAgent = up.isAgent();
             s.task.agentReport.isManager = up.isManager();
@@ -364,10 +366,17 @@
             }
         }
 
+        function updateActivity(activityId) {
+            s.flow.openTask('daily_task', 'daily_edit', activityId, false, undefined, 100, {toolbar: false});
+        }
+
+        function isUpdateActivity() {
+            return up.isAgent() || up.isManager();
+        }
+
         function destroy() {
             s.task.report = undefined;
             s.task.agentReport = undefined;
         }
-
     }
 })();

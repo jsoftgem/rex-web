@@ -404,15 +404,36 @@
                                     <tr>
                                         <td colspan="15" class="bg-danger">{{task.getDayName(weekday)}}</td>
                                     </tr>
-                                    <tr ng-repeat="customer in customers"
-                                        class="{{customer.planned == true ? 'planned_activity':'unplanned_activity'}}">
+                                    <tr ng-if="!customer.actual" ng-repeat="customer in customers">
+                                        <td><a href="#">{{customer.customer}}</a>
+                                        <td colspan="{{customer.reasonForNonCoverage ? '14': '13'}}">
+                                            <label class="width100pc">
+                                                <span>Reason for non coverage</span>
+                                                    <textarea disabled class="form-control"
+                                                              ng-if="customer.reasonForNonCoverage"
+                                                              ng-model="customer.reasonForNonCoverage"></textarea>
+                                                    <textarea disabled class="form-control"
+                                                              ng-if="!customer.reasonForNonCoverage"
+                                                              data-value="N/A"></textarea>
+                                            </label>
+                                        </td>
+                                        <td ng-if="!customer.reasonForNonCoverage">
+                                            <div class="btn btn-group btn-group-md">
+                                                <button class="btn btn-primary" type="button"
+                                                        ng-disabled="!task.agentReport.isUpdateActivity()"
+                                                        ng-click="task.agentReport.updateActivity(customer.reportActivityId)">
+                                                    Update
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr ng-if="customer.actual" ng-repeat="customer in customers"
+                                        class="agent-daily {{customer.planned == true ? 'planned_activity':'unplanned_activity'}}">
                                         <td><a href="#">{{customer.customer}}</a>
                                         </td>
-
                                         <td>
                                             <i ng-class="customer.workedWith == 1 ? 'fa fa-check text-success':'fa fa-close text-danger'"></i>
                                         </td>
-
                                         <td>
                                             {{customer.marketSegment}}
                                         </td>

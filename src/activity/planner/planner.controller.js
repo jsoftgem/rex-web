@@ -899,24 +899,6 @@
             return !isPastWeek(date) || (up.isAdmin() || up.isManager() || up.isGeneralManager());
         }
 
-        function isPastWeek(date) {
-            var current = new Date();
-            var sampleD = getWeekOfYear(date);
-            var sampleC = getWeekOfYear(current);
-            console.debug("isPastWeek.d", sampleD);
-            console.debug('isPastWeek.c', sampleC);
-            return getWeekOfYear(date) < getWeekOfYear(current);
-        }
-
-        function getWeekOfYear(d) {
-            d = new Date(+d);
-            d.setHours(0, 0, 0);
-            d.setDate(d.getDate() + 4 - (d.getDay() || 7));
-            var yearStart = new Date(d.getFullYear(), 0, 1);
-            var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1) / 7);
-            return [d.getFullYear(), weekNo];
-        }
-
         function getTooltipButtons(event) {
             console.debug('getTooltipButtons', event);
             return '<div class="btn-group btn-group-xs">' +

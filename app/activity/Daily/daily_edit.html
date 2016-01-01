@@ -5,7 +5,7 @@
         <input id="{{flow.getElementFlowId('daily_submit')}}" type="submit"
                style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
 
-        <div ng-if="task.source && task." class="form-group">
+        <div ng-if="task.origin" class="form-group">
             <div class="btn-group btn-group-md pull-right">
                 <button button info="submit">Save</button>
                 <button button info="button" ng-click="task.close();flow.navToTask(task.origin);">Cancel</button>
@@ -18,37 +18,43 @@
             <div class="col-lg-6">
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check disabled="false" required="false" label="Worked with the manager"
+                        <flow-check disabled="!task.isEnabled(task.modelEdit.createdDt)" required="false"
+                                    label="Worked with the manager"
                                     model="task.modelEdit.workedWith"></flow-check>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check disabled="false" required="false" label="Exam Copies Distribution"
+                        <flow-check disabled="!task.isEnabled(task.modelEdit.createdDt)" required="false"
+                                    label="Exam Copies Distribution"
                                     model="task.modelEdit.ecd"></flow-check>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check disabled="false" required="false" label="Invitation to Events"
+                        <flow-check disabled="!task.isEnabled(task.modelEdit.createdDt)" required="false"
+                                    label="Invitation to Events"
                                     model="task.modelEdit.ite"></flow-check>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check disabled="false" required="false" label="Confirmation of Events"
+                        <flow-check disabled="!task.isEnabled(task.modelEdit.createdDt)" required="false"
+                                    label="Confirmation of Events"
                                     model="task.modelEdit.coe"></flow-check>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check disabled="false" required="false" label="Giveaways Distribution"
+                        <flow-check disabled="!task.isEnabled(task.modelEdit.createdDt)" required="false"
+                                    label="Giveaways Distribution"
                                     model="task.modelEdit.gd"></flow-check>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check disabled="false" required="false" label="Delivery of Incentive/Donation"
+                        <flow-check disabled="!task.isEnabled(task.modelEdit.createdDt)" required="false"
+                                    label="Delivery of Incentive/Donation"
                                     model="task.modelEdit.doi"></flow-check>
                     </div>
                 </div>
@@ -56,38 +62,44 @@
             <div class="col-lg-6">
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check disabled="false" required="false" label="Purchase Order"
+                        <flow-check disabled="!task.isEnabled(task.modelEdit.createdDt)" required="false"
+                                    label="Purchase Order"
                                     model="task.modelEdit.po"></flow-check>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check disabled="false" required="false" label="Delivery of Add'l Order / TRM / Compli..."
+                        <flow-check disabled="!task.isEnabled(task.modelEdit.createdDt)" required="false"
+                                    label="Delivery of Add'l Order / TRM / Compli..."
                                     model="task.modelEdit.daotrc"></flow-check>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check disabled="false" required="false" label="Booklist"
+                        <flow-check disabled="!task.isEnabled(task.modelEdit.createdDt)" required="false"
+                                    label="Booklist"
                                     model="task.modelEdit.bookList"></flow-check>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check disabled="false" required="false" label="Updated Customer Info Sheet"
+                        <flow-check disabled="!task.isEnabled(task.modelEdit.createdDt)" required="false"
+                                    label="Updated Customer Info Sheet"
                                     model="task.modelEdit.ucis"></flow-check>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check disabled="false" required="false" label="Implemented Ex-Sem"
+                        <flow-check disabled="!task.isEnabled(task.modelEdit.createdDt)" required="false"
+                                    label="Implemented Ex-Sem"
                                     model="task.modelEdit.ies"></flow-check>
                     </div>
                 </div>
             </div>
         </div>
 
-        <flow-text-area label="CUSTOMER SPECIFIC ACTIVITY (Service, Birthday, Blessing, Etc.)"
+        <flow-text-area disabled="!task.isEnabled(task.modelEdit.createdDt)"
+                        label="CUSTOMER SPECIFIC ACTIVITY (Service, Birthday, Blessing, Etc.)"
                         model="task.modelEdit.customerSpecificActivity"></flow-text-area>
         <flow-text-area label="REASON FOR NON-COVERAGE / ACTUAL DATE COVERED"
                         model="task.modelEdit.reasonForNonCoverage"></flow-text-area>

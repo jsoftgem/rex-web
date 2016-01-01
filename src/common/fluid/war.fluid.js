@@ -258,7 +258,7 @@ flowComponents
                     if (scope.disabled === undefined || scope.disabled === false || scope.disabled === null) {
                         scope.model = !scope.model;
                     }
-                }
+                };
 
 
                 scope.$watch(function (scope) {

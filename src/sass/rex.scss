@@ -3,6 +3,7 @@
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
 @import "../activity/planner/planner";
 @import "../activity/daily/daily";
+@import "../reports/reports";
 
 * {
   @include border-radius($border-radius);
