@@ -919,7 +919,7 @@
         function getTooltipButtons(event) {
             console.debug('getTooltipButtons', event);
             return '<div class="btn-group btn-group-xs">' +
-                    /*  '<button type="button" class="btn btn-warning view">View</button>' +*/
+                '<button type="button" class="btn btn-warning view">View</button>' +
                 '<button style="display:' + (isUpdateVisible(event.start._d) ? 'block' : 'none') + '" type="button" class="btn btn-info update">Update</button>' +
                 '<button style="display:' + (isDeleteVisible(event.start._d) ? 'block' : 'none') + '" class="btn btn-danger delete" type="button">Delete</button>' +
                 '</div>';

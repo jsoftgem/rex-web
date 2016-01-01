@@ -204,7 +204,7 @@ module.exports = function (grunt) {
                     style: 'expanded'
                 },
                 files: {
-                    'src/css/sass.css': 'src/sass/**/*.scss'
+                    'src/css/sass.css': 'src/sass/rex.scss'
                 }
             }
         },
@@ -330,6 +330,6 @@ module.exports = function (grunt) {
     grunt.registerTask('prod-html', ['htmlbuild:prod_home', 'htmlbuild:prod_index', 'htmlbuild:prod_signin']);
     grunt.registerTask('build-copy', ['copy:main', 'copy:css']);
     grunt.registerTask('build-prod', ['clean:temp', 'html2js:dist', 'concat:app', 'strip:main', 'concat:vendor', 'uglify',
-        'concat_css:app', 'concat_css:vendor', 'cssmin', 'build-copy', 'prod-html']);
-    grunt.registerTask('build-dev', ['concat:vendor', 'concat_css:vendor', 'build-copy', 'dev-html']);
+        'sass:dist', 'concat_css:app', 'concat_css:vendor', 'cssmin', 'build-copy', 'prod-html']);
+    grunt.registerTask('build-dev', ['concat:vendor', 'sass:dist', 'concat_css:vendor', 'build-copy', 'dev-html']);
 };

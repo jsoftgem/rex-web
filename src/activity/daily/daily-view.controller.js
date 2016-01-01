@@ -25,7 +25,22 @@
         }
 
         function setDailyActivity(data) {
-
+            dailyView.lastUpdated = data.updatedDt ? data.updatedDt : data.createdDt;
+            dailyView.ecd = data.ecd;
+            dailyView.ite = data.ite;
+            dailyView.coe = data.coe;
+            dailyView.coe = data.coe;
+            dailyView.fp = data.fp;
+            dailyView.gd = data.gd;
+            dailyView.doi = data.doi;
+            dailyView.po = data.po;
+            dailyView.daotrc = data.daotrc;
+            dailyView.bookList = data.bookList;
+            dailyView.ucis = data.ucis;
+            dailyView.ies = data.ies;
+            dailyView.customerSpecificActivity=data.customerSpecificActivity;
+            dailyView.reasonForNonCoverage=data.reasonForNonCoverage;
+            dailyView.planned = data.planned;
         }
 
         function setDailyViewDetail(data) {
