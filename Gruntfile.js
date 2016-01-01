@@ -28,14 +28,14 @@ var vendorCSS = ['bower_components/bootstrap/dist/css/bootstrap.css',
 
 var vendorFonts = ['bower_components/bootstrap/fonts/*', 'bower_components/font-awesome/fonts/*'];
 var vendorCSSResource = ['bower_components/octicons/octicons/*.woff', 'bower_components/octicons/octicons/*.ttf'];
-var appJS = ['src/war-helper.js', 'src/war.module.js', 'src/war.constants.js',
+var appJS = ['src/war.host.js', 'src/war-helper.js', 'src/war.module.js', 'src/war.constants.js',
     'src/js/admin/admin.module.js', 'src/dev/dev.module.js', 'src/services/services.module.js',
     'src/session/session.module.js', 'src/common/commons.module.js', 'src/common/core/core.module.js',
     'src/home/home.module.js', 'src/services/resource/resource.module.js', 'src/sidebar/sidebar.module.js',
     'src/activity/activity.module.js', 'src/table/table.module.js',
     'src/management/management.module.js', 'src/reports/reports.module.js',
     'src/**/*.js', '!src/war.template.js'];
-var appDevJS = ['src/war-helper.js', 'src/war.module.js', 'src/war.constants.js',
+var appDevJS = ['src/war.host.js', 'src/war-helper.js', 'src/war.module.js', 'src/war.constants.js',
     'src/js/admin/admin.module.js', 'src/dev/dev.module.js', 'src/services/services.module.js',
     'src/session/session.module.js', 'src/common/commons.module.js', 'src/common/core/core.module.js',
     'src/home/home.module.js', 'src/services/resource/resource.module.js', 'src/sidebar/sidebar.module.js',
