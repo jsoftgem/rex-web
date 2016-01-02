@@ -1,0 +1,12 @@
+<label class="width100pc">
+    <span class="select-region-label">{{label}}</span>
+    <ui-select ng-model="selectRegion.region" ng-disabled="selectRegion.disabled()">
+        <ui-select-match placeholder="{{selectRegion.regionLoaded ? '':'Loading regions...'}}">
+            {{(selectRegion.regions | selectRegion : $select).regionCode}}
+        </ui-select-match>
+        <ui-select-choices refresh="selectRegion.getRegions()"
+                           repeat="region in selectRegion.regions | filter:{regionCode:$select.search}">
+            {{region.regionCode}}
+        </ui-select-choices>
+    </ui-select>
+</label>

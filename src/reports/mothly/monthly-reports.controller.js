@@ -198,13 +198,13 @@
             return scope.task.report.schoolYear
         }, function () {
             s.task.query();
-        })
+        });
 
         s.$watch(function (scope) {
             return scope.task.report.month
         }, function () {
             s.task.query();
-        })
+        });
 
         s.$watch(function (scope) {
             return scope.task.agent

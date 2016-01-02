@@ -2,74 +2,71 @@
 
     <form id="{{flow.getElementFlowId('reportFrame')}}" class="form-horizontal" role="form">
         <div class="form-group">
-            <label column="3">
-                <span>School year</span>
-                <ui-select ng-model="task.reportCustomer.schoolYearFilter" id="schoolYearFilter"
-                           ng-change="task.selectSchoolYear(task.reportCustomer.schoolYearFilter)">
-                    <ui-select-match>{{$select.selected.description}}</ui-select-match>
-                    <ui-select-choices
-                            repeat="school in task.reportCustomer.schools | filter: {description:$select.search}"
-                            refresh="task.reportCustomer.getSchools()">
-                        {{school.description}}
-                    </ui-select-choices>
-                </ui-select>
-            </label>
+            <war-schoolyear-select column="2" label="School year"
+                                   ng-model="task.reportCustomer.schoolYearFilter"
+                                   ng-change="task.selectSchoolYear(task.reportCustomer.schoolYearFilter)"></war-schoolyear-select>
 
-            <label column="3" ng-if="task.reportCustomer.schoolYearFilter && !task.isAgent">
-                <span>Region</span>
-                <ui-select ng-model="task.reportCustomer.regionSelectFilter" id="regionSelectFilter"
-                           ng-change="task.selectRegion(task.reportCustomer.regionSelectFilter)">
-                    <ui-select-match>{{$select.selected.regionCode}}</ui-select-match>
-                    <ui-select-choices
-                            repeat="region in task.reportCustomer.regions | filter: {regionCode:$select.search}"
-                            refresh="task.reportCustomer.getRegions()">
-                        {{region.regionCode}}
-                    </ui-select-choices>
-                </ui-select>
-            </label>
+            <war-region-select column="2"
+                               ng-if="task.reportCustomer.schoolYearFilter && task.reportCustomer.isFilterEnabled()"
+                               label="Region"
+                               ng-model="task.reportCustomer.regionSelectFilter"
+                               ng-change="task.selectRegion(task.reportCustomer.regionSelectFilter)"></war-region-select>
 
-            <label column="3" ng-if="task.reportCustomer.regionSelectFilter && !task.isAgent" id="agentSelectFilter">
+            <label column="2" ng-if="task.reportCustomer.regionSelectFilter && task.reportCustomer.isFilterEnabled()"
+                   id="agentSelectFilter">
                 <span>Agent</span>
                 <ui-select ng-model="task.reportCustomer.agentSelectFilter" id="regionSelectFilter"
                            ng-change="task.selectAgent(task.reportCustomer.agentSelectFilter)">
-                    <ui-select-match>{{$select.selected.user.flowUserDetail.fullName}}</ui-select-match>
+                    <ui-select-match placeholder="{{task.reportCustomer.loadedAgents ? '':'Loading agents'}}">
+                        {{$select.selected.user.flowUserDetail.fullName}}
+                    </ui-select-match>
                     <ui-select-choices
                             repeat="agent in task.reportCustomer.agents | filter: {user:{flowUserDetail:{fullName:$select.search}}}"
-                            refresh="task.reportCustomer.getAgentsByRegionCode(task.reportCustomer.regionSelectFilter.regionCode)">
+                            refresh="task.reportCustomer.getAgentsByRegionCode(task.reportCustomer.regionSelectFilter)">
                         {{agent.user.flowUserDetail.fullName}}
                     </ui-select-choices>
                 </ui-select>
             </label>
 
-        </div>
-
-        <div column="12" class="form-group">
-            <div class="btn-group btn-group-sm">
-
-                <button ng-if="!task.isAgent" button info="button" title="Clear filters" ng-click="task.clearFilters()">
-                    <i
-                            fluid-icon-clear></i> Clear filters
-                </button>
-
-                <button button info="button" title="Show all" ng-click="task.tag('all')"><i
-                        fluid-icon-tag></i> All
-                </button>
-
-                <button button info="button" title="Show top 20" ng-click="task.tag('20')"><i
-                        fluid-icon-tag></i> 20
-                </button>
-
-                <button button info="button" title="Show top 50" ng-click="task.tag('50')"><i
-                        fluid-icon-tag></i> 50
-                </button>
-
-                <button button info="button" title="Print" fluid-print-report print-data="task.report.data"><i
-                        fluid-icon-print></i> Print
-                </button>
+            <div column="6">
+                <div class="btn-group">
+                    <div class="height7px"></div>
+                    <div class="btn-group">
+                        <button ng-class="task.report.filter.tag =='all' ? 'active':''" button info="button"
+                                title="Show all" ng-click="task.tag('all')"><i
+                                fluid-icon-tag></i> All
+                        </button>
+                        <button ng-class="task.report.filter.tag =='20' ? 'active':''" button info="button"
+                                title="Show top 20" ng-click="task.tag('20')"><i
+                                fluid-icon-tag></i> 20
+                        </button>
+                        <button ng-class="task.report.filter.tag =='50' ? 'active':''" button info="button"
+                                title="Show top 50" ng-click="task.tag('50')"><i
+                                fluid-icon-tag></i> 50
+                        </button>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <div class="height7px"></div>
+                    <button button primary="button" title="Go" ng-click="task.query()"> Go
+                    </button>
+                </div>
+                <div class="btn-group">
+                    <div class="height7px"></div>
+                    <button ng-if="task.reportCustomer.isFilterEnabled()" button warning="button" title="Clear filters"
+                            ng-click="task.clearFilters()">
+                        <i fluid-icon-clear></i> Clear
+                    </button>
+                </div>
+                <div class="btn-group">
+                    <div class="height7px"></div>
+                    <button button success="button" title="Print" fluid-print-report print-data="task.report.data"><i
+                            fluid-icon-print></i> Print
+                    </button>
+                </div>
 
             </div>
         </div>
-
 
         <div column="12">
             <div class="form-group" ng-repeat="region in task.report.data.regions">
@@ -80,49 +77,38 @@
                     <div class="panel-heading">
                         <div class="panel-title">{{region.region}}</div>
                     </div>
+                    <table ng-if="task.view=='Table'"
+                           class="panel-body table report-monthly-body">
+                        <colgroup>
+                            <col span="2" class="bg-primary">
+                            <col span="13" class="bg-warning">
+                            <col span="12" class="bg-info">
+                        </colgroup>
+                        <thead>
+                        <th class="report-monthly-header">Top</th>
+                        <th class="report-monthly-header">Accounts</th>
+                        <th class="report-monthly-header" ng-repeat="label in task.report.data.labels">{{label}}
+                        </th>
+                        </thead>
+                        </tbody>
 
-                    <div class="panel-body" style="overflow-x:scroll">
+                        <tbody ng-repeat="reportAgent in region.agents">
+                        <tr>
+                            <td colspan="27" class="bg-warning">{{reportAgent.materialsAdvisor}}
+                            <td>
+                        </tr>
+                        <tr class="report-monthly-row"
+                            ng-repeat="customer in reportAgent.customers">
+                            <td class="text-center bg-primary">{{customer.top ? customer.top : 'Untagged'}}</td>
+                            <td class="text-center bg-primary">{{customer.label}}</td>
+                            <td class="text-center" ng-class="cusData == 0 ? 'bg-danger':'bg-success'"
+                                ng-repeat="cusData in customer.data track by $index">
+                                {{cusData}}
+                            </td>
+                        </tr>
+                        </tbody>
 
-                        <table ng-if="task.view=='Table'" style="overflow-x:scroll"
-                               class="table report-table">
-                            <colgroup>
-                                <col span="4">
-                                <col span="12" class="months-header">
-                                <col span="11" class="activity-header">
-                            </colgroup>
-                            <thead>
-                            <th style="font-size: 9px">Top</th>
-                            <th style="font-size: 9px">Accounts</th>
-                            <th style="font-size: 9px" ng-repeat="label in task.report.data.labels">{{label}}</th>
-                            </thead>
-                            </tbody>
-
-                            <tbody ng-repeat="reportAgent in region.agents">
-                            <tr>
-                                <td colspan="27" class="bg-warning">{{reportAgent.materialsAdvisor}}
-                                <td>
-                            </tr>
-                            <tr style="font-size: 12px;font-family: sans-serif"
-                                ng-repeat="customer in reportAgent.customers">
-                                <td class="text-center">{{customer.top ? customer.top : 'Untagged'}}</td>
-                                <td class="text-center">{{customer.label}}</td>
-                                <td class="text-center" ng-repeat="cusData in customer.data track by $index">
-                                    {{cusData}}
-                                </td>
-                            </tr>
-
-                            </tbody>
-
-                        </table>
-                        <span ng-if="task.view == 'Bar Chart'"> Coming on next patch...</span>
-                        <!--TODO: Bar Chart
-                                <canvas ng-if="task.view =='Bar Chart'" id="{{flow.getElementFlowId('reportMonthlyCanvase')}}_{{region.region}}}}">
-
-                                </canvas>
-                                -->
-                    </div>
-
-
+                    </table>
                 </div>
             </div>
         </div>

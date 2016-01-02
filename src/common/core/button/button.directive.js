@@ -23,6 +23,9 @@
                 } else if (iAttrs.primary) {
                     iElement.attr("type", iAttrs.primary);
                     iElement.addClass("btn-primary");
+                } else if (iAttrs.success) {
+                    iElement.attr("type", iAttrs.success);
+                    iElement.addClass("btn-success");
                 } else {
                     iElement.attr("type", "button");
                     iElement.addClass("btn-default");

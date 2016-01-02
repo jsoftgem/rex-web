@@ -8,9 +8,8 @@
     function ReportCustomerSummary(s, up, resourceApiService) {
         s.$on('$destroy', destroy);
         s.task.reportCustomer = {};
-        s.task.reportCustomer.getSchools = getSchools;
-        s.task.reportCustomer.getRegions = getRegions;
         s.task.reportCustomer.getAgentsByRegionCode = getAgentsByRegionCode;
+        s.task.reportCustomer.isFilterEnabled = isFilterEnabled;
         s.task.home = 'report_monthly_customer';
         s.task.view = 'Table';
         s.task.refresh = function () {
@@ -19,47 +18,31 @@
         s.flow.onRefreshed = function () {
             s.task.refresh();
         };
+
         s.task.page.load = function (data) {
-
-
             s.task.report = {};
-
             s.task.order = 'materialsAdvisor';
-
             if (this.name === s.task.home) {
                 s.task.report.data = data;
                 s.task.report.filter = JSON.parse(this.getParam);
-
-                if (up.agent.id) {
-
-                    this.title = up.agent.fullName + '\'s Customer';
-
+                if (up.isAgent()) {
+                    this.title = up.fullName + '\'s Customer';
                     s.task.report.filter.regionCode = up.agent.region;
-
                     s.task.report.filter.agent = up.agent.id;
-
-                    s.task.isAgent = true;
                 }
-
             }
         };
         s.task.selectSchoolYear = function (item) {
-            if (s.task.report && s.task.report.filter && item) {
-                s.task.report.filter.schoolYear = item.id;
-                s.task.query();
-            }
+            s.task.report.filter.schoolYear = item
         };
         s.task.selectRegion = function (item) {
-            if (s.task.report.filter && item) {
-                s.task.report.filter.regionCode = item.regionCode;
-                s.task.query();
-            }
+            s.task.report.filter.regionCode = item;
+            s.task.reportCustomer.agentSelectFilter = undefined;
+            s.task.report.filter.agent = undefined;
+            getAgentsByRegionCode(item);
         };
         s.task.selectAgent = function (item) {
-            if (s.task.report.filter && item) {
-                s.task.report.filter.agent = item.id;
-                s.task.query();
-            }
+            s.task.report.filter.agent = item.id;
         };
         s.task.query = function () {
             if (s.task.report.filter) {
@@ -75,11 +58,12 @@
                 s.task.agent = undefined;
                 s.task.region = undefined;
                 s.task.report.data = {};
-                s.task.query();
+                s.task.reportCustomer.schoolYearFilter = undefined;
+                s.task.reportCustomer.regionSelectFilter = undefined;
+                s.task.reportCustomer.agentSelectFilter = undefined;
             }
         };
         s.task.tag = function (tag) {
-
             s.task.report.filter.tag = tag;
             if (tag === '20') {
                 s.task.order = 'index';
@@ -88,8 +72,6 @@
             } else {
                 s.task.order = 'materialsAdvisor';
             }
-
-            s.task.query();
         };
         s.$on(s.flow.event.getSuccessEventId(), function (event, data, method) {
             console.info('reports-monthly-summary- getSuccessEventId', method);
@@ -99,28 +81,21 @@
             }
         });
 
-        function getSchools() {
-            resourceApiService.SchoolYearResource.getList(function (schools) {
-                s.task.reportCustomer.schools = schools;
-            }, function () {
-                s.task.reportCustomer.schools = [];
-            });
-        }
-
-        function getRegions() {
-            resourceApiService.RegionResource.getList(function (regions) {
-                s.task.reportCustomer.regions = regions;
-            }, function () {
-                s.task.reportCustomer.regions = [];
-            });
-        }
 
         function getAgentsByRegionCode(regionCode) {
+            s.task.reportCustomer.loadedAgents = false;
             resourceApiService.WarAgent.getByRegionCode(regionCode, function (agents) {
                 s.task.reportCustomer.agents = agents;
+                s.task.reportCustomer.loadedAgents = true;
             }, function () {
                 s.task.reportCustomer.agents = [];
+                s.task.reportCustomer.loadedAgents = true;
             });
+        }
+
+
+        function isFilterEnabled() {
+            return up.isManager() || up.isAdmin() || up.isGeneralManager();
         }
 
         function destroy() {
