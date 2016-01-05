@@ -14,91 +14,130 @@
 
         <flow-field label="Date" disabled="true" model="task.modelEdit.startDt | date: 'EEEE MM/dd/yyyy'"></flow-field>
         <flow-field model="task.modelEdit.description" label="Customer" disabled="true"></flow-field>
+        {{task.modelEdit.startDt}}
+        {{task.isEnabled(task.modelEdit.startDt)}}
         <div class="form-group" style="margin:auto">
-            <div class="col-lg-6">
+            <div column="6">
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check disabled="!task.isEnabled(task.modelEdit.createdDt)" required="false"
+                        <flow-check disabled="!task.isEnabled(task.modelEdit.startDt)" required="false"
                                     label="Worked with the manager"
                                     model="task.modelEdit.workedWith"></flow-check>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check disabled="!task.isEnabled(task.modelEdit.createdDt)" required="false"
+                        <flow-check disabled="!task.isEnabled(task.modelEdit.startDt)" required="false"
                                     label="Exam Copies Distribution"
                                     model="task.modelEdit.ecd"></flow-check>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check disabled="!task.isEnabled(task.modelEdit.createdDt)" required="false"
+                        <flow-check disabled="!task.isEnabled(task.modelEdit.startDt)" required="false"
                                     label="Invitation to Events"
                                     model="task.modelEdit.ite"></flow-check>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check disabled="!task.isEnabled(task.modelEdit.createdDt)" required="false"
+                        <flow-check disabled="!task.isEnabled(task.modelEdit.startDt)" required="false"
                                     label="Confirmation of Events"
                                     model="task.modelEdit.coe"></flow-check>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check disabled="!task.isEnabled(task.modelEdit.createdDt)" required="false"
+                        <flow-check disabled="!task.isEnabled(task.modelEdit.startDt)" required="false"
                                     label="Giveaways Distribution"
                                     model="task.modelEdit.gd"></flow-check>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check disabled="!task.isEnabled(task.modelEdit.createdDt)" required="false"
+                        <flow-check disabled="!task.isEnabled(task.modelEdit.startDt)" required="false"
                                     label="Delivery of Incentive/Donation"
                                     model="task.modelEdit.doi"></flow-check>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
+            <div column="6">
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check disabled="!task.isEnabled(task.modelEdit.createdDt)" required="false"
+                        <flow-check disabled="!task.isEnabled(task.modelEdit.startDt)" required="false"
                                     label="Purchase Order"
                                     model="task.modelEdit.po"></flow-check>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check disabled="!task.isEnabled(task.modelEdit.createdDt)" required="false"
+                        <flow-check disabled="!task.isEnabled(task.modelEdit.startDt)" required="false"
                                     label="Delivery of Add'l Order / TRM / Compli..."
                                     model="task.modelEdit.daotrc"></flow-check>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check disabled="!task.isEnabled(task.modelEdit.createdDt)" required="false"
+                        <flow-check disabled="!task.isEnabled(task.modelEdit.startDt)" required="false"
                                     label="Booklist"
                                     model="task.modelEdit.bookList"></flow-check>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check disabled="!task.isEnabled(task.modelEdit.createdDt)" required="false"
+                        <flow-check disabled="!task.isEnabled(task.modelEdit.startDt)" required="false"
                                     label="Updated Customer Info Sheet"
                                     model="task.modelEdit.ucis"></flow-check>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-                        <flow-check disabled="!task.isEnabled(task.modelEdit.createdDt)" required="false"
+                        <flow-check disabled="!task.isEnabled(task.modelEdit.startDt)" required="false"
                                     label="Implemented Ex-Sem"
                                     model="task.modelEdit.ies"></flow-check>
                     </div>
                 </div>
             </div>
+            <div column="12">
+                <fieldset>
+                    <legend>Marketing</legend>
+                    <div column="6">
+                        <div class="form-group">
+                            <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                <flow-check disabled="!task.isEnabled(task.modelEdit.startDt)" required="false"
+                                            label="Bootcamp"
+                                            model="hangingActivity.activity.bootcamp"></flow-check>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                <flow-check disabled="!task.isEnabled(task.modelEdit.startDt)" required="false"
+                                            label="AECON"
+                                            model="hangingActivity.activity.aecon"></flow-check>
+                            </div>
+                        </div>
+                    </div>
+                    <div column="6">
+                        <div class="form-group">
+                            <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                <flow-check disabled="!task.isEnabled(task.modelEdit.startDt)" required="false"
+                                            label="CEAP"
+                                            model="hangingActivity.activity.ceap"></flow-check>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                                <flow-check disabled="!task.isEnabled(task.modelEdit.startDt)" required="false"
+                                            label="Collection and PR"
+                                            model="hangingActivity.activity.collectionAndPR"></flow-check>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
         </div>
 
-        <flow-text-area disabled="!task.isEnabled(task.modelEdit.createdDt)"
+        <flow-text-area disabled="!task.isEnabled(task.modelEdit.startDt)"
                         label="CUSTOMER SPECIFIC ACTIVITY (Service, Birthday, Blessing, Etc.)"
                         model="task.modelEdit.customerSpecificActivity"></flow-text-area>
         <flow-text-area label="REASON FOR NON-COVERAGE / ACTUAL DATE COVERED"

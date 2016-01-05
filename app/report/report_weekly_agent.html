@@ -197,6 +197,12 @@
                                 Activity
                             </a>
                         </li>
+                        <li ng-init="task.table.isCustomerSpecific = true">
+                            <a href="#" ng-click="task.table.isCustomerSpecific=!task.table.isCustomerSpecific">
+                                <input type="checkbox" ng-model="task.table.isCustomerSpecific"/>Customer Specific
+                                Activity
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <div class="btn-group dropdown">

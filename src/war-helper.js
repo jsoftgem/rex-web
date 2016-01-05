@@ -1,4 +1,3 @@
-
 var monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
 var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
@@ -357,6 +356,10 @@ function disableDraggable(s) {
 }
 
 function isPastWeek(date) {
+    if (typeof date === 'number' || typeof  date === 'string') {
+        date = new Date(date);
+    }
+    console.debug('isPastWeek', date);
     var current = new Date();
     return getWeekOfYear(date) < getWeekOfYear(current);
 }

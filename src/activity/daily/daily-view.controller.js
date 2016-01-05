@@ -82,6 +82,10 @@
             addActivity(createActivity('Book-list', data.bookList));
             addActivity(createActivity('Updated Customer Info Sheet', data.ucis));
             addActivity(createActivity('Implemented Ex-Sem', data.ies));
+            addActivity(createActivity('Bootcamp', data.bootcamp));
+            addActivity(createActivity('AECON', data.aecon));
+            addActivity(createActivity('CEAP', data.ceap));
+            addActivity(createActivity('Collection and PR', data.collectionAndPR));
             dailyView.customerSpecificActivity = data.customerSpecificActivity;
             dailyView.reasonForNonCoverage = data.reasonForNonCoverage;
             dailyView.planned = data.planned;
