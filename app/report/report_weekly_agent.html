@@ -170,10 +170,8 @@
                         </li>
                         <li ng-init="task.table.isDaotrc = true">
                             <a href="#" ng-click="task.table.isDaotrc=!task.table.isDaotrc">
-                                <input type="checkbox" ng-model="task.table.isDaotrc"/>Delivery of Additional Order
-                                /
-                                TRM /
-                                Compli
+                                <input type="checkbox" ng-model="task.table.isDaotrc"/>Delivery of Additional Order/TRM
+                                /Compli
                             </a>
                         </li>
                         <li ng-init="task.table.isBooklist = true">
@@ -201,6 +199,26 @@
                             <a href="#" ng-click="task.table.isCustomerSpecific=!task.table.isCustomerSpecific">
                                 <input type="checkbox" ng-model="task.table.isCustomerSpecific"/>Customer Specific
                                 Activity
+                            </a>
+                        </li>
+                        <li ng-init="task.table.isBootcamp = true">
+                            <a href="#" ng-click="task.table.isBootcamp=!task.table.isBootcamp">
+                                <input type="checkbox" ng-model="task.table.isBootcamp"/>Bootcamp
+                            </a>
+                        </li>
+                        <li ng-init="task.table.isAecon = true">
+                            <a href="#" ng-click="task.table.isAecon=!task.table.isAecon">
+                                <input type="checkbox" ng-model="task.table.isAecon"/>AECON
+                            </a>
+                        </li>
+                        <li ng-init="task.table.isCeap = true">
+                            <a href="#" ng-click="task.table.isCeap=!task.table.isCeap">
+                                <input type="checkbox" ng-model="task.table.isCeap"/>CEAP
+                            </a>
+                        </li>
+                        <li ng-init="task.table.isCollectionAndPr = true">
+                            <a href="#" ng-click="task.table.isCollectionAndPr=!task.table.isCollectionAndPr">
+                                <input type="checkbox" ng-model="task.table.isCollectionAndPr"/>Collection and PR
                             </a>
                         </li>
                     </ul>
@@ -255,6 +273,10 @@
                     <th ng-if="task.table.isUcis" class="bg-warning">Updated Customer Info Sheet</th>
                     <th ng-if="task.table.isIes" class="bg-warning">Implemented Ex-Sem</th>
                     <th ng-if="task.table.isCustomerSpecific" class="bg-warning">Customer Specific Activity</th>
+                    <th ng-if="task.table.isBootcamp" class="bg-warning">Bootcamp</th>
+                    <th ng-if="task.table.isAecon" class="bg-warning">AECON</th>
+                    <th ng-if="task.table.isCeap" class="bg-warning">CEAP</th>
+                    <th ng-if="task.table.isCollectionAndPr" class="bg-warning">Collection and PR</th>
                 </tr>
                 </thead>
 
@@ -272,7 +294,7 @@
                     </select></td>
                 </tr>
                 <tr ng-repeat="day in reports | filter : {week: monthModel.selectedWeek > 0 ? monthModel.selectedWeek : ''}">
-                    <td colspan="20">
+                    <td colspan="24">
                         <div class="margin-leftl5px">
                             <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
                                  header-name="{{!task.report.isAgent && task.table.isMaterialsAdvisor ? 'Materials Advisor' :'Action'}}"
@@ -370,8 +392,25 @@
                                 {{day.ies}}
                             </div>
                             <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
-                                 header-name="Customer Specific Activity" ng-if="task.table.isCustomerSpecific" class="report-td">
+                                 header-name="Customer Specific Activity" ng-if="task.table.isCustomerSpecific"
+                                 class="report-td">
                                 {{day.customerSpecific}}
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Bootcamp" ng-if="task.table.isBootcamp" class="report-td">
+                                {{day.bootcamp}}
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="AECON" ng-if="task.table.isAecon" class="report-td">
+                                {{day.aecon}}
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="CEAP" ng-if="task.table.isCeap" class="report-td">
+                                {{day.ceap}}
+                            </div>
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Collection and PR" ng-if="task.table.isCollectionAndPr" class="report-td">
+                                {{day.collectionAndPr}}
                             </div>
                         </div>
                         <div ng-if="day.view">
@@ -419,14 +458,26 @@
                                     <th class="bg-info">
                                         Customer Specific Activity
                                     </th>
+                                    <th class="bg-info">
+                                        Bootcamp
+                                    </th>
+                                    <th class="bg-info">
+                                        AECON
+                                    </th>
+                                    <th class="bg-info">
+                                        CEAP
+                                    </th>
+                                    <th class="bg-info">
+                                        Collection and PR
+                                    </th>
                                     </thead>
                                     <tbody ng-repeat="(weekday,customers) in day.customers | groupBy:'day' | orderBy:'day'">
                                     <tr>
-                                        <td colspan="16" class="bg-danger">{{task.getDayName(weekday)}}</td>
+                                        <td colspan="19" class="bg-danger">{{task.getDayName(weekday)}}</td>
                                     </tr>
                                     <tr ng-if="!customer.actual" ng-repeat="customer in customers">
                                         <td><a href="#">{{customer.customer}}</a>
-                                        <td colspan="{{customer.reasonForNonCoverage ? '15': '14'}}">
+                                        <td colspan="{{customer.reasonForNonCoverage ? '19': '18'}}">
                                             <label class="width100pc">
                                                 <span>Reason for non coverage</span>
                                                     <textarea disabled class="form-control"
@@ -495,6 +546,18 @@
                                         </td>
                                         <td>
                                             <i ng-class="customer.customerSpecific == 1 ? 'fa fa-check text-success':'fa fa-close text-danger'"></i>
+                                        </td>
+                                        <td>
+                                            <i ng-class="customer.bootcamp == 1 ? 'fa fa-check text-success':'fa fa-close text-danger'"></i>
+                                        </td>
+                                        <td>
+                                            <i ng-class="customer.aecon == 1 ? 'fa fa-check text-success':'fa fa-close text-danger'"></i>
+                                        </td>
+                                        <td>
+                                            <i ng-class="customer.ceap == 1 ? 'fa fa-check text-success':'fa fa-close text-danger'"></i>
+                                        </td>
+                                        <td>
+                                            <i ng-class="customer.collectionAndPr == 1 ? 'fa fa-check text-success':'fa fa-close text-danger'"></i>
                                         </td>
                                     </tr>
                                     </tbody>
