@@ -7,6 +7,7 @@
     var OFFICE = "OFFICE";
     var LEAVE = "LEAVE";
     var SEMINAR = "SEMINAR";
+    var HOLIDAY = "HOLIDAY";
     angular.module('war.activity')
         .controller('plannerCtrl', PlannerCtrl);
 
@@ -48,6 +49,7 @@
             s.calendar.deleteActivity = deleteActivity;
             s.calendar.cancelDeleteActivity = cancelDeleteActivity;
             s.calendar.isUpdateVisible = isUpdateVisible;
+            s.calendar.isAdmin = isAdmin;
             s.$on(s.flow.event.getSuccessEventId(), function (event, rv, method) {
                 if (method === "put") {
                     s.task.activities = [];
@@ -231,7 +233,8 @@
                                             scope.task.plannerCalendar.fullCalendar("renderEvent", copiedEventObject, true);
                                             console.debug("planner.drop.SCHOOL", copiedEventObject);
                                         });
-                                    } else {
+                                    }
+                                    else {
                                         t(function () {
                                             scope.otherActivity.hangingEventObject = copiedEventObject;
                                             console.debug("planner.drop.otherActivities", scope.otherActivity.hangingEventObject);
@@ -495,6 +498,13 @@
                     } else if (type === OFFICE) {
                         if (activity.description === undefined) {
                             ms.danger(s.flow.getElementFlowId('other_activity_messages'), "Please fill out the description.", 3000).open();
+                        } else {
+                            s.task.plannerCalendar.fullCalendar("renderEvent", s.otherActivity.hangingEventObject, true);
+                            fm.hide(s.flow.getElementFlowId("other_activity"));
+                        }
+                    } else if (type === HOLIDAY) {
+                        if (activity.description === undefined) {
+                            ms.danger(s.flow.getElementFlowId('other_activity_messages'), "Please specify the holiday.", 3000).open();
                         } else {
                             s.task.plannerCalendar.fullCalendar("renderEvent", s.otherActivity.hangingEventObject, true);
                             fm.hide(s.flow.getElementFlowId("other_activity"));
@@ -953,6 +963,10 @@
         function cancelDeleteActivity() {
             s.hangingActivity.activity = undefined;
             fm.hide(s.flow.getElementFlowId('activityDeleteConfirm'));
+        }
+
+        function isAdmin(){
+            return up.isAdmin();
         }
 
     }

@@ -245,6 +245,9 @@
                                 <td>
                                     <div class="event-draggable" activity-type="LEAVE">Leave</div>
                                 </td>
+                                <td>
+                                    <div class="event-draggable" activity-type="HOLIDAY">Holiday</div>
+                                </td>
                             </tr>
                         </table>
                     </div>
@@ -280,6 +283,10 @@
                 </div>
                 <div ng-switch-when="OFFICE">
                     <flow-text-area label="Description" required="true"
+                                    model="otherActivity.hangingEventObject.activity.description"></flow-text-area>
+                </div>
+                <div ng-switch-when="HOLIDAY">
+                    <flow-text-area label="Holiday" required="true"
                                     model="otherActivity.hangingEventObject.activity.description"></flow-text-area>
                 </div>
             </div>

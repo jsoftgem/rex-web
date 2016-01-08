@@ -12,6 +12,13 @@
             <div ng-if="calendar.isUpdateVisible(hangingActivity.activity.startDt)" class="form-group"
                  style="margin:auto">
                 <div column="6">
+                    <div class="form-group" ng-if="calendar.isAdmin()">
+                        <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
+                            <flow-check required="false" disabled="false"
+                                        label="Planned (Admin)"
+                                        model="hangingActivity.activity.planned"></flow-check>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <div class="col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
                             <flow-check required="false" disabled="false"
@@ -138,6 +145,10 @@
         </div>
         <div ng-show="hangingActivity.activity.type == 'SEMINAR' || hangingActivity.activity.type == 'OFFICE'">
             <flow-text-area label="Description"
+                            model="hangingActivity.activity.description"></flow-text-area>
+        </div>
+        <div ng-show="hangingActivity.activity.type == 'HOLIDAY'">
+            <flow-text-area label="HOLIDAY"
                             model="hangingActivity.activity.description"></flow-text-area>
         </div>
 

@@ -66,5 +66,13 @@
                 </label>
             </div>
         </div>
+        <div ng-if="dailyView.type == 'HOLIDAY'" class="panel-body">
+            <div class="form-group">
+                <label class="width100pc">
+                    Holiday
+                    <textarea disabled class="form-control" ng-model="dailyView.description"></textarea>
+                </label>
+            </div>
+        </div>
     </div>
 </div>
