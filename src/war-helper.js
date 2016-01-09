@@ -361,7 +361,23 @@ function isPastWeek(date) {
     }
     console.debug('isPastWeek', date);
     var current = new Date();
-    return getWeekOfYear(date) < getWeekOfYear(current);
+    var activityWeek = getWeekOfYear(date);
+    var currentWeek = getWeekOfYear(current);
+    console.debug('isPastWeek - activityWeek', activityWeek);
+    console.debug('isPastWeek - currentWeek', currentWeek);
+    if (activityWeek && currentWeek) {
+        var activityYear = activityWeek[0];
+        var currentYear = currentWeek[0];
+        var actWeek = activityWeek[1];
+        var currWeek = currentWeek[1];
+
+        if (activityYear < currentYear) {
+            return ((currWeek + 53) - actWeek) > 2;
+        } else {
+            return actWeek < currWeek && ((currWeek - actWeek) > 2);
+        }
+    }
+    return activityWeek < currentWeek;
 }
 
 

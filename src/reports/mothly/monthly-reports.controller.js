@@ -2,8 +2,8 @@
     'use strict';
     angular.module('war.reports')
         .controller('reportsMCtrl', ReportsMCtrl);
-    ReportsMCtrl.$inject = ['$scope', 'hasProfile', 'userProfile'];
-    function ReportsMCtrl(s, hp, up) {
+    ReportsMCtrl.$inject = ['$scope', 'userProfile'];
+    function ReportsMCtrl(s, up) {
 
         s.task.hideAgentFilter = false;
         s.task.pageCustomer = 'report_monthly_customer';
@@ -17,7 +17,6 @@
             report.isYear = false;
             report.isMonth = false;
             report.isRegion = false;
-
             return report;
         };
 
@@ -25,12 +24,6 @@
             s.task.query();
         });
 
-        hp.check('agent', s.task)
-            .success(function (valid) {
-                s.task.hideAgentFilter = valid;
-                s.task.report.isAgent = valid;
-                s.task.agent = up.agent;
-            });
 
         s.task.change = function () {
             s.task.report.start = 0;
@@ -225,9 +218,11 @@
         });
 
         s.task.page.load = function () {
-            if (this.name === s.task.pageAgent) {
-                s.task.report = s.task.newReport();
-                s.task.query();
+            s.task.report = s.task.newReport();
+            if (up.isAgent() && !up.isManager()) {
+                s.task.hideAgentFilter = true;
+                s.task.report.isAgent = true;
+                s.task.agent = up.agent;
             }
         };
     }

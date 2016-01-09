@@ -25,7 +25,7 @@
             if (this.name === s.task.home) {
                 s.task.report.data = data;
                 s.task.report.filter = JSON.parse(this.getParam);
-                if (up.isAgent()) {
+                if (up.isAgent() && !up.isManager()) {
                     this.title = up.fullName + '\'s Customer';
                     s.task.report.filter.regionCode = up.agent.region;
                     s.task.report.filter.agent = up.agent.id;
@@ -38,7 +38,7 @@
         s.task.selectRegion = function (item) {
             s.task.report.filter.regionCode = item;
             s.task.reportCustomer.agentSelectFilter = undefined;
-            s.task.report.filter.agent = undefined;
+            s.task.report.filter.agent = 0;
             getAgentsByRegionCode(item);
         };
         s.task.selectAgent = function (item) {
@@ -51,6 +51,7 @@
                 s.flow.action('get', undefined, filter);
             }
         };
+
         s.task.clearFilters = function () {
             if (s.task.report.filter) {
                 s.task.report.filter = JSON.parse(s.task.page.getParam);
@@ -63,6 +64,7 @@
                 s.task.reportCustomer.agentSelectFilter = undefined;
             }
         };
+
         s.task.tag = function (tag) {
             s.task.report.filter.tag = tag;
             if (tag === '20') {
@@ -73,6 +75,7 @@
                 s.task.order = 'materialsAdvisor';
             }
         };
+
         s.$on(s.flow.event.getSuccessEventId(), function (event, data, method) {
             console.info('reports-monthly-summary- getSuccessEventId', method);
             if (method === 'get') {

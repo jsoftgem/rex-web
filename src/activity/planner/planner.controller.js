@@ -415,8 +415,6 @@
                     s.task.page.title = up.agent.initials;
                     if (!up.isManager()) {
                         s.changeAgent(up.agent);
-                    } else {
-                        s.task.agent = up.agent;
                     }
                 }
                 s.task.plannerCalendar.fullCalendar("render");
@@ -896,9 +894,7 @@
         }
 
         function isPastDate(date) {
-            console.debug('isPastDate', date);
-            var now = new Date();
-            return date < now;
+            return isPastWeek(date);
         }
 
         function isDeleteVisible(date) {

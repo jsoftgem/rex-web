@@ -26,9 +26,11 @@
             s.task.agentReport.query = query;
             if (up.isAgent()) {
                 s.task.agentReport.disableAgentFilter = !(up.isManager() || up.isAdmin() || up.isGeneralManager());
-                s.task.agentReport.agentFilter = up.agent;
+                if (!up.isManager()) {
+                    s.task.agentReport.agentFilter = up.agent;
+                    s.task.report.agent = up.agent;
+                }
                 s.task.agentReport.regionFilter = {regionCode: up.getRegionCode()};
-                s.task.report.agent = up.agent;
                 s.task.report.region = s.task.agentReport.regionFilter.regionCode;
             }
             s.task.csvDownloadUrl = undefined;
@@ -299,7 +301,7 @@
 
         function getAgents() {
             s.task.loadAgent = false;
-            resourceApiService.WarAgent.getList(function (agents) {
+            resourceApiService.WarAgent.getByCurrentLevel(function (agents) {
                 s.task.agentReport.agents = agents;
                 s.task.loadAgent = true;
             }, function () {
