@@ -10,6 +10,7 @@
         s.task.reportCustomer = {};
         s.task.reportCustomer.getAgentsByRegionCode = getAgentsByRegionCode;
         s.task.reportCustomer.isFilterEnabled = isFilterEnabled;
+        s.task.reportCustomer.isManager = isManager;
         s.task.home = 'report_monthly_customer';
         s.task.view = 'Table';
         s.task.refresh = function () {
@@ -47,7 +48,11 @@
         s.task.query = function () {
             if (s.task.report.filter) {
                 console.info('agent-query', s.task.report);
+                if (s.task.report.filter.workedWith) {
+                    s.task.report.filter.managerId = up.agent.id;
+                }
                 var filter = JSON.stringify(s.task.report.filter);
+                console.info('agent-query.filter', filter);
                 s.flow.action('get', undefined, filter);
             }
         };
@@ -77,7 +82,7 @@
         };
 
         s.$on(s.flow.event.getSuccessEventId(), function (event, data, method) {
-            console.info('reports-monthly-summary- getSuccessEventId', method);
+            console.info('reports-monthly-summary-getSuccessEventId', method);
             if (method === 'get') {
                 console.info('get', data);
                 s.task.report.data = data;
@@ -99,6 +104,10 @@
 
         function isFilterEnabled() {
             return up.isManager() || up.isAdmin() || up.isGeneralManager();
+        }
+
+        function isManager() {
+            return up.isManager();
         }
 
         function destroy() {

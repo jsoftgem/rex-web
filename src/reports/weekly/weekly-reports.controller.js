@@ -13,8 +13,8 @@
             s.task.agentReport.updateActivity = updateActivity;
             s.task.agentReport.isUpdateActivity = isUpdateActivity;
             s.task.agentReport.clearFilter = clearFilter;
-            s.task.agentReport.isAgent = up.isAgent();
-            s.task.agentReport.isManager = up.isManager();
+            s.task.agentReport.isAgent = isAgent;
+            s.task.agentReport.isManager = isManager;
             s.task.agentReport.getYears = getYears;
             s.task.agentReport.getMonths = getMonths;
             s.task.agentReport.getAgents = getAgents;
@@ -248,6 +248,15 @@
                 url += 'isRegion=true&region=' + s.task.report.region;
             }
 
+            if (s.task.agentReport.workedWith) {
+                if (count > 0) {
+                    url += '&'
+                } else {
+                    count++;
+                }
+                url += 'workedWith=true&managerId=' + up.agent.id;
+            }
+
 
             if (count > 0) {
                 url += '&'
@@ -280,6 +289,7 @@
             report.isYear = false;
             report.isMonth = false;
             report.isRegion = false;
+            report.workedWith = false;
             return report;
         }
 
@@ -374,6 +384,14 @@
 
         function isUpdateActivity() {
             return up.isAgent() || up.isManager();
+        }
+
+        function isManager() {
+            return up.isManager();
+        }
+
+        function isAgent() {
+            return up.isAgent();
         }
 
         function destroy() {

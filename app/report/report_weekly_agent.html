@@ -63,15 +63,22 @@
             </div>
 
             <div column="4" class="padding0">
-                <div class="btn-group">
+                <div class="btn-group btn-group-md" ng-if="task.agentReport.isManager()">
+                    <div class="height7px"></div>
+                    <button ng-class="task.agentReport.workedWith ? 'active':''"
+                            ng-click="task.agentReport.workedWith=!task.agentReport.workedWith" success="button" button>
+                        Worked with
+                    </button>
+                </div>
+                <div class="btn-group btn-group-md">
                     <div class="height7px"></div>
                     <button button primary="button" ng-click="task.agentReport.query()">Go</button>
                 </div>
-                <div class="btn-group">
+                <div class="btn-group btn-group-md">
                     <div class="height7px"></div>
                     <button button warning="button" ng-click="task.agentReport.clearFilter()">Clear</button>
                 </div>
-                <div class="btn-group dropdown">
+                <div class="btn-group btn-group-md dropdown">
                     <div class="height7px"></div>
                     <button button info="button" class="dropdown-toggle" data-toggle="dropdown"
                             aria-expanded="false">
@@ -223,7 +230,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="btn-group dropdown">
+                <div class="btn-group btn-group-md dropdown">
                     <div class="height7px"></div>
                     <button button warning="button" class="dropdown-toggle" data-toggle="dropdown">
                         <span ng-if="!task.exporting">Export</span>
@@ -236,7 +243,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="btn-group btn-group-lg">
+                <div class="btn-group btn-group-md">
                     <div class="height7px"></div>
                     <a ng-if="task.csvDownloadUrl" class="btn btn-success" ng-href="{{task.csvDownloadUrl}}"
                        download="{{task.csvDownloadName}}">Download

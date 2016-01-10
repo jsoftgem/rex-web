@@ -13,6 +13,12 @@
             <span class="field">{{dailyView.agentFullName}}</span>
         </label>
     </div>
+    <div ng-if="dailyView.workedWith">
+        <label class="width100pc">
+            <span>Manager: </span>
+            <span class="field">{{dailyView.manager}}</span>
+        </label>
+    </div>
     <div class="panel panel-default">
         <div class="panel-heading"
              ng-class="dailyView.planned ? 'planned' :'unplanned'">

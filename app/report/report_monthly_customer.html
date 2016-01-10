@@ -46,6 +46,12 @@
                         </button>
                     </div>
                 </div>
+                <div class="btn-group" ng-if="task.reportCustomer.isManager()">
+                    <div class="height7px"></div>
+                    <button button success="button" ng-class="task.report.filter.workedWith ? 'active':''"
+                            ng-click="task.report.filter.workedWith=!task.report.filter.workedWith">Worked with
+                    </button>
+                </div>
                 <div class="btn-group">
                     <div class="height7px"></div>
                     <button button primary="button" title="Go" ng-click="task.query()"> Go
@@ -82,7 +88,7 @@
                         <colgroup>
                             <col span="2" class="bg-primary">
                             <col span="13" class="bg-warning">
-                            <col span="16" class="bg-info">
+                            <col span="17" class="bg-info">
                         </colgroup>
                         <thead>
                         <th class="report-monthly-header">Top</th>
@@ -94,7 +100,7 @@
 
                         <tbody ng-repeat="reportAgent in region.agents">
                         <tr>
-                            <td colspan="31" class="bg-warning">{{reportAgent.materialsAdvisor}}
+                            <td colspan="32" class="bg-warning">{{reportAgent.materialsAdvisor}}
                             <td>
                         </tr>
                         <tr class="report-monthly-row"

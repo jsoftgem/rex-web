@@ -26,6 +26,7 @@
             dailyView.actual = data.actual;
             dailyView.schoolYear = data.schoolYearDescription;
             dailyView.type = data.type;
+            dailyView.workedWith = data.workedWith;
             setAgent(data);
             setDailyViewDetail(data, page);
 
@@ -55,6 +56,12 @@
                 dailyView.agentFullName = agent.user.flowUserDetail.fullName;
                 scope.task.title = agent.user.flowUserDetail.fullName;
             });
+
+            if(data.workedWith){
+                resourceApiService.WarAgent.getById(data.managerId, function (agent) {
+                    dailyView.manager = agent.user.flowUserDetail.fullName;
+                });
+            }
         }
 
         function setCustomer(data, page) {
@@ -71,6 +78,7 @@
         }
 
         function setDailyActivities(data) {
+            addActivity(createActivity('Worked with manager', data.workedWith));
             addActivity(createActivity('Exam Copies Distribution', data.ecd));
             addActivity(createActivity('Invitation to Events', data.ite));
             addActivity(createActivity('Confirmation of Events', data.coe));
