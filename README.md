@@ -1,4 +1,4 @@
-#[Rex War++ Version 1.0.15](http://war.rexpublishing.com.ph)
+#[Rex War++ Version 1.4](http://war.rexpublishing.com.ph)
 ###Author Information
 Jerico G. de Guzman
 Sr. Software Engineer
