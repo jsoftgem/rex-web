@@ -429,7 +429,11 @@
                 } else {
                     count++;
                 }
-                url += 'isAgent=true&agentId=' + agentId;
+                if (s.task.agentReport.myWorkPlan) {
+                    url += 'isAgent=true&agentId=' + agentId;
+                } else {
+                    url += 'workedWith=true&managerId=' + agentId;
+                }
             }
 
             if (s.task.agentReport.regionFilter) {
