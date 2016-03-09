@@ -1,0 +1,190 @@
+<div class="panel panel-primary">
+    <div class="panel-heading"><span class="heading-title">Columns</span></div>
+    <div class="panel-body">
+        <div>
+            <div ng-click="task.table.isMaterialsAdvisor=!task.table.isMaterialsAdvisor"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isMaterialsAdvisor ? 'bg-info':'bg-danger'">
+                            <span class="lead pull-left toggle-column-grid-check"><i
+                                    ng-class="task.table.isMaterialsAdvisor ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>Material Advisor</strong></span>
+            </div>
+            <div ng-click="task.table.isWeek=!task.table.isWeek"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isWeek ? 'bg-info':'bg-danger'">  <span
+                    class="lead pull-left toggle-column-grid-check"><i
+                    ng-class="task.table.isWeek ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>Week</strong></span>
+            </div>
+            <div ng-click="task.table.isYear=!task.table.isYear"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isYear ? 'bg-info':'bg-danger'"><span
+                    class="lead pull-left toggle-column-grid-check"><i
+                    ng-class="task.table.isYear ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>Year</strong></span>
+            </div>
+            <div ng-click="task.table.isPlannedTarget=!task.table.isPlannedTarget"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isPlannedTarget ? 'bg-info':'bg-danger'">
+                           <span class="lead pull-left toggle-column-grid-check"><i
+                                   ng-class="task.table.isPlannedTarget ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>Target</strong></span>
+            </div>
+        </div>
+        <div>
+            <div ng-click="task.table.isPlannedActual=!task.table.isPlannedActual"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isPlannedActual ? 'bg-info':'bg-danger'">
+                               <span class="lead pull-left toggle-column-grid-check"><i
+                                       ng-class="task.table.isPlannedActual ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>Planned</strong></span>
+            </div>
+            <div ng-click="task.table.isUnplannedActual=!task.table.isUnplannedActual"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isUnplannedActual ? 'bg-info':'bg-danger'">
+                              <span class="lead pull-left toggle-column-grid-check"><i
+                                      ng-class="task.table.isUnplannedActual ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>Unplanned</strong></span>
+            </div>
+            <div ng-click="task.table.isTotalActual=!task.table.isTotalActual"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isTotalActual ? 'bg-info':'bg-danger'">
+                                 <span class="lead pull-left toggle-column-grid-check"><i
+                                         ng-class="task.table.isTotalActual ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>Total Visited</strong></span>
+            </div>
+            <div ng-click="task.table.isTotalCallProd=!task.table.isTotalCallProd"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isTotalCallProd ? 'bg-info':'bg-danger'">
+                             <span class="lead pull-left toggle-column-grid-check"><i
+                                     ng-class="task.table.isTotalCallProd ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>Call Productivity</strong></span>
+            </div>
+        </div>
+        <div>
+            <div ng-click="task.table.isEcd=!task.table.isEcd"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isEcd ? 'bg-info':'bg-danger'">
+                                <span class="lead pull-left toggle-column-grid-check"><i
+                                        ng-class="task.table.isEcd ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>Exam Copies Distribution</strong></span>
+            </div>
+            <div ng-click="task.table.isIte=!task.table.isIte"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isIte ? 'bg-info':'bg-danger'">
+                               <span class="lead pull-left toggle-column-grid-check"><i
+                                       ng-class="task.table.isIte ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>Invitation to Events</strong></span>
+            </div>
+            <div ng-click="task.table.isCoe=!task.table.isCoe"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isCoe ? 'bg-info':'bg-danger'">
+                              <span class="lead pull-left toggle-column-grid-check"><i
+                                      ng-class="task.table.isCoe ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>Confirmation of Events</strong></span>
+            </div>
+            <div ng-click="task.table.isFp=!task.table.isFp"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isFp ? 'bg-info':'bg-danger'">
+                              <span class="lead pull-left toggle-column-grid-check"><i
+                                      ng-class="task.table.isFp ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>Follow up Payment</strong></span>
+            </div>
+        </div>
+        <div>
+            <div ng-click="task.table.isGd=!task.table.isGd"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isGd ? 'bg-info':'bg-danger'">
+                             <span class="lead pull-left toggle-column-grid-check"><i
+                                     ng-class="task.table.isGd ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>Giveaways Distribution</strong></span>
+            </div>
+            <div ng-click="task.table.isDoi=!task.table.isDoi"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isDoi ? 'bg-info':'bg-danger'">
+                             <span class="lead pull-left toggle-column-grid-check"><i
+                                     ng-class="task.table.isDoi ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>Delivery of Incentive/Donation</strong></span>
+            </div>
+            <div ng-click="task.table.isPo=!task.table.isPo"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isPo ? 'bg-info':'bg-danger'">
+                             <span class="lead pull-left toggle-column-grid-check"><i
+                                     ng-class="task.table.isPo ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>Purchase Order</strong></span>
+            </div>
+            <div ng-click="task.table.isDaotrc=!task.table.isDaotrc"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isDaotrc ? 'bg-info':'bg-danger'">
+                             <span class="lead pull-left toggle-column-grid-check"><i
+                                     ng-class="task.table.isDaotrc ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>Delivery of Additional Order</strong></span>
+            </div>
+        </div>
+        <div>
+            <div ng-click="task.table.isBooklist=!task.table.isBooklist"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isBooklist ? 'bg-info':'bg-danger'">
+                             <span class="lead pull-left toggle-column-grid-check"><i
+                                     ng-class="task.table.isBooklist ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>Booklist</strong></span>
+            </div>
+            <div ng-click="task.table.isUcis=!task.table.isUcis"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isUcis ? 'bg-info':'bg-danger'">
+                              <span class="lead pull-left toggle-column-grid-check"><i
+                                      ng-class="task.table.isUcis ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>Updated Customer Info Sheet</strong></span>
+            </div>
+            <div ng-click="task.table.isIes=!task.table.isIes"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isIes ? 'bg-info':'bg-danger'">
+                               <span class="lead pull-left toggle-column-grid-check"><i
+                                       ng-class="task.table.isIes ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>Implemented Ex-Sem</strong></span>
+            </div>
+            <div ng-click="task.table.isCustomerSpecific=!task.table.isCustomerSpecific"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isCustomerSpecific ? 'bg-info':'bg-danger'">
+                             <span class="lead pull-left toggle-column-grid-check"><i
+                                     ng-class="task.table.isCustomerSpecific ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>Customer Specific Activity</strong></span>
+            </div>
+        </div>
+        <div>
+            <div ng-click="task.table.isBootcamp=!task.table.isBootcamp"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isBootcamp ? 'bg-info':'bg-danger'">
+                             <span class="lead pull-left toggle-column-grid-check"><i
+                                     ng-class="task.table.isBootcamp ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>Bootcamp</strong></span>
+            </div>
+            <div ng-click="task.table.isAecon=!task.table.isAecon"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isAecon ? 'bg-info':'bg-danger'">
+                               <span class="lead pull-left toggle-column-grid-check"><i
+                                       ng-class="task.table.isAecon ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>AECON</strong></span>
+            </div>
+            <div ng-click="task.table.isCeap=!task.table.isCeap"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isCeap ? 'bg-info':'bg-danger'">
+                              <span class="lead pull-left toggle-column-grid-check"><i
+                                      ng-class="task.table.isCeap ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>CEAP</strong></span>
+            </div>
+            <div ng-click="task.table.isCollectionAndPr=!task.table.isCollectionAndPr"
+                 class="toggle-column-grid" column="3"
+                 ng-class="task.table.isCollectionAndPr ? 'bg-info':'bg-danger'">
+                              <span class="lead pull-left toggle-column-grid-check"><i
+                                      ng-class="task.table.isCollectionAndPr ? 'text-success fa fa-check-square-o':'fa fa-square-o'"></i></span>
+                <span><strong>Collection and PR</strong></span>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <button ng-click="task.table.closeToggleColumn()" button info="button">
+            Close
+        </button>
+    </div>
+</div>

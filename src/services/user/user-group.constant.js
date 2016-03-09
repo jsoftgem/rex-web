@@ -5,15 +5,17 @@
         .constant('AGENT', {name: 'agent'})
         .constant('REGIONAL_MANAGER', {name: 'agent_regional_manager'})
         .constant('GENERAL_MANAGER', {name: 'agent_general_manager'})
+        .constant('WAR_ADMIN', {name: 'warAdmin'})
         .factory('userGroupService', UserGroupService);
-    UserGroupService.$inject = ['ADMIN', 'AGENT', 'REGIONAL_MANAGER', 'GENERAL_MANAGER'];
+    UserGroupService.$inject = ['ADMIN', 'AGENT', 'REGIONAL_MANAGER', 'GENERAL_MANAGER', 'WAR_ADMIN'];
 
-    function UserGroupService(ADMIN, AGENT, REGIONAL_MANAGER, GENERAL_MANAGER) {
+    function UserGroupService(ADMIN, AGENT, REGIONAL_MANAGER, GENERAL_MANAGER, WAR_ADMIN) {
         return {
             getAdmin: getAdmin,
             getAgent: getAgent,
             getRegionalManager: getRegionalManager,
-            getGeneralManager: getGeneralManager
+            getGeneralManager: getGeneralManager,
+            getWarAdmin: getWarAdmin
         };
 
         function getAdmin() {
@@ -30,6 +32,10 @@
 
         function getGeneralManager() {
             return GENERAL_MANAGER;
+        }
+
+        function getWarAdmin() {
+            return WAR_ADMIN;
         }
     }
 

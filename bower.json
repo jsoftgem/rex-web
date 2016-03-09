@@ -49,6 +49,10 @@
     "ui-select": "angular-ui-select#~0.13.2",
     "angular-sanitize": "~1.4.8",
     "lodash": "~3.10.1",
-    "fullcalendar": "~2.5.0"
+    "fullcalendar": "~2.5.0",
+    "bootstrap-toggle": "^2.2.1"
+  },
+  "devDependencies": {
+    "file-saver": "*"
   }
 }

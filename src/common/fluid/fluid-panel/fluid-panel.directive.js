@@ -101,7 +101,9 @@
                     };
 
                     scope.flow.onRefreshed = function () {
+                        scope.flow.reloadTask();
                     };
+
                     scope.flow.onOpenPinned = function (page, param) {
 
                     };
@@ -419,21 +421,22 @@
                                 }
 
                             }
-                        }
-
-                        else if (scope.task.page.name === pageName) {
+                        } else if (pageName === undefined) {
+                            if (!exists) {
+                                scope.task.toolbars.push(control);
+                            }
+                        } else if (scope.task.page.name === pageName) {
                             if (!exists) {
                                 scope.task.toolbars.push(control);
                             }
                         } else if (exists) {
-                            for (var t = scope.task.toolbars.length - 1; t > 0; t--) {
-                                var toolbar = scope.task.toolbars[t];
-                                if (toolbar.id === control.id) {
-                                    scope.task.toolbars.splice(t, 1);
+                            for (var tb = scope.task.toolbars.length - 1; tb > 0; tb--) {
+                                var toolbars = scope.task.toolbars[tb];
+                                if (toolbars.id === control.id) {
+                                    scope.task.toolbars.splice(tb, 1);
                                     break;
                                 }
                             }
-
                         }
                     };
                     scope.navToPage = function (name) {
@@ -1139,6 +1142,29 @@
 
                     });
 
+
+                    scope.flow.reloadTask = function () {
+
+                        scope.task.loaded = false;
+
+                        var loadGetFn = function () {
+                            if (scope.task) {
+                                scope.task.preLoad();
+                                scope.task.preLoaded = true;
+
+                                scope.loadGet();
+                                if (scope.task.preLoaded) {
+                                    scope.task.load();
+
+                                    scope.task.loaded = true;
+                                }
+                                scope.task.postLoad();
+                            }
+                        };
+
+                        loadGetFn();
+                    };
+
                     $(window).on('resize', function () {
                         if (scope.flowFrameService.fullScreen) {
                             var height = window.innerHeight;
@@ -1184,9 +1210,7 @@
 
                     /********************/
                 }
-
             }
-
         }
     }
 })();
