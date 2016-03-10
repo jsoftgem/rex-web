@@ -6,9 +6,18 @@
             </li>
             <div class='form-group pull-right'>
                 <div class='btn-group {{size}}'>
-                    <button id='btn_tool_{{control.id}}_{{task.id}}' ng-repeat='control in task.toolbars' title='{{control.label}}'
+                    <button id='btn_tool_{{control.id}}_{{task.id}}' ng-repeat='control in task.toolbars'
+                            title='{{control.label}}'
                             class='btn button-tool' ng-class='getClass(control.uiType)' ng-click='runEvent(control)'
-                            ng-disabled='control.disabled' type='button'><span ng-class='control.glyph'></span></button>
+                            ng-if="isVisible(control)"
+                            ng-disabled='control.disabled' type='button'>
+                        <span ng-if="isLoading(control)"></span>
+                        <span ng-if="!isLoading(control)">
+                            <span ng-class='control.glyph'></span> {{control.useLabel ? control.label : ''}}
+                        </span>
+
+                    </button>
+
                 </div>
             </div>
             <div class="clearfix"></div>

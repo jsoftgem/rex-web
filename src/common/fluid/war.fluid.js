@@ -105,63 +105,6 @@ flowComponents
             }
         };
     }])
-    .directive("flowTool", ["$rootScope", "$compile", "$templateCache", '$timeout', function (r, c, tc, $timeout) {
-
-        return {
-            scope: {task: '=', controls: '=', pages: '=', flow: "=", size: "@"},
-            restrict: "E",
-            replace: true,
-            templateUrl: "src/templates/fluid/fluidToolbar.html",
-            link: function (scope, element, attr) {
-
-                if (attr.size) {
-                    if (attr.size === "small") {
-                        scope.size = "btn-group-xs";
-                    } else if (attr.size === "medium") {
-                        scope.size = "btn-group-sm";
-                    } else if (attr.size === "large") {
-                        scope.size = "btn-group-md";
-                    }
-                } else {
-                    scope.size = "btn-group-md";
-                }
-
-
-                scope.runEvent = function (control) {
-                    if (control.action) {
-                        $timeout(control.action);
-                    } else {
-                        var event = control.id + "_fp_" + scope.task.id;
-                        r.$broadcast(event);
-                    }
-
-                };
-
-
-                scope.goToEvent = function (name, param) {
-                    scope.flow.navTo(name);
-                };
-
-                scope.getClass = function (uiType) {
-                    if (uiType.toLowerCase() === "info") {
-                        return "btn-info";
-                    } else if (uiType.toLowerCase() === "danger") {
-                        return "btn-danger";
-                    } else if (uiType.toLowerCase() === "warning") {
-                        return "btn-warning";
-                    } else if (uiType.toLowerCase() === "inverse") {
-                        return "btn-inverse";
-                    } else if (uiType.toLowerCase() === "success") {
-                        return "btn-success";
-                    } else if (uiType.toLowerCase() === "primary") {
-                        return "btn-primary";
-                    } else {
-                        return "btn-default";
-                    }
-                }
-            }
-        }
-    }])
     .directive("flowBar", ["flowFrameService", "$templateCache", "$compile", "flowHttpService", function (f, tc, c, f2) {
 
         return {
@@ -1858,6 +1801,7 @@ function Control() {
     control.glyph = undefined;
     control.label = undefined;
     control.disabled = undefined;
+    control.useLabel = false;
     return control;
 }
 

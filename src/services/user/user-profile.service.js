@@ -46,10 +46,11 @@
         };
 
         this.isGeneralManager = function () {
-            return this.group.groupName == userGroupService.getGeneralManager().name;
+            return this.group.groupName === userGroupService.getGeneralManager().name;
         };
+
         this.isAdmin = function () {
-            return this.group.groupName === userGroupService.getAdmin().name;
+            return this.group.groupName === userGroupService.getAdmin().name || this.group.groupName === userGroupService.getWarAdmin().name;
         };
 
         return this;
