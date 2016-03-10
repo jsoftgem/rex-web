@@ -99,7 +99,7 @@
                     <th ng-if="task.table.isGd" class="bg-warning">Giveaways Distribution</th>
                     <th ng-if="task.table.isDoi" class="bg-warning">Delivery of Incentive/Donation</th>
                     <th ng-if="task.table.isPo" class="bg-warning">Purchase Order</th>
-                    <th ng-if="task.table.isDaotrc" class="bg-warning">Delivery of Additional Order / TRM / Compli</th>
+                    <th ng-if="task.table.isDaotrc" class="bg-warning">Delivery of Additional Order</th>
                     <th ng-if="task.table.isBooklist" class="bg-warning">Booklist</th>
                     <th ng-if="task.table.isUcis" class="bg-warning">Updated Customer Info Sheet</th>
                     <th ng-if="task.table.isIes" class="bg-warning">Implemented Ex-Sem</th>
@@ -129,14 +129,13 @@
                         <div class="margin-leftl5px">
                             <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
                                  header-name="{{!task.report.isAgent && task.table.isMaterialsAdvisor ? 'Materials Advisor' :'Action'}}"
-                                 class="report-td"><a href="#"
-                                                      ng-click="task.getCustomers(day)"
-                                                      flow-tooltip
-                                                      tooltip-my="bottom left"
-                                                      tooltip-at="top right"
-                                                      tooltip-title="View {{day.materialsAdvisor}} daily activity for week {{day.week}}."><span><i
-                                    ng-class="(day.view ? 'fa fa-search-minus' : 'fa fa-search-plus')"></i>
-                {{ !task.report.isAgent && task.table.isMaterialsAdvisor ? day.materialsAdvisor : ''}}</span></a>
+                                 class="report-td">
+                                <a href="#" ng-click="task.getCustomers(day)"
+                                   flow-tooltip
+                                   tooltip-my="bottom left"
+                                   tooltip-at="top right"
+                                   tooltip-title="View {{day.materialsAdvisor}} daily activity for week {{day.week}}.">
+                                    <span><i ng-class="(day.view ? 'fa fa-search-minus' : 'fa fa-search-plus')"></i> {{ !task.report.isAgent && task.table.isMaterialsAdvisor ? day.materialsAdvisor : ''}}</span></a>
                             </div>
 
                             <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
@@ -167,6 +166,11 @@
                             <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
                                  header-name="Unplanned" ng-if="task.table.isUnplannedActual" class="report-td">
                                 {{day.unplannedActual}}
+                            </div>
+
+                            <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
+                                 header-name="Total Visited" ng-if="task.table.isTotalActual" class="report-td">
+                                {{day.totalActual}}
                             </div>
 
                             <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
@@ -207,7 +211,7 @@
                                 {{day.po}}
                             </div>
                             <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
-                                 header-name="Delivery of Additional Order / TRM / Compli" ng-if="task.table.isDaotrc"
+                                 header-name="Delivery of Additional Order" ng-if="task.table.isDaotrc"
                                  class="report-td">{{day.daotrc}}
                             </div>
                             <div fluid-render-width table-id="{{flow.getElementFlowId('reportTable')}}"
@@ -275,7 +279,7 @@
                                         Purchase Order
                                     </th>
                                     <th class="bg-info">
-                                        Delivery of Additional Order/TRM/Compli
+                                        Delivery of Additional Order
                                     </th>
                                     <th class="bg-info">
                                         Booklist
