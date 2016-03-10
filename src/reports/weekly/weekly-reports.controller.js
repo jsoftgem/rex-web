@@ -10,6 +10,7 @@
         function activate() {
             initToolbars();
             s.$on('$destroy', destroy);
+            s.task.showToolBar = true;
             s.task.table = tableOptions();
             s.task.table.closeToggleColumn = closeToggleColumn;
             s.task.report = newReport();
@@ -429,8 +430,9 @@
                 } else {
                     count++;
                 }
-                if (s.task.agentReport.myWorkPlan) {
+                if (!s.task.agentReport.myWorkPlan) {
                     url += 'isAgent=true&agentId=' + agentId;
+
                 } else {
                     url += 'workedWith=true&managerId=' + agentId;
                 }
